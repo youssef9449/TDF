@@ -55,20 +55,10 @@ namespace TDF.Net
             }
             else
             {
-                string username = txtUsername.Text;
-                string password = txtPassword.Text;
-
-                if (validateLogin(username, password))
-                {
-                    loggedInUser = getCurrentUserDetails(username);
-                    showMainForm();  // Go to the Day Off Request form
-                }
-                else
-                {
-                    MessageBox.Show("Invalid username or password");
-                }
+                startLoggingIn();
             }
         }
+
         private void signupButton_Click(object sender, EventArgs e)
         {
             //List<string> departments = iniFile.ReadSectionValues("Departments");
@@ -187,6 +177,25 @@ namespace TDF.Net
         #endregion
 
         #region Methods
+        private void startLoggingIn()
+        {
+            string username = txtUsername.Text;
+            string password = txtPassword.Text;
+
+            if (validateLogin(username, password))
+            {
+                loggedInUser = getCurrentUserDetails(username);
+                mainForm mainForm = new mainForm(this);
+                //Owner = mainForm;
+                Hide();  // Hide the login form
+                ClearFormFields();
+                mainForm.Show();
+            }
+            else
+            {
+                MessageBox.Show("Invalid username or password");
+            }
+        }
         public static List<string> GetDepartments()
         {
             List<string> departments = new List<string>();
@@ -271,13 +280,6 @@ namespace TDF.Net
             txtUsername.Clear();
             txtPassword.Clear();
             nameTextBox.Clear();
-        }
-        private void showMainForm()
-        {
-            mainForm mainForm = new mainForm();
-            Owner = mainForm;
-            Hide();  // Hide the login form
-            mainForm.Show();
         }
         private bool VerifyCurrentPassword(string username, string currentPassword)
         {
@@ -441,6 +443,20 @@ namespace TDF.Net
         {
             base.OnPaint(e);
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+        }
+        private void txtPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (!signingup && !changingPassword)
+                {
+                    startLoggingIn();
+
+                    // Optionally suppress the beep sound on Enter key press
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                }
+            }
         }
         #endregion
     }

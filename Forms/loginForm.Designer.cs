@@ -673,6 +673,7 @@
             this.txtPassword.TextPlaceholder = "";
             this.txtPassword.UseSystemPasswordChar = true;
             this.txtPassword.WordWrap = true;
+            this.txtPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPassword_KeyDown);
             // 
             // txtUsername
             // 

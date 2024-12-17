@@ -13,18 +13,19 @@ namespace TDF.Net
 {
     public partial class mainForm : Form
     {
-        public mainForm()
+        public mainForm(loginForm loginForm)
         {
             InitializeComponent();
             MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
             Program.loadForm(this);
             formPanel.BackColor = Color.White;
+            this.loginForm = loginForm; // Store a reference to the login form
         }
 
         public static bool hasManagerRole = loggedInUser.Role != null && loggedInUser.Role != "User";
         public static bool updatedUserData;
         private ContextMenuStrip contextMenu;
-
+        private loginForm loginForm;
 
         //Drag Form
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
@@ -343,15 +344,19 @@ namespace TDF.Net
             controlPanelForm controlPanelForm = new controlPanelForm();
             controlPanelForm.ShowDialog();
         }
-        private void settingsButton_Click(object sender, EventArgs e)
+        private void logoutButton_Click(object sender, EventArgs e)
         {
-            settingsForm settingsForm = new settingsForm();
+            Close();
+            loggedInUser = null;
+            loginForm.Show();
+
+            /*settingsForm settingsForm = new settingsForm();
             settingsForm.ShowDialog();
 
             if (updatedUserData)
             {
                 updateUserDataControls();
-            }
+            }*/
         }
         private void myTeamButton_Click(object sender, EventArgs e)
         {
