@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace TDF.Net
 {
-    using System.Security.Cryptography;
-    using System.Text;
-
     public class Security
     {
         public static string generateSalt()

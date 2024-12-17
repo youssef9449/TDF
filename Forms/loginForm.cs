@@ -23,7 +23,6 @@ namespace TDF.Net
         public static User loggedInUser;
         public static List<string> departments = GetDepartments();
 
-
         #region Buttons
         private void loginButton_Click(object sender, EventArgs e)
         {
@@ -62,7 +61,7 @@ namespace TDF.Net
                 if (validateLogin(username, password))
                 {
                     loggedInUser = getCurrentUserDetails(username);
-                    ShowDayOffRequestForm();  // Go to the Day Off Request form
+                    showMainForm();  // Go to the Day Off Request form
                 }
                 else
                 {
@@ -226,7 +225,7 @@ namespace TDF.Net
             ThemeColor.PrimaryColor = color;
             ThemeColor.SecondaryColor = ThemeColor.changeColorBrightness(color, -0.3);
             ThemeColor.LightColor = ThemeColor.changeColorBrightness(color, +0.6);
-            Program.loadForm(this);
+            loadForm(this);
         }
         private bool validateLogin(string username, string password)
         {
@@ -273,7 +272,7 @@ namespace TDF.Net
             txtPassword.Clear();
             nameTextBox.Clear();
         }
-        private void ShowDayOffRequestForm()
+        private void showMainForm()
         {
             mainForm mainForm = new mainForm();
             Owner = mainForm;

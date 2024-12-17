@@ -49,6 +49,7 @@
             Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties11 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
             Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties12 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
             Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges8 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges9 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.usersCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.roleButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.bunifuLabel1 = new Bunifu.UI.WinForms.BunifuLabel();
@@ -74,6 +75,7 @@
             this.bunifuLabel7 = new Bunifu.UI.WinForms.BunifuLabel();
             this.nameTextBox = new Bunifu.UI.WinForms.BunifuTextBox();
             this.importButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
+            this.resetPasswordButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -242,7 +244,7 @@
             this.deleteButton.IdleIconLeftImage = null;
             this.deleteButton.IdleIconRightImage = null;
             this.deleteButton.IndicateFocus = false;
-            this.deleteButton.Location = new System.Drawing.Point(155, 484);
+            this.deleteButton.Location = new System.Drawing.Point(266, 493);
             this.deleteButton.Name = "deleteButton";
             this.deleteButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.deleteButton.OnDisabledState.BorderRadius = 1;
@@ -1379,12 +1381,105 @@
             this.importButton.UseDefaultRadiusAndThickness = true;
             this.importButton.Click += new System.EventHandler(this.importButton_Click);
             // 
+            // resetPasswordButton
+            // 
+            this.resetPasswordButton.AllowAnimations = true;
+            this.resetPasswordButton.AllowMouseEffects = true;
+            this.resetPasswordButton.AllowToggling = false;
+            this.resetPasswordButton.AnimationSpeed = 200;
+            this.resetPasswordButton.AutoGenerateColors = false;
+            this.resetPasswordButton.AutoRoundBorders = false;
+            this.resetPasswordButton.AutoSizeLeftIcon = true;
+            this.resetPasswordButton.AutoSizeRightIcon = true;
+            this.resetPasswordButton.BackColor = System.Drawing.Color.Transparent;
+            this.resetPasswordButton.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(122)))), ((int)(((byte)(183)))));
+            this.resetPasswordButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("resetPasswordButton.BackgroundImage")));
+            this.resetPasswordButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.resetPasswordButton.ButtonText = "Reset Password";
+            this.resetPasswordButton.ButtonTextMarginLeft = 0;
+            this.resetPasswordButton.ColorContrastOnClick = 45;
+            this.resetPasswordButton.ColorContrastOnHover = 45;
+            this.resetPasswordButton.Cursor = System.Windows.Forms.Cursors.Default;
+            borderEdges9.BottomLeft = true;
+            borderEdges9.BottomRight = true;
+            borderEdges9.TopLeft = true;
+            borderEdges9.TopRight = true;
+            this.resetPasswordButton.CustomizableEdges = borderEdges9;
+            this.resetPasswordButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.resetPasswordButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.resetPasswordButton.DisabledFillColor = System.Drawing.Color.Empty;
+            this.resetPasswordButton.DisabledForecolor = System.Drawing.Color.Empty;
+            this.resetPasswordButton.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton.ButtonStates.Pressed;
+            this.resetPasswordButton.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.resetPasswordButton.ForeColor = System.Drawing.Color.White;
+            this.resetPasswordButton.IconLeft = null;
+            this.resetPasswordButton.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.resetPasswordButton.IconLeftCursor = System.Windows.Forms.Cursors.Default;
+            this.resetPasswordButton.IconLeftPadding = new System.Windows.Forms.Padding(11, 3, 3, 3);
+            this.resetPasswordButton.IconMarginLeft = 11;
+            this.resetPasswordButton.IconPadding = 10;
+            this.resetPasswordButton.IconRight = null;
+            this.resetPasswordButton.IconRightAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.resetPasswordButton.IconRightCursor = System.Windows.Forms.Cursors.Default;
+            this.resetPasswordButton.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
+            this.resetPasswordButton.IconSize = 25;
+            this.resetPasswordButton.IdleBorderColor = System.Drawing.Color.Empty;
+            this.resetPasswordButton.IdleBorderRadius = 0;
+            this.resetPasswordButton.IdleBorderThickness = 0;
+            this.resetPasswordButton.IdleFillColor = System.Drawing.Color.Empty;
+            this.resetPasswordButton.IdleIconLeftImage = null;
+            this.resetPasswordButton.IdleIconRightImage = null;
+            this.resetPasswordButton.IndicateFocus = false;
+            this.resetPasswordButton.Location = new System.Drawing.Point(6, 493);
+            this.resetPasswordButton.Name = "resetPasswordButton";
+            this.resetPasswordButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.resetPasswordButton.OnDisabledState.BorderRadius = 1;
+            this.resetPasswordButton.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.resetPasswordButton.OnDisabledState.BorderThickness = 1;
+            this.resetPasswordButton.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.resetPasswordButton.OnDisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
+            this.resetPasswordButton.OnDisabledState.IconLeftImage = null;
+            this.resetPasswordButton.OnDisabledState.IconRightImage = null;
+            this.resetPasswordButton.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
+            this.resetPasswordButton.onHoverState.BorderRadius = 1;
+            this.resetPasswordButton.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.resetPasswordButton.onHoverState.BorderThickness = 1;
+            this.resetPasswordButton.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
+            this.resetPasswordButton.onHoverState.ForeColor = System.Drawing.Color.White;
+            this.resetPasswordButton.onHoverState.IconLeftImage = null;
+            this.resetPasswordButton.onHoverState.IconRightImage = null;
+            this.resetPasswordButton.OnIdleState.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.resetPasswordButton.OnIdleState.BorderRadius = 1;
+            this.resetPasswordButton.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.resetPasswordButton.OnIdleState.BorderThickness = 1;
+            this.resetPasswordButton.OnIdleState.FillColor = System.Drawing.Color.DodgerBlue;
+            this.resetPasswordButton.OnIdleState.ForeColor = System.Drawing.Color.White;
+            this.resetPasswordButton.OnIdleState.IconLeftImage = null;
+            this.resetPasswordButton.OnIdleState.IconRightImage = null;
+            this.resetPasswordButton.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.resetPasswordButton.OnPressedState.BorderRadius = 1;
+            this.resetPasswordButton.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.resetPasswordButton.OnPressedState.BorderThickness = 1;
+            this.resetPasswordButton.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.resetPasswordButton.OnPressedState.ForeColor = System.Drawing.Color.White;
+            this.resetPasswordButton.OnPressedState.IconLeftImage = null;
+            this.resetPasswordButton.OnPressedState.IconRightImage = null;
+            this.resetPasswordButton.Size = new System.Drawing.Size(163, 29);
+            this.resetPasswordButton.TabIndex = 44;
+            this.resetPasswordButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.resetPasswordButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            this.resetPasswordButton.TextMarginLeft = 0;
+            this.resetPasswordButton.TextPadding = new System.Windows.Forms.Padding(0);
+            this.resetPasswordButton.UseDefaultRadiusAndThickness = true;
+            this.resetPasswordButton.Click += new System.EventHandler(this.resetPasswordButton_Click);
+            // 
             // controlPanelForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(948, 534);
+            this.Controls.Add(this.resetPasswordButton);
             this.Controls.Add(this.importButton);
             this.Controls.Add(this.nameTextBox);
             this.Controls.Add(this.bunifuLabel7);
@@ -1447,5 +1542,6 @@
         private Bunifu.UI.WinForms.BunifuLabel bunifuLabel7;
         private Bunifu.UI.WinForms.BunifuTextBox nameTextBox;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton importButton;
+        private Bunifu.UI.WinForms.BunifuButton.BunifuButton resetPasswordButton;
     }
 }

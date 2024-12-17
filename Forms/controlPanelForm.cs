@@ -32,7 +32,7 @@ namespace TDF.Forms
         void loadUserNames()
         {
 
-            string query,filter;
+            string query, filter;
 
             filter = filterDropdown.Text;
 
@@ -236,7 +236,6 @@ namespace TDF.Forms
             loadUserNames();
             roleDropdown.Text = "";
         }
-
         private void deleteButton_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show(
@@ -289,7 +288,6 @@ namespace TDF.Forms
                 loadUserNames();
             }
         }
-
         private void depButton_Click(object sender, EventArgs e)
         {
             if (usersCheckedListBox.CheckedItems.Count == 0)
@@ -337,7 +335,6 @@ namespace TDF.Forms
             loadUserNames();
             depDropdown.Text = "";
         }
-
         private void updateDepButton_Click(object sender, EventArgs e)
         {
             string newDepartmentName = depTextBox.Text;
@@ -413,7 +410,6 @@ namespace TDF.Forms
             updateDepartments();
             loadUserNames();
         }
-
         private void addDepButton_Click(object sender, EventArgs e)
         {
             string newDepartmentName = depTextBox.Text.Trim();
@@ -457,7 +453,6 @@ namespace TDF.Forms
 
             updateDepartments();
         }
-
         private void deleteDepButton_Click(object sender, EventArgs e)
         {
             string departmentName = depListBox.SelectedItem?.ToString(); // Use null-safe access
@@ -520,7 +515,6 @@ namespace TDF.Forms
             updateDepartments();
             loadUserNames();
         }
-
         private void renameButton_Click(object sender, EventArgs e)
         {
             if (usersCheckedListBox.CheckedItems.Count == 0)
@@ -575,7 +569,6 @@ namespace TDF.Forms
 
             loadUserNames();
         }
-
         private void importButton_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -590,7 +583,56 @@ namespace TDF.Forms
                 }
             }
         }
-        #endregion
+        private void resetPasswordButton_Click(object sender, EventArgs e)
+        {
+            if (usersCheckedListBox.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("Please select a user to reset the password.");
+                return;
+            }
+            DialogResult confirmation = MessageBox.Show(
+    "Are you sure you want to reset the password to '123' for the selected users?",
+    "Confirm Password Reset",
+    MessageBoxButtons.YesNo,
+    MessageBoxIcon.Warning);
 
+            if (confirmation == DialogResult.Yes)
+            {
+                using (SqlConnection conn = Database.GetConnection())
+                {
+                    conn.Open();
+
+                    foreach (object selectedItem in usersCheckedListBox.CheckedItems)
+                    {
+                        string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+
+                        // Generate a new salt
+                        string salt = Security.generateSalt();
+
+                        // Hash the password "123" with the generated salt
+                        string hashedPassword = Security.hashPassword("123", salt);
+
+                        // SQL query to update the password and salt
+                        string query = "UPDATE Users SET PasswordHash = @PasswordHash, Salt = @Salt WHERE FullName = @FullName";
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@PasswordHash", hashedPassword);
+                            cmd.Parameters.AddWithValue("@Salt", salt);
+                            cmd.Parameters.AddWithValue("@FullName", userFullName);
+
+                            // Execute the query
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+
+                    MessageBox.Show("Password reset to '123' for selected users.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Password reset canceled.", "Canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        #endregion
     }
 }
