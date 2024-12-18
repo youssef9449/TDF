@@ -20,13 +20,15 @@ namespace TDF.Net.Classes
         public DateTime? RequestEndingTime { get; set; }
         public string RequestRejectReason { get; set; }
         public string RequestDepartment { get; set; }
+        public int NumberOfDays { get; set; }
+
 
         public Request()
         {
 
         }
 
-        public Request(string requestType, string requestReason, string requestUserFullName, DateTime requestFromDay, DateTime requestToDay, int requestUserID, string requestDepartment)
+        public Request(string requestType, string requestReason, string requestUserFullName, DateTime requestFromDay, DateTime requestToDay, int requestUserID, string requestDepartment,int numberOfDays)
         {
 
             RequestType = requestType;
@@ -38,6 +40,7 @@ namespace TDF.Net.Classes
             RequestBeginningTime = null;
             RequestEndingTime = null;
             RequestDepartment = requestDepartment;
+            NumberOfDays = numberOfDays;
         }
 
         public Request(string requestType, string requestReason, string requestUserFullName, DateTime requestDay, DateTime requestBeginningTime, DateTime requestEndingTime, int requestUserID, string requestDepartment)

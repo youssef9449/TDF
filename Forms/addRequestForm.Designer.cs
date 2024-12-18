@@ -51,6 +51,16 @@
             this.toDayDatePicker = new Bunifu.UI.WinForms.BunifuDatePicker();
             this.panel = new System.Windows.Forms.Panel();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
+            this.bunifuLabel3 = new Bunifu.UI.WinForms.BunifuLabel();
+            this.bunifuLabel4 = new Bunifu.UI.WinForms.BunifuLabel();
+            this.bunifuLabel5 = new Bunifu.UI.WinForms.BunifuLabel();
+            this.availableBalanceLabel = new Bunifu.UI.WinForms.BunifuLabel();
+            this.daysRequestedLabel = new Bunifu.UI.WinForms.BunifuLabel();
+            this.remainingBalanceLabel = new Bunifu.UI.WinForms.BunifuLabel();
+            this.bunifuLabel9 = new Bunifu.UI.WinForms.BunifuLabel();
+            this.workFromHomeRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
+            this.bunifuLabel10 = new Bunifu.UI.WinForms.BunifuLabel();
+            this.bunifuRadioButton2 = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,7 +71,7 @@
             this.dayoffRadioButton.BindingControlPosition = Bunifu.UI.WinForms.BunifuRadioButton.BindingControlPositions.Right;
             this.dayoffRadioButton.BorderThickness = 1;
             this.dayoffRadioButton.Checked = true;
-            this.dayoffRadioButton.Location = new System.Drawing.Point(57, 87);
+            this.dayoffRadioButton.Location = new System.Drawing.Point(33, 87);
             this.dayoffRadioButton.Name = "dayoffRadioButton";
             this.dayoffRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
             this.dayoffRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -80,7 +90,7 @@
             this.exitRadioButton.BindingControlPosition = Bunifu.UI.WinForms.BunifuRadioButton.BindingControlPositions.Right;
             this.exitRadioButton.BorderThickness = 1;
             this.exitRadioButton.Checked = false;
-            this.exitRadioButton.Location = new System.Drawing.Point(131, 87);
+            this.exitRadioButton.Location = new System.Drawing.Point(207, 87);
             this.exitRadioButton.Name = "exitRadioButton";
             this.exitRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
             this.exitRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -98,7 +108,7 @@
             this.dayoffLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.dayoffLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.dayoffLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.dayoffLabel.Location = new System.Drawing.Point(43, 59);
+            this.dayoffLabel.Location = new System.Drawing.Point(19, 60);
             this.dayoffLabel.Name = "dayoffLabel";
             this.dayoffLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.dayoffLabel.Size = new System.Drawing.Size(51, 20);
@@ -113,7 +123,7 @@
             this.bunifuLabel1.AutoEllipsis = false;
             this.bunifuLabel1.CursorType = null;
             this.bunifuLabel1.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel1.Location = new System.Drawing.Point(101, 60);
+            this.bunifuLabel1.Location = new System.Drawing.Point(167, 59);
             this.bunifuLabel1.Name = "bunifuLabel1";
             this.bunifuLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel1.Size = new System.Drawing.Size(99, 20);
@@ -146,6 +156,7 @@
             this.fromDayDatePicker.Name = "fromDayDatePicker";
             this.fromDayDatePicker.Size = new System.Drawing.Size(220, 32);
             this.fromDayDatePicker.TabIndex = 5;
+            this.fromDayDatePicker.ValueChanged += new System.EventHandler(this.fromDayDatePicker_ValueChanged);
             // 
             // fromDateLabel
             // 
@@ -192,7 +203,7 @@
             this.reasonTextBox.IconRight = null;
             this.reasonTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.reasonTextBox.Lines = new string[0];
-            this.reasonTextBox.Location = new System.Drawing.Point(63, 235);
+            this.reasonTextBox.Location = new System.Drawing.Point(70, 346);
             this.reasonTextBox.MaxLength = 32767;
             this.reasonTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.reasonTextBox.Modified = false;
@@ -228,7 +239,7 @@
             this.reasonTextBox.SelectionLength = 0;
             this.reasonTextBox.SelectionStart = 0;
             this.reasonTextBox.ShortcutsEnabled = true;
-            this.reasonTextBox.Size = new System.Drawing.Size(508, 32);
+            this.reasonTextBox.Size = new System.Drawing.Size(568, 32);
             this.reasonTextBox.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.reasonTextBox.TabIndex = 7;
             this.reasonTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -246,7 +257,7 @@
             this.bunifuLabel2.Cursor = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel2.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel2.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel2.Location = new System.Drawing.Point(8, 241);
+            this.bunifuLabel2.Location = new System.Drawing.Point(15, 352);
             this.bunifuLabel2.Name = "bunifuLabel2";
             this.bunifuLabel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel2.Size = new System.Drawing.Size(51, 20);
@@ -262,7 +273,7 @@
             this.fromLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.fromLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.fromLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.fromLabel.Location = new System.Drawing.Point(375, 107);
+            this.fromLabel.Location = new System.Drawing.Point(473, 114);
             this.fromLabel.Name = "fromLabel";
             this.fromLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.fromLabel.Size = new System.Drawing.Size(37, 20);
@@ -279,7 +290,7 @@
             this.toLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.toLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.toLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.toLabel.Location = new System.Drawing.Point(487, 109);
+            this.toLabel.Location = new System.Drawing.Point(585, 116);
             this.toLabel.Name = "toLabel";
             this.toLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.toLabel.Size = new System.Drawing.Size(20, 20);
@@ -338,7 +349,7 @@
             this.submitButton.IdleIconLeftImage = null;
             this.submitButton.IdleIconRightImage = null;
             this.submitButton.IndicateFocus = false;
-            this.submitButton.Location = new System.Drawing.Point(230, 277);
+            this.submitButton.Location = new System.Drawing.Point(237, 388);
             this.submitButton.Name = "submitButton";
             this.submitButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.submitButton.OnDisabledState.BorderRadius = 1;
@@ -383,7 +394,7 @@
             // 
             // toTimeTextBox
             // 
-            this.toTimeTextBox.Location = new System.Drawing.Point(459, 138);
+            this.toTimeTextBox.Location = new System.Drawing.Point(557, 145);
             this.toTimeTextBox.Mask = "90:00";
             this.toTimeTextBox.Name = "toTimeTextBox";
             this.toTimeTextBox.Size = new System.Drawing.Size(81, 20);
@@ -394,7 +405,7 @@
             // 
             // fromTimeTextBox
             // 
-            this.fromTimeTextBox.Location = new System.Drawing.Point(351, 138);
+            this.fromTimeTextBox.Location = new System.Drawing.Point(449, 145);
             this.fromTimeTextBox.Mask = "90:00";
             this.fromTimeTextBox.Name = "fromTimeTextBox";
             this.fromTimeTextBox.Size = new System.Drawing.Size(81, 20);
@@ -443,6 +454,7 @@
             this.toDayDatePicker.Name = "toDayDatePicker";
             this.toDayDatePicker.Size = new System.Drawing.Size(220, 32);
             this.toDayDatePicker.TabIndex = 17;
+            this.toDayDatePicker.ValueChanged += new System.EventHandler(this.toDayDatePicker_ValueChanged);
             // 
             // panel
             // 
@@ -451,8 +463,9 @@
             this.panel.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel.Location = new System.Drawing.Point(0, 0);
             this.panel.Name = "panel";
-            this.panel.Size = new System.Drawing.Size(591, 41);
+            this.panel.Size = new System.Drawing.Size(654, 41);
             this.panel.TabIndex = 24;
+            this.panel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel_Paint);
             this.panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel_MouseDown);
             // 
             // controlBox
@@ -485,7 +498,7 @@
             this.controlBox.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
             this.controlBox.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
             this.controlBox.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.controlBox.Location = new System.Drawing.Point(429, 2);
+            this.controlBox.Location = new System.Drawing.Point(492, 2);
             this.controlBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.controlBox.MaximizeBox = false;
             this.controlBox.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
@@ -519,12 +532,184 @@
             this.controlBox.Size = new System.Drawing.Size(160, 37);
             this.controlBox.TabIndex = 19;
             // 
+            // bunifuLabel3
+            // 
+            this.bunifuLabel3.AllowParentOverrides = false;
+            this.bunifuLabel3.AutoEllipsis = false;
+            this.bunifuLabel3.Cursor = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel3.CursorType = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel3.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.bunifuLabel3.Location = new System.Drawing.Point(39, 263);
+            this.bunifuLabel3.Name = "bunifuLabel3";
+            this.bunifuLabel3.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.bunifuLabel3.Size = new System.Drawing.Size(105, 20);
+            this.bunifuLabel3.TabIndex = 26;
+            this.bunifuLabel3.Text = "Days requested:";
+            this.bunifuLabel3.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.bunifuLabel3.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // bunifuLabel4
+            // 
+            this.bunifuLabel4.AllowParentOverrides = false;
+            this.bunifuLabel4.AutoEllipsis = false;
+            this.bunifuLabel4.Cursor = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel4.CursorType = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel4.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.bunifuLabel4.Location = new System.Drawing.Point(23, 237);
+            this.bunifuLabel4.Name = "bunifuLabel4";
+            this.bunifuLabel4.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.bunifuLabel4.Size = new System.Drawing.Size(121, 20);
+            this.bunifuLabel4.TabIndex = 25;
+            this.bunifuLabel4.Text = "Available Balance:";
+            this.bunifuLabel4.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.bunifuLabel4.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // bunifuLabel5
+            // 
+            this.bunifuLabel5.AllowParentOverrides = false;
+            this.bunifuLabel5.AutoEllipsis = false;
+            this.bunifuLabel5.Cursor = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel5.CursorType = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel5.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.bunifuLabel5.Location = new System.Drawing.Point(14, 289);
+            this.bunifuLabel5.Name = "bunifuLabel5";
+            this.bunifuLabel5.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.bunifuLabel5.Size = new System.Drawing.Size(130, 20);
+            this.bunifuLabel5.TabIndex = 27;
+            this.bunifuLabel5.Text = "Remaining Balance:";
+            this.bunifuLabel5.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.bunifuLabel5.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // availableBalanceLabel
+            // 
+            this.availableBalanceLabel.AllowParentOverrides = false;
+            this.availableBalanceLabel.AutoEllipsis = false;
+            this.availableBalanceLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.availableBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.availableBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.availableBalanceLabel.Location = new System.Drawing.Point(155, 237);
+            this.availableBalanceLabel.Name = "availableBalanceLabel";
+            this.availableBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.availableBalanceLabel.Size = new System.Drawing.Size(36, 20);
+            this.availableBalanceLabel.TabIndex = 28;
+            this.availableBalanceLabel.Text = "------";
+            this.availableBalanceLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.availableBalanceLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // daysRequestedLabel
+            // 
+            this.daysRequestedLabel.AllowParentOverrides = false;
+            this.daysRequestedLabel.AutoEllipsis = false;
+            this.daysRequestedLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.daysRequestedLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.daysRequestedLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.daysRequestedLabel.Location = new System.Drawing.Point(155, 263);
+            this.daysRequestedLabel.Name = "daysRequestedLabel";
+            this.daysRequestedLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.daysRequestedLabel.Size = new System.Drawing.Size(36, 20);
+            this.daysRequestedLabel.TabIndex = 29;
+            this.daysRequestedLabel.Text = "------";
+            this.daysRequestedLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.daysRequestedLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // remainingBalanceLabel
+            // 
+            this.remainingBalanceLabel.AllowParentOverrides = false;
+            this.remainingBalanceLabel.AutoEllipsis = false;
+            this.remainingBalanceLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.remainingBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.remainingBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.remainingBalanceLabel.Location = new System.Drawing.Point(155, 289);
+            this.remainingBalanceLabel.Name = "remainingBalanceLabel";
+            this.remainingBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.remainingBalanceLabel.Size = new System.Drawing.Size(36, 20);
+            this.remainingBalanceLabel.TabIndex = 30;
+            this.remainingBalanceLabel.Text = "------";
+            this.remainingBalanceLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.remainingBalanceLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // bunifuLabel9
+            // 
+            this.bunifuLabel9.AllowParentOverrides = false;
+            this.bunifuLabel9.AutoEllipsis = false;
+            this.bunifuLabel9.CursorType = null;
+            this.bunifuLabel9.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.bunifuLabel9.Location = new System.Drawing.Point(341, 59);
+            this.bunifuLabel9.Name = "bunifuLabel9";
+            this.bunifuLabel9.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.bunifuLabel9.Size = new System.Drawing.Size(113, 20);
+            this.bunifuLabel9.TabIndex = 32;
+            this.bunifuLabel9.Text = "Work from home";
+            this.bunifuLabel9.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.bunifuLabel9.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // workFromHomeRadioButton
+            // 
+            this.workFromHomeRadioButton.AllowBindingControlLocation = false;
+            this.workFromHomeRadioButton.BackColor = System.Drawing.Color.Transparent;
+            this.workFromHomeRadioButton.BindingControlPosition = Bunifu.UI.WinForms.BunifuRadioButton.BindingControlPositions.Right;
+            this.workFromHomeRadioButton.BorderThickness = 1;
+            this.workFromHomeRadioButton.Checked = false;
+            this.workFromHomeRadioButton.Location = new System.Drawing.Point(381, 87);
+            this.workFromHomeRadioButton.Name = "workFromHomeRadioButton";
+            this.workFromHomeRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
+            this.workFromHomeRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.workFromHomeRadioButton.OutlineColorUnchecked = System.Drawing.Color.DarkGray;
+            this.workFromHomeRadioButton.RadioColor = System.Drawing.Color.DodgerBlue;
+            this.workFromHomeRadioButton.RadioColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.workFromHomeRadioButton.Size = new System.Drawing.Size(21, 21);
+            this.workFromHomeRadioButton.TabIndex = 31;
+            this.workFromHomeRadioButton.Text = null;
+            // 
+            // bunifuLabel10
+            // 
+            this.bunifuLabel10.AllowParentOverrides = false;
+            this.bunifuLabel10.AutoEllipsis = false;
+            this.bunifuLabel10.CursorType = null;
+            this.bunifuLabel10.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.bunifuLabel10.Location = new System.Drawing.Point(508, 59);
+            this.bunifuLabel10.Name = "bunifuLabel10";
+            this.bunifuLabel10.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.bunifuLabel10.Size = new System.Drawing.Size(134, 20);
+            this.bunifuLabel10.TabIndex = 34;
+            this.bunifuLabel10.Text = "External Assignment";
+            this.bunifuLabel10.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.bunifuLabel10.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // bunifuRadioButton2
+            // 
+            this.bunifuRadioButton2.AllowBindingControlLocation = false;
+            this.bunifuRadioButton2.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuRadioButton2.BindingControlPosition = Bunifu.UI.WinForms.BunifuRadioButton.BindingControlPositions.Right;
+            this.bunifuRadioButton2.BorderThickness = 1;
+            this.bunifuRadioButton2.Checked = false;
+            this.bunifuRadioButton2.Location = new System.Drawing.Point(555, 87);
+            this.bunifuRadioButton2.Name = "bunifuRadioButton2";
+            this.bunifuRadioButton2.OutlineColor = System.Drawing.Color.DodgerBlue;
+            this.bunifuRadioButton2.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.bunifuRadioButton2.OutlineColorUnchecked = System.Drawing.Color.DarkGray;
+            this.bunifuRadioButton2.RadioColor = System.Drawing.Color.DodgerBlue;
+            this.bunifuRadioButton2.RadioColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.bunifuRadioButton2.Size = new System.Drawing.Size(21, 21);
+            this.bunifuRadioButton2.TabIndex = 33;
+            this.bunifuRadioButton2.Text = null;
+            // 
             // addRequestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(591, 335);
+            this.ClientSize = new System.Drawing.Size(654, 452);
+            this.Controls.Add(this.bunifuLabel10);
+            this.Controls.Add(this.bunifuRadioButton2);
+            this.Controls.Add(this.bunifuLabel9);
+            this.Controls.Add(this.workFromHomeRadioButton);
+            this.Controls.Add(this.remainingBalanceLabel);
+            this.Controls.Add(this.daysRequestedLabel);
+            this.Controls.Add(this.availableBalanceLabel);
+            this.Controls.Add(this.bunifuLabel5);
+            this.Controls.Add(this.bunifuLabel3);
+            this.Controls.Add(this.bunifuLabel4);
             this.Controls.Add(this.panel);
             this.Controls.Add(this.toDateLabel);
             this.Controls.Add(this.toDayDatePicker);
@@ -569,5 +754,15 @@
         private Bunifu.UI.WinForms.BunifuDatePicker toDayDatePicker;
         private System.Windows.Forms.Panel panel;
         private Bunifu.UI.WinForms.BunifuFormControlBox controlBox;
+        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel3;
+        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel4;
+        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel5;
+        private Bunifu.UI.WinForms.BunifuLabel availableBalanceLabel;
+        private Bunifu.UI.WinForms.BunifuLabel daysRequestedLabel;
+        private Bunifu.UI.WinForms.BunifuLabel remainingBalanceLabel;
+        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel9;
+        private Bunifu.UI.WinForms.BunifuRadioButton workFromHomeRadioButton;
+        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel10;
+        private Bunifu.UI.WinForms.BunifuRadioButton bunifuRadioButton2;
     }
 }

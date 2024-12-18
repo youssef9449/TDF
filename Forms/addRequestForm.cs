@@ -1,8 +1,10 @@
 ﻿using Bunifu.UI.WinForms;
 using System;
+using System.Data.SqlClient;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Net.Classes;
+using static TDF.Net.loginForm;
 
 namespace TDF.Net.Forms
 {
@@ -28,6 +30,7 @@ namespace TDF.Net.Forms
             Program.loadForm(this);
         }
 
+        int numberOfDaysRequested, usedBalance, availableBalance = 0;
 
         #region Methods
         private void PopulateFieldsWithRequestData()
@@ -43,6 +46,89 @@ namespace TDF.Net.Forms
                 toTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestEndingTime.Value.TimeOfDay.ToString(@"hh\:mm");
             }
         }
+        private int getAnnualBalance(int userID)
+        {
+            int annualLeave = 0;
+
+            try
+            {
+                using (SqlConnection conn = Database.GetConnection())
+                {
+                    conn.Open();
+
+                    string query = "SELECT Annual FROM AnnualLeave WHERE UserID = @UserID";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserID", userID);
+
+                        object result = cmd.ExecuteScalar();
+
+                        if (result != null && int.TryParse(result.ToString(), out int leaveValue))
+                        {
+                            annualLeave = leaveValue;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("A database error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return annualLeave;
+        }
+        public int getApprovedDays(int userID)
+        {
+            int totalApprovedDays = 0;
+
+            try
+            {
+                using (SqlConnection conn = Database.GetConnection())
+                {
+                    conn.Open();
+
+                    string query = "SELECT SUM(NumberOfDays) AS TotalApprovedDays FROM Requests WHERE RequestStatus = 'Approved' AND RequestUserID = @UserID";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserID", userID);
+
+                        object result = cmd.ExecuteScalar();
+
+                        if (result != null && int.TryParse(result.ToString(), out int sum))
+                        {
+                            totalApprovedDays = sum;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("A database error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return totalApprovedDays;
+        }
+        private void updateLeaveBalance()
+        {
+            usedBalance = getApprovedDays(loggedInUser.userID);
+            availableBalance = getAnnualBalance(loggedInUser.userID) - usedBalance;
+            availableBalanceLabel.Text = availableBalance.ToString();
+
+            numberOfDaysRequested = (Convert.ToDateTime(toDayDatePicker.Text) - Convert.ToDateTime(toDayDatePicker.Text)).Days + 1;
+            daysRequestedLabel.Text = numberOfDaysRequested.ToString();
+            remainingBalanceLabel.Text = (availableBalance - numberOfDaysRequested).ToString();
+        }
+
         #endregion
 
         #region Events
@@ -59,6 +145,58 @@ namespace TDF.Net.Forms
             base.OnPaint(e);
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
         }
+        private void panel_Paint(object sender, PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+        }
+        private void toDayDatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            updateLeaveBalance();
+        }
+
+        private void fromDayDatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            updateLeaveBalance();
+        }
+
+        private void dayoffRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            if (dayoffRadioButton.Checked || workFromHomeRadioButton.Checked)
+            {
+                // Hide time-related controls and show date-related controls
+                SetTimeControlsVisibility(false);
+                SetDateControlsVisibility(true);
+
+                if (dayoffRadioButton.Checked)
+                {
+                    updateLeaveBalance();
+                }
+            }
+            else
+            {
+                // Show time-related controls and hide date-related controls
+                SetTimeControlsVisibility(true);
+                SetDateControlsVisibility(false);
+            }
+
+            // Helper methods for setting visibility
+            void SetTimeControlsVisibility(bool isVisible)
+            {
+                fromTimeTextBox.Visible = isVisible;
+                toTimeTextBox.Visible = isVisible;
+                fromLabel.Visible = isVisible;
+                toLabel.Visible = isVisible;
+            }
+
+            void SetDateControlsVisibility(bool isVisible)
+            {
+                toDateLabel.Visible = isVisible;
+                toDayDatePicker.Visible = isVisible;
+            }
+        }
+        #endregion
+
         private void submitButton_Click(object sender, EventArgs e)
         {
             if (exitRadioButton.Checked)
@@ -105,6 +243,8 @@ namespace TDF.Net.Forms
                     MessageBox.Show("Beginning date can't be earlier than the ending date");
                     return;
                 }
+
+                numberOfDaysRequested = (toDay - fromDay).Days + 1;
             }
 
             if (RequestToEdit != null)
@@ -124,33 +264,11 @@ namespace TDF.Net.Forms
             {
 
                 Request Request = dayoffRadioButton.Checked
-                    ? new Request(dayoffRadioButton.Checked ? "Dayoff" : "Permission", reasonTextBox.Text, loginForm.loggedInUser.FullName, Convert.ToDateTime(fromDayDatePicker.Text), Convert.ToDateTime(toDayDatePicker.Text), loginForm.loggedInUser.userID, loginForm.loggedInUser.Department)
+                    ? new Request(dayoffRadioButton.Checked ? "Dayoff" : "Permission", reasonTextBox.Text, loginForm.loggedInUser.FullName, Convert.ToDateTime(fromDayDatePicker.Text), Convert.ToDateTime(toDayDatePicker.Text), loginForm.loggedInUser.userID, loginForm.loggedInUser.Department, numberOfDaysRequested)
                     : new Request(dayoffRadioButton.Checked ? "Dayoff" : "Permission", reasonTextBox.Text, loginForm.loggedInUser.FullName, Convert.ToDateTime(fromDayDatePicker.Text), Convert.ToDateTime(fromTimeTextBox.Text), Convert.ToDateTime(toTimeTextBox.Text), loginForm.loggedInUser.userID, loginForm.loggedInUser.Department);
                 Request.add();
             }
         }
-        private void dayoffRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
-        {
-            if (dayoffRadioButton.Checked)
-            {
-                fromTimeTextBox.Visible = false;
-                toTimeTextBox.Visible = false;
-                fromLabel.Visible = false;
-                toLabel.Visible = false;
-                toDateLabel.Visible = true;
-                toDayDatePicker.Visible = true;
-            }
-            else
-            {
-                fromTimeTextBox.Visible = true;
-                toTimeTextBox.Visible = true;
-                fromLabel.Visible = true;
-                toLabel.Visible = true;
-                toDateLabel.Visible = false;
-                toDayDatePicker.Visible = false;
-            }
-        }
-        #endregion
 
     }
 }

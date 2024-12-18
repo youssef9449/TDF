@@ -33,7 +33,7 @@ namespace TDF.Net.Forms
         }
         private void Requests_Load(object sender, EventArgs e)
         {
-            applyButton.Visible = hasManagerRole;
+            applyButton.Visible = hasManagerRole || hasAdminRole;
 
             pendingLabel.Visible = true;
             closedLabel.Visible = true;
@@ -225,13 +225,11 @@ namespace TDF.Net.Forms
                 MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void LoadRequestsForManagerOrAdmin(DataTable requestsTable)
         {
             string query = BuildQueryForManagerOrAdmin();
             ExecuteQuery(query, requestsTable);
         }
-
         private void LoadRequestsForUser(DataTable requestsTable)
         {
             string query = BuildQueryForUser();
@@ -240,7 +238,6 @@ namespace TDF.Net.Forms
                 cmd.Parameters.AddWithValue("@UserID", loginForm.loggedInUser.userID);
             });
         }
-
         private string BuildQueryForManagerOrAdmin()
         {
             string baseQuery = "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason FROM Requests ";
@@ -255,7 +252,6 @@ namespace TDF.Net.Forms
 
             return baseQuery + condition;
         }
-
         private string BuildQueryForUser()
         {
             return pendingRadioButton.Checked
@@ -264,7 +260,6 @@ namespace TDF.Net.Forms
                 : "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason " +
                   "FROM Requests WHERE RequestUserID = @UserID AND NOT RequestStatus = 'Pending'";
         }
-
         private void ExecuteQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
         {
             using (SqlConnection conn = Database.GetConnection())
@@ -280,7 +275,6 @@ namespace TDF.Net.Forms
                 }
             }
         }
-
         private void ConfigureDataGridViewForManagerOrAdmin()
         {
             requestsDataGridView.Columns["RequestUserFullName"].Visible = true;
@@ -290,18 +284,16 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["Remove"].Visible = false;
             requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = false;
         }
-
         private void ConfigureDataGridViewForUser()
         {
             requestsDataGridView.Columns["RequestReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            requestsDataGridView.Columns["RequestRejectReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            //requestsDataGridView.Columns["RequestRejectReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
             requestsDataGridView.Columns["RequestReason"].Width = 145;
             bool isPending = pendingRadioButton.Checked;
             requestsDataGridView.Columns["Edit"].Visible = isPending;
             requestsDataGridView.Columns["Remove"].Visible = isPending;
         }
-
         private void CalculateNumberOfDaysForRequests()
         {
             foreach (DataGridViewRow row in requestsDataGridView.Rows)
@@ -318,7 +310,6 @@ namespace TDF.Net.Forms
                 }
             }
         }
-
         private void ReorderDataGridViewColumns()
         {
             requestsDataGridView.Columns["Edit"].DisplayIndex = requestsDataGridView.Columns.Count - 1;

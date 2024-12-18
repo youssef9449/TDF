@@ -49,10 +49,10 @@ namespace TDF.Net
             this.myTeamButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.panel = new System.Windows.Forms.Panel();
             this.logoutButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
-            this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.controlPanelButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.requestsButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.usernameLabel = new Bunifu.UI.WinForms.BunifuLabel();
+            this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.panelTitleBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
@@ -437,20 +437,6 @@ namespace TDF.Net
             this.logoutButton.UseDefaultRadiusAndThickness = true;
             this.logoutButton.Click += new System.EventHandler(this.logoutButton_Click);
             // 
-            // circularPictureBox
-            // 
-            this.circularPictureBox.BackColor = System.Drawing.Color.White;
-            this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
-            this.circularPictureBox.Location = new System.Drawing.Point(26, 81);
-            this.circularPictureBox.Name = "circularPictureBox";
-            this.circularPictureBox.Size = new System.Drawing.Size(100, 100);
-            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.circularPictureBox.TabIndex = 1;
-            this.circularPictureBox.TabStop = false;
-            this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);
-            this.circularPictureBox.MouseEnter += new System.EventHandler(this.circularPictureBox_MouseEnter);
-            this.circularPictureBox.MouseLeave += new System.EventHandler(this.circularPictureBox_MouseLeave);
-            // 
             // controlPanelButton
             // 
             this.controlPanelButton.AllowAnimations = true;
@@ -648,6 +634,20 @@ namespace TDF.Net
             this.usernameLabel.Text = "Welcome, User!";
             this.usernameLabel.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             this.usernameLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // circularPictureBox
+            // 
+            this.circularPictureBox.BackColor = System.Drawing.Color.White;
+            this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
+            this.circularPictureBox.Location = new System.Drawing.Point(26, 81);
+            this.circularPictureBox.Name = "circularPictureBox";
+            this.circularPictureBox.Size = new System.Drawing.Size(100, 100);
+            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.circularPictureBox.TabIndex = 1;
+            this.circularPictureBox.TabStop = false;
+            this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);
+            this.circularPictureBox.MouseEnter += new System.EventHandler(this.circularPictureBox_MouseEnter);
+            this.circularPictureBox.MouseLeave += new System.EventHandler(this.circularPictureBox_MouseLeave);
             // 
             // mainForm
             // 

@@ -185,6 +185,15 @@
   <data name="NumberOfDays.Width" type="System.Int32, mscorlib">
     <value>151</value>
   </data>
+  <metadata name="remainingBalance.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="remainingBalance.HeaderText" xml:space="preserve">
+    <value>Remaining Balance</value>
+  </data>
+  <data name="remainingBalance.Width" type="System.Int32, mscorlib">
+    <value>171</value>
+  </data>
   <metadata name="RequestReason.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -237,7 +246,7 @@
     <value>Edit</value>
   </data>
   <data name="Edit.Width" type="System.Int32, mscorlib">
-    <value>50</value>
+    <value>62</value>
   </data>
   <metadata name="Remove.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -669,6 +678,12 @@
     <value>NumberOfDays</value>
   </data>
   <data name="&gt;&gt;NumberOfDays.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;remainingBalance.Name" xml:space="preserve">
+    <value>remainingBalance</value>
+  </data>
+  <data name="&gt;&gt;remainingBalance.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;RequestReason.Name" xml:space="preserve">
