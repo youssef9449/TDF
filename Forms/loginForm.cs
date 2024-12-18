@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using TDF.Classes;
 using static TDF.Net.Program;
-using TDF.Properties;
 
 namespace TDF.Net
 {

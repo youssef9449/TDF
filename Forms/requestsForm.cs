@@ -5,6 +5,8 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using TDF.Classes;
+using static TDF.Net.mainForm;
+using static TDF.Net.loginForm;
 
 
 namespace TDF.Net.Forms
@@ -20,7 +22,6 @@ namespace TDF.Net.Forms
             controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.SecondaryColor;
             controlBox.CloseBoxOptions.IconPressedColor = ThemeColor.PrimaryColor;
             controlBox.CloseBoxOptions.PressedColor = Color.White;
-
         }
 
         #region Events
@@ -32,7 +33,7 @@ namespace TDF.Net.Forms
         }
         private void Requests_Load(object sender, EventArgs e)
         {
-            applyButton.Visible = mainForm.hasManagerRole;
+            applyButton.Visible = hasManagerRole;
 
             pendingLabel.Visible = true;
             closedLabel.Visible = true;
@@ -51,8 +52,8 @@ namespace TDF.Net.Forms
         {
             if (e.Button == MouseButtons.Left && e.Clicks == 1)
             {
-                mainForm.ReleaseCapture();
-                mainForm.SendMessage(Handle, 0x112, 0xf012, 0);
+                ReleaseCapture();
+                SendMessage(Handle, 0x112, 0xf012, 0);
             }
         }
         private void requestsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -202,138 +203,132 @@ namespace TDF.Net.Forms
         {
             DataTable requestsTable = new DataTable();
 
-            if (mainForm.hasManagerRole)
+            try
             {
-                string query;
-                using (SqlConnection conn = Database.GetConnection())
+                if (hasManagerRole || hasAdminRole)
                 {
-                    try
-                    {
-                        conn.Open();
-
-                        if (loginForm.loggedInUser.Department == "All" || (loginForm.loggedInUser.Department == "Founder & CEO"))
-                        {
-
-                            query = pendingRadioButton.Checked ? "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason " +
-                                               $"FROM Requests WHERE RequestStatus = 'Pending'" : "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason " +
-                                               $"FROM Requests WHERE Not RequestStatus = 'Pending'";
-                        }
-                        else
-                        {
-                            query = pendingRadioButton.Checked ? "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason " +
-                                           $"FROM Requests WHERE RequestStatus = 'Pending' And RequestDepartment = '{loginForm.loggedInUser.Department}'" : "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason " +
-                                           $"FROM Requests WHERE Not RequestStatus = 'Pending' And RequestDepartment = '{loginForm.loggedInUser.Department}'";
-                        }
-                        using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
-                            using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
-                            {
-                                // Fill the DataTable with the result of the query
-                                adapter.Fill(requestsTable);
-                            }
-                        }
-                    }
-                    catch (SqlException ex)
-                    {
-                        MessageBox.Show("A database error occurred: " + ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An unexpected error occurred: " + ex.Message);
-                    }
-                }
-
-                requestsDataGridView.Columns["RequestUserFullName"].Visible = true;
-                requestsDataGridView.Columns["Approve"].Visible = true;
-                requestsDataGridView.Columns["Reject"].Visible = true;
-                requestsDataGridView.Columns["Edit"].Visible = false;
-                requestsDataGridView.Columns["Remove"].Visible = false;
-                requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = false;
-
-            }
-            else
-            {
-                using (SqlConnection conn = Database.GetConnection())
-                {
-                    try
-                    {
-                        conn.Open();
-
-                        // Query to get all requests of the logged-in user
-                        string query = pendingRadioButton.Checked ? "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason " +
-                                       "FROM Requests WHERE RequestUserID = @UserID and RequestStatus = 'Pending'" :
-                                       "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason " +
-                                       "FROM Requests WHERE RequestUserID = @UserID And Not RequestStatus = 'Pending'";
-
-                        using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@UserID", loginForm.loggedInUser.userID);
-
-                            using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
-                            {
-                                // Fill the DataTable with the result of the query
-                                adapter.Fill(requestsTable);
-                            }
-                        }
-                    }
-                    catch (SqlException ex)
-                    {
-                        MessageBox.Show("A database error occurred: " + ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An unexpected error occurred: " + ex.Message);
-                    }
-                }
-
-                requestsDataGridView.Columns["RequestReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                requestsDataGridView.Columns["RequestReason"].Width = 145;
-                requestsDataGridView.Columns["Edit"].Visible = pendingRadioButton.Checked;
-                requestsDataGridView.Columns["Remove"].Visible = pendingRadioButton.Checked;
-            }
-
-            requestsDataGridView.DataSource = requestsTable;
-
-            foreach (DataGridViewRow row in requestsDataGridView.Rows)
-            {
-                // Check if both RequestFromDay and RequestToDay cells have valid values
-                if (row.Cells["RequestFromDay"].Value != null && row.Cells["RequestToDay"].Value != null)
-                {
-                    DateTime beginningDate, endingDate;
-
-                    // Try parsing both dates to ensure they are valid
-                    bool isBeginningDateValid = DateTime.TryParse(row.Cells["RequestFromDay"].Value.ToString(), out beginningDate);
-                    bool isEndingDateValid = DateTime.TryParse(row.Cells["RequestToDay"].Value.ToString(), out endingDate);
-
-                    if (isBeginningDateValid && isEndingDateValid)
-                    {
-                        // Calculate the difference in days
-                        int numberOfDays = (endingDate - beginningDate).Days +1;
-
-                        // Set the calculated value in the NumberOfDays column
-                        row.Cells["NumberOfDays"].Value = numberOfDays;
-                    }
-                    else
-                    {
-                        // Handle invalid date cases (optional message or indication)
-                        row.Cells["NumberOfDays"].Value = "-";
-                    }
+                    LoadRequestsForManagerOrAdmin(requestsTable);
+                    ConfigureDataGridViewForManagerOrAdmin();
                 }
                 else
                 {
-                    // Handle missing dates (optional message or indication)
+                    LoadRequestsForUser(requestsTable);
+                    ConfigureDataGridViewForUser();
+                }
+
+                requestsDataGridView.DataSource = requestsTable;
+                CalculateNumberOfDaysForRequests();
+                ReorderDataGridViewColumns();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void LoadRequestsForManagerOrAdmin(DataTable requestsTable)
+        {
+            string query = BuildQueryForManagerOrAdmin();
+            ExecuteQuery(query, requestsTable);
+        }
+
+        private void LoadRequestsForUser(DataTable requestsTable)
+        {
+            string query = BuildQueryForUser();
+            ExecuteQuery(query, requestsTable, cmd =>
+            {
+                cmd.Parameters.AddWithValue("@UserID", loginForm.loggedInUser.userID);
+            });
+        }
+
+        private string BuildQueryForManagerOrAdmin()
+        {
+            string baseQuery = "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason FROM Requests ";
+            string condition = pendingRadioButton.Checked
+                ? "WHERE RequestStatus = 'Pending'"
+                : "WHERE NOT RequestStatus = 'Pending'";
+
+            if (!hasAdminRole)
+            {
+                condition += $" AND RequestDepartment = '{loginForm.loggedInUser.Department}'";
+            }
+
+            return baseQuery + condition;
+        }
+
+        private string BuildQueryForUser()
+        {
+            return pendingRadioButton.Checked
+                ? "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason " +
+                  "FROM Requests WHERE RequestUserID = @UserID AND RequestStatus = 'Pending'"
+                : "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason " +
+                  "FROM Requests WHERE RequestUserID = @UserID AND NOT RequestStatus = 'Pending'";
+        }
+
+        private void ExecuteQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
+        {
+            using (SqlConnection conn = Database.GetConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    parameterizeCommand?.Invoke(cmd);
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(requestsTable);
+                    }
+                }
+            }
+        }
+
+        private void ConfigureDataGridViewForManagerOrAdmin()
+        {
+            requestsDataGridView.Columns["RequestUserFullName"].Visible = true;
+            requestsDataGridView.Columns["Approve"].Visible = true;
+            requestsDataGridView.Columns["Reject"].Visible = true;
+            requestsDataGridView.Columns["Edit"].Visible = false;
+            requestsDataGridView.Columns["Remove"].Visible = false;
+            requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = false;
+        }
+
+        private void ConfigureDataGridViewForUser()
+        {
+            requestsDataGridView.Columns["RequestReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            requestsDataGridView.Columns["RequestRejectReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+            requestsDataGridView.Columns["RequestReason"].Width = 145;
+            bool isPending = pendingRadioButton.Checked;
+            requestsDataGridView.Columns["Edit"].Visible = isPending;
+            requestsDataGridView.Columns["Remove"].Visible = isPending;
+        }
+
+        private void CalculateNumberOfDaysForRequests()
+        {
+            foreach (DataGridViewRow row in requestsDataGridView.Rows)
+            {
+                if (row.Cells["RequestFromDay"].Value != null && row.Cells["RequestToDay"].Value != null &&
+                    DateTime.TryParse(row.Cells["RequestFromDay"].Value.ToString(), out var beginningDate) &&
+                    DateTime.TryParse(row.Cells["RequestToDay"].Value.ToString(), out var endingDate))
+                {
+                    row.Cells["NumberOfDays"].Value = (endingDate - beginningDate).Days + 1;
+                }
+                else
+                {
                     row.Cells["NumberOfDays"].Value = "-";
                 }
             }
+        }
 
+        private void ReorderDataGridViewColumns()
+        {
             requestsDataGridView.Columns["Edit"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Remove"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
-
             requestsDataGridView.Columns["RequestStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 3;
             requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 3;
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Approve"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
         }
+
         #endregion
 
         #region Buttons
@@ -379,18 +374,17 @@ namespace TDF.Net.Forms
                     {
                         int requestId = Convert.ToInt32(row.Cells["RequestID"].Value);
 
-                        string query = @"
-                    UPDATE Requests 
-                    SET RequestStatus = @RequestStatus, 
-                        RequestRejectReason = @RequestRejectReason, 
-                        RequestCloser = @RequestCloser 
-                    WHERE RequestID = @RequestID";
+                        string query = @" UPDATE Requests 
+                                          SET RequestStatus = @RequestStatus, 
+                                              RequestRejectReason = @RequestRejectReason, 
+                                              RequestCloser = @RequestCloser 
+                                          WHERE RequestID = @RequestID";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.Parameters.AddWithValue("@RequestStatus", newStatus);
                             cmd.Parameters.AddWithValue("@RequestRejectReason", rejectReason);
-                            cmd.Parameters.AddWithValue("@RequestCloser", loginForm.loggedInUser.FullName);
+                            cmd.Parameters.AddWithValue("@RequestCloser", loggedInUser.FullName);
                             cmd.Parameters.AddWithValue("@RequestID", requestId);
 
                             cmd.ExecuteNonQuery();

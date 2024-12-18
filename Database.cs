@@ -11,7 +11,8 @@ namespace TDF.Net
         static Database()
         {
             connectionString = "Server=TDF40\\SQLEXPRESS;Database=Users;Trusted_Connection=True;";
-            //connectionString = "";
+            //connectionString = "Data Source=192.168.1.151,1433;Network Library=DBMSSOCN;Initial Catalog=Users;Trusted_Connection=True;";
+            //connectionString = BuildConnectionString();
         }
 
         public static string BuildConnectionString()

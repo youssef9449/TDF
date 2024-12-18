@@ -19,11 +19,12 @@ namespace TDF.Net
             MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
             Program.loadForm(this);
             formPanel.BackColor = Color.White;
+            hasManagerRole = loggedInUser.Role != null && (string.Equals(loggedInUser.Role, "Manager", StringComparison.OrdinalIgnoreCase) || string.Equals(loggedInUser.Role, "Team Leader", StringComparison.OrdinalIgnoreCase));
+            hasAdminRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
             this.loginForm = loginForm; // Store a reference to the login form
         }
 
-        public static bool hasManagerRole = loggedInUser.Role != null && loggedInUser.Role != "User";
-        public static bool updatedUserData;
+        public static bool hasManagerRole, hasAdminRole, updatedUserData;
         private ContextMenuStrip contextMenu;
         private loginForm loginForm;
 
@@ -161,6 +162,12 @@ namespace TDF.Net
         #endregion
 
         #region Events
+        private void mainForm_Load(object sender, EventArgs e)
+        {
+            updateUserDataControls();
+            //myTeamButton.Visible = !string.Equals(loggedInUser.Role, "User", StringComparison.OrdinalIgnoreCase);
+            controlPanelButton.Visible = hasAdminRole;
+        }
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -170,12 +177,6 @@ namespace TDF.Net
         {
             base.OnPaint(e);
             ControlPaint.DrawBorder(e.Graphics, panel.ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
-        }
-        private void mainForm_Load(object sender, EventArgs e)
-        {
-            updateUserDataControls();
-            //myTeamButton.Visible = !string.Equals(loggedInUser.Role, "User", StringComparison.OrdinalIgnoreCase);
-            usersControlButton.Visible = string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
         }
         private void panelTitleBar_MouseDown(object sender, MouseEventArgs e)
         {
@@ -338,9 +339,8 @@ namespace TDF.Net
             requestsForm.Show(); // Display the form
 
         }
-        private void usersControlButton_Click(object sender, EventArgs e)
+        private void controlPanelButton_Click(object sender, EventArgs e)
         {
-            //UploadPictureForLoggedInUser();
             controlPanelForm controlPanelForm = new controlPanelForm();
             controlPanelForm.ShowDialog();
         }

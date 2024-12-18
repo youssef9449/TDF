@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Windows.Forms;
 using static TDF.Net.loginForm;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.IO;
 
 namespace TDF.Forms
 {
@@ -576,13 +577,37 @@ namespace TDF.Forms
                 openFileDialog.Filter = "Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx;*.xlsb";
                 openFileDialog.Title = "Select Excel File";
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                try
                 {
-                    string filePath = openFileDialog.FileName;
-                    ImportUsersFromExcel(filePath);
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string filePath = openFileDialog.FileName;
+
+                        if (!File.Exists(filePath))
+                        {
+                            MessageBox.Show("The selected file does not exist.", "File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+
+                        try
+                        {
+                            ImportUsersFromExcel(filePath);
+                            loadUserNames();
+                            MessageBox.Show("Import successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show($"An error occurred during the import process:\n{ex.Message}", "Import Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An unexpected error occurred:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
+
         private void resetPasswordButton_Click(object sender, EventArgs e)
         {
             if (usersCheckedListBox.CheckedItems.Count == 0)
