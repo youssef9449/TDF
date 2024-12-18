@@ -1,12 +1,10 @@
 ﻿using Bunifu.UI.WinForms;
-using TDF.Net;
-using TDF.Net.Classes;
 using System;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using TDF.Classes;
+using TDF.Net;
+using TDF.Net.Classes;
 
 namespace TDF.Forms
 {
@@ -150,7 +148,7 @@ namespace TDF.Forms
                 }
 
                 string secondQuery;
-                
+
                 secondQuery = mainForm.hasManagerRole ? "UPDATE Requests SET RequestCloser = @newFullName " +
                     "WHERE RequestCloser = @oldFullUserName" : "UPDATE Requests SET RequestUserFullName = @newFullName " +
                     "WHERE RequestUserFullName = @oldFullUserName";
@@ -174,7 +172,7 @@ namespace TDF.Forms
 
         private void pictureButton_Click(object sender, EventArgs e)
         {
-           
+
         }
         private void updateButton_Click(object sender, EventArgs e)
         {

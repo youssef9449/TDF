@@ -1,6 +1,8 @@
-﻿using System.Data.SqlClient;
-using static TDF.Net.Program;
+﻿using System;
+using System.Data.SqlClient;
+using System.IO;
 using System.Windows.Forms;
+using TDF.Classes;
 
 namespace TDF.Net
 {
@@ -15,9 +17,12 @@ namespace TDF.Net
             //connectionString = BuildConnectionString();
         }
 
+        public static string exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        public static string iniFilePath = Path.Combine(exeDirectory, "config.ini");
+        public static IniFile iniFile = new IniFile(iniFilePath);
+
         public static string BuildConnectionString()
         {
-
             // Check for missing or invalid values in the config file
             string serverIP = iniFile.Read("Database", "ServerIP", "");
             if (string.IsNullOrWhiteSpace(serverIP))

@@ -1,10 +1,10 @@
-﻿using TDF.Net.Classes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using TDF.Classes;
+using TDF.Net.Classes;
 using static TDF.Net.Program;
 
 namespace TDF.Net
@@ -94,7 +94,7 @@ namespace TDF.Net
                 departmentLabel.Visible = false;
                 departmentDropdown.Visible = false;
                 nameTextBox.UseSystemPasswordChar = true;
-               // passPictureBox.Visible = false;
+                // passPictureBox.Visible = false;
                 ClearFormFields();
                 return;
             }
@@ -115,7 +115,7 @@ namespace TDF.Net
                 MessageBox.Show("Username is already taken. Please choose a different username.");
                 return;
             }
-           
+
             User newUser = new User();
             newUser.UserName = username;
             newUser.Salt = Security.generateSalt();

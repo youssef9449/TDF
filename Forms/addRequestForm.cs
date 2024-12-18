@@ -1,8 +1,8 @@
 ﻿using Bunifu.UI.WinForms;
-using TDF.Net.Classes;
 using System;
 using System.Windows.Forms;
 using TDF.Classes;
+using TDF.Net.Classes;
 
 namespace TDF.Net.Forms
 {
@@ -124,7 +124,7 @@ namespace TDF.Net.Forms
             {
 
                 Request Request = dayoffRadioButton.Checked
-                    ? new Request(dayoffRadioButton.Checked ? "Dayoff" : "Permission", reasonTextBox.Text,loginForm.loggedInUser.FullName ,Convert.ToDateTime(fromDayDatePicker.Text), Convert.ToDateTime(toDayDatePicker.Text), loginForm.loggedInUser.userID, loginForm.loggedInUser.Department)
+                    ? new Request(dayoffRadioButton.Checked ? "Dayoff" : "Permission", reasonTextBox.Text, loginForm.loggedInUser.FullName, Convert.ToDateTime(fromDayDatePicker.Text), Convert.ToDateTime(toDayDatePicker.Text), loginForm.loggedInUser.userID, loginForm.loggedInUser.Department)
                     : new Request(dayoffRadioButton.Checked ? "Dayoff" : "Permission", reasonTextBox.Text, loginForm.loggedInUser.FullName, Convert.ToDateTime(fromDayDatePicker.Text), Convert.ToDateTime(fromTimeTextBox.Text), Convert.ToDateTime(toTimeTextBox.Text), loginForm.loggedInUser.userID, loginForm.loggedInUser.Department);
                 Request.add();
             }

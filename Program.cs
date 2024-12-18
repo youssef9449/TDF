@@ -2,7 +2,6 @@
 using Bunifu.UI.WinForms.BunifuButton;
 using System;
 using System.Drawing;
-using System.IO;
 using System.Windows.Forms;
 using TDF.Classes;
 
@@ -32,10 +31,6 @@ namespace TDF.Net
             }
         }
 
-        public static string exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        public static string iniFilePath = Path.Combine(exeDirectory, "config.ini");
-        public static IniFile iniFile = new IniFile(iniFilePath);
-
         public static void loadForm(Form form)
         {
             foreach (Control ctrl in form.Controls)
@@ -64,7 +59,7 @@ namespace TDF.Net
                 {
                     //bpbl.BackColor = ThemeColor.PrimaryColor;
 
-                    bpbl.GradientBottomRight= ThemeColor.PrimaryColor;
+                    bpbl.GradientBottomRight = ThemeColor.PrimaryColor;
                     bpbl.GradientBottomLeft = ThemeColor.LightColor;
                     bpbl.GradientTopRight = ThemeColor.LightColor;
                     bpbl.GradientTopLeft = ThemeColor.PrimaryColor;
@@ -267,7 +262,7 @@ namespace TDF.Net
 
                     dgv.DefaultCellStyle.SelectionBackColor = ThemeColor.LightColor;
                     dgv.ColumnHeadersDefaultCellStyle.BackColor = ThemeColor.PrimaryColor;
-                    
+
                     //dgv.ForeColor = ThemeColor.SecondaryColor;
                     dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
                 }
