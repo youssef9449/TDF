@@ -10,7 +10,8 @@ namespace TDF.Net
 
         static Database()
         {
-            connectionString = BuildConnectionString();
+            connectionString = "Server=TDF40\\SQLEXPRESS;Database=Users;Trusted_Connection=True;";
+            //connectionString = "";
         }
 
         public static string BuildConnectionString()

@@ -18,7 +18,18 @@ namespace TDF.Net
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new loginForm());
+            try
+            {
+                using (var connection = Database.GetConnection())
+                {
+                    connection.Open();
+                }
+                Application.Run(new loginForm());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Connection failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         public static string exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
