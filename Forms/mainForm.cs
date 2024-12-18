@@ -194,17 +194,6 @@ namespace TDF.Net
         {
             closeImg.Image = Properties.Resources.close_nofocus;
         }
-        private void closeImg_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-        private void maxImage_Click(object sender, EventArgs e)
-        {
-            if (WindowState == FormWindowState.Normal)
-                WindowState = FormWindowState.Maximized;
-            else
-                WindowState = FormWindowState.Normal;
-        }
         private void maxImage_MouseEnter(object sender, EventArgs e)
         {
             maxImage.Image = Properties.Resources.max_hover;
@@ -321,7 +310,6 @@ namespace TDF.Net
         {
             circularPictureBox.Cursor = Cursors.Default; // Reset cursor to default
         }
-
         #endregion
 
         #region Buttons
@@ -364,6 +352,5 @@ namespace TDF.Net
             teamForm.ShowDialog();
         }
         #endregion
-
     }
 }
