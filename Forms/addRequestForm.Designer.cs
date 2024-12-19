@@ -357,7 +357,7 @@
             this.submitButton.IdleIconLeftImage = null;
             this.submitButton.IdleIconRightImage = null;
             this.submitButton.IndicateFocus = false;
-            this.submitButton.Location = new System.Drawing.Point(240, 410);
+            this.submitButton.Location = new System.Drawing.Point(263, 410);
             this.submitButton.Name = "submitButton";
             this.submitButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.submitButton.OnDisabledState.BorderRadius = 1;
@@ -463,7 +463,6 @@
             this.toDayDatePicker.Size = new System.Drawing.Size(220, 32);
             this.toDayDatePicker.TabIndex = 17;
             this.toDayDatePicker.ValueChanged += new System.EventHandler(this.toDayDatePicker_ValueChanged);
-            //this.toDayDatePicker.Validated += new System.EventHandler(this.toDayDatePicker_Validated);
             // 
             // panel
             // 
@@ -743,6 +742,7 @@
             this.casualRadioButton.Size = new System.Drawing.Size(21, 21);
             this.casualRadioButton.TabIndex = 36;
             this.casualRadioButton.Text = null;
+            this.casualRadioButton.CheckedChanged2 += new System.EventHandler<Bunifu.UI.WinForms.BunifuRadioButton.CheckedChangedEventArgs>(this.casualRadioButton_CheckedChanged);
             // 
             // annualRadioButton
             // 

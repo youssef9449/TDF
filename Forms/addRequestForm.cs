@@ -19,11 +19,12 @@ namespace TDF.Net.Forms
 
         }
         public static bool requestAddedOrUpdated;
-
+            
         public addRequestForm(Request request)
         {
             InitializeComponent();
             RequestToEdit = request;
+
 
             if (RequestToEdit != null)
             {
@@ -33,7 +34,7 @@ namespace TDF.Net.Forms
             Program.loadForm(this);
         }
 
-        int numberOfDaysRequested, usedBalance, availableBalance = 0;
+        int numberOfDaysRequested, availableAnnualBalance, availableCasualBalance = 0;
 
         #region Methods
         private void PopulateFieldsWithRequestData()
@@ -46,9 +47,9 @@ namespace TDF.Net.Forms
                 fromTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestBeginningTime.Value.TimeOfDay.ToString(@"hh\:mm");
                 toTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestEndingTime.Value.TimeOfDay.ToString(@"hh\:mm");
         }
-        private int getAnnualBalance(int userID)
+        private int GetLeaveDays(string leaveType, int userID)
         {
-            int annualLeave = 0;
+            int days = 0;
 
             try
             {
@@ -56,43 +57,7 @@ namespace TDF.Net.Forms
                 {
                     conn.Open();
 
-                    string query = "SELECT Annual FROM AnnualLeave WHERE UserID = @UserID";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@UserID", userID);
-
-                        object result = cmd.ExecuteScalar();
-
-                        if (result != null && int.TryParse(result.ToString(), out int leaveValue))
-                        {
-                            annualLeave = leaveValue;
-                        }
-                    }
-                }
-            }
-            catch (SqlException ex)
-            {
-                MessageBox.Show("A database error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            return annualLeave;
-        }
-        public int getApprovedDays(int userID)
-        {
-            int totalApprovedDays = 0;
-
-            try
-            {
-                using (SqlConnection conn = Database.GetConnection())
-                {
-                    conn.Open();
-
-                    string query = "SELECT SUM(NumberOfDays) AS TotalApprovedDays FROM Requests WHERE RequestStatus = 'Approved' AND RequestUserID = @UserID";
+                    string query = $"SELECT {leaveType} FROM AnnualLeave WHERE UserID = @UserID";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -102,7 +67,7 @@ namespace TDF.Net.Forms
 
                         if (result != null && int.TryParse(result.ToString(), out int sum))
                         {
-                            totalApprovedDays = sum;
+                            days = sum;
                         }
                     }
                 }
@@ -116,17 +81,30 @@ namespace TDF.Net.Forms
                 MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            return totalApprovedDays;
+            return days;
         }
         private void updateLeaveBalance()
         {
-            usedBalance = getApprovedDays(loggedInUser.userID);
-            availableBalance = getAnnualBalance(loggedInUser.userID) - usedBalance;
-            availableBalanceLabel.Text = availableBalance.ToString();
+            if (annualRadioButton.Checked)
+            {
+                //usedAnnual = GetLeaveDays("Annual Used",loggedInUser.userID);
+                availableAnnualBalance = GetLeaveDays("AnnualBalance", loggedInUser.userID);
+                availableBalanceLabel.Text = availableAnnualBalance.ToString();
 
-            numberOfDaysRequested = (Convert.ToDateTime(toDayDatePicker.Text) - Convert.ToDateTime(toDayDatePicker.Text)).Days + 1;
-            daysRequestedLabel.Text = numberOfDaysRequested.ToString();
-            remainingBalanceLabel.Text = (availableBalance - numberOfDaysRequested).ToString();
+                numberOfDaysRequested = (Convert.ToDateTime(toDayDatePicker.Text) - Convert.ToDateTime(toDayDatePicker.Text)).Days + 1;
+                daysRequestedLabel.Text = numberOfDaysRequested.ToString();
+                remainingBalanceLabel.Text = (availableAnnualBalance - numberOfDaysRequested).ToString();
+            }
+            else
+            {
+                //usedCasual = getApprovedCasualDays(loggedInUser.userID);
+                availableCasualBalance = GetLeaveDays("CasualBalance", loggedInUser.userID);
+                availableBalanceLabel.Text = availableCasualBalance.ToString();
+
+                numberOfDaysRequested = (Convert.ToDateTime(toDayDatePicker.Text) - Convert.ToDateTime(toDayDatePicker.Text)).Days + 1;
+                daysRequestedLabel.Text = numberOfDaysRequested.ToString();
+                remainingBalanceLabel.Text = (availableCasualBalance - numberOfDaysRequested).ToString();
+            }
         }
 
         // Helper methods for setting visibility
@@ -191,6 +169,11 @@ namespace TDF.Net.Forms
         }
 
         private void toDayDatePicker_Validated(object sender, EventArgs e)
+        {
+            updateLeaveBalance();
+        }
+
+        private void casualRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
             updateLeaveBalance();
         }
