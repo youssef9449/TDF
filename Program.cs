@@ -216,6 +216,11 @@ namespace TDF.Net
                     BunifuLabel label = (BunifuLabel)ctrl;
                     label.ForeColor = ThemeColor.SecondaryColor;
                 }
+                if (ctrl.GetType() == typeof(BunifuDatePicker))
+                {
+                    BunifuDatePicker DatePicker = (BunifuDatePicker)ctrl;
+                    DatePicker.BorderColor = ThemeColor.SecondaryColor;
+                }
                 if (ctrl.GetType() == typeof(BunifuCheckBox))
                 {
                     BunifuCheckBox chkbox = (BunifuCheckBox)ctrl;

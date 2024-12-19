@@ -25,8 +25,11 @@ namespace TDF.Net.Forms
             InitializeComponent();
             RequestToEdit = request;
 
-            // Populate the form fields with the request data
-            PopulateFieldsWithRequestData();
+            if (RequestToEdit != null)
+            {
+                PopulateFieldsWithRequestData();
+            }
+
             Program.loadForm(this);
         }
 
@@ -35,8 +38,6 @@ namespace TDF.Net.Forms
         #region Methods
         private void PopulateFieldsWithRequestData()
         {
-            if (RequestToEdit != null)
-            {
                 dayoffRadioButton.Checked = RequestToEdit.RequestType == "Dayoff" ? true : false;
                 exitRadioButton.Checked = dayoffRadioButton.Checked ? false : true;
                 reasonTextBox.Text = RequestToEdit.RequestReason;
@@ -44,7 +45,6 @@ namespace TDF.Net.Forms
                 toDayDatePicker.Value = (DateTime)(DateTime.TryParse(RequestToEdit.RequestToDay.ToString(), out DateTime to) ? RequestToEdit.RequestToDay : null);
                 fromTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestBeginningTime.Value.TimeOfDay.ToString(@"hh\:mm");
                 toTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestEndingTime.Value.TimeOfDay.ToString(@"hh\:mm");
-            }
         }
         private int getAnnualBalance(int userID)
         {
@@ -129,6 +129,20 @@ namespace TDF.Net.Forms
             remainingBalanceLabel.Text = (availableBalance - numberOfDaysRequested).ToString();
         }
 
+        // Helper methods for setting visibility
+        void SetTimeControlsVisibility(bool isVisible)
+        {
+            fromTimeTextBox.Visible = isVisible;
+            toTimeTextBox.Visible = isVisible;
+            fromLabel.Visible = isVisible;
+            toLabel.Visible = isVisible;
+        }
+
+        void SetDateControlsVisibility(bool isVisible)
+        {
+            toDateLabel.Visible = isVisible;
+            toDayDatePicker.Visible = isVisible;
+        }
         #endregion
 
         #region Events
@@ -154,45 +168,50 @@ namespace TDF.Net.Forms
         {
             updateLeaveBalance();
         }
-
         private void fromDayDatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            updateLeaveBalance();
+        }
+        private void addRequestForm_Load(object sender, EventArgs e)
+        {
+            externalAssignmentRadioButton.Checked = false;
+            casualRadioButton.Checked = false;
+            dayoffRadioButton.Checked = true;
+            annualRadioButton.Checked = true;
+        }
+
+        private void workFromHomeRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            if (workFromHomeRadioButton.Checked)
+            {
+                // Hide time-related controls and show date-related controls
+                SetTimeControlsVisibility(false);
+                SetDateControlsVisibility(true);
+            }
+        }
+
+        private void toDayDatePicker_Validated(object sender, EventArgs e)
         {
             updateLeaveBalance();
         }
 
         private void dayoffRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
-            if (dayoffRadioButton.Checked || workFromHomeRadioButton.Checked)
+            if (dayoffRadioButton.Checked)
             {
                 // Hide time-related controls and show date-related controls
                 SetTimeControlsVisibility(false);
                 SetDateControlsVisibility(true);
+                updateLeaveBalance();
+                leaveGroupBox.Visible = true;
 
-                if (dayoffRadioButton.Checked)
-                {
-                    updateLeaveBalance();
-                }
             }
             else
             {
                 // Show time-related controls and hide date-related controls
                 SetTimeControlsVisibility(true);
                 SetDateControlsVisibility(false);
-            }
-
-            // Helper methods for setting visibility
-            void SetTimeControlsVisibility(bool isVisible)
-            {
-                fromTimeTextBox.Visible = isVisible;
-                toTimeTextBox.Visible = isVisible;
-                fromLabel.Visible = isVisible;
-                toLabel.Visible = isVisible;
-            }
-
-            void SetDateControlsVisibility(bool isVisible)
-            {
-                toDateLabel.Visible = isVisible;
-                toDayDatePicker.Visible = isVisible;
+                leaveGroupBox.Visible = false;
             }
         }
         #endregion
