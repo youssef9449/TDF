@@ -91,7 +91,7 @@ namespace TDF.Net.Forms
                 availableAnnualBalance = GetLeaveDays("AnnualBalance", loggedInUser.userID);
                 availableBalanceLabel.Text = availableAnnualBalance.ToString();
 
-                numberOfDaysRequested = (Convert.ToDateTime(toDayDatePicker.Text) - Convert.ToDateTime(toDayDatePicker.Text)).Days + 1;
+                numberOfDaysRequested = (Convert.ToDateTime(toDayDatePicker.Text) - Convert.ToDateTime(fromDayDatePicker.Text)).Days + 1;
                 daysRequestedLabel.Text = numberOfDaysRequested.ToString();
                 remainingBalanceLabel.Text = (availableAnnualBalance - numberOfDaysRequested).ToString();
             }
@@ -101,7 +101,7 @@ namespace TDF.Net.Forms
                 availableCasualBalance = GetLeaveDays("CasualBalance", loggedInUser.userID);
                 availableBalanceLabel.Text = availableCasualBalance.ToString();
 
-                numberOfDaysRequested = (Convert.ToDateTime(toDayDatePicker.Text) - Convert.ToDateTime(toDayDatePicker.Text)).Days + 1;
+                numberOfDaysRequested = (Convert.ToDateTime(toDayDatePicker.Text) - Convert.ToDateTime(fromDayDatePicker.Text)).Days + 1;
                 daysRequestedLabel.Text = numberOfDaysRequested.ToString();
                 remainingBalanceLabel.Text = (availableCasualBalance - numberOfDaysRequested).ToString();
             }
@@ -156,6 +156,8 @@ namespace TDF.Net.Forms
             casualRadioButton.Checked = false;
             dayoffRadioButton.Checked = true;
             annualRadioButton.Checked = true;
+            fromDayDatePicker.Text = DateTime.Today.ToString();
+            toDayDatePicker.Text = DateTime.Today.ToString();
         }
 
         private void workFromHomeRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
