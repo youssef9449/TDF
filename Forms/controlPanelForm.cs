@@ -563,6 +563,15 @@ namespace TDF.Forms
 
                     cmd.ExecuteNonQuery();
                 }
+                string updateLeaves = "UPDATE AnnualLeave SET FullName = @newName WHERE FullName = @oldName";
+
+                using (SqlCommand cmd = new SqlCommand(updateLeaves, conn))
+                {
+                    cmd.Parameters.AddWithValue("@newName", newName);
+                    cmd.Parameters.AddWithValue("@oldName", oldName);
+
+                    cmd.ExecuteNonQuery();
+                }
 
                 MessageBox.Show($"Selected user has been renamed.");
             }
@@ -606,7 +615,6 @@ namespace TDF.Forms
                 }
             }
         }
-
         private void resetPasswordButton_Click(object sender, EventArgs e)
         {
             if (usersCheckedListBox.CheckedItems.Count == 0)
@@ -658,5 +666,93 @@ namespace TDF.Forms
             }
         }
         #endregion
+
+        private void leaveButton_Click(object sender, EventArgs e)
+        {
+            // Check if at least one user is selected
+            if (usersCheckedListBox.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("Please select user(s) to update.");
+                return;
+            }
+
+            // Initialize variables for leave values
+            int? annual = null, casualLeave = null;
+
+            // Validate and parse Annual leave value if it's valid
+            if (!string.IsNullOrWhiteSpace(annualTextBox.Text) && int.TryParse(annualTextBox.Text, out int parsedAnnual) && parsedAnnual >= 0)
+            {
+                annual = parsedAnnual;
+            }
+            else if (!string.IsNullOrWhiteSpace(annualTextBox.Text))
+            {
+                MessageBox.Show("Please enter a valid non-negative number for Annual leave.");
+                return;
+            }
+
+            // Validate and parse Casual leave value if it's valid
+            if (!string.IsNullOrWhiteSpace(casualTextBox.Text) && int.TryParse(casualTextBox.Text, out int parsedCasual) && parsedCasual >= 0)
+            {
+                casualLeave = parsedCasual;
+            }
+            else if (!string.IsNullOrWhiteSpace(casualTextBox.Text))
+            {
+                MessageBox.Show("Please enter a valid non-negative number for Casual leave.");
+                return;
+            }
+
+            // If no valid data, show a message
+            if (annual == null && casualLeave == null)
+            {
+                MessageBox.Show("Please enter at least one valid leave value.");
+                return;
+            }
+
+            // Proceed with updating the database
+            using (SqlConnection conn = Database.GetConnection())
+            {
+                conn.Open();
+
+                foreach (object selectedItem in usersCheckedListBox.CheckedItems)
+                {
+                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+
+                    string query = "UPDATE AnnualLeave SET ";
+
+                    // Add the annual update part if valid
+                    if (annual.HasValue)
+                    {
+                        query += "Annual = @Annual ";
+                    }
+
+                    // Add the casual leave update part if valid
+                    if (casualLeave.HasValue)
+                    {
+                        if (annual.HasValue) query += ", "; // Add a comma if both fields are being updated
+                        query += "CasualLeave = @CasualLeave ";
+                    }
+
+                    query += "WHERE FullName = @FullName";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        // Add the parameters only if the respective values are valid
+                        if (annual.HasValue)
+                        {
+                            cmd.Parameters.AddWithValue("@Annual", annual.Value);
+                        }
+                        if (casualLeave.HasValue)
+                        {
+                            cmd.Parameters.AddWithValue("@CasualLeave", casualLeave.Value);
+                        }
+
+                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                MessageBox.Show("Updated leave balance successfully.");
+            }
+        }
     }
 }

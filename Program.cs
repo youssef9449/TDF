@@ -211,11 +211,11 @@ namespace TDF.Net
 
                     btn.Refresh();
                 }
-                if (ctrl.GetType() == typeof(BunifuLabel))
+              /* if (ctrl.GetType() == typeof(BunifuLabel))
                 {
                     BunifuLabel label = (BunifuLabel)ctrl;
                     label.ForeColor = ThemeColor.SecondaryColor;
-                }
+                }*/
                 if (ctrl.GetType() == typeof(BunifuDatePicker))
                 {
                     BunifuDatePicker DatePicker = (BunifuDatePicker)ctrl;

@@ -1,6 +1,7 @@
 ﻿using Bunifu.UI.WinForms;
 using System;
 using System.Data.SqlClient;
+using System.Diagnostics.Eventing.Reader;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Net.Classes;
@@ -15,37 +16,69 @@ namespace TDF.Net.Forms
         public addRequestForm()
         {
             InitializeComponent();
-            Program.loadForm(this);
-
+            externalAssignmentRadioButton.Checked = false;
+            casualRadioButton.Checked = false;
+            dayoffRadioButton.Checked = true;
+            annualRadioButton.Checked = true;
         }
-        public static bool requestAddedOrUpdated;
-            
+
         public addRequestForm(Request request)
         {
             InitializeComponent();
+
             RequestToEdit = request;
 
-
-            if (RequestToEdit != null)
-            {
-                PopulateFieldsWithRequestData();
-            }
-
-            Program.loadForm(this);
+            PopulateFieldsWithRequestData();
         }
 
         int numberOfDaysRequested, availableAnnualBalance, availableCasualBalance = 0;
+        public static bool requestAddedOrUpdated;
 
         #region Methods
         private void PopulateFieldsWithRequestData()
         {
-                dayoffRadioButton.Checked = RequestToEdit.RequestType == "Dayoff" ? true : false;
-                exitRadioButton.Checked = dayoffRadioButton.Checked ? false : true;
-                reasonTextBox.Text = RequestToEdit.RequestReason;
-                fromDayDatePicker.Value = RequestToEdit.RequestFromDay;
-                toDayDatePicker.Value = (DateTime)(DateTime.TryParse(RequestToEdit.RequestToDay.ToString(), out DateTime to) ? RequestToEdit.RequestToDay : null);
-                fromTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestBeginningTime.Value.TimeOfDay.ToString(@"hh\:mm");
-                toTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestEndingTime.Value.TimeOfDay.ToString(@"hh\:mm");
+            switch (RequestToEdit.RequestType)
+            {
+                case "Work From Home":
+                    workFromHomeRadioButton.Checked = true;
+                    externalAssignmentRadioButton.Checked = false;
+                    dayoffRadioButton.Checked = false;
+                    exitRadioButton.Checked = false;
+                    break;
+                case "Permission":
+                    exitRadioButton.Checked = true;
+                    workFromHomeRadioButton.Checked = false;
+                    externalAssignmentRadioButton.Checked = false;
+                    dayoffRadioButton.Checked = false;
+                    break;
+                case "External Assignment":
+                    externalAssignmentRadioButton.Checked = true;
+                    exitRadioButton.Checked = false;
+                    workFromHomeRadioButton.Checked = false;
+                    dayoffRadioButton.Checked = false;
+                    break;
+                default:
+                    dayoffRadioButton.Checked = true;
+                    externalAssignmentRadioButton.Checked = false;
+                    exitRadioButton.Checked = false;
+                    workFromHomeRadioButton.Checked = false;
+
+                    if (RequestToEdit.RequestType == "Annual")
+                    {
+                        annualRadioButton.Checked = true;
+                    }
+                    else
+                    {
+                        casualRadioButton.Checked = true;
+                    }
+                    break;
+            }
+
+            reasonTextBox.Text = RequestToEdit.RequestReason;
+            fromDayDatePicker.Value = RequestToEdit.RequestFromDay;
+            toDayDatePicker.Value = (DateTime)(DateTime.TryParse(RequestToEdit.RequestToDay.ToString(), out DateTime to) ? RequestToEdit.RequestToDay : null);
+            fromTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestBeginningTime.Value.TimeOfDay.ToString(@"hh\:mm");
+            toTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestEndingTime.Value.TimeOfDay.ToString(@"hh\:mm");
         }
         private int GetLeaveDays(string leaveType, int userID)
         {
@@ -85,29 +118,44 @@ namespace TDF.Net.Forms
         }
         private void updateLeaveBalance()
         {
-            if (annualRadioButton.Checked)
-            {
-                //usedAnnual = GetLeaveDays("Annual Used",loggedInUser.userID);
-                availableAnnualBalance = GetLeaveDays("AnnualBalance", loggedInUser.userID);
-                availableBalanceLabel.Text = availableAnnualBalance.ToString();
+            DateTime toDate = Convert.ToDateTime(toDayDatePicker.Value).Date;
+            DateTime fromDate = Convert.ToDateTime(fromDayDatePicker.Value).Date;
 
-                numberOfDaysRequested = (Convert.ToDateTime(toDayDatePicker.Text) - Convert.ToDateTime(fromDayDatePicker.Text)).Days + 1;
-                daysRequestedLabel.Text = numberOfDaysRequested.ToString();
-                remainingBalanceLabel.Text = (availableAnnualBalance - numberOfDaysRequested).ToString();
+
+            if (toDate < fromDate)
+            {
+                daysRequestedLabel.Text = "------";
+                remainingBalanceLabel.Text = "------";
             }
             else
             {
-                //usedCasual = getApprovedCasualDays(loggedInUser.userID);
-                availableCasualBalance = GetLeaveDays("CasualBalance", loggedInUser.userID);
-                availableBalanceLabel.Text = availableCasualBalance.ToString();
+                if (dayoffRadioButton.Checked)
+                {
+                    if (annualRadioButton.Checked)
+                    {
+                        availableAnnualBalance = GetLeaveDays("AnnualBalance", loggedInUser.userID);
+                        availableBalanceLabel.Text = availableAnnualBalance.ToString();
 
-                numberOfDaysRequested = (Convert.ToDateTime(toDayDatePicker.Text) - Convert.ToDateTime(fromDayDatePicker.Text)).Days + 1;
-                daysRequestedLabel.Text = numberOfDaysRequested.ToString();
-                remainingBalanceLabel.Text = (availableCasualBalance - numberOfDaysRequested).ToString();
+                        numberOfDaysRequested = (toDate - fromDate).Days + 1;
+                        daysRequestedLabel.Text = numberOfDaysRequested.ToString();
+                        remainingBalanceLabel.Text = (availableAnnualBalance - numberOfDaysRequested).ToString();
+                    }
+                    else
+                    {
+                        availableCasualBalance = GetLeaveDays("CasualBalance", loggedInUser.userID);
+                        availableBalanceLabel.Text = availableCasualBalance.ToString();
+
+                        numberOfDaysRequested = (toDate - fromDate).Days + 1;
+                        daysRequestedLabel.Text = numberOfDaysRequested.ToString();
+                        remainingBalanceLabel.Text = (availableCasualBalance - numberOfDaysRequested).ToString();
+                    }
+                }
+                else
+                {
+                    numberOfDaysRequested = (toDate - fromDate).Days + 1;
+                }
             }
         }
-
-        // Helper methods for setting visibility
         void SetTimeControlsVisibility(bool isVisible)
         {
             fromTimeTextBox.Visible = isVisible;
@@ -115,15 +163,115 @@ namespace TDF.Net.Forms
             fromLabel.Visible = isVisible;
             toLabel.Visible = isVisible;
         }
-
         void SetDateControlsVisibility(bool isVisible)
         {
             toDateLabel.Visible = isVisible;
             toDayDatePicker.Visible = isVisible;
         }
+        void SetBalanceControlsVisibility(bool isVisible)
+        {
+            bunifuLabel3.Visible = isVisible;
+            bunifuLabel4.Visible = isVisible;
+            bunifuLabel5.Visible = isVisible;
+            availableBalanceLabel.Visible = isVisible;
+            daysRequestedLabel.Visible = isVisible;
+            remainingBalanceLabel.Visible = isVisible;
+        }
+        private bool ValidateTimeInputs(string fromText, string toText, out DateTime from, out DateTime to)
+        {
+            from = default;
+            to = default;
+
+            if (!DateTime.TryParse(fromText, out from))
+            {
+                MessageBox.Show("Beginning time isn't correct.");
+                fromTimeTextBox.Focus();
+                return false;
+            }
+
+            if (!DateTime.TryParse(toText, out to))
+            {
+                MessageBox.Show("Ending time isn't correct.");
+                toTimeTextBox.Focus();
+                return false;
+            }
+
+            return true;
+        }
+        private bool ValidateDayInputs(string fromText, string toText, out DateTime fromDay, out DateTime toDay)
+        {
+            fromDay = default;
+            toDay = default;
+
+            if (!DateTime.TryParse(fromText, out fromDay))
+            {
+                MessageBox.Show("Invalid selected beginning day.");
+                fromDayDatePicker.Focus();
+                return false;
+            }
+
+            if (!DateTime.TryParse(toText, out toDay))
+            {
+                MessageBox.Show("Invalid selected end day.");
+                toDayDatePicker.Focus();
+                return false;
+            }
+
+            return true;
+        }
+        private void AddNewRequest(string requestType)
+        {
+            DateTime? fromTime = (requestType == "Permission" || requestType == "External Assignment")
+                ? Convert.ToDateTime(fromTimeTextBox.Text)
+                : (DateTime?)null;
+
+            DateTime? toTime = (requestType == "Permission" || requestType == "External Assignment")
+                ? Convert.ToDateTime(toTimeTextBox.Text)
+                : (DateTime?)null;
+
+            numberOfDaysRequested = (requestType == "Permission" || requestType == "External Assignment") ? 0 : numberOfDaysRequested;
+
+            Request newRequest = new Request(
+                requestType,
+                reasonTextBox.Text,
+                loggedInUser.FullName,
+                fromDayDatePicker.Value,
+                toDayDatePicker.Value,
+                loggedInUser.userID,
+                loggedInUser.Department,
+                numberOfDaysRequested,
+                fromTime,
+                toTime
+            );
+
+            newRequest.add();
+        }
+        private void UpdateExistingRequest(string requestType)
+        {
+            RequestToEdit.RequestType = requestType;
+            RequestToEdit.RequestReason = reasonTextBox.Text;
+            RequestToEdit.RequestFromDay = fromDayDatePicker.Value;
+            RequestToEdit.RequestToDay = dayoffRadioButton.Checked || workFromHomeRadioButton.Checked ? toDayDatePicker.Value : (DateTime?)null;
+            RequestToEdit.RequestBeginningTime = requestType == "Permission" || requestType == "External Assignment"
+                ? Convert.ToDateTime(fromTimeTextBox.Text)
+                : (DateTime?)null;
+            RequestToEdit.RequestEndingTime = requestType == "Permission" || requestType == "External Assignment"
+                ? Convert.ToDateTime(toTimeTextBox.Text)
+                : (DateTime?)null;
+            RequestToEdit.RequestNumberOfDays = requestType == "Permission" || requestType == "External Assignment" ? 0 : (Convert.ToDateTime(toDayDatePicker.Value).Date - Convert.ToDateTime(fromDayDatePicker.Value).Date).Days + 1;
+            RequestToEdit.update();
+        }
         #endregion
 
         #region Events
+        private void addRequestForm_Load(object sender, EventArgs e)
+        {
+            Program.loadForm(this);
+
+            availableBalanceLabel.ForeColor = ThemeColor.SecondaryColor;
+            daysRequestedLabel.ForeColor = ThemeColor.SecondaryColor;
+            remainingBalanceLabel.ForeColor = ThemeColor.SecondaryColor;
+        }
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left && e.Clicks == 1)
@@ -142,44 +290,6 @@ namespace TDF.Net.Forms
             base.OnPaint(e);
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
         }
-        private void toDayDatePicker_ValueChanged(object sender, EventArgs e)
-        {
-            updateLeaveBalance();
-        }
-        private void fromDayDatePicker_ValueChanged(object sender, EventArgs e)
-        {
-            updateLeaveBalance();
-        }
-        private void addRequestForm_Load(object sender, EventArgs e)
-        {
-            externalAssignmentRadioButton.Checked = false;
-            casualRadioButton.Checked = false;
-            dayoffRadioButton.Checked = true;
-            annualRadioButton.Checked = true;
-            fromDayDatePicker.Text = DateTime.Today.ToString();
-            toDayDatePicker.Text = DateTime.Today.ToString();
-        }
-
-        private void workFromHomeRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
-        {
-            if (workFromHomeRadioButton.Checked)
-            {
-                // Hide time-related controls and show date-related controls
-                SetTimeControlsVisibility(false);
-                SetDateControlsVisibility(true);
-            }
-        }
-
-        private void toDayDatePicker_Validated(object sender, EventArgs e)
-        {
-            updateLeaveBalance();
-        }
-
-        private void casualRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
-        {
-            updateLeaveBalance();
-        }
-
         private void dayoffRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
             if (dayoffRadioButton.Checked)
@@ -187,92 +297,117 @@ namespace TDF.Net.Forms
                 // Hide time-related controls and show date-related controls
                 SetTimeControlsVisibility(false);
                 SetDateControlsVisibility(true);
+                SetBalanceControlsVisibility(true);
                 updateLeaveBalance();
                 leaveGroupBox.Visible = true;
 
             }
-            else
+        }
+        private void exitRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            if (exitRadioButton.Checked)
             {
                 // Show time-related controls and hide date-related controls
                 SetTimeControlsVisibility(true);
                 SetDateControlsVisibility(false);
+                SetBalanceControlsVisibility(false);
                 leaveGroupBox.Visible = false;
             }
+        }
+        private void workFromHomeRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            if (workFromHomeRadioButton.Checked)
+            {
+                // Hide time-related controls and show date-related controls
+                SetTimeControlsVisibility(false);
+                SetDateControlsVisibility(true);
+                SetBalanceControlsVisibility(false);
+                leaveGroupBox.Visible = false;
+            }
+        }
+        private void externalAssignmentRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            if (externalAssignmentRadioButton.Checked)
+            {
+                // Show time-related controls and hide date-related controls
+                SetTimeControlsVisibility(true);
+                SetDateControlsVisibility(false);
+                SetBalanceControlsVisibility(false);
+                leaveGroupBox.Visible = false;
+            }
+        }
+        private void annualRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            updateLeaveBalance();
+
+        }
+        private void casualRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            updateLeaveBalance();
+        }
+        private void toDayDatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            updateLeaveBalance();
+        }
+        private void fromDayDatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            updateLeaveBalance();
+
         }
         #endregion
 
         private void submitButton_Click(object sender, EventArgs e)
         {
+            // Validate inputs for time-based requests
+
             if (exitRadioButton.Checked)
             {
-                if (!DateTime.TryParse(fromTimeTextBox.Text, out DateTime from))
-                {
-                    MessageBox.Show("Beginning time isn't correct");
-                    fromTimeTextBox.Focus();
+                if (!ValidateTimeInputs(fromTimeTextBox.Text, toTimeTextBox.Text, out DateTime from, out DateTime to))
                     return;
-                }
-
-                if (!DateTime.TryParse(toTimeTextBox.Text, out DateTime to))
-                {
-                    MessageBox.Show("Ending time isn't correct");
-                    toTimeTextBox.Focus();
-                    return;
-                }
 
                 if (from >= to)
                 {
-                    MessageBox.Show("Beginning time can't be equal to or earlier than the ending time");
+                    MessageBox.Show("Ending time can't be earlier than or equal to the beginning time.");
                     return;
                 }
             }
+
+            // Validate inputs for day-based requests
+
             else
             {
-
-                if (!DateTime.TryParse(fromDayDatePicker.Text, out DateTime fromDay))
-                {
-                    MessageBox.Show("Invalid selected Beginning Day");
-                    fromDayDatePicker.Focus();
+                if (!ValidateDayInputs(fromDayDatePicker.Text, toDayDatePicker.Text, out DateTime fromDay, out DateTime toDay))
                     return;
-                }
-
-                if (!DateTime.TryParse(toDayDatePicker.Text, out DateTime toDay))
-                {
-                    MessageBox.Show("Invalid selected end Day");
-                    toDayDatePicker.Focus();
-                    return;
-                }
 
                 if (fromDay > toDay)
                 {
-                    MessageBox.Show("Beginning date can't be earlier than the ending date");
+                    MessageBox.Show("Ending date can't be earlier than the beginning date.");
                     return;
                 }
 
                 numberOfDaysRequested = (toDay - fromDay).Days + 1;
             }
 
-            if (RequestToEdit != null)
-            {
-                // Update existing Request
-                RequestToEdit.RequestType = dayoffRadioButton.Checked ? "Dayoff" : "Permission";
-                RequestToEdit.RequestReason = reasonTextBox.Text;
-                RequestToEdit.RequestFromDay = fromDayDatePicker.Value;
-                RequestToEdit.RequestToDay = dayoffRadioButton.Checked ? Convert.ToDateTime(toDayDatePicker.Text) : (DateTime?)null;
-                RequestToEdit.RequestBeginningTime = dayoffRadioButton.Checked ? (DateTime?)null : Convert.ToDateTime(fromTimeTextBox.Text);
-                RequestToEdit.RequestEndingTime = dayoffRadioButton.Checked ? (DateTime?)null : Convert.ToDateTime(toTimeTextBox.Text);
+            // Determine request type
+            string requestType = exitRadioButton.Checked
+                ? "Permission"
+                : workFromHomeRadioButton.Checked
+                ? "Work From Home"
+                : dayoffRadioButton.Checked
+                ? (annualRadioButton.Checked ? "Annual" : "Casual")
+                : "External Assignment";
 
-                // Call a method to update the Request in the database
-                RequestToEdit.update();
+
+
+            // Create or update request
+            if (RequestToEdit == null)
+            {
+                AddNewRequest(requestType);
             }
             else
             {
-
-                Request Request = dayoffRadioButton.Checked
-                    ? new Request(dayoffRadioButton.Checked ? "Dayoff" : "Permission", reasonTextBox.Text, loginForm.loggedInUser.FullName, Convert.ToDateTime(fromDayDatePicker.Text), Convert.ToDateTime(toDayDatePicker.Text), loginForm.loggedInUser.userID, loginForm.loggedInUser.Department, numberOfDaysRequested)
-                    : new Request(dayoffRadioButton.Checked ? "Dayoff" : "Permission", reasonTextBox.Text, loginForm.loggedInUser.FullName, Convert.ToDateTime(fromDayDatePicker.Text), Convert.ToDateTime(fromTimeTextBox.Text), Convert.ToDateTime(toTimeTextBox.Text), loginForm.loggedInUser.userID, loginForm.loggedInUser.Department);
-                Request.add();
+                UpdateExistingRequest(requestType);
             }
         }
-
     }
 }

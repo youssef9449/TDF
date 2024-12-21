@@ -68,7 +68,7 @@
             this.passwordLabel.AutoEllipsis = false;
             this.passwordLabel.CursorType = null;
             this.passwordLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.passwordLabel.Location = new System.Drawing.Point(7, 108);
+            this.passwordLabel.Location = new System.Drawing.Point(21, 109);
             this.passwordLabel.Name = "passwordLabel";
             this.passwordLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.passwordLabel.Size = new System.Drawing.Size(65, 20);
@@ -83,7 +83,7 @@
             this.nameLabel.AutoEllipsis = false;
             this.nameLabel.CursorType = null;
             this.nameLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.nameLabel.Location = new System.Drawing.Point(5, 155);
+            this.nameLabel.Location = new System.Drawing.Point(19, 156);
             this.nameLabel.Name = "nameLabel";
             this.nameLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.nameLabel.Size = new System.Drawing.Size(70, 20);
@@ -99,7 +99,7 @@
             this.bunifuLabel1.AutoEllipsis = false;
             this.bunifuLabel1.CursorType = null;
             this.bunifuLabel1.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel1.Location = new System.Drawing.Point(5, 61);
+            this.bunifuLabel1.Location = new System.Drawing.Point(19, 62);
             this.bunifuLabel1.Name = "bunifuLabel1";
             this.bunifuLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel1.Size = new System.Drawing.Size(69, 20);
@@ -159,7 +159,7 @@
             this.departmentLabel.AutoEllipsis = false;
             this.departmentLabel.CursorType = null;
             this.departmentLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.departmentLabel.Location = new System.Drawing.Point(2, 202);
+            this.departmentLabel.Location = new System.Drawing.Point(16, 203);
             this.departmentLabel.Name = "departmentLabel";
             this.departmentLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.departmentLabel.Size = new System.Drawing.Size(83, 20);
@@ -294,7 +294,7 @@
             this.updateButton.IdleIconLeftImage = null;
             this.updateButton.IdleIconRightImage = null;
             this.updateButton.IndicateFocus = false;
-            this.updateButton.Location = new System.Drawing.Point(105, 359);
+            this.updateButton.Location = new System.Drawing.Point(119, 359);
             this.updateButton.Name = "updateButton";
             this.updateButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.updateButton.OnDisabledState.BorderRadius = 1;
@@ -463,7 +463,7 @@
             this.signupButton.IdleIconLeftImage = null;
             this.signupButton.IdleIconRightImage = null;
             this.signupButton.IndicateFocus = false;
-            this.signupButton.Location = new System.Drawing.Point(149, 306);
+            this.signupButton.Location = new System.Drawing.Point(163, 306);
             this.signupButton.Name = "signupButton";
             this.signupButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.signupButton.OnDisabledState.BorderRadius = 1;
@@ -555,7 +555,7 @@
             this.loginButton.IdleIconLeftImage = null;
             this.loginButton.IdleIconRightImage = null;
             this.loginButton.IndicateFocus = false;
-            this.loginButton.Location = new System.Drawing.Point(149, 253);
+            this.loginButton.Location = new System.Drawing.Point(163, 253);
             this.loginButton.Name = "loginButton";
             this.loginButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.loginButton.OnDisabledState.BorderRadius = 1;

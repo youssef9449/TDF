@@ -334,10 +334,9 @@ namespace TDF.Net
         }
         private void logoutButton_Click(object sender, EventArgs e)
         {
-            Close();
             loggedInUser = null;
+            Close();
             loginForm.Show();
-
             /*settingsForm settingsForm = new settingsForm();
             settingsForm.ShowDialog();
 

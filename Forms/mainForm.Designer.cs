@@ -154,7 +154,7 @@ namespace TDF.Net
             this.panelTitleBar.Location = new System.Drawing.Point(152, 0);
             this.panelTitleBar.Name = "panelTitleBar";
             this.panelTitleBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.panelTitleBar.Size = new System.Drawing.Size(807, 66);
+            this.panelTitleBar.Size = new System.Drawing.Size(778, 66);
             this.panelTitleBar.TabIndex = 6;
             this.panelTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
             // 
@@ -162,7 +162,7 @@ namespace TDF.Net
             // 
             this.maxImage.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.maxImage.Image = ((System.Drawing.Image)(resources.GetObject("maxImage.Image")));
-            this.maxImage.Location = new System.Drawing.Point(728, 22);
+            this.maxImage.Location = new System.Drawing.Point(699, 22);
             this.maxImage.Name = "maxImage";
             this.maxImage.Size = new System.Drawing.Size(20, 20);
             this.maxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -177,7 +177,7 @@ namespace TDF.Net
             // 
             this.minImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.minImg.Image = ((System.Drawing.Image)(resources.GetObject("minImg.Image")));
-            this.minImg.Location = new System.Drawing.Point(693, 22);
+            this.minImg.Location = new System.Drawing.Point(664, 22);
             this.minImg.Name = "minImg";
             this.minImg.Size = new System.Drawing.Size(20, 20);
             this.minImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -192,7 +192,7 @@ namespace TDF.Net
             // 
             this.closeImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.closeImg.Image = ((System.Drawing.Image)(resources.GetObject("closeImg.Image")));
-            this.closeImg.Location = new System.Drawing.Point(763, 22);
+            this.closeImg.Location = new System.Drawing.Point(734, 22);
             this.closeImg.Name = "closeImg";
             this.closeImg.Size = new System.Drawing.Size(20, 20);
             this.closeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -208,7 +208,7 @@ namespace TDF.Net
             this.formPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.formPanel.Location = new System.Drawing.Point(152, 66);
             this.formPanel.Name = "formPanel";
-            this.formPanel.Size = new System.Drawing.Size(807, 492);
+            this.formPanel.Size = new System.Drawing.Size(778, 452);
             this.formPanel.TabIndex = 11;
             // 
             // TDFpictureBox
@@ -217,7 +217,7 @@ namespace TDF.Net
             this.TDFpictureBox.Image = global::TDF.Properties.Resources._327169915_547132580497251_8075721205915457573_n___Copy;
             this.TDFpictureBox.Location = new System.Drawing.Point(0, 0);
             this.TDFpictureBox.Name = "TDFpictureBox";
-            this.TDFpictureBox.Size = new System.Drawing.Size(807, 492);
+            this.TDFpictureBox.Size = new System.Drawing.Size(778, 452);
             this.TDFpictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.TDFpictureBox.TabIndex = 0;
             this.TDFpictureBox.TabStop = false;
@@ -243,7 +243,7 @@ namespace TDF.Net
             this.gradientPanel.Location = new System.Drawing.Point(0, 0);
             this.gradientPanel.Name = "gradientPanel";
             this.gradientPanel.Quality = 10;
-            this.gradientPanel.Size = new System.Drawing.Size(152, 558);
+            this.gradientPanel.Size = new System.Drawing.Size(152, 518);
             this.gradientPanel.TabIndex = 0;
             this.gradientPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.gradientPanel_Paint);
             // 
@@ -328,7 +328,7 @@ namespace TDF.Net
             this.myTeamButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.myTeamButton.OnPressedState.IconLeftImage = null;
             this.myTeamButton.OnPressedState.IconRightImage = null;
-            this.myTeamButton.Size = new System.Drawing.Size(151, 39);
+            this.myTeamButton.Size = new System.Drawing.Size(146, 39);
             this.myTeamButton.TabIndex = 5;
             this.myTeamButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.myTeamButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -428,7 +428,7 @@ namespace TDF.Net
             this.logoutButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.logoutButton.OnPressedState.IconLeftImage = null;
             this.logoutButton.OnPressedState.IconRightImage = null;
-            this.logoutButton.Size = new System.Drawing.Size(151, 39);
+            this.logoutButton.Size = new System.Drawing.Size(146, 39);
             this.logoutButton.TabIndex = 3;
             this.logoutButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.logoutButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -518,7 +518,7 @@ namespace TDF.Net
             this.controlPanelButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.controlPanelButton.OnPressedState.IconLeftImage = null;
             this.controlPanelButton.OnPressedState.IconRightImage = null;
-            this.controlPanelButton.Size = new System.Drawing.Size(151, 39);
+            this.controlPanelButton.Size = new System.Drawing.Size(146, 39);
             this.controlPanelButton.TabIndex = 2;
             this.controlPanelButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.controlPanelButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -609,7 +609,7 @@ namespace TDF.Net
             this.requestsButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.requestsButton.OnPressedState.IconLeftImage = null;
             this.requestsButton.OnPressedState.IconRightImage = null;
-            this.requestsButton.Size = new System.Drawing.Size(151, 39);
+            this.requestsButton.Size = new System.Drawing.Size(146, 39);
             this.requestsButton.TabIndex = 1;
             this.requestsButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.requestsButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -655,7 +655,7 @@ namespace TDF.Net
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(959, 558);
+            this.ClientSize = new System.Drawing.Size(930, 518);
             this.ControlBox = false;
             this.Controls.Add(this.formPanel);
             this.Controls.Add(this.panelTitleBar);

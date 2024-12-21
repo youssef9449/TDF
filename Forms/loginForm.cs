@@ -57,7 +57,6 @@ namespace TDF.Net
                 startLoggingIn();
             }
         }
-
         private void signupButton_Click(object sender, EventArgs e)
         {
             //List<string> departments = iniFile.ReadSectionValues("Departments");
@@ -186,7 +185,7 @@ namespace TDF.Net
                 loggedInUser = getCurrentUserDetails(username);
                 mainForm mainForm = new mainForm(this);
                 //Owner = mainForm;
-                Hide();  // Hide the login form
+                Hide();
                 ClearFormFields();
                 mainForm.Show();
             }

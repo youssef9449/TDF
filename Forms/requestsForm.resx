@@ -189,10 +189,10 @@
     <value>True</value>
   </metadata>
   <data name="remainingBalance.HeaderText" xml:space="preserve">
-    <value>Remaining Balance</value>
+    <value>Available Balance</value>
   </data>
   <data name="remainingBalance.Width" type="System.Int32, mscorlib">
-    <value>171</value>
+    <value>160</value>
   </data>
   <metadata name="RequestReason.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

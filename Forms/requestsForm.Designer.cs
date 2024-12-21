@@ -599,6 +599,7 @@
             // NumberOfDays
             // 
             this.NumberOfDays.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.NumberOfDays.DataPropertyName = "RequestNumberOfDays";
             this.NumberOfDays.Frozen = true;
             resources.ApplyResources(this.NumberOfDays, "NumberOfDays");
             this.NumberOfDays.Name = "NumberOfDays";

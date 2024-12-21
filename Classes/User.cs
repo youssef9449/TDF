@@ -1,4 +1,5 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.SqlClient;
 using System.Drawing;
 
 namespace TDF.Net.Classes
@@ -35,7 +36,13 @@ namespace TDF.Net.Classes
             using (SqlConnection conn = Database.GetConnection())
             {
                 conn.Open();
-                string query = "INSERT INTO Users (UserName, PasswordHash, Salt, FullName, Role, Department) VALUES (@UserName, @PasswordHash, @Salt, @FullName, @Role, @Department)";
+
+                // Step 1: Insert into Users table and get the generated UserID
+                string query = "INSERT INTO Users (UserName, PasswordHash, Salt, FullName, Role, Department) " +
+                               "VALUES (@UserName, @PasswordHash, @Salt, @FullName, @Role, @Department); " +
+                               "SELECT SCOPE_IDENTITY();"; // Retrieve the last inserted identity (UserID)
+
+                int userId = 0;
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@UserName", UserName);
@@ -44,6 +51,23 @@ namespace TDF.Net.Classes
                     cmd.Parameters.AddWithValue("@FullName", FullName);
                     cmd.Parameters.AddWithValue("@Role", Role);
                     cmd.Parameters.AddWithValue("@Department", Department);
+
+                    // Execute the query and get the UserID
+                    userId = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+
+                // Step 2: Insert into AnnualLeave table using the UserID
+                string secondQuery = "INSERT INTO AnnualLeave (UserID, FullName, Annual, CasualLeave, AnnualUsed, CasualUsed) " +
+                                     "VALUES (@UserID, @FullName, @Annual, @CasualLeave, @AnnualUsed, @CasualUsed)";
+
+                using (SqlCommand cmd = new SqlCommand(secondQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", userId);  // Add the retrieved UserID
+                    cmd.Parameters.AddWithValue("@FullName", FullName);
+                    cmd.Parameters.AddWithValue("@Annual", 14); // Set default Annual leave balance
+                    cmd.Parameters.AddWithValue("@CasualLeave", 7); // Set default Casual leave balance
+                    cmd.Parameters.AddWithValue("@AnnualUsed", 0); // Set default Annual used
+                    cmd.Parameters.AddWithValue("@CasualUsed", 0); // Set default Casual used
 
                     cmd.ExecuteNonQuery();
                 }

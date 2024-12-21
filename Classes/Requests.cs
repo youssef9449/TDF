@@ -20,7 +20,7 @@ namespace TDF.Net.Classes
         public DateTime? RequestEndingTime { get; set; }
         public string RequestRejectReason { get; set; }
         public string RequestDepartment { get; set; }
-        public int NumberOfDays { get; set; }
+        public int RequestNumberOfDays { get; set; }
 
 
         public Request()
@@ -28,7 +28,7 @@ namespace TDF.Net.Classes
 
         }
 
-        public Request(string requestType, string requestReason, string requestUserFullName, DateTime requestFromDay, DateTime requestToDay, int requestUserID, string requestDepartment,int numberOfDays)
+        public Request(string requestType, string requestReason, string requestUserFullName, DateTime requestFromDay, DateTime requestToDay, int requestUserID, string requestDepartment, int requestNumberOfDays, DateTime? requestBeginningTime, DateTime? requestEndingTime)
         {
 
             RequestType = requestType;
@@ -40,84 +40,66 @@ namespace TDF.Net.Classes
             RequestBeginningTime = null;
             RequestEndingTime = null;
             RequestDepartment = requestDepartment;
-            NumberOfDays = numberOfDays;
-        }
-
-        public Request(string requestType, string requestReason, string requestUserFullName, DateTime requestDay, DateTime requestBeginningTime, DateTime requestEndingTime, int requestUserID, string requestDepartment)
-        {
-            RequestType = requestType;
-            RequestReason = requestReason;
-            RequestFromDay = requestDay;
-            RequestUserFullName = requestUserFullName;
-            RequestBeginningTime = requestBeginningTime;
+            RequestNumberOfDays = requestNumberOfDays;
+            RequestBeginningTime= requestBeginningTime;
             RequestEndingTime = requestEndingTime;
-            RequestUserID = requestUserID;
-            RequestDepartment = requestDepartment;
         }
-
 
         #region Methods
 
         public void add()
         {
-            using (SqlConnection conn = Database.GetConnection())
+            string query = @"
+        INSERT INTO Requests (
+            RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay,
+            RequestUserID, RequestBeginningTime, RequestEndingTime, RequestDepartment, RequestNumberOfDays
+        )
+        VALUES (
+            @RequestUserFullName, @RequestType, @RequestReason, @RequestFromDay, @RequestToDay,
+            @RequestUserID, @RequestBeginningTime, @RequestEndingTime, @RequestDepartment, @RequestNumberOfDays
+        )";
+
+            try
             {
-                try
+                using (SqlConnection conn = Database.GetConnection())
+                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     conn.Open();
-                    // Query for inserting the request
-                    string query = "INSERT INTO Requests (RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestUserID, RequestBeginningTime, RequestEndingTime, RequestDepartment) " +
-                                   "VALUES (@RequestUserFullName, @RequestType, @RequestReason, @RequestFromDay, @RequestToDay, @RequestUserID, @RequestBeginningTime, @RequestEndingTime, @RequestDepartment)";
 
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    // Add common parameters
+                    cmd.Parameters.AddWithValue("@RequestUserFullName", RequestUserFullName);
+                    cmd.Parameters.AddWithValue("@RequestType", RequestType);
+                    cmd.Parameters.AddWithValue("@RequestReason", RequestReason);
+                    cmd.Parameters.AddWithValue("@RequestFromDay", RequestFromDay);
+                    cmd.Parameters.AddWithValue("@RequestToDay", RequestToDay ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@RequestUserID", RequestUserID);
+                    cmd.Parameters.AddWithValue("@RequestDepartment", RequestDepartment);
+                    cmd.Parameters.AddWithValue("@RequestNumberOfDays", RequestNumberOfDays);
+
+                    if (RequestType == "Permission" || RequestType == "External Assignment")
                     {
-                        // Add the parameters from the Request object
-                        cmd.Parameters.AddWithValue("@RequestType", RequestType);
-                        cmd.Parameters.AddWithValue("@RequestReason", RequestReason);
-                        cmd.Parameters.AddWithValue("@RequestFromDay", RequestFromDay);
-                        cmd.Parameters.AddWithValue("@RequestUserID", RequestUserID);
-                        cmd.Parameters.AddWithValue("@RequestUserFullName", RequestUserFullName);
-                        cmd.Parameters.AddWithValue("@RequestDepartment", RequestDepartment);
-
-                        // Handle nullable times for day-off requests
-                        if (RequestType == "Permission")
-                        {
-                            cmd.Parameters.AddWithValue("@RequestToDay", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@RequestBeginningTime", RequestBeginningTime);
-                            cmd.Parameters.AddWithValue("@RequestEndingTime", RequestEndingTime);
-
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@RequestToDay", RequestToDay);
-                            cmd.Parameters.AddWithValue("@RequestBeginningTime", DBNull.Value);
-                            cmd.Parameters.AddWithValue("@RequestEndingTime", DBNull.Value);
-                        }
-
-                        // Execute the query
-                        int rowsAffected = cmd.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
-                        {
-                            MessageBox.Show("Request added successfully.");
-                            Forms.addRequestForm.requestAddedOrUpdated = true;
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to add request.");
-                            Forms.addRequestForm.requestAddedOrUpdated = false;
-                        }
+                        cmd.Parameters.AddWithValue("@RequestBeginningTime", RequestBeginningTime ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@RequestEndingTime", RequestEndingTime ?? (object)DBNull.Value);
                     }
-                }
-                catch (SqlException ex)
-                {
-                    MessageBox.Show("A database error occurred: " + ex.Message);
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@RequestBeginningTime", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@RequestEndingTime", DBNull.Value);
+                    }
 
+                    // Execute query and show result
+                    bool success = cmd.ExecuteNonQuery() > 0;
+                    Forms.addRequestForm.requestAddedOrUpdated = success;
+                    MessageBox.Show(success ? "Request added successfully." : "Failed to add request.");
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("An unexpected error occurred: " + ex.Message);
-                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show($"A database error occurred: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
             }
         }
 
@@ -138,8 +120,9 @@ namespace TDF.Net.Classes
                                  RequestToDay = @RequestToDay,
                                  RequestBeginningTime = @RequestBeginningTime,
                                  RequestEndingTime = @RequestEndingTime,
-                                 RequestStatus = @RequestStatus
-                             WHERE RequestID = @RequestID";
+                                 RequestStatus = @RequestStatus,
+                                 RequestNumberOfDays = @RequestNumberOfDays
+                                 WHERE RequestID = @RequestID";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -156,6 +139,7 @@ namespace TDF.Net.Classes
                                                                 (object)RequestEndingTime.Value : DBNull.Value);
 
                         cmd.Parameters.AddWithValue("@RequestStatus", RequestStatus ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@RequestNumberOfDays", RequestType == "Permission" || RequestType == "External Assignment" ? 0 : RequestNumberOfDays);
 
                         // Execute the update query and check if it was successful
                         int rowsAffected = cmd.ExecuteNonQuery();

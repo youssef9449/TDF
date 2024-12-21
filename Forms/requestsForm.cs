@@ -191,6 +191,15 @@ namespace TDF.Net.Forms
                     e.FormattingApplied = true; // Indicate that formatting is applied
                 }
             }
+            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "NumberOfDays")
+            {
+                // Check if the cell value is null or empty
+                if ((int)e.Value == 0 || string.IsNullOrEmpty(e.Value.ToString()))
+                {
+                    e.Value = "-"; // Set the display value to "-"
+                    e.FormattingApplied = true; // Indicate that formatting is applied
+                }
+            }
         }
         private void pendingRadioButton_CheckedChanged(object sender, Bunifu.UI.WinForms.BunifuRadioButton.CheckedChangedEventArgs e)
         {
@@ -217,7 +226,7 @@ namespace TDF.Net.Forms
                 }
 
                 requestsDataGridView.DataSource = requestsTable;
-                CalculateNumberOfDaysForRequests();
+                //CalculateNumberOfDaysForRequests();
                 ReorderDataGridViewColumns();
             }
             catch (Exception ex)
@@ -235,30 +244,72 @@ namespace TDF.Net.Forms
             string query = BuildQueryForUser();
             ExecuteQuery(query, requestsTable, cmd =>
             {
-                cmd.Parameters.AddWithValue("@UserID", loginForm.loggedInUser.userID);
+                cmd.Parameters.AddWithValue("@UserID", loggedInUser.userID);
             });
         }
         private string BuildQueryForManagerOrAdmin()
         {
-            string baseQuery = "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason FROM Requests ";
+            string baseQuery = @"
+        SELECT 
+            r.RequestID, 
+            r.RequestUserFullName, 
+            r.RequestType, 
+            r.RequestReason, 
+            r.RequestFromDay, 
+            r.RequestToDay, 
+            r.RequestBeginningTime, 
+            r.RequestEndingTime, 
+            r.RequestStatus, 
+            r.RequestRejectReason, 
+            r.RequestNumberOfDays,
+            CASE 
+                WHEN r.RequestType = 'Annual' THEN al.AnnualBalance
+                WHEN r.RequestType = 'Casual' THEN al.CasualBalance
+                ELSE NULL
+            END AS remainingBalance
+        FROM 
+            Requests r
+        LEFT JOIN 
+            AnnualLeave al ON r.RequestUserID = al.UserID ";
+
             string condition = pendingRadioButton.Checked
-                ? "WHERE RequestStatus = 'Pending'"
-                : "WHERE NOT RequestStatus = 'Pending'";
+                ? "WHERE r.RequestStatus = 'Pending'"
+                : "WHERE NOT r.RequestStatus = 'Pending'";
 
             if (!hasAdminRole)
             {
-                condition += $" AND RequestDepartment = '{loginForm.loggedInUser.Department}'";
+                condition += $" AND r.RequestDepartment = '{loggedInUser.Department}'";
             }
 
             return baseQuery + condition;
         }
         private string BuildQueryForUser()
         {
-            return pendingRadioButton.Checked
-                ? "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason " +
-                  "FROM Requests WHERE RequestUserID = @UserID AND RequestStatus = 'Pending'"
-                : "SELECT RequestID, RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay, RequestBeginningTime, RequestEndingTime, RequestStatus, RequestRejectReason " +
-                  "FROM Requests WHERE RequestUserID = @UserID AND NOT RequestStatus = 'Pending'";
+            return @"
+        SELECT 
+            r.RequestID, 
+            r.RequestUserFullName, 
+            r.RequestType, 
+            r.RequestReason, 
+            r.RequestFromDay, 
+            r.RequestToDay, 
+            r.RequestBeginningTime, 
+            r.RequestEndingTime, 
+            r.RequestStatus, 
+            r.RequestRejectReason, 
+            r.RequestNumberOfDays,
+            CASE 
+                WHEN r.RequestType = 'Annual' THEN al.AnnualBalance
+                WHEN r.RequestType = 'Casual' THEN al.CasualBalance
+                ELSE NULL
+            END AS remainingBalance
+        FROM 
+            Requests r
+        LEFT JOIN 
+            AnnualLeave al ON r.RequestUserID = al.UserID
+        WHERE 
+            r.RequestUserID = @UserID AND 
+            " + (pendingRadioButton.Checked ? "r.RequestStatus = 'Pending'" : "NOT r.RequestStatus = 'Pending'");
         }
         private void ExecuteQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
         {
@@ -294,7 +345,7 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["Edit"].Visible = isPending;
             requestsDataGridView.Columns["Remove"].Visible = isPending;
         }
-        private void CalculateNumberOfDaysForRequests()
+       /* private void CalculateNumberOfDaysForRequests()
         {
             foreach (DataGridViewRow row in requestsDataGridView.Rows)
             {
@@ -309,7 +360,7 @@ namespace TDF.Net.Forms
                     row.Cells["NumberOfDays"].Value = "-";
                 }
             }
-        }
+        }*/
         private void ReorderDataGridViewColumns()
         {
             requestsDataGridView.Columns["Edit"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
@@ -319,7 +370,6 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Approve"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
         }
-
         #endregion
 
         #region Buttons
@@ -364,12 +414,17 @@ namespace TDF.Net.Forms
                     if (newStatus != null)
                     {
                         int requestId = Convert.ToInt32(row.Cells["RequestID"].Value);
+                        string requestType = row.Cells["RequestType"].Value?.ToString();
+                        int numberOfDays = Convert.ToInt32(row.Cells["NumberOfDays"].Value);
+                        string userFullName = row.Cells["RequestUserFullName"].Value?.ToString();
+                        string currentStatus = row.Cells["RequestStatus"].Value?.ToString(); // Current status from the DataGridView
 
-                        string query = @" UPDATE Requests 
-                                          SET RequestStatus = @RequestStatus, 
-                                              RequestRejectReason = @RequestRejectReason, 
-                                              RequestCloser = @RequestCloser 
-                                          WHERE RequestID = @RequestID";
+                        // Update request status and rejection reason
+                        string query = @"UPDATE Requests 
+                                 SET RequestStatus = @RequestStatus, 
+                                     RequestRejectReason = @RequestRejectReason, 
+                                     RequestCloser = @RequestCloser 
+                                 WHERE RequestID = @RequestID";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
@@ -379,6 +434,58 @@ namespace TDF.Net.Forms
                             cmd.Parameters.AddWithValue("@RequestID", requestId);
 
                             cmd.ExecuteNonQuery();
+                        }
+
+                        // Handle balance adjustment if the status is changing between "Approved" and "Rejected"
+                        if (newStatus == "Approved" && currentStatus != "Approved" && (requestType == "Annual" || requestType == "Casual"))
+                        {
+                            string updateLeaveQuery = "";
+
+                            if (requestType == "Annual")
+                            {
+                                updateLeaveQuery = @"UPDATE AnnualLeave
+                                             SET AnnualUsed = AnnualUsed + @NumberOfDays
+                                             WHERE FullName = @FullName";
+                            }
+                            else if (requestType == "Casual")
+                            {
+                                updateLeaveQuery = @"UPDATE AnnualLeave
+                                             SET CasualUsed = CasualUsed + @NumberOfDays
+                                             WHERE FullName = @FullName";
+                            }
+
+                            using (SqlCommand cmd = new SqlCommand(updateLeaveQuery, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@NumberOfDays", numberOfDays);
+                                cmd.Parameters.AddWithValue("@FullName", userFullName);
+
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                        else if (newStatus == "Rejected" && currentStatus == "Approved" && (requestType == "Annual" || requestType == "Casual"))
+                        {
+                            string updateLeaveQuery = "";
+
+                            if (requestType == "Annual")
+                            {
+                                updateLeaveQuery = @"UPDATE AnnualLeave
+                                             SET AnnualUsed = AnnualUsed - @NumberOfDays
+                                             WHERE FullName = @FullName";
+                            }
+                            else if (requestType == "Casual")
+                            {
+                                updateLeaveQuery = @"UPDATE AnnualLeave
+                                             SET CasualUsed = CasualUsed - @NumberOfDays
+                                             WHERE FullName = @FullName";
+                            }
+
+                            using (SqlCommand cmd = new SqlCommand(updateLeaveQuery, conn))
+                            {
+                                cmd.Parameters.AddWithValue("@NumberOfDays", numberOfDays);
+                                cmd.Parameters.AddWithValue("@FullName", userFullName);
+
+                                cmd.ExecuteNonQuery();
+                            }
                         }
                     }
                 }

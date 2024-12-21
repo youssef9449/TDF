@@ -48,7 +48,6 @@
             this.toTimeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.fromTimeTextBox = new System.Windows.Forms.MaskedTextBox();
             this.toDateLabel = new Bunifu.UI.WinForms.BunifuLabel();
-            this.toDayDatePicker = new Bunifu.UI.WinForms.BunifuDatePicker();
             this.panel = new System.Windows.Forms.Panel();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
             this.bunifuLabel3 = new Bunifu.UI.WinForms.BunifuLabel();
@@ -64,9 +63,10 @@
             this.bunifuGroupBox1 = new Bunifu.UI.WinForms.BunifuGroupBox();
             this.casualRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.annualRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
-            this.bunifuLabel6 = new Bunifu.UI.WinForms.BunifuLabel();
-            this.bunifuLabel7 = new Bunifu.UI.WinForms.BunifuLabel();
+            this.annualLabel = new Bunifu.UI.WinForms.BunifuLabel();
+            this.casualLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.leaveGroupBox = new Bunifu.UI.WinForms.BunifuGroupBox();
+            this.toDayDatePicker = new Bunifu.UI.WinForms.BunifuDatePicker();
             this.panel.SuspendLayout();
             this.bunifuGroupBox1.SuspendLayout();
             this.leaveGroupBox.SuspendLayout();
@@ -108,6 +108,7 @@
             this.exitRadioButton.Size = new System.Drawing.Size(21, 21);
             this.exitRadioButton.TabIndex = 1;
             this.exitRadioButton.Text = null;
+            this.exitRadioButton.CheckedChanged2 += new System.EventHandler<Bunifu.UI.WinForms.BunifuRadioButton.CheckedChangedEventArgs>(this.exitRadioButton_CheckedChanged);
             // 
             // dayoffLabel
             // 
@@ -131,7 +132,7 @@
             this.bunifuLabel1.AutoEllipsis = false;
             this.bunifuLabel1.CursorType = null;
             this.bunifuLabel1.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel1.Location = new System.Drawing.Point(183, 15);
+            this.bunifuLabel1.Location = new System.Drawing.Point(172, 15);
             this.bunifuLabel1.Name = "bunifuLabel1";
             this.bunifuLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel1.Size = new System.Drawing.Size(99, 20);
@@ -281,7 +282,7 @@
             this.fromLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.fromLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.fromLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.fromLabel.Location = new System.Drawing.Point(418, 131);
+            this.fromLabel.Location = new System.Drawing.Point(418, 122);
             this.fromLabel.Name = "fromLabel";
             this.fromLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.fromLabel.Size = new System.Drawing.Size(37, 20);
@@ -298,7 +299,7 @@
             this.toLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.toLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.toLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.toLabel.Location = new System.Drawing.Point(530, 133);
+            this.toLabel.Location = new System.Drawing.Point(530, 124);
             this.toLabel.Name = "toLabel";
             this.toLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.toLabel.Size = new System.Drawing.Size(20, 20);
@@ -402,7 +403,7 @@
             // 
             // toTimeTextBox
             // 
-            this.toTimeTextBox.Location = new System.Drawing.Point(502, 162);
+            this.toTimeTextBox.Location = new System.Drawing.Point(502, 153);
             this.toTimeTextBox.Mask = "90:00";
             this.toTimeTextBox.Name = "toTimeTextBox";
             this.toTimeTextBox.Size = new System.Drawing.Size(81, 20);
@@ -413,7 +414,7 @@
             // 
             // fromTimeTextBox
             // 
-            this.fromTimeTextBox.Location = new System.Drawing.Point(394, 162);
+            this.fromTimeTextBox.Location = new System.Drawing.Point(394, 153);
             this.fromTimeTextBox.Mask = "90:00";
             this.fromTimeTextBox.Name = "fromTimeTextBox";
             this.fromTimeTextBox.Size = new System.Drawing.Size(81, 20);
@@ -437,32 +438,6 @@
             this.toDateLabel.Text = "To:";
             this.toDateLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
             this.toDateLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
-            // 
-            // toDayDatePicker
-            // 
-            this.toDayDatePicker.BackColor = System.Drawing.Color.Transparent;
-            this.toDayDatePicker.BorderColor = System.Drawing.Color.Silver;
-            this.toDayDatePicker.BorderRadius = 1;
-            this.toDayDatePicker.Color = System.Drawing.Color.Silver;
-            this.toDayDatePicker.DateBorderThickness = Bunifu.UI.WinForms.BunifuDatePicker.BorderThickness.Thin;
-            this.toDayDatePicker.DateTextAlign = Bunifu.UI.WinForms.BunifuDatePicker.TextAlign.Left;
-            this.toDayDatePicker.DisabledColor = System.Drawing.Color.Gray;
-            this.toDayDatePicker.DisplayWeekNumbers = false;
-            this.toDayDatePicker.DPHeight = 0;
-            this.toDayDatePicker.DropDownAlign = System.Windows.Forms.LeftRightAlignment.Right;
-            this.toDayDatePicker.FillDatePicker = false;
-            this.toDayDatePicker.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.toDayDatePicker.ForeColor = System.Drawing.Color.Black;
-            this.toDayDatePicker.Icon = ((System.Drawing.Image)(resources.GetObject("toDayDatePicker.Icon")));
-            this.toDayDatePicker.IconColor = System.Drawing.Color.Gray;
-            this.toDayDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.Right;
-            this.toDayDatePicker.LeftTextMargin = 5;
-            this.toDayDatePicker.Location = new System.Drawing.Point(62, 172);
-            this.toDayDatePicker.MinimumSize = new System.Drawing.Size(4, 32);
-            this.toDayDatePicker.Name = "toDayDatePicker";
-            this.toDayDatePicker.Size = new System.Drawing.Size(220, 32);
-            this.toDayDatePicker.TabIndex = 17;
-            this.toDayDatePicker.ValueChanged += new System.EventHandler(this.toDayDatePicker_ValueChanged);
             // 
             // panel
             // 
@@ -642,7 +617,7 @@
             this.bunifuLabel9.AutoEllipsis = false;
             this.bunifuLabel9.CursorType = null;
             this.bunifuLabel9.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel9.Location = new System.Drawing.Point(353, 15);
+            this.bunifuLabel9.Location = new System.Drawing.Point(340, 15);
             this.bunifuLabel9.Name = "bunifuLabel9";
             this.bunifuLabel9.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel9.Size = new System.Drawing.Size(113, 20);
@@ -676,7 +651,7 @@
             this.bunifuLabel10.AutoEllipsis = false;
             this.bunifuLabel10.CursorType = null;
             this.bunifuLabel10.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel10.Location = new System.Drawing.Point(508, 59);
+            this.bunifuLabel10.Location = new System.Drawing.Point(500, 15);
             this.bunifuLabel10.Name = "bunifuLabel10";
             this.bunifuLabel10.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel10.Size = new System.Drawing.Size(134, 20);
@@ -702,6 +677,7 @@
             this.externalAssignmentRadioButton.Size = new System.Drawing.Size(21, 21);
             this.externalAssignmentRadioButton.TabIndex = 33;
             this.externalAssignmentRadioButton.Text = null;
+            this.externalAssignmentRadioButton.CheckedChanged2 += new System.EventHandler<Bunifu.UI.WinForms.BunifuRadioButton.CheckedChangedEventArgs>(this.externalAssignmentRadioButton_CheckedChanged);
             // 
             // bunifuGroupBox1
             // 
@@ -709,6 +685,7 @@
             this.bunifuGroupBox1.BorderRadius = 0;
             this.bunifuGroupBox1.BorderThickness = 1;
             this.bunifuGroupBox1.Controls.Add(this.dayoffRadioButton);
+            this.bunifuGroupBox1.Controls.Add(this.bunifuLabel10);
             this.bunifuGroupBox1.Controls.Add(this.exitRadioButton);
             this.bunifuGroupBox1.Controls.Add(this.workFromHomeRadioButton);
             this.bunifuGroupBox1.Controls.Add(this.externalAssignmentRadioButton);
@@ -731,7 +708,7 @@
             this.casualRadioButton.BackColor = System.Drawing.Color.Transparent;
             this.casualRadioButton.BindingControlPosition = Bunifu.UI.WinForms.BunifuRadioButton.BindingControlPositions.Right;
             this.casualRadioButton.BorderThickness = 1;
-            this.casualRadioButton.Checked = true;
+            this.casualRadioButton.Checked = false;
             this.casualRadioButton.Location = new System.Drawing.Point(112, 22);
             this.casualRadioButton.Name = "casualRadioButton";
             this.casualRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
@@ -750,8 +727,8 @@
             this.annualRadioButton.BackColor = System.Drawing.Color.Transparent;
             this.annualRadioButton.BindingControlPosition = Bunifu.UI.WinForms.BunifuRadioButton.BindingControlPositions.Right;
             this.annualRadioButton.BorderThickness = 1;
-            this.annualRadioButton.Checked = false;
-            this.annualRadioButton.Location = new System.Drawing.Point(28, 22);
+            this.annualRadioButton.Checked = true;
+            this.annualRadioButton.Location = new System.Drawing.Point(36, 21);
             this.annualRadioButton.Name = "annualRadioButton";
             this.annualRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
             this.annualRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -761,48 +738,49 @@
             this.annualRadioButton.Size = new System.Drawing.Size(21, 21);
             this.annualRadioButton.TabIndex = 37;
             this.annualRadioButton.Text = null;
+            this.annualRadioButton.CheckedChanged2 += new System.EventHandler<Bunifu.UI.WinForms.BunifuRadioButton.CheckedChangedEventArgs>(this.annualRadioButton_CheckedChanged);
             // 
-            // bunifuLabel6
+            // annualLabel
             // 
-            this.bunifuLabel6.AllowParentOverrides = false;
-            this.bunifuLabel6.AutoEllipsis = false;
-            this.bunifuLabel6.Cursor = System.Windows.Forms.Cursors.Default;
-            this.bunifuLabel6.CursorType = System.Windows.Forms.Cursors.Default;
-            this.bunifuLabel6.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel6.Location = new System.Drawing.Point(17, -4);
-            this.bunifuLabel6.Name = "bunifuLabel6";
-            this.bunifuLabel6.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel6.Size = new System.Drawing.Size(46, 20);
-            this.bunifuLabel6.TabIndex = 38;
-            this.bunifuLabel6.Text = "Annual";
-            this.bunifuLabel6.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
-            this.bunifuLabel6.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            this.annualLabel.AllowParentOverrides = false;
+            this.annualLabel.AutoEllipsis = false;
+            this.annualLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.annualLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.annualLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.annualLabel.Location = new System.Drawing.Point(25, -5);
+            this.annualLabel.Name = "annualLabel";
+            this.annualLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.annualLabel.Size = new System.Drawing.Size(46, 20);
+            this.annualLabel.TabIndex = 38;
+            this.annualLabel.Text = "Annual";
+            this.annualLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.annualLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
-            // bunifuLabel7
+            // casualLabel
             // 
-            this.bunifuLabel7.AllowParentOverrides = false;
-            this.bunifuLabel7.AutoEllipsis = false;
-            this.bunifuLabel7.Cursor = System.Windows.Forms.Cursors.Default;
-            this.bunifuLabel7.CursorType = System.Windows.Forms.Cursors.Default;
-            this.bunifuLabel7.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel7.Location = new System.Drawing.Point(99, -4);
-            this.bunifuLabel7.Name = "bunifuLabel7";
-            this.bunifuLabel7.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel7.Size = new System.Drawing.Size(43, 20);
-            this.bunifuLabel7.TabIndex = 39;
-            this.bunifuLabel7.Text = "Casual";
-            this.bunifuLabel7.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
-            this.bunifuLabel7.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            this.casualLabel.AllowParentOverrides = false;
+            this.casualLabel.AutoEllipsis = false;
+            this.casualLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.casualLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.casualLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.casualLabel.Location = new System.Drawing.Point(99, -4);
+            this.casualLabel.Name = "casualLabel";
+            this.casualLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.casualLabel.Size = new System.Drawing.Size(43, 20);
+            this.casualLabel.TabIndex = 39;
+            this.casualLabel.Text = "Casual";
+            this.casualLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.casualLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
             // leaveGroupBox
             // 
             this.leaveGroupBox.BorderColor = System.Drawing.Color.Transparent;
             this.leaveGroupBox.BorderRadius = 0;
             this.leaveGroupBox.BorderThickness = 1;
-            this.leaveGroupBox.Controls.Add(this.bunifuLabel6);
-            this.leaveGroupBox.Controls.Add(this.bunifuLabel7);
-            this.leaveGroupBox.Controls.Add(this.annualRadioButton);
+            this.leaveGroupBox.Controls.Add(this.annualLabel);
+            this.leaveGroupBox.Controls.Add(this.casualLabel);
             this.leaveGroupBox.Controls.Add(this.casualRadioButton);
+            this.leaveGroupBox.Controls.Add(this.annualRadioButton);
             this.leaveGroupBox.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.leaveGroupBox.LabelAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.leaveGroupBox.LabelIndent = 10;
@@ -814,13 +792,39 @@
             this.leaveGroupBox.TabStop = false;
             this.leaveGroupBox.Visible = false;
             // 
+            // toDayDatePicker
+            // 
+            this.toDayDatePicker.BackColor = System.Drawing.Color.Transparent;
+            this.toDayDatePicker.BorderColor = System.Drawing.Color.Silver;
+            this.toDayDatePicker.BorderRadius = 1;
+            this.toDayDatePicker.Color = System.Drawing.Color.Silver;
+            this.toDayDatePicker.DateBorderThickness = Bunifu.UI.WinForms.BunifuDatePicker.BorderThickness.Thin;
+            this.toDayDatePicker.DateTextAlign = Bunifu.UI.WinForms.BunifuDatePicker.TextAlign.Left;
+            this.toDayDatePicker.DisabledColor = System.Drawing.Color.Gray;
+            this.toDayDatePicker.DisplayWeekNumbers = false;
+            this.toDayDatePicker.DPHeight = 0;
+            this.toDayDatePicker.DropDownAlign = System.Windows.Forms.LeftRightAlignment.Right;
+            this.toDayDatePicker.FillDatePicker = false;
+            this.toDayDatePicker.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.toDayDatePicker.ForeColor = System.Drawing.Color.Black;
+            this.toDayDatePicker.Icon = ((System.Drawing.Image)(resources.GetObject("toDayDatePicker.Icon")));
+            this.toDayDatePicker.IconColor = System.Drawing.Color.Gray;
+            this.toDayDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.Right;
+            this.toDayDatePicker.LeftTextMargin = 5;
+            this.toDayDatePicker.Location = new System.Drawing.Point(63, 171);
+            this.toDayDatePicker.MinimumSize = new System.Drawing.Size(4, 32);
+            this.toDayDatePicker.Name = "toDayDatePicker";
+            this.toDayDatePicker.Size = new System.Drawing.Size(220, 32);
+            this.toDayDatePicker.TabIndex = 41;
+            this.toDayDatePicker.ValueChanged += new System.EventHandler(this.toDayDatePicker_ValueChanged);
+            // 
             // addRequestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(654, 452);
-            this.Controls.Add(this.bunifuLabel10);
+            this.Controls.Add(this.toDayDatePicker);
             this.Controls.Add(this.remainingBalanceLabel);
             this.Controls.Add(this.daysRequestedLabel);
             this.Controls.Add(this.availableBalanceLabel);
@@ -829,7 +833,6 @@
             this.Controls.Add(this.bunifuLabel4);
             this.Controls.Add(this.panel);
             this.Controls.Add(this.toDateLabel);
-            this.Controls.Add(this.toDayDatePicker);
             this.Controls.Add(this.fromTimeTextBox);
             this.Controls.Add(this.toTimeTextBox);
             this.Controls.Add(this.submitButton);
@@ -871,7 +874,6 @@
         private System.Windows.Forms.MaskedTextBox toTimeTextBox;
         private System.Windows.Forms.MaskedTextBox fromTimeTextBox;
         private Bunifu.UI.WinForms.BunifuLabel toDateLabel;
-        private Bunifu.UI.WinForms.BunifuDatePicker toDayDatePicker;
         private System.Windows.Forms.Panel panel;
         private Bunifu.UI.WinForms.BunifuFormControlBox controlBox;
         private Bunifu.UI.WinForms.BunifuLabel bunifuLabel3;
@@ -887,8 +889,9 @@
         private Bunifu.UI.WinForms.BunifuGroupBox bunifuGroupBox1;
         private Bunifu.UI.WinForms.BunifuRadioButton casualRadioButton;
         private Bunifu.UI.WinForms.BunifuRadioButton annualRadioButton;
-        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel6;
-        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel7;
+        private Bunifu.UI.WinForms.BunifuLabel annualLabel;
+        private Bunifu.UI.WinForms.BunifuLabel casualLabel;
         private Bunifu.UI.WinForms.BunifuGroupBox leaveGroupBox;
+        private Bunifu.UI.WinForms.BunifuDatePicker toDayDatePicker;
     }
 }
