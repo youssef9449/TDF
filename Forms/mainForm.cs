@@ -331,7 +331,6 @@ namespace TDF.Net
             loggedInUser = null;
             Close();
             loginForm.Show();
-
             /*settingsForm settingsForm = new settingsForm();
             settingsForm.ShowDialog();
 

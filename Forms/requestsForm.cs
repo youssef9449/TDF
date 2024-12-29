@@ -29,8 +29,6 @@ namespace TDF.Net.Forms
         private void requestsForm_Resize(object sender, EventArgs e)
         {
             Invalidate();
-            /*sizeChangecount++;
-            requestsDataGridView.Columns["RequestReason"].AutoSizeMode = sizeChangecount > 1 ? DataGridViewAutoSizeColumnMode.Fill : DataGridViewAutoSizeColumnMode.ColumnHeader;*/
         }
         private void Requests_Load(object sender, EventArgs e)
         {
@@ -57,7 +55,7 @@ namespace TDF.Net.Forms
                 {
                     if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending")
                     {
-                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewButtonCell)
+                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell)
                         {
                             openRequestToEdit(e);
                         }
@@ -71,11 +69,11 @@ namespace TDF.Net.Forms
 
                 if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Remove")
                 {
-                    if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() != "Pending")
+                    if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending")
                     {
-                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewButtonCell buttonCell)
+                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell imageCell)
                         {
-                            var confirmResult = MessageBox.Show("Are you sure you want to delete this request?",
+                            DialogResult confirmResult = MessageBox.Show("Are you sure you want to delete this request?",
                                                                 "Confirm Delete",
                                                                 MessageBoxButtons.YesNo);
 
@@ -121,8 +119,7 @@ namespace TDF.Net.Forms
         }
         private void requestsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            // Check if the current cell is in the column that holds the status
-            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestStatus") // Change to your actual column name
+            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestStatus")
             {
                 // Check the value of the cell
                 if (e.Value != null && e.Value.ToString() == "Approved")
@@ -142,22 +139,22 @@ namespace TDF.Net.Forms
             if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestBeginningTime" ||
                 requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestEndingTime" ||
                 requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestToDay" ||
-                requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestRejectReason")
+                requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestRejectReason" ||
+                requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestReason")
             {
-                // Check if the cell value is null or empty
+
                 if (e.Value == null || string.IsNullOrEmpty(e.Value.ToString()))
                 {
-                    e.Value = "-"; // Set the display value to "-"
-                    e.FormattingApplied = true; // Indicate that formatting is applied
+                    e.Value = "-"; 
+                    e.FormattingApplied = true; 
                 }
             }
             if (requestsDataGridView.Columns[e.ColumnIndex].Name == "NumberOfDays")
             {
-                // Check if the cell value is null or empty
                 if ((int)e.Value == 0 || string.IsNullOrEmpty(e.Value.ToString()))
                 {
-                    e.Value = "-"; // Set the display value to "-"
-                    e.FormattingApplied = true; // Indicate that formatting is applied
+                    e.Value = "-";
+                    e.FormattingApplied = true; 
                 }
             }
         }
@@ -297,13 +294,10 @@ namespace TDF.Net.Forms
         }
         private void ConfigureDataGridViewForUser()
         {
-            //requestsDataGridView.Columns["RequestReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            //requestsDataGridView.Columns["RequestRejectReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-            //  requestsDataGridView.Columns["RequestReason"].Width = 145;
             bool isPending = pendingRadioButton.Checked;
             requestsDataGridView.Columns["Edit"].Visible = isPending;
             requestsDataGridView.Columns["Remove"].Visible = isPending;
+            requestsDataGridView.Columns["RequestRejectReason"].Visible = !isPending;
         }
         private void openRequestToEdit(DataGridViewCellEventArgs e)
         {
@@ -342,22 +336,6 @@ namespace TDF.Net.Forms
                 refreshRequestsTable();
             }
         }
-        /* private void CalculateNumberOfDaysForRequests()
-         {
-             foreach (DataGridViewRow row in requestsDataGridView.Rows)
-             {
-                 if (row.Cells["RequestFromDay"].Value != null && row.Cells["RequestToDay"].Value != null &&
-                     DateTime.TryParse(row.Cells["RequestFromDay"].Value.ToString(), out var beginningDate) &&
-                     DateTime.TryParse(row.Cells["RequestToDay"].Value.ToString(), out var endingDate))
-                 {
-                     row.Cells["NumberOfDays"].Value = (endingDate - beginningDate).Days + 1;
-                 }
-                 else
-                 {
-                     row.Cells["NumberOfDays"].Value = "-";
-                 }
-             }
-         }*/
         private void ReorderDataGridViewColumns()
         {
             requestsDataGridView.Columns["Edit"].DisplayIndex = requestsDataGridView.Columns.Count - 1;

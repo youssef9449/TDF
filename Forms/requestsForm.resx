@@ -245,6 +245,9 @@
   <data name="Edit.HeaderText" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="Edit.MinimumWidth" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
   <data name="Edit.Width" type="System.Int32, mscorlib">
     <value>62</value>
   </data>
@@ -253,6 +256,9 @@
   </metadata>
   <data name="Remove.HeaderText" xml:space="preserve">
     <value>Remove</value>
+  </data>
+  <data name="Remove.MinimumWidth" type="System.Int32, mscorlib">
+    <value>20</value>
   </data>
   <data name="Remove.Width" type="System.Int32, mscorlib">
     <value>94</value>
@@ -305,105 +311,6 @@
   </data>
   <data name="&gt;&gt;requestsDataGridView.ZOrder" xml:space="preserve">
     <value>8</value>
-  </data>
-  <data name="refreshButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAHkAAAAeCAYAAAAIC7GrAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABxSURBVGhD7dExAYAwAMCwKZll8IcM/sEPDtYcefp2zHNd
-        83wedrWu8Y/sxuQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNM
-        DjA5wOQAkwNMDhjzWPc3spFj3S+AuOSulfWbyQAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="refreshButton.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 10pt</value>
-  </data>
-  <data name="refreshButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>143, 139</value>
-  </data>
-  <data name="refreshButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>121, 30</value>
-  </data>
-  <data name="refreshButton.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
-  </data>
-  <data name="&gt;&gt;refreshButton.Name" xml:space="preserve">
-    <value>refreshButton</value>
-  </data>
-  <data name="&gt;&gt;refreshButton.Type" xml:space="preserve">
-    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
-  </data>
-  <data name="&gt;&gt;refreshButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;refreshButton.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="addRequestButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxFcAgFARBlGAZ/CGD/pN3KRMJTDHN1tv6
-        rNXnOdyqVvtHbmMCTIAJMAFhAkyACTABYQJMgAkwAWECTIAJMAFhAkyACTABYQJMgAkwAWECTIAJeCcY
-        tb+Ri4zaD25HZhvCCrDQAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="addRequestButton.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 10pt</value>
-  </data>
-  <data name="addRequestButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 139</value>
-  </data>
-  <data name="addRequestButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>129, 30</value>
-  </data>
-  <data name="addRequestButton.TabIndex" type="System.Int32, mscorlib">
-    <value>14</value>
-  </data>
-  <data name="&gt;&gt;addRequestButton.Name" xml:space="preserve">
-    <value>addRequestButton</value>
-  </data>
-  <data name="&gt;&gt;addRequestButton.Type" xml:space="preserve">
-    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
-  </data>
-  <data name="&gt;&gt;addRequestButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;addRequestButton.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="applyButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxFcAgFARBlGAZ/CGD/pN3KRMJTDHN1tv6
-        rNXnOdyqVvtHbmMCTIAJMAFhAkyACTABYQJMgAkwAWECTIAJMAFhAkyACTABYQJMgAkwAWECTIAJeCcY
-        tb+Ri4zaD25HZhvCCrDQAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="applyButton.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 10pt</value>
-  </data>
-  <data name="applyButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>275, 139</value>
-  </data>
-  <data name="applyButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>129, 30</value>
-  </data>
-  <data name="applyButton.TabIndex" type="System.Int32, mscorlib">
-    <value>16</value>
-  </data>
-  <data name="applyButton.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="&gt;&gt;applyButton.Name" xml:space="preserve">
-    <value>applyButton</value>
-  </data>
-  <data name="&gt;&gt;applyButton.Type" xml:space="preserve">
-    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
-  </data>
-  <data name="&gt;&gt;applyButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;applyButton.ZOrder" xml:space="preserve">
-    <value>5</value>
   </data>
   <data name="pendingRadioButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>76, 80</value>
@@ -627,6 +534,111 @@
   <data name="&gt;&gt;controlBox.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="dataGridViewImageColumn1.HeaderText" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="dataGridViewImageColumn1.MinimumWidth" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="refreshButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAHkAAAAeCAYAAAAIC7GrAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABxSURBVGhD7dExAYAwAMCwKZll8IcM/sEPDtYcefp2zHNd
+        83wedrWu8Y/sxuQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNM
+        DjA5wOQAkwNMDhjzWPc3spFj3S+AuOSulfWbyQAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="refreshButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 10pt</value>
+  </data>
+  <data name="refreshButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>143, 139</value>
+  </data>
+  <data name="refreshButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 30</value>
+  </data>
+  <data name="refreshButton.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="&gt;&gt;refreshButton.Name" xml:space="preserve">
+    <value>refreshButton</value>
+  </data>
+  <data name="&gt;&gt;refreshButton.Type" xml:space="preserve">
+    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
+  </data>
+  <data name="&gt;&gt;refreshButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;refreshButton.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="addRequestButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxFcAgFARBlGAZ/CGD/pN3KRMJTDHN1tv6
+        rNXnOdyqVvtHbmMCTIAJMAFhAkyACTABYQJMgAkwAWECTIAJMAFhAkyACTABYQJMgAkwAWECTIAJeCcY
+        tb+Ri4zaD25HZhvCCrDQAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="addRequestButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 10pt</value>
+  </data>
+  <data name="addRequestButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 139</value>
+  </data>
+  <data name="addRequestButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>129, 30</value>
+  </data>
+  <data name="addRequestButton.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;addRequestButton.Name" xml:space="preserve">
+    <value>addRequestButton</value>
+  </data>
+  <data name="&gt;&gt;addRequestButton.Type" xml:space="preserve">
+    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
+  </data>
+  <data name="&gt;&gt;addRequestButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;addRequestButton.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="applyButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxFcAgFARBlGAZ/CGD/pN3KRMJTDHN1tv6
+        rNXnOdyqVvtHbmMCTIAJMAFhAkyACTABYQJMgAkwAWECTIAJMAFhAkyACTABYQJMgAkwAWECTIAJeCcY
+        tb+Ri4zaD25HZhvCCrDQAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="applyButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 10pt</value>
+  </data>
+  <data name="applyButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>275, 139</value>
+  </data>
+  <data name="applyButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>129, 30</value>
+  </data>
+  <data name="applyButton.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="applyButton.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;applyButton.Name" xml:space="preserve">
+    <value>applyButton</value>
+  </data>
+  <data name="&gt;&gt;applyButton.Type" xml:space="preserve">
+    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
+  </data>
+  <data name="&gt;&gt;applyButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;applyButton.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -641,6 +653,12 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Requests</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn1.Name" xml:space="preserve">
+    <value>dataGridViewImageColumn1</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;RequestID.Name" xml:space="preserve">
     <value>RequestID</value>
@@ -718,13 +736,13 @@
     <value>Edit</value>
   </data>
   <data name="&gt;&gt;Edit.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewButtonColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;Remove.Name" xml:space="preserve">
     <value>Remove</value>
   </data>
   <data name="&gt;&gt;Remove.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewButtonColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;Approve.Name" xml:space="preserve">
     <value>Approve</value>
