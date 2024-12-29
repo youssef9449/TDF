@@ -1,18 +1,18 @@
 /*
- Navicat Premium Data Transfer
+ Navicat Premium Dump SQL
 
- Source Server         : Connection
+ Source Server         : Server
  Source Server Type    : SQL Server
- Source Server Version : 15002000 (15.00.2000)
- Source Host           : YOUSSEF-PC:1433
+ Source Server Version : 16001000 (16.00.1000)
+ Source Host           : TDF-SQL-SRV:1433
  Source Catalog        : Users
  Source Schema         : dbo
 
  Target Server Type    : SQL Server
- Target Server Version : 15002000 (15.00.2000)
+ Target Server Version : 16001000 (16.00.1000)
  File Encoding         : 65001
 
- Date: 15/12/2024 07:25:29
+ Date: 25/12/2024 11:15:41
 */
 
 
@@ -36,7 +36,8 @@ CREATE TABLE [dbo].[Requests] (
   [RequestToDay] date  NULL,
   [RequestUserFullName] varchar(255) COLLATE Arabic_CI_AS  NOT NULL,
   [RequestCloser] varchar(255) COLLATE Arabic_CI_AS  NULL,
-  [RequestDepartment] varchar(255) COLLATE Arabic_CI_AS  NOT NULL
+  [RequestDepartment] varchar(255) COLLATE Arabic_CI_AS  NOT NULL,
+  [RequestNumberOfDays] int  NULL
 )
 GO
 
@@ -45,9 +46,19 @@ GO
 
 
 -- ----------------------------
+-- Records of Requests
+-- ----------------------------
+SET IDENTITY_INSERT [dbo].[Requests] ON
+GO
+
+SET IDENTITY_INSERT [dbo].[Requests] OFF
+GO
+
+
+-- ----------------------------
 -- Auto increment value for Requests
 -- ----------------------------
-DBCC CHECKIDENT ('[dbo].[Requests]', RESEED, 1)
+DBCC CHECKIDENT ('[dbo].[Requests]', RESEED, 3)
 GO
 
 
@@ -63,6 +74,6 @@ GO
 -- ----------------------------
 -- Foreign Keys structure for table Requests
 -- ----------------------------
-ALTER TABLE [dbo].[Requests] ADD CONSTRAINT [FK__DayOffReq__UserI__412EB0B6] FOREIGN KEY ([RequestUserID]) REFERENCES [dbo].[Users] ([UserID]) ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE [dbo].[Requests] ADD CONSTRAINT [FK__DayOffReq__UserI__412EB0B6] FOREIGN KEY ([RequestUserID]) REFERENCES [dbo].[Users] ([UserID]) ON DELETE CASCADE ON UPDATE NO ACTION
 GO
 

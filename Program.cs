@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using TDF.Classes;
+using static TDF.Net.Database;
 
 namespace TDF.Net
 {
@@ -17,13 +18,15 @@ namespace TDF.Net
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
             try
             {
-                using (var connection = Database.GetConnection())
+                using (var connection = GetConnection())
                 {
                     connection.Open();
                 }
                 Application.Run(new loginForm());
+
             }
             catch (Exception ex)
             {

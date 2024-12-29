@@ -68,10 +68,11 @@
             this.passwordLabel.AutoEllipsis = false;
             this.passwordLabel.CursorType = null;
             this.passwordLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.passwordLabel.Location = new System.Drawing.Point(21, 109);
+            this.passwordLabel.Location = new System.Drawing.Point(24, 134);
+            this.passwordLabel.Margin = new System.Windows.Forms.Padding(4);
             this.passwordLabel.Name = "passwordLabel";
             this.passwordLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.passwordLabel.Size = new System.Drawing.Size(65, 20);
+            this.passwordLabel.Size = new System.Drawing.Size(80, 25);
             this.passwordLabel.TabIndex = 2;
             this.passwordLabel.Text = "Password:";
             this.passwordLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -83,10 +84,11 @@
             this.nameLabel.AutoEllipsis = false;
             this.nameLabel.CursorType = null;
             this.nameLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.nameLabel.Location = new System.Drawing.Point(19, 156);
+            this.nameLabel.Location = new System.Drawing.Point(22, 192);
+            this.nameLabel.Margin = new System.Windows.Forms.Padding(4);
             this.nameLabel.Name = "nameLabel";
             this.nameLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.nameLabel.Size = new System.Drawing.Size(70, 20);
+            this.nameLabel.Size = new System.Drawing.Size(83, 25);
             this.nameLabel.TabIndex = 9;
             this.nameLabel.Text = "Full Name:";
             this.nameLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -99,10 +101,11 @@
             this.bunifuLabel1.AutoEllipsis = false;
             this.bunifuLabel1.CursorType = null;
             this.bunifuLabel1.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel1.Location = new System.Drawing.Point(19, 62);
+            this.bunifuLabel1.Location = new System.Drawing.Point(22, 76);
+            this.bunifuLabel1.Margin = new System.Windows.Forms.Padding(4);
             this.bunifuLabel1.Name = "bunifuLabel1";
             this.bunifuLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel1.Size = new System.Drawing.Size(69, 20);
+            this.bunifuLabel1.Size = new System.Drawing.Size(83, 25);
             this.bunifuLabel1.TabIndex = 12;
             this.bunifuLabel1.Text = "Username:";
             this.bunifuLabel1.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -144,9 +147,10 @@
             this.departmentDropdown.ItemHighLightColor = System.Drawing.Color.DodgerBlue;
             this.departmentDropdown.ItemHighLightForeColor = System.Drawing.Color.White;
             this.departmentDropdown.ItemTopMargin = 3;
-            this.departmentDropdown.Location = new System.Drawing.Point(105, 194);
+            this.departmentDropdown.Location = new System.Drawing.Point(122, 239);
+            this.departmentDropdown.Margin = new System.Windows.Forms.Padding(4);
             this.departmentDropdown.Name = "departmentDropdown";
-            this.departmentDropdown.Size = new System.Drawing.Size(260, 32);
+            this.departmentDropdown.Size = new System.Drawing.Size(303, 32);
             this.departmentDropdown.TabIndex = 13;
             this.departmentDropdown.Text = null;
             this.departmentDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
@@ -159,10 +163,11 @@
             this.departmentLabel.AutoEllipsis = false;
             this.departmentLabel.CursorType = null;
             this.departmentLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.departmentLabel.Location = new System.Drawing.Point(16, 203);
+            this.departmentLabel.Location = new System.Drawing.Point(6, 239);
+            this.departmentLabel.Margin = new System.Windows.Forms.Padding(4);
             this.departmentLabel.Name = "departmentLabel";
             this.departmentLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.departmentLabel.Size = new System.Drawing.Size(83, 20);
+            this.departmentLabel.Size = new System.Drawing.Size(99, 25);
             this.departmentLabel.TabIndex = 14;
             this.departmentLabel.Text = "Department:";
             this.departmentLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -175,8 +180,9 @@
             this.panel.Controls.Add(this.controlBox);
             this.panel.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel.Location = new System.Drawing.Point(0, 0);
+            this.panel.Margin = new System.Windows.Forms.Padding(4);
             this.panel.Name = "panel";
-            this.panel.Size = new System.Drawing.Size(966, 41);
+            this.panel.Size = new System.Drawing.Size(1170, 50);
             this.panel.TabIndex = 23;
             this.panel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel_Paint);
             this.panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel_MouseDown);
@@ -211,8 +217,8 @@
             this.controlBox.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
             this.controlBox.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
             this.controlBox.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.controlBox.Location = new System.Drawing.Point(804, 2);
-            this.controlBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.controlBox.Location = new System.Drawing.Point(981, 2);
+            this.controlBox.Margin = new System.Windows.Forms.Padding(2);
             this.controlBox.MaximizeBox = false;
             this.controlBox.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
             this.controlBox.MaximizeBoxOptions.BorderRadius = 0;
@@ -242,7 +248,7 @@
             this.controlBox.Name = "controlBox";
             this.controlBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.controlBox.ShowDesignBorders = false;
-            this.controlBox.Size = new System.Drawing.Size(160, 37);
+            this.controlBox.Size = new System.Drawing.Size(187, 46);
             this.controlBox.TabIndex = 19;
             // 
             // updateButton
@@ -294,7 +300,8 @@
             this.updateButton.IdleIconLeftImage = null;
             this.updateButton.IdleIconRightImage = null;
             this.updateButton.IndicateFocus = false;
-            this.updateButton.Location = new System.Drawing.Point(119, 359);
+            this.updateButton.Location = new System.Drawing.Point(123, 459);
+            this.updateButton.Margin = new System.Windows.Forms.Padding(4);
             this.updateButton.Name = "updateButton";
             this.updateButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.updateButton.OnDisabledState.BorderRadius = 1;
@@ -328,7 +335,7 @@
             this.updateButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.updateButton.OnPressedState.IconLeftImage = null;
             this.updateButton.OnPressedState.IconRightImage = null;
-            this.updateButton.Size = new System.Drawing.Size(211, 29);
+            this.updateButton.Size = new System.Drawing.Size(246, 36);
             this.updateButton.TabIndex = 11;
             this.updateButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.updateButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -366,7 +373,8 @@
             this.nameTextBox.IconRight = null;
             this.nameTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.nameTextBox.Lines = new string[0];
-            this.nameTextBox.Location = new System.Drawing.Point(106, 151);
+            this.nameTextBox.Location = new System.Drawing.Point(124, 186);
+            this.nameTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.nameTextBox.MaxLength = 32767;
             this.nameTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.nameTextBox.Modified = false;
@@ -392,7 +400,7 @@
             stateProperties4.ForeColor = System.Drawing.Color.Empty;
             stateProperties4.PlaceholderForeColor = System.Drawing.Color.Empty;
             this.nameTextBox.OnIdleState = stateProperties4;
-            this.nameTextBox.Padding = new System.Windows.Forms.Padding(3);
+            this.nameTextBox.Padding = new System.Windows.Forms.Padding(4);
             this.nameTextBox.PasswordChar = '\0';
             this.nameTextBox.PlaceholderForeColor = System.Drawing.Color.Silver;
             this.nameTextBox.PlaceholderText = "";
@@ -402,7 +410,7 @@
             this.nameTextBox.SelectionLength = 0;
             this.nameTextBox.SelectionStart = 0;
             this.nameTextBox.ShortcutsEnabled = true;
-            this.nameTextBox.Size = new System.Drawing.Size(260, 29);
+            this.nameTextBox.Size = new System.Drawing.Size(303, 36);
             this.nameTextBox.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.nameTextBox.TabIndex = 10;
             this.nameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -463,7 +471,8 @@
             this.signupButton.IdleIconLeftImage = null;
             this.signupButton.IdleIconRightImage = null;
             this.signupButton.IndicateFocus = false;
-            this.signupButton.Location = new System.Drawing.Point(163, 306);
+            this.signupButton.Location = new System.Drawing.Point(174, 394);
+            this.signupButton.Margin = new System.Windows.Forms.Padding(4);
             this.signupButton.Name = "signupButton";
             this.signupButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.signupButton.OnDisabledState.BorderRadius = 1;
@@ -497,7 +506,7 @@
             this.signupButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.signupButton.OnPressedState.IconLeftImage = null;
             this.signupButton.OnPressedState.IconRightImage = null;
-            this.signupButton.Size = new System.Drawing.Size(123, 29);
+            this.signupButton.Size = new System.Drawing.Size(144, 36);
             this.signupButton.TabIndex = 8;
             this.signupButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.signupButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -555,7 +564,8 @@
             this.loginButton.IdleIconLeftImage = null;
             this.loginButton.IdleIconRightImage = null;
             this.loginButton.IndicateFocus = false;
-            this.loginButton.Location = new System.Drawing.Point(163, 253);
+            this.loginButton.Location = new System.Drawing.Point(174, 328);
+            this.loginButton.Margin = new System.Windows.Forms.Padding(4);
             this.loginButton.Name = "loginButton";
             this.loginButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.loginButton.OnDisabledState.BorderRadius = 1;
@@ -589,7 +599,7 @@
             this.loginButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.loginButton.OnPressedState.IconLeftImage = null;
             this.loginButton.OnPressedState.IconRightImage = null;
-            this.loginButton.Size = new System.Drawing.Size(123, 29);
+            this.loginButton.Size = new System.Drawing.Size(144, 36);
             this.loginButton.TabIndex = 7;
             this.loginButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.loginButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -627,7 +637,8 @@
             this.txtPassword.IconRight = null;
             this.txtPassword.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.txtPassword.Lines = new string[0];
-            this.txtPassword.Location = new System.Drawing.Point(106, 105);
+            this.txtPassword.Location = new System.Drawing.Point(124, 129);
+            this.txtPassword.Margin = new System.Windows.Forms.Padding(4);
             this.txtPassword.MaxLength = 32767;
             this.txtPassword.MinimumSize = new System.Drawing.Size(1, 1);
             this.txtPassword.Modified = false;
@@ -653,7 +664,7 @@
             stateProperties8.ForeColor = System.Drawing.Color.Empty;
             stateProperties8.PlaceholderForeColor = System.Drawing.Color.Empty;
             this.txtPassword.OnIdleState = stateProperties8;
-            this.txtPassword.Padding = new System.Windows.Forms.Padding(3);
+            this.txtPassword.Padding = new System.Windows.Forms.Padding(4);
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.PlaceholderForeColor = System.Drawing.Color.Silver;
             this.txtPassword.PlaceholderText = "";
@@ -663,7 +674,7 @@
             this.txtPassword.SelectionLength = 0;
             this.txtPassword.SelectionStart = 0;
             this.txtPassword.ShortcutsEnabled = true;
-            this.txtPassword.Size = new System.Drawing.Size(260, 29);
+            this.txtPassword.Size = new System.Drawing.Size(303, 36);
             this.txtPassword.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.txtPassword.TabIndex = 4;
             this.txtPassword.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -704,7 +715,8 @@
             this.txtUsername.IconRight = null;
             this.txtUsername.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.txtUsername.Lines = new string[0];
-            this.txtUsername.Location = new System.Drawing.Point(106, 59);
+            this.txtUsername.Location = new System.Drawing.Point(124, 73);
+            this.txtUsername.Margin = new System.Windows.Forms.Padding(4);
             this.txtUsername.MaxLength = 32767;
             this.txtUsername.MinimumSize = new System.Drawing.Size(1, 1);
             this.txtUsername.Modified = false;
@@ -730,7 +742,7 @@
             stateProperties12.ForeColor = System.Drawing.Color.Empty;
             stateProperties12.PlaceholderForeColor = System.Drawing.Color.Empty;
             this.txtUsername.OnIdleState = stateProperties12;
-            this.txtUsername.Padding = new System.Windows.Forms.Padding(3);
+            this.txtUsername.Padding = new System.Windows.Forms.Padding(4);
             this.txtUsername.PasswordChar = '\0';
             this.txtUsername.PlaceholderForeColor = System.Drawing.Color.Silver;
             this.txtUsername.PlaceholderText = "";
@@ -740,7 +752,7 @@
             this.txtUsername.SelectionLength = 0;
             this.txtUsername.SelectionStart = 0;
             this.txtUsername.ShortcutsEnabled = true;
-            this.txtUsername.Size = new System.Drawing.Size(260, 29);
+            this.txtUsername.Size = new System.Drawing.Size(303, 36);
             this.txtUsername.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.txtUsername.TabIndex = 3;
             this.txtUsername.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -754,19 +766,20 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = global::TDF.Properties.Resources.team;
-            this.pictureBox1.Location = new System.Drawing.Point(372, 44);
+            this.pictureBox1.Location = new System.Drawing.Point(456, 58);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(592, 366);
+            this.pictureBox1.Size = new System.Drawing.Size(709, 450);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 24;
             this.pictureBox1.TabStop = false;
             // 
             // loginForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(966, 413);
+            this.ClientSize = new System.Drawing.Size(1170, 516);
             this.ControlBox = false;
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.updateButton);
@@ -783,6 +796,7 @@
             this.Controls.Add(this.passwordLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "loginForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

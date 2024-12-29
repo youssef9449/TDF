@@ -1,18 +1,18 @@
 /*
- Navicat Premium Data Transfer
+ Navicat Premium Dump SQL
 
- Source Server         : Connection
+ Source Server         : Server
  Source Server Type    : SQL Server
- Source Server Version : 15002000 (15.00.2000)
- Source Host           : YOUSSEF-PC:1433
+ Source Server Version : 16001000 (16.00.1000)
+ Source Host           : TDF-SQL-SRV:1433
  Source Catalog        : Users
  Source Schema         : dbo
 
  Target Server Type    : SQL Server
- Target Server Version : 15002000 (15.00.2000)
+ Target Server Version : 16001000 (16.00.1000)
  File Encoding         : 65001
 
- Date: 16/12/2024 00:10:36
+ Date: 25/12/2024 11:15:34
 */
 
 

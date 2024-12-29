@@ -17,6 +17,7 @@ namespace TDF.Net
         {
             InitializeComponent();
             MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
+            WindowState = FormWindowState.Maximized;
             Program.loadForm(this);
             formPanel.BackColor = Color.White;
             hasManagerRole = loggedInUser.Role != null && (string.Equals(loggedInUser.Role, "Manager", StringComparison.OrdinalIgnoreCase) || string.Equals(loggedInUser.Role, "Team Leader", StringComparison.OrdinalIgnoreCase));
@@ -158,6 +159,18 @@ namespace TDF.Net
             {
                 MessageBox.Show("An error occurred while saving the image: " + ex.Message);
             }
+        }
+        private void ShowFormInPanel(Form form)
+        {
+            form.TopLevel = false; // Make it a child control rather than a top-level form
+            form.Dock = DockStyle.Fill;
+
+            formPanel.Controls.Clear();
+            formPanel.Controls.Add(form);
+            form.Show();
+
+            formPanel.Controls.Add(TDFpictureBox);
+            TDFpictureBox.Show();
         }
         #endregion
 
@@ -302,41 +315,23 @@ namespace TDF.Net
 
             contextMenu.Show(Cursor.Position);
         }
-        private void circularPictureBox_MouseEnter(object sender, EventArgs e)
-        {
-            circularPictureBox.Cursor = Cursors.Hand;
-        }
-        private void circularPictureBox_MouseLeave(object sender, EventArgs e)
-        {
-            circularPictureBox.Cursor = Cursors.Default; // Reset cursor to default
-        }
         #endregion
 
         #region Buttons
         private void requestsButton_Click(object sender, EventArgs e)
         {
-            requestsForm requestsForm = new requestsForm();
-            // requestsForm.ShowDialog();
-            requestsForm.TopLevel = false; // Make it a child control rather than a top-level form
-            requestsForm.FormBorderStyle = FormBorderStyle.None; // Remove the border if desired
-            requestsForm.Dock = DockStyle.Fill; // Fill the panel
-
-            //formPanel.Controls.Clear(); // Optional: Clear any existing controls in the panel
-            formPanel.Controls.Add(requestsForm); // Add form to panel
-            TDFpictureBox.SendToBack();
-            requestsForm.Show(); // Display the form
-
+            ShowFormInPanel(new requestsForm());
         }
         private void controlPanelButton_Click(object sender, EventArgs e)
         {
-            controlPanelForm controlPanelForm = new controlPanelForm();
-            controlPanelForm.ShowDialog();
+            ShowFormInPanel(new controlPanelForm());
         }
         private void logoutButton_Click(object sender, EventArgs e)
         {
             loggedInUser = null;
             Close();
             loginForm.Show();
+
             /*settingsForm settingsForm = new settingsForm();
             settingsForm.ShowDialog();
 
@@ -344,11 +339,6 @@ namespace TDF.Net
             {
                 updateUserDataControls();
             }*/
-        }
-        private void myTeamButton_Click(object sender, EventArgs e)
-        {
-            teamForm teamForm = new teamForm();
-            teamForm.ShowDialog();
         }
         #endregion
     }

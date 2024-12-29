@@ -7,6 +7,7 @@ using TDF.Classes;
 using TDF.Net.Classes;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
+using static TDF.Net.Forms.addRequestForm;
 
 
 namespace TDF.Net.Forms
@@ -48,58 +49,17 @@ namespace TDF.Net.Forms
             base.OnPaint(e);
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
         }
-        private void panel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && e.Clicks == 1)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, 0x112, 0xf012, 0);
-            }
-        }
         private void requestsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex >= 0 & e.RowIndex >= 0)
             {
-                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit")
+                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit" && requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending"|| hasAdminRole || hasManagerRole)
                 {
                     if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending")
                     {
                         if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewButtonCell)
                         {
-                            // Get the underlying data row from the DataGridView
-                            DataRow row = ((DataRowView)requestsDataGridView.Rows[e.RowIndex].DataBoundItem).Row;
-
-                            // Retrieve the request data from the DataRow
-                            DateTime requestFromDay = Convert.ToDateTime(row["RequestFromDay"]);
-
-                            Request selectedRequest = new Request
-                            {
-                                RequestID = row["RequestID"] != DBNull.Value ? Convert.ToInt32(row["RequestID"]) : 0,
-                                RequestType = row["RequestType"] != DBNull.Value ? row["RequestType"].ToString() : string.Empty,
-                                RequestReason = row["RequestReason"] != DBNull.Value ? row["RequestReason"].ToString() : string.Empty,
-                                RequestFromDay = requestFromDay,
-                                RequestToDay = row["RequestToDay"] != DBNull.Value ? Convert.ToDateTime(row["RequestToDay"]) : requestFromDay,
-
-                                // Converting TimeSpan to DateTime by adding the TimeSpan to the requestFromDay
-                                RequestBeginningTime = row["RequestBeginningTime"] != DBNull.Value ?
-                                                       requestFromDay.Add((TimeSpan)row["RequestBeginningTime"]) : requestFromDay,
-                                RequestEndingTime = row["RequestEndingTime"] != DBNull.Value ?
-                                                    requestFromDay.Add((TimeSpan)row["RequestEndingTime"]) : requestFromDay,
-
-                                RequestStatus = row["RequestStatus"] != DBNull.Value ? row["RequestStatus"].ToString() : string.Empty
-                            };
-
-                            // Open the AddRequestForm with the selected request data for editing
-                            addRequestForm addRequestForm = new addRequestForm(selectedRequest); // Assuming AddRequestForm has a constructor that takes a Request object
-                            addRequestForm.ShowDialog();
-
-                            // Optionally, refresh the DataGridView after editing (if changes are saved)
-                            //refreshRequestsTable();
-
-                            if (addRequestForm.requestAddedOrUpdated)
-                            {
-                                refreshRequestsTable();
-                            }
+                            openRequestToEdit(e);
                         }
                     }
                     else
@@ -331,36 +291,73 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["RequestUserFullName"].Visible = true;
             requestsDataGridView.Columns["Approve"].Visible = true;
             requestsDataGridView.Columns["Reject"].Visible = true;
-            requestsDataGridView.Columns["Edit"].Visible = false;
+            //requestsDataGridView.Columns["Edit"].Visible = false;
             requestsDataGridView.Columns["Remove"].Visible = false;
             requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = false;
         }
         private void ConfigureDataGridViewForUser()
         {
-            requestsDataGridView.Columns["RequestReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            //requestsDataGridView.Columns["RequestReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             //requestsDataGridView.Columns["RequestRejectReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-            requestsDataGridView.Columns["RequestReason"].Width = 145;
+            //  requestsDataGridView.Columns["RequestReason"].Width = 145;
             bool isPending = pendingRadioButton.Checked;
             requestsDataGridView.Columns["Edit"].Visible = isPending;
             requestsDataGridView.Columns["Remove"].Visible = isPending;
         }
-       /* private void CalculateNumberOfDaysForRequests()
+        private void openRequestToEdit(DataGridViewCellEventArgs e)
         {
-            foreach (DataGridViewRow row in requestsDataGridView.Rows)
+            // Get the underlying data row from the DataGridView
+            DataRow row = ((DataRowView)requestsDataGridView.Rows[e.RowIndex].DataBoundItem).Row;
+
+            // Retrieve the request data from the DataRow
+            DateTime requestFromDay = Convert.ToDateTime(row["RequestFromDay"]);
+
+            Request selectedRequest = new Request
             {
-                if (row.Cells["RequestFromDay"].Value != null && row.Cells["RequestToDay"].Value != null &&
-                    DateTime.TryParse(row.Cells["RequestFromDay"].Value.ToString(), out var beginningDate) &&
-                    DateTime.TryParse(row.Cells["RequestToDay"].Value.ToString(), out var endingDate))
-                {
-                    row.Cells["NumberOfDays"].Value = (endingDate - beginningDate).Days + 1;
-                }
-                else
-                {
-                    row.Cells["NumberOfDays"].Value = "-";
-                }
+                RequestID = row["RequestID"] != DBNull.Value ? Convert.ToInt32(row["RequestID"]) : 0,
+                RequestType = row["RequestType"] != DBNull.Value ? row["RequestType"].ToString() : string.Empty,
+                RequestReason = row["RequestReason"] != DBNull.Value ? row["RequestReason"].ToString() : string.Empty,
+                RequestFromDay = requestFromDay,
+                RequestToDay = row["RequestToDay"] != DBNull.Value ? Convert.ToDateTime(row["RequestToDay"]) : requestFromDay,
+
+                // Converting TimeSpan to DateTime by adding the TimeSpan to the requestFromDay
+                RequestBeginningTime = row["RequestBeginningTime"] != DBNull.Value ?
+                                       requestFromDay.Add((TimeSpan)row["RequestBeginningTime"]) : requestFromDay,
+                RequestEndingTime = row["RequestEndingTime"] != DBNull.Value ?
+                                    requestFromDay.Add((TimeSpan)row["RequestEndingTime"]) : requestFromDay,
+
+                RequestStatus = row["RequestStatus"] != DBNull.Value ? row["RequestStatus"].ToString() : string.Empty
+            };
+
+            // Open the AddRequestForm with the selected request data for editing
+            addRequestForm addRequestForm = new addRequestForm(selectedRequest); // Assuming AddRequestForm has a constructor that takes a Request object
+            addRequestForm.ShowDialog();
+
+            // Optionally, refresh the DataGridView after editing (if changes are saved)
+            //refreshRequestsTable();
+
+            if (requestAddedOrUpdated)
+            {
+                refreshRequestsTable();
             }
-        }*/
+        }
+        /* private void CalculateNumberOfDaysForRequests()
+         {
+             foreach (DataGridViewRow row in requestsDataGridView.Rows)
+             {
+                 if (row.Cells["RequestFromDay"].Value != null && row.Cells["RequestToDay"].Value != null &&
+                     DateTime.TryParse(row.Cells["RequestFromDay"].Value.ToString(), out var beginningDate) &&
+                     DateTime.TryParse(row.Cells["RequestToDay"].Value.ToString(), out var endingDate))
+                 {
+                     row.Cells["NumberOfDays"].Value = (endingDate - beginningDate).Days + 1;
+                 }
+                 else
+                 {
+                     row.Cells["NumberOfDays"].Value = "-";
+                 }
+             }
+         }*/
         private void ReorderDataGridViewColumns()
         {
             requestsDataGridView.Columns["Edit"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
@@ -378,7 +375,7 @@ namespace TDF.Net.Forms
             addRequestForm addRequestForm = new addRequestForm();
             addRequestForm.ShowDialog();
 
-            if (addRequestForm.requestAddedOrUpdated)
+            if (requestAddedOrUpdated)
             {
                 refreshRequestsTable();
             }

@@ -1,11 +1,12 @@
 ﻿using Bunifu.UI.WinForms;
 using System;
 using System.Data.SqlClient;
-using System.Diagnostics.Eventing.Reader;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Net.Classes;
 using static TDF.Net.loginForm;
+using static TDF.Net.mainForm;
+
 
 namespace TDF.Net.Forms
 {
@@ -79,6 +80,27 @@ namespace TDF.Net.Forms
             toDayDatePicker.Value = (DateTime)(DateTime.TryParse(RequestToEdit.RequestToDay.ToString(), out DateTime to) ? RequestToEdit.RequestToDay : null);
             fromTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestBeginningTime.Value.TimeOfDay.ToString(@"hh\:mm");
             toTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestEndingTime.Value.TimeOfDay.ToString(@"hh\:mm");
+
+            reasonTextBox.ReadOnly = hasManagerRole || hasAdminRole;
+            workFromHomeRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
+            externalAssignmentRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
+            dayoffRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
+            exitRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
+            annualRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
+            casualRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
+        }
+        private int GetWorkingDays(DateTime start, DateTime end)
+        {
+            int workingDays = 0;
+            for (DateTime date = start; date <= end; date = date.AddDays(1))
+            {
+                // Exclude Fridays and Saturdays
+                if (date.DayOfWeek != DayOfWeek.Friday && date.DayOfWeek != DayOfWeek.Saturday)
+                {
+                    workingDays++;
+                }
+            }
+            return workingDays;
         }
         private int GetLeaveDays(string leaveType, int userID)
         {
@@ -121,7 +143,6 @@ namespace TDF.Net.Forms
             DateTime toDate = Convert.ToDateTime(toDayDatePicker.Value).Date;
             DateTime fromDate = Convert.ToDateTime(fromDayDatePicker.Value).Date;
 
-
             if (toDate < fromDate)
             {
                 daysRequestedLabel.Text = "------";
@@ -136,7 +157,7 @@ namespace TDF.Net.Forms
                         availableAnnualBalance = GetLeaveDays("AnnualBalance", loggedInUser.userID);
                         availableBalanceLabel.Text = availableAnnualBalance.ToString();
 
-                        numberOfDaysRequested = (toDate - fromDate).Days + 1;
+                        numberOfDaysRequested = GetWorkingDays(fromDate, toDate);
                         daysRequestedLabel.Text = numberOfDaysRequested.ToString();
                         remainingBalanceLabel.Text = (availableAnnualBalance - numberOfDaysRequested).ToString();
                     }
@@ -145,14 +166,15 @@ namespace TDF.Net.Forms
                         availableCasualBalance = GetLeaveDays("CasualBalance", loggedInUser.userID);
                         availableBalanceLabel.Text = availableCasualBalance.ToString();
 
-                        numberOfDaysRequested = (toDate - fromDate).Days + 1;
+                        numberOfDaysRequested = GetWorkingDays(fromDate, toDate);
                         daysRequestedLabel.Text = numberOfDaysRequested.ToString();
                         remainingBalanceLabel.Text = (availableCasualBalance - numberOfDaysRequested).ToString();
                     }
                 }
                 else
                 {
-                    numberOfDaysRequested = (toDate - fromDate).Days + 1;
+                    numberOfDaysRequested = GetWorkingDays(fromDate, toDate);
+                    daysRequestedLabel.Text = numberOfDaysRequested.ToString();
                 }
             }
         }
@@ -252,13 +274,9 @@ namespace TDF.Net.Forms
             RequestToEdit.RequestReason = reasonTextBox.Text;
             RequestToEdit.RequestFromDay = fromDayDatePicker.Value;
             RequestToEdit.RequestToDay = dayoffRadioButton.Checked || workFromHomeRadioButton.Checked ? toDayDatePicker.Value : (DateTime?)null;
-            RequestToEdit.RequestBeginningTime = requestType == "Permission" || requestType == "External Assignment"
-                ? Convert.ToDateTime(fromTimeTextBox.Text)
-                : (DateTime?)null;
-            RequestToEdit.RequestEndingTime = requestType == "Permission" || requestType == "External Assignment"
-                ? Convert.ToDateTime(toTimeTextBox.Text)
-                : (DateTime?)null;
-            RequestToEdit.RequestNumberOfDays = requestType == "Permission" || requestType == "External Assignment" ? 0 : (Convert.ToDateTime(toDayDatePicker.Value).Date - Convert.ToDateTime(fromDayDatePicker.Value).Date).Days + 1;
+            RequestToEdit.RequestBeginningTime = requestType == "Permission" || requestType == "External Assignment" ? Convert.ToDateTime(fromTimeTextBox.Text) : (DateTime?)null;
+            RequestToEdit.RequestEndingTime = requestType == "Permission" || requestType == "External Assignment" ? Convert.ToDateTime(toTimeTextBox.Text) : (DateTime?)null;
+            RequestToEdit.RequestNumberOfDays = requestType == "Permission" || requestType == "External Assignment" ? 0 : numberOfDaysRequested;
             RequestToEdit.update();
         }
         #endregion
@@ -276,8 +294,8 @@ namespace TDF.Net.Forms
         {
             if (e.Button == MouseButtons.Left && e.Clicks == 1)
             {
-                mainForm.ReleaseCapture();
-                mainForm.SendMessage(Handle, 0x112, 0xf012, 0);
+                ReleaseCapture();
+                SendMessage(Handle, 0x112, 0xf012, 0);
             }
         }
         protected override void OnPaint(PaintEventArgs e)
@@ -323,6 +341,8 @@ namespace TDF.Net.Forms
                 SetDateControlsVisibility(true);
                 SetBalanceControlsVisibility(false);
                 leaveGroupBox.Visible = false;
+                daysRequestedLabel.Visible = true;
+                bunifuLabel3.Visible = true;
             }
         }
         private void externalAssignmentRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
@@ -356,11 +376,12 @@ namespace TDF.Net.Forms
         }
         #endregion
 
+        #region Buttons
         private void submitButton_Click(object sender, EventArgs e)
         {
             // Validate inputs for time-based requests
 
-            if (exitRadioButton.Checked)
+            if (exitRadioButton.Checked || externalAssignmentRadioButton.Checked)
             {
                 if (!ValidateTimeInputs(fromTimeTextBox.Text, toTimeTextBox.Text, out DateTime from, out DateTime to))
                     return;
@@ -373,7 +394,6 @@ namespace TDF.Net.Forms
             }
 
             // Validate inputs for day-based requests
-
             else
             {
                 if (!ValidateDayInputs(fromDayDatePicker.Text, toDayDatePicker.Text, out DateTime fromDay, out DateTime toDay))
@@ -385,7 +405,7 @@ namespace TDF.Net.Forms
                     return;
                 }
 
-                numberOfDaysRequested = (toDay - fromDay).Days + 1;
+                //numberOfDaysRequested = (toDay - fromDay).Days + 1;
             }
 
             // Determine request type
@@ -397,8 +417,6 @@ namespace TDF.Net.Forms
                 ? (annualRadioButton.Checked ? "Annual" : "Casual")
                 : "External Assignment";
 
-
-
             // Create or update request
             if (RequestToEdit == null)
             {
@@ -409,5 +427,6 @@ namespace TDF.Net.Forms
                 UpdateExistingRequest(requestType);
             }
         }
+        #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using TDF.Classes;
@@ -15,12 +16,17 @@ namespace TDF.Forms
         {
             InitializeComponent();
             Program.loadForm(this);
+            controlBox.BackColor = Color.White;
+            controlBox.CloseBoxOptions.HoverColor = Color.White;
+            controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.SecondaryColor;
+            controlBox.CloseBoxOptions.IconPressedColor = ThemeColor.PrimaryColor;
+            controlBox.CloseBoxOptions.PressedColor = Color.White;
         }
 
         #region Methods
         void updateDepartments()
         {
-            departments = GetDepartments();
+            departments = getDepartments();
             depDropdown.DataSource = departments;
             depListBox.DataSource = departments;
             depDropdown.Text = "";
@@ -31,25 +37,31 @@ namespace TDF.Forms
         }
         void loadUserNames()
         {
-
             string query, filter;
 
             filter = filterDropdown.Text;
 
-            switch (filter)
+            if (string.IsNullOrEmpty(filter))
             {
-                case "Name":
-                    query = $"SELECT FullName, Department, Role FROM Users where FullName LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
-                    break;
-                case "Department":
-                    query = $"SELECT FullName, Department, Role FROM Users where Department LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
-                    break;
-                case "Role":
-                    query = $"SELECT FullName, Department, Role FROM Users where Role LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
-                    break;
-                default:
-                    query = "SELECT FullName, Department, Role FROM Users where NOT Role ='Admin'";
-                    break;
+                query = $"SELECT FullName, Department, Role FROM Users where NOT Role ='Admin'";
+            }
+            else
+            {
+                switch (filter)
+                {
+                    case "Name":
+                        query = $"SELECT FullName, Department, Role FROM Users where FullName LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
+                        break;
+                    case "Department":
+                        query = $"SELECT FullName, Department, Role FROM Users where Department LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
+                        break;
+                    case "Role":
+                        query = $"SELECT FullName, Department, Role FROM Users where Role LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
+                        break;
+                    default:
+                        query = $"SELECT FullName, Department, Role FROM Users where NOT Role ='Admin' And (Role LIKE '%{searchTextBox.Text}%' OR Department LIKE '%{searchTextBox.Text}%' OR FullName LIKE '%{searchTextBox.Text}%');";
+                        break;
+                }
             }
 
             using (SqlConnection connection = Database.GetConnection())
@@ -622,11 +634,16 @@ namespace TDF.Forms
                 MessageBox.Show("Please select a user to reset the password.");
                 return;
             }
-            DialogResult confirmation = MessageBox.Show(
-    "Are you sure you want to reset the password to '123' for the selected users?",
-    "Confirm Password Reset",
-    MessageBoxButtons.YesNo,
-    MessageBoxIcon.Warning);
+            if (string.IsNullOrEmpty(passwordTextBox.Text))
+            {
+                MessageBox.Show("Please enter a password first.");
+                passwordTextBox.Focus();
+                return;
+            }
+
+            DialogResult confirmation = MessageBox.Show("Are you sure you want to update the password for the selected users?",
+                                       "Confirm Password Reset",
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
             if (confirmation == DialogResult.Yes)
             {
@@ -641,10 +658,8 @@ namespace TDF.Forms
                         // Generate a new salt
                         string salt = Security.generateSalt();
 
-                        // Hash the password "123" with the generated salt
-                        string hashedPassword = Security.hashPassword("123", salt);
+                        string hashedPassword = Security.hashPassword(passwordTextBox.Text, salt);
 
-                        // SQL query to update the password and salt
                         string query = "UPDATE Users SET PasswordHash = @PasswordHash, Salt = @Salt WHERE FullName = @FullName";
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
@@ -657,12 +672,12 @@ namespace TDF.Forms
                         }
                     }
 
-                    MessageBox.Show("Password reset to '123' for selected users.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Password changed to '{passwordTextBox.Text}' for selected users.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             else
             {
-                MessageBox.Show("Password reset canceled.", "Canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Password change canceled.", "Canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         #endregion
@@ -753,6 +768,16 @@ namespace TDF.Forms
 
                 MessageBox.Show("Updated leave balance successfully.");
             }
+        }
+
+        private void controlPanelForm_Resize(object sender, EventArgs e)
+        {
+            Invalidate();
+        }
+
+        private void filterDropdown_SelectedValueChanged(object sender, EventArgs e)
+        {
+            loadUserNames();
         }
     }
 }

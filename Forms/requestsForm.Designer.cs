@@ -552,7 +552,7 @@
             // 
             // RequestUserFullName
             // 
-            this.RequestUserFullName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RequestUserFullName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.RequestUserFullName.DataPropertyName = "RequestUserFullName";
             this.RequestUserFullName.Frozen = true;
             resources.ApplyResources(this.RequestUserFullName, "RequestUserFullName");
@@ -620,7 +620,7 @@
             // 
             // RequestReason
             // 
-            this.RequestReason.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RequestReason.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.RequestReason.DataPropertyName = "RequestReason";
             dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.RequestReason.DefaultCellStyle = dataGridViewCellStyle7;
@@ -654,7 +654,7 @@
             // 
             // RequestRejectReason
             // 
-            this.RequestRejectReason.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RequestRejectReason.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.RequestRejectReason.DataPropertyName = "RequestRejectReason";
             dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.RequestRejectReason.DefaultCellStyle = dataGridViewCellStyle10;

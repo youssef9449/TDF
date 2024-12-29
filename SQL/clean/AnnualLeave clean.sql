@@ -1,18 +1,18 @@
 /*
- Navicat Premium Dump SQL
+ Navicat Premium Data Transfer
 
- Source Server         : Server
+ Source Server         : Connection
  Source Server Type    : SQL Server
- Source Server Version : 16001000 (16.00.1000)
- Source Host           : TDF-SQL-SRV:1433
+ Source Server Version : 15002000 (15.00.2000)
+ Source Host           : YOUSSEF-PC:1433
  Source Catalog        : Users
  Source Schema         : dbo
 
  Target Server Type    : SQL Server
- Target Server Version : 16001000 (16.00.1000)
+ Target Server Version : 15002000 (15.00.2000)
  File Encoding         : 65001
 
- Date: 25/12/2024 11:15:26
+ Date: 21/12/2024 22:22:17
 */
 
 
@@ -32,20 +32,11 @@ CREATE TABLE [dbo].[AnnualLeave] (
   [CasualUsed] int DEFAULT 0 NULL,
   [AnnualBalance] AS (isnull([Annual],(0))-isnull([AnnualUsed],(0))),
   [CasualBalance] AS (isnull([CasualLeave],(0))-isnull([CasualUsed],(0)))
+
 )
 GO
 
 ALTER TABLE [dbo].[AnnualLeave] SET (LOCK_ESCALATION = TABLE)
-GO
-
-
--- ----------------------------
--- Records of AnnualLeave
--- ----------------------------
-INSERT INTO [dbo].[AnnualLeave] ([UserID], [FullName], [Annual], [CasualLeave], [AnnualUsed], [CasualUsed]) VALUES (N'1', N'Administrator', N'14', N'7', N'0', N'0')
-GO
-
-INSERT INTO [dbo].[AnnualLeave] ([UserID], [FullName], [Annual], [CasualLeave], [AnnualUsed], [CasualUsed]) VALUES (N'2', N'Mohamed Ali Selim', N'14', N'7', N'0', N'0')
 GO
 
 
