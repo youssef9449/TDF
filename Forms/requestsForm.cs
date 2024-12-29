@@ -51,7 +51,7 @@ namespace TDF.Net.Forms
         {
             if (e.ColumnIndex >= 0 & e.RowIndex >= 0)
             {
-                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit" && requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending"|| hasAdminRole || hasManagerRole)
+                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit" && (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending" || hasAdminRole || hasManagerRole))
                 {
                     if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending")
                     {
@@ -74,8 +74,8 @@ namespace TDF.Net.Forms
                         if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell imageCell)
                         {
                             DialogResult confirmResult = MessageBox.Show("Are you sure you want to delete this request?",
-                                                                "Confirm Delete",
-                                                                MessageBoxButtons.YesNo);
+                                                                         "Confirm Delete",
+                                                                          MessageBoxButtons.YesNo);
 
                             if (confirmResult == DialogResult.Yes)
                             {
@@ -100,18 +100,14 @@ namespace TDF.Net.Forms
                  (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" ||
                   requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject"))
                 {
-                    // Get the current row
                     DataGridViewRow currentRow = requestsDataGridView.Rows[e.RowIndex];
 
-                    // Toggle checkboxes based on current selection
                     if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve")
                     {
-                        // If "Approve" was clicked, uncheck "Reject"
                         currentRow.Cells["Reject"].Value = false;
                     }
                     else if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject")
                     {
-                        // If "Reject" was clicked, uncheck "Approve"
                         currentRow.Cells["Approve"].Value = false;
                     }
                 }

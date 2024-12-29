@@ -20,7 +20,9 @@ namespace TDF.Net
             WindowState = FormWindowState.Maximized;
             Program.loadForm(this);
             formPanel.BackColor = Color.White;
-            hasManagerRole = loggedInUser.Role != null && (string.Equals(loggedInUser.Role, "Manager", StringComparison.OrdinalIgnoreCase) || string.Equals(loggedInUser.Role, "Team Leader", StringComparison.OrdinalIgnoreCase));
+            hasManagerRole = loggedInUser.Role != null && (string.Equals(loggedInUser.Role, "Manager", StringComparison.OrdinalIgnoreCase) || 
+                                                           string.Equals(loggedInUser.Role, "Team Leader", StringComparison.OrdinalIgnoreCase));
+
             hasAdminRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
             this.loginForm = loginForm; // Store a reference to the login form
         }
@@ -42,7 +44,7 @@ namespace TDF.Net
 
             usernameLabel.Text = $"Welcome, {loggedInUser.FullName}!";
         }
-        private void UploadPictureForLoggedInUser()
+        private void uploadPictureForLoggedInUser()
         {
             // Use OpenFileDialog to let the user choose an image
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -84,7 +86,7 @@ namespace TDF.Net
                     }
 
                     // Save the image to the database
-                    SaveUserPicture(loggedInUser.UserName, imageBytes);
+                    saveUserPicture(loggedInUser.UserName, imageBytes);
 
                     circularPictureBox.Image = loggedInUser.Picture;
                 }
@@ -112,7 +114,7 @@ namespace TDF.Net
                 MessageBox.Show("No image selected.");
             }
         }
-        private void SaveUserPicture(string username, byte[] imageBytes)
+        private void saveUserPicture(string username, byte[] imageBytes)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -160,7 +162,7 @@ namespace TDF.Net
                 MessageBox.Show("An error occurred while saving the image: " + ex.Message);
             }
         }
-        private void ShowFormInPanel(Form form)
+        private void showFormInPanel(Form form)
         {
             form.TopLevel = false; // Make it a child control rather than a top-level form
             form.Dock = DockStyle.Fill;
@@ -247,11 +249,11 @@ namespace TDF.Net
         {
             Invalidate();
         }
-        private void UpdateMenuItem_Click(object sender, EventArgs e)
+        private void updateMenuItem_Click(object sender, EventArgs e)
         {
-            UploadPictureForLoggedInUser();
+            uploadPictureForLoggedInUser();
         }
-        private void RemoveMenuItem_Click(object sender, EventArgs e)
+        private void removeMenuItem_Click(object sender, EventArgs e)
         {
             DialogResult confirmation = MessageBox.Show(
       "Are you sure you want to remove the picture?",
@@ -300,7 +302,7 @@ namespace TDF.Net
 
             // Add "Update" menu item
             ToolStripMenuItem updateMenuItem = new ToolStripMenuItem("Update");
-            updateMenuItem.Click += UpdateMenuItem_Click;
+            updateMenuItem.Click += updateMenuItem_Click;
 
             // Add items to the ContextMenuStrip
             contextMenu.Items.Add(updateMenuItem);
@@ -309,7 +311,7 @@ namespace TDF.Net
             {
                 // Add "Remove" menu item
                 ToolStripMenuItem removeMenuItem = new ToolStripMenuItem("Remove");
-                removeMenuItem.Click += RemoveMenuItem_Click;
+                removeMenuItem.Click += removeMenuItem_Click;
                 contextMenu.Items.Add(removeMenuItem);
             }
 
@@ -320,11 +322,11 @@ namespace TDF.Net
         #region Buttons
         private void requestsButton_Click(object sender, EventArgs e)
         {
-            ShowFormInPanel(new requestsForm());
+            showFormInPanel(new requestsForm());
         }
         private void controlPanelButton_Click(object sender, EventArgs e)
         {
-            ShowFormInPanel(new controlPanelForm());
+            showFormInPanel(new controlPanelForm());
         }
         private void logoutButton_Click(object sender, EventArgs e)
         {
