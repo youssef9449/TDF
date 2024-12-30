@@ -20,6 +20,9 @@ namespace TDF.Net.Forms
             InitializeComponent();
             requestsDataGridView.CellMouseEnter += requestsDataGridView_CellMouseEnter;
             requestsDataGridView.CellMouseLeave += requestsDataGridView_CellMouseLeave;
+            requestsDataGridView.Columns["RequestType"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            requestsDataGridView.ColumnHeadersHeight = 40;
+
             Program.loadForm(this);
             controlBox.BackColor = Color.White;
             controlBox.CloseBoxOptions.HoverColor = Color.White;
@@ -56,6 +59,9 @@ namespace TDF.Net.Forms
 
             closedRadioButton.Visible = true;
             pendingRadioButton.Visible = true;
+
+            requestsDataGridView.ClearSelection();
+            requestsDataGridView.CurrentCell = null;
 
             refreshRequestsTable();
         }

@@ -94,6 +94,7 @@
             this.bunifuLabel9 = new Bunifu.UI.WinForms.BunifuLabel();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
             this.passwordTextBox = new Bunifu.UI.WinForms.BunifuTextBox();
+            this.bunifuLabel10 = new Bunifu.UI.WinForms.BunifuLabel();
             this.SuspendLayout();
             // 
             // usersCheckedListBox
@@ -1361,7 +1362,7 @@
             this.resetPasswordButton.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(122)))), ((int)(((byte)(183)))));
             this.resetPasswordButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("resetPasswordButton.BackgroundImage")));
             this.resetPasswordButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.resetPasswordButton.ButtonText = "Reset Password";
+            this.resetPasswordButton.ButtonText = "Update password";
             this.resetPasswordButton.ButtonTextMarginLeft = 0;
             this.resetPasswordButton.ColorContrastOnClick = 45;
             this.resetPasswordButton.ColorContrastOnHover = 45;
@@ -1531,7 +1532,7 @@
             this.leaveButton.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(122)))), ((int)(((byte)(183)))));
             this.leaveButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("leaveButton.BackgroundImage")));
             this.leaveButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.leaveButton.ButtonText = "Update Leave";
+            this.leaveButton.ButtonText = "Update leave";
             this.leaveButton.ButtonTextMarginLeft = 0;
             this.leaveButton.ColorContrastOnClick = 45;
             this.leaveButton.ColorContrastOnHover = 45;
@@ -1861,12 +1862,29 @@
             this.passwordTextBox.UseSystemPasswordChar = false;
             this.passwordTextBox.WordWrap = true;
             // 
+            // bunifuLabel10
+            // 
+            this.bunifuLabel10.AllowParentOverrides = false;
+            this.bunifuLabel10.AutoEllipsis = false;
+            this.bunifuLabel10.CursorType = null;
+            this.bunifuLabel10.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.bunifuLabel10.Location = new System.Drawing.Point(25, 531);
+            this.bunifuLabel10.Margin = new System.Windows.Forms.Padding(4);
+            this.bunifuLabel10.Name = "bunifuLabel10";
+            this.bunifuLabel10.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.bunifuLabel10.Size = new System.Drawing.Size(80, 25);
+            this.bunifuLabel10.TabIndex = 52;
+            this.bunifuLabel10.Text = "Password:";
+            this.bunifuLabel10.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.bunifuLabel10.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
             // controlPanelForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1397, 800);
+            this.Controls.Add(this.bunifuLabel10);
             this.Controls.Add(this.passwordTextBox);
             this.Controls.Add(this.controlBox);
             this.Controls.Add(this.bunifuLabel9);
@@ -1943,5 +1961,6 @@
         private Bunifu.UI.WinForms.BunifuLabel bunifuLabel9;
         private Bunifu.UI.WinForms.BunifuFormControlBox controlBox;
         private Bunifu.UI.WinForms.BunifuTextBox passwordTextBox;
+        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel10;
     }
 }

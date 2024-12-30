@@ -17,7 +17,6 @@ namespace TDF.Net
         {
             InitializeComponent();
             MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
-            WindowState = FormWindowState.Maximized;
             Program.loadForm(this);
             formPanel.BackColor = Color.White;
             hasManagerRole = loggedInUser.Role != null && (string.Equals(loggedInUser.Role, "Manager", StringComparison.OrdinalIgnoreCase) || 
