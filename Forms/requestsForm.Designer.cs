@@ -1,4 +1,6 @@
-﻿namespace TDF.Net.Forms
+﻿using System.Windows.Forms;
+
+namespace TDF.Net.Forms
 {
     partial class requestsForm
     {
@@ -47,14 +49,15 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             this.requestsDataGridView = new Bunifu.UI.WinForms.BunifuDataGridView();
-            this.refreshButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
-            this.addRequestButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
-            this.applyButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.pendingRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.closedRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.pendingLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.closedLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
+            this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
+            this.refreshButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
+            this.addRequestButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
+            this.applyButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.RequestID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RequestUserFullName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RequestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -67,8 +70,8 @@
             this.RequestEndingTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RequestRejectReason = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RequestStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Edit = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.Remove = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.Edit = new System.Windows.Forms.DataGridViewImageColumn();
+            this.Remove = new System.Windows.Forms.DataGridViewImageColumn();
             this.Approve = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Reject = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.requestsDataGridView)).BeginInit();
@@ -81,6 +84,7 @@
             this.requestsDataGridView.AllowUserToDeleteRows = false;
             this.requestsDataGridView.AllowUserToResizeColumns = false;
             this.requestsDataGridView.AllowUserToResizeRows = false;
+            this.requestsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(251)))), ((int)(((byte)(255)))));
             dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
@@ -146,7 +150,6 @@
             this.requestsDataGridView.EnableHeadersVisualStyles = false;
             this.requestsDataGridView.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
             this.requestsDataGridView.HeaderBackColor = System.Drawing.Color.DodgerBlue;
-            this.requestsDataGridView.HeaderBgColor = System.Drawing.Color.Empty;
             this.requestsDataGridView.HeaderForeColor = System.Drawing.Color.White;
             this.requestsDataGridView.Name = "requestsDataGridView";
             dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -161,11 +164,132 @@
             dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle14.BackColor = System.Drawing.Color.White;
             this.requestsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle14;
+            this.requestsDataGridView.RowTemplate.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.requestsDataGridView.RowTemplate.Height = 40;
             this.requestsDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.requestsDataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.Light;
             this.requestsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellContentClick);
             this.requestsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.requestsDataGridView_CellFormatting);
+            // 
+            // pendingRadioButton
+            // 
+            this.pendingRadioButton.AllowBindingControlLocation = false;
+            this.pendingRadioButton.BackColor = System.Drawing.Color.Transparent;
+            this.pendingRadioButton.BindingControlPosition = Bunifu.UI.WinForms.BunifuRadioButton.BindingControlPositions.Right;
+            this.pendingRadioButton.BorderThickness = 1;
+            this.pendingRadioButton.Checked = true;
+            resources.ApplyResources(this.pendingRadioButton, "pendingRadioButton");
+            this.pendingRadioButton.Name = "pendingRadioButton";
+            this.pendingRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
+            this.pendingRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.pendingRadioButton.OutlineColorUnchecked = System.Drawing.Color.DarkGray;
+            this.pendingRadioButton.RadioColor = System.Drawing.Color.DodgerBlue;
+            this.pendingRadioButton.RadioColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.pendingRadioButton.CheckedChanged2 += new System.EventHandler<Bunifu.UI.WinForms.BunifuRadioButton.CheckedChangedEventArgs>(this.pendingRadioButton_CheckedChanged);
+            // 
+            // closedRadioButton
+            // 
+            this.closedRadioButton.AllowBindingControlLocation = false;
+            this.closedRadioButton.BackColor = System.Drawing.Color.Transparent;
+            this.closedRadioButton.BindingControlPosition = Bunifu.UI.WinForms.BunifuRadioButton.BindingControlPositions.Right;
+            this.closedRadioButton.BorderThickness = 1;
+            this.closedRadioButton.Checked = false;
+            resources.ApplyResources(this.closedRadioButton, "closedRadioButton");
+            this.closedRadioButton.Name = "closedRadioButton";
+            this.closedRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
+            this.closedRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.closedRadioButton.OutlineColorUnchecked = System.Drawing.Color.DarkGray;
+            this.closedRadioButton.RadioColor = System.Drawing.Color.DodgerBlue;
+            this.closedRadioButton.RadioColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            // 
+            // pendingLabel
+            // 
+            this.pendingLabel.AllowParentOverrides = false;
+            this.pendingLabel.AutoEllipsis = false;
+            this.pendingLabel.CursorType = null;
+            resources.ApplyResources(this.pendingLabel, "pendingLabel");
+            this.pendingLabel.Name = "pendingLabel";
+            this.pendingLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.pendingLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // closedLabel
+            // 
+            this.closedLabel.AllowParentOverrides = false;
+            this.closedLabel.AutoEllipsis = false;
+            this.closedLabel.CursorType = null;
+            resources.ApplyResources(this.closedLabel, "closedLabel");
+            this.closedLabel.Name = "closedLabel";
+            this.closedLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.closedLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // controlBox
+            // 
+            resources.ApplyResources(this.controlBox, "controlBox");
+            this.controlBox.BackColor = System.Drawing.Color.Transparent;
+            this.controlBox.BunifuFormDrag = null;
+            this.controlBox.CloseBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.controlBox.CloseBoxOptions.BorderRadius = 0;
+            this.controlBox.CloseBoxOptions.Enabled = true;
+            this.controlBox.CloseBoxOptions.EnableDefaultAction = true;
+            this.controlBox.CloseBoxOptions.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
+            this.controlBox.CloseBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.CloseBoxOptions.Icon")));
+            this.controlBox.CloseBoxOptions.IconAlt = null;
+            this.controlBox.CloseBoxOptions.IconColor = System.Drawing.Color.Black;
+            this.controlBox.CloseBoxOptions.IconHoverColor = System.Drawing.Color.White;
+            this.controlBox.CloseBoxOptions.IconPressedColor = System.Drawing.Color.White;
+            this.controlBox.CloseBoxOptions.IconSize = new System.Drawing.Size(18, 18);
+            this.controlBox.CloseBoxOptions.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
+            this.controlBox.ForeColor = System.Drawing.Color.White;
+            this.controlBox.HelpBox = false;
+            this.controlBox.HelpBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.controlBox.HelpBoxOptions.BorderRadius = 0;
+            this.controlBox.HelpBoxOptions.Enabled = true;
+            this.controlBox.HelpBoxOptions.EnableDefaultAction = true;
+            this.controlBox.HelpBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.controlBox.HelpBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.HelpBoxOptions.Icon")));
+            this.controlBox.HelpBoxOptions.IconAlt = null;
+            this.controlBox.HelpBoxOptions.IconColor = System.Drawing.Color.Black;
+            this.controlBox.HelpBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.controlBox.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.controlBox.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
+            this.controlBox.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.controlBox.MaximizeBox = false;
+            this.controlBox.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.controlBox.MaximizeBoxOptions.BorderRadius = 0;
+            this.controlBox.MaximizeBoxOptions.Enabled = true;
+            this.controlBox.MaximizeBoxOptions.EnableDefaultAction = true;
+            this.controlBox.MaximizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.controlBox.MaximizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.MaximizeBoxOptions.Icon")));
+            this.controlBox.MaximizeBoxOptions.IconAlt = ((System.Drawing.Image)(resources.GetObject("controlBox.MaximizeBoxOptions.IconAlt")));
+            this.controlBox.MaximizeBoxOptions.IconColor = System.Drawing.Color.White;
+            this.controlBox.MaximizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.controlBox.MaximizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.controlBox.MaximizeBoxOptions.IconSize = new System.Drawing.Size(16, 16);
+            this.controlBox.MaximizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.controlBox.MinimizeBox = false;
+            this.controlBox.MinimizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.controlBox.MinimizeBoxOptions.BorderRadius = 0;
+            this.controlBox.MinimizeBoxOptions.Enabled = true;
+            this.controlBox.MinimizeBoxOptions.EnableDefaultAction = true;
+            this.controlBox.MinimizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.controlBox.MinimizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.MinimizeBoxOptions.Icon")));
+            this.controlBox.MinimizeBoxOptions.IconAlt = null;
+            this.controlBox.MinimizeBoxOptions.IconColor = System.Drawing.Color.White;
+            this.controlBox.MinimizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.controlBox.MinimizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.controlBox.MinimizeBoxOptions.IconSize = new System.Drawing.Size(14, 14);
+            this.controlBox.MinimizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.controlBox.Name = "controlBox";
+            this.controlBox.ShowDesignBorders = false;
+            // 
+            // dataGridViewImageColumn1
+            // 
+            this.dataGridViewImageColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            resources.ApplyResources(this.dataGridViewImageColumn1, "dataGridViewImageColumn1");
+            this.dataGridViewImageColumn1.Image = global::TDF.Properties.Resources.edit;
+            this.dataGridViewImageColumn1.Name = "dataGridViewImageColumn1";
+            this.dataGridViewImageColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // refreshButton
             // 
@@ -431,117 +555,6 @@
             this.applyButton.UseDefaultRadiusAndThickness = true;
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
-            // pendingRadioButton
-            // 
-            this.pendingRadioButton.AllowBindingControlLocation = false;
-            this.pendingRadioButton.BackColor = System.Drawing.Color.Transparent;
-            this.pendingRadioButton.BindingControlPosition = Bunifu.UI.WinForms.BunifuRadioButton.BindingControlPositions.Right;
-            this.pendingRadioButton.BorderThickness = 1;
-            this.pendingRadioButton.Checked = true;
-            resources.ApplyResources(this.pendingRadioButton, "pendingRadioButton");
-            this.pendingRadioButton.Name = "pendingRadioButton";
-            this.pendingRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
-            this.pendingRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            this.pendingRadioButton.OutlineColorUnchecked = System.Drawing.Color.DarkGray;
-            this.pendingRadioButton.RadioColor = System.Drawing.Color.DodgerBlue;
-            this.pendingRadioButton.RadioColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            this.pendingRadioButton.CheckedChanged2 += new System.EventHandler<Bunifu.UI.WinForms.BunifuRadioButton.CheckedChangedEventArgs>(this.pendingRadioButton_CheckedChanged);
-            // 
-            // closedRadioButton
-            // 
-            this.closedRadioButton.AllowBindingControlLocation = false;
-            this.closedRadioButton.BackColor = System.Drawing.Color.Transparent;
-            this.closedRadioButton.BindingControlPosition = Bunifu.UI.WinForms.BunifuRadioButton.BindingControlPositions.Right;
-            this.closedRadioButton.BorderThickness = 1;
-            this.closedRadioButton.Checked = false;
-            resources.ApplyResources(this.closedRadioButton, "closedRadioButton");
-            this.closedRadioButton.Name = "closedRadioButton";
-            this.closedRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
-            this.closedRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            this.closedRadioButton.OutlineColorUnchecked = System.Drawing.Color.DarkGray;
-            this.closedRadioButton.RadioColor = System.Drawing.Color.DodgerBlue;
-            this.closedRadioButton.RadioColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            // 
-            // pendingLabel
-            // 
-            this.pendingLabel.AllowParentOverrides = false;
-            this.pendingLabel.AutoEllipsis = false;
-            this.pendingLabel.CursorType = null;
-            resources.ApplyResources(this.pendingLabel, "pendingLabel");
-            this.pendingLabel.Name = "pendingLabel";
-            this.pendingLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
-            this.pendingLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
-            // 
-            // closedLabel
-            // 
-            this.closedLabel.AllowParentOverrides = false;
-            this.closedLabel.AutoEllipsis = false;
-            this.closedLabel.CursorType = null;
-            resources.ApplyResources(this.closedLabel, "closedLabel");
-            this.closedLabel.Name = "closedLabel";
-            this.closedLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
-            this.closedLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
-            // 
-            // controlBox
-            // 
-            resources.ApplyResources(this.controlBox, "controlBox");
-            this.controlBox.BackColor = System.Drawing.Color.Transparent;
-            this.controlBox.BunifuFormDrag = null;
-            this.controlBox.CloseBoxOptions.BackColor = System.Drawing.Color.Transparent;
-            this.controlBox.CloseBoxOptions.BorderRadius = 0;
-            this.controlBox.CloseBoxOptions.Enabled = true;
-            this.controlBox.CloseBoxOptions.EnableDefaultAction = true;
-            this.controlBox.CloseBoxOptions.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
-            this.controlBox.CloseBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.CloseBoxOptions.Icon")));
-            this.controlBox.CloseBoxOptions.IconAlt = null;
-            this.controlBox.CloseBoxOptions.IconColor = System.Drawing.Color.Black;
-            this.controlBox.CloseBoxOptions.IconHoverColor = System.Drawing.Color.White;
-            this.controlBox.CloseBoxOptions.IconPressedColor = System.Drawing.Color.White;
-            this.controlBox.CloseBoxOptions.IconSize = new System.Drawing.Size(18, 18);
-            this.controlBox.CloseBoxOptions.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
-            this.controlBox.ForeColor = System.Drawing.Color.White;
-            this.controlBox.HelpBox = false;
-            this.controlBox.HelpBoxOptions.BackColor = System.Drawing.Color.Transparent;
-            this.controlBox.HelpBoxOptions.BorderRadius = 0;
-            this.controlBox.HelpBoxOptions.Enabled = true;
-            this.controlBox.HelpBoxOptions.EnableDefaultAction = true;
-            this.controlBox.HelpBoxOptions.HoverColor = System.Drawing.Color.LightGray;
-            this.controlBox.HelpBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.HelpBoxOptions.Icon")));
-            this.controlBox.HelpBoxOptions.IconAlt = null;
-            this.controlBox.HelpBoxOptions.IconColor = System.Drawing.Color.Black;
-            this.controlBox.HelpBoxOptions.IconHoverColor = System.Drawing.Color.Black;
-            this.controlBox.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
-            this.controlBox.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
-            this.controlBox.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.controlBox.MaximizeBox = false;
-            this.controlBox.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
-            this.controlBox.MaximizeBoxOptions.BorderRadius = 0;
-            this.controlBox.MaximizeBoxOptions.Enabled = true;
-            this.controlBox.MaximizeBoxOptions.EnableDefaultAction = true;
-            this.controlBox.MaximizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
-            this.controlBox.MaximizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.MaximizeBoxOptions.Icon")));
-            this.controlBox.MaximizeBoxOptions.IconAlt = ((System.Drawing.Image)(resources.GetObject("controlBox.MaximizeBoxOptions.IconAlt")));
-            this.controlBox.MaximizeBoxOptions.IconColor = System.Drawing.Color.White;
-            this.controlBox.MaximizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
-            this.controlBox.MaximizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
-            this.controlBox.MaximizeBoxOptions.IconSize = new System.Drawing.Size(16, 16);
-            this.controlBox.MaximizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.controlBox.MinimizeBox = false;
-            this.controlBox.MinimizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
-            this.controlBox.MinimizeBoxOptions.BorderRadius = 0;
-            this.controlBox.MinimizeBoxOptions.Enabled = true;
-            this.controlBox.MinimizeBoxOptions.EnableDefaultAction = true;
-            this.controlBox.MinimizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
-            this.controlBox.MinimizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.MinimizeBoxOptions.Icon")));
-            this.controlBox.MinimizeBoxOptions.IconAlt = null;
-            this.controlBox.MinimizeBoxOptions.IconColor = System.Drawing.Color.White;
-            this.controlBox.MinimizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
-            this.controlBox.MinimizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
-            this.controlBox.MinimizeBoxOptions.IconSize = new System.Drawing.Size(14, 14);
-            this.controlBox.MinimizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.controlBox.Name = "controlBox";
-            this.controlBox.ShowDesignBorders = false;
-            // 
             // RequestID
             // 
             this.RequestID.DataPropertyName = "RequestID";
@@ -660,7 +673,6 @@
             this.RequestRejectReason.DefaultCellStyle = dataGridViewCellStyle10;
             resources.ApplyResources(this.RequestRejectReason, "RequestRejectReason");
             this.RequestRejectReason.Name = "RequestRejectReason";
-            this.RequestRejectReason.ReadOnly = true;
             // 
             // RequestStatus
             // 
@@ -676,6 +688,7 @@
             // 
             this.Edit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             resources.ApplyResources(this.Edit, "Edit");
+            this.Edit.Image = global::TDF.Properties.Resources.edit;
             this.Edit.Name = "Edit";
             this.Edit.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.Edit.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
@@ -684,6 +697,7 @@
             // 
             this.Remove.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             resources.ApplyResources(this.Remove, "Remove");
+            this.Remove.Image = global::TDF.Properties.Resources.delete;
             this.Remove.Name = "Remove";
             this.Remove.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.Remove.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
@@ -739,6 +753,7 @@
         private Bunifu.UI.WinForms.BunifuLabel pendingLabel;
         private Bunifu.UI.WinForms.BunifuLabel closedLabel;
         private Bunifu.UI.WinForms.BunifuFormControlBox controlBox;
+        private System.Windows.Forms.DataGridViewImageColumn dataGridViewImageColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn RequestID;
         private System.Windows.Forms.DataGridViewTextBoxColumn RequestUserFullName;
         private System.Windows.Forms.DataGridViewTextBoxColumn RequestType;
@@ -751,8 +766,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn RequestEndingTime;
         private System.Windows.Forms.DataGridViewTextBoxColumn RequestRejectReason;
         private System.Windows.Forms.DataGridViewTextBoxColumn RequestStatus;
-        private System.Windows.Forms.DataGridViewButtonColumn Edit;
-        private System.Windows.Forms.DataGridViewButtonColumn Remove;
+        private System.Windows.Forms.DataGridViewImageColumn Edit;
+        private System.Windows.Forms.DataGridViewImageColumn Remove;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Approve;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Reject;
     }

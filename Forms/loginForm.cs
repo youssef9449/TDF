@@ -109,7 +109,7 @@ namespace TDF.Net
                 return;
             }
 
-            if (isUsernameTaken(username))
+            if (IsUsernameTaken(username))
             {
                 MessageBox.Show("Username is already taken. Please choose a different username.");
                 return;
@@ -258,7 +258,7 @@ namespace TDF.Net
             }
             return false;
         }
-        private bool isUsernameTaken(string username)
+        private bool IsUsernameTaken(string username)
         {
             using (SqlConnection conn = Database.GetConnection())
             {
@@ -386,7 +386,7 @@ namespace TDF.Net
                 {
                     int adminExists = (int)cmd.ExecuteScalar();
 
-                    if (adminExists == 0)
+                    if (adminExists == 0) // 
                     {
                         DialogResult result = MessageBox.Show(
                             "No Admin found. Do you want to create a default Admin user ?",

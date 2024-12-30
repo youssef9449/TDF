@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(addRequestForm));
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties1 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties2 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties3 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties4 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties5 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties6 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties7 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties8 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.dayoffRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.exitRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.dayoffLabel = new Bunifu.UI.WinForms.BunifuLabel();
@@ -80,7 +80,7 @@
             this.dayoffRadioButton.BorderThickness = 1;
             this.dayoffRadioButton.Checked = false;
             this.dayoffRadioButton.Location = new System.Drawing.Point(49, 50);
-            this.dayoffRadioButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dayoffRadioButton.Margin = new System.Windows.Forms.Padding(4);
             this.dayoffRadioButton.Name = "dayoffRadioButton";
             this.dayoffRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
             this.dayoffRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -100,7 +100,7 @@
             this.exitRadioButton.BorderThickness = 1;
             this.exitRadioButton.Checked = false;
             this.exitRadioButton.Location = new System.Drawing.Point(250, 50);
-            this.exitRadioButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.exitRadioButton.Margin = new System.Windows.Forms.Padding(4);
             this.exitRadioButton.Name = "exitRadioButton";
             this.exitRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
             this.exitRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -120,7 +120,7 @@
             this.dayoffLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.dayoffLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.dayoffLabel.Location = new System.Drawing.Point(28, 18);
-            this.dayoffLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dayoffLabel.Margin = new System.Windows.Forms.Padding(4);
             this.dayoffLabel.Name = "dayoffLabel";
             this.dayoffLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.dayoffLabel.Size = new System.Drawing.Size(62, 25);
@@ -136,7 +136,7 @@
             this.bunifuLabel1.CursorType = null;
             this.bunifuLabel1.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.bunifuLabel1.Location = new System.Drawing.Point(201, 18);
-            this.bunifuLabel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bunifuLabel1.Margin = new System.Windows.Forms.Padding(4);
             this.bunifuLabel1.Name = "bunifuLabel1";
             this.bunifuLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel1.Size = new System.Drawing.Size(118, 25);
@@ -165,7 +165,7 @@
             this.fromDayDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.Right;
             this.fromDayDatePicker.LeftTextMargin = 5;
             this.fromDayDatePicker.Location = new System.Drawing.Point(74, 164);
-            this.fromDayDatePicker.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fromDayDatePicker.Margin = new System.Windows.Forms.Padding(4);
             this.fromDayDatePicker.MinimumSize = new System.Drawing.Size(4, 32);
             this.fromDayDatePicker.Name = "fromDayDatePicker";
             this.fromDayDatePicker.Size = new System.Drawing.Size(256, 32);
@@ -180,7 +180,7 @@
             this.fromDateLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.fromDateLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.fromDateLabel.Location = new System.Drawing.Point(22, 170);
-            this.fromDateLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fromDateLabel.Margin = new System.Windows.Forms.Padding(4);
             this.fromDateLabel.Name = "fromDateLabel";
             this.fromDateLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.fromDateLabel.Size = new System.Drawing.Size(46, 25);
@@ -219,33 +219,33 @@
             this.reasonTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.reasonTextBox.Lines = new string[0];
             this.reasonTextBox.Location = new System.Drawing.Point(85, 453);
-            this.reasonTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.reasonTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.reasonTextBox.MaxLength = 32767;
             this.reasonTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.reasonTextBox.Modified = false;
             this.reasonTextBox.Multiline = false;
             this.reasonTextBox.Name = "reasonTextBox";
-            stateProperties1.BorderColor = System.Drawing.Color.DodgerBlue;
-            stateProperties1.FillColor = System.Drawing.Color.Empty;
-            stateProperties1.ForeColor = System.Drawing.Color.Empty;
-            stateProperties1.PlaceholderForeColor = System.Drawing.Color.Empty;
-            this.reasonTextBox.OnActiveState = stateProperties1;
-            stateProperties2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            stateProperties2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            stateProperties2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
-            stateProperties2.PlaceholderForeColor = System.Drawing.Color.DarkGray;
-            this.reasonTextBox.OnDisabledState = stateProperties2;
-            stateProperties3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
-            stateProperties3.FillColor = System.Drawing.Color.Empty;
-            stateProperties3.ForeColor = System.Drawing.Color.Empty;
-            stateProperties3.PlaceholderForeColor = System.Drawing.Color.Empty;
-            this.reasonTextBox.OnHoverState = stateProperties3;
-            stateProperties4.BorderColor = System.Drawing.Color.Silver;
-            stateProperties4.FillColor = System.Drawing.Color.White;
-            stateProperties4.ForeColor = System.Drawing.Color.Empty;
-            stateProperties4.PlaceholderForeColor = System.Drawing.Color.Empty;
-            this.reasonTextBox.OnIdleState = stateProperties4;
-            this.reasonTextBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            stateProperties5.BorderColor = System.Drawing.Color.DodgerBlue;
+            stateProperties5.FillColor = System.Drawing.Color.Empty;
+            stateProperties5.ForeColor = System.Drawing.Color.Empty;
+            stateProperties5.PlaceholderForeColor = System.Drawing.Color.Empty;
+            this.reasonTextBox.OnActiveState = stateProperties5;
+            stateProperties6.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            stateProperties6.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            stateProperties6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            stateProperties6.PlaceholderForeColor = System.Drawing.Color.DarkGray;
+            this.reasonTextBox.OnDisabledState = stateProperties6;
+            stateProperties7.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            stateProperties7.FillColor = System.Drawing.Color.Empty;
+            stateProperties7.ForeColor = System.Drawing.Color.Empty;
+            stateProperties7.PlaceholderForeColor = System.Drawing.Color.Empty;
+            this.reasonTextBox.OnHoverState = stateProperties7;
+            stateProperties8.BorderColor = System.Drawing.Color.Silver;
+            stateProperties8.FillColor = System.Drawing.Color.White;
+            stateProperties8.ForeColor = System.Drawing.Color.Empty;
+            stateProperties8.PlaceholderForeColor = System.Drawing.Color.Empty;
+            this.reasonTextBox.OnIdleState = stateProperties8;
+            this.reasonTextBox.Padding = new System.Windows.Forms.Padding(4);
             this.reasonTextBox.PasswordChar = '\0';
             this.reasonTextBox.PlaceholderForeColor = System.Drawing.Color.Silver;
             this.reasonTextBox.PlaceholderText = "";
@@ -274,7 +274,7 @@
             this.bunifuLabel2.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel2.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.bunifuLabel2.Location = new System.Drawing.Point(21, 460);
-            this.bunifuLabel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bunifuLabel2.Margin = new System.Windows.Forms.Padding(4);
             this.bunifuLabel2.Name = "bunifuLabel2";
             this.bunifuLabel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel2.Size = new System.Drawing.Size(62, 25);
@@ -291,7 +291,7 @@
             this.fromLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.fromLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.fromLabel.Location = new System.Drawing.Point(488, 150);
-            this.fromLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fromLabel.Margin = new System.Windows.Forms.Padding(4);
             this.fromLabel.Name = "fromLabel";
             this.fromLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.fromLabel.Size = new System.Drawing.Size(46, 25);
@@ -309,7 +309,7 @@
             this.toLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.toLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.toLabel.Location = new System.Drawing.Point(618, 153);
-            this.toLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.toLabel.Margin = new System.Windows.Forms.Padding(4);
             this.toLabel.Name = "toLabel";
             this.toLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.toLabel.Size = new System.Drawing.Size(24, 25);
@@ -338,11 +338,11 @@
             this.submitButton.ColorContrastOnClick = 45;
             this.submitButton.ColorContrastOnHover = 45;
             this.submitButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.submitButton.CustomizableEdges = borderEdges1;
+            borderEdges2.BottomLeft = true;
+            borderEdges2.BottomRight = true;
+            borderEdges2.TopLeft = true;
+            borderEdges2.TopRight = true;
+            this.submitButton.CustomizableEdges = borderEdges2;
             this.submitButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.submitButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.submitButton.DisabledFillColor = System.Drawing.Color.Empty;
@@ -369,7 +369,7 @@
             this.submitButton.IdleIconRightImage = null;
             this.submitButton.IndicateFocus = false;
             this.submitButton.Location = new System.Drawing.Point(306, 505);
-            this.submitButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.submitButton.Margin = new System.Windows.Forms.Padding(4);
             this.submitButton.Name = "submitButton";
             this.submitButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.submitButton.OnDisabledState.BorderRadius = 1;
@@ -415,7 +415,7 @@
             // toTimeTextBox
             // 
             this.toTimeTextBox.Location = new System.Drawing.Point(586, 188);
-            this.toTimeTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.toTimeTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.toTimeTextBox.Mask = "90:00";
             this.toTimeTextBox.Name = "toTimeTextBox";
             this.toTimeTextBox.Size = new System.Drawing.Size(94, 24);
@@ -427,7 +427,7 @@
             // fromTimeTextBox
             // 
             this.fromTimeTextBox.Location = new System.Drawing.Point(460, 188);
-            this.fromTimeTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.fromTimeTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.fromTimeTextBox.Mask = "90:00";
             this.fromTimeTextBox.Name = "fromTimeTextBox";
             this.fromTimeTextBox.Size = new System.Drawing.Size(94, 24);
@@ -444,7 +444,7 @@
             this.toDateLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.toDateLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.toDateLabel.Location = new System.Drawing.Point(34, 218);
-            this.toDateLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.toDateLabel.Margin = new System.Windows.Forms.Padding(4);
             this.toDateLabel.Name = "toDateLabel";
             this.toDateLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.toDateLabel.Size = new System.Drawing.Size(24, 25);
@@ -459,7 +459,7 @@
             this.panel.Controls.Add(this.controlBox);
             this.panel.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel.Location = new System.Drawing.Point(0, 0);
-            this.panel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel.Margin = new System.Windows.Forms.Padding(4);
             this.panel.Name = "panel";
             this.panel.Size = new System.Drawing.Size(763, 50);
             this.panel.TabIndex = 24;
@@ -538,7 +538,7 @@
             this.bunifuLabel3.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel3.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.bunifuLabel3.Location = new System.Drawing.Point(47, 378);
-            this.bunifuLabel3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bunifuLabel3.Margin = new System.Windows.Forms.Padding(4);
             this.bunifuLabel3.Name = "bunifuLabel3";
             this.bunifuLabel3.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel3.Size = new System.Drawing.Size(127, 25);
@@ -555,7 +555,7 @@
             this.bunifuLabel4.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel4.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.bunifuLabel4.Location = new System.Drawing.Point(28, 346);
-            this.bunifuLabel4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bunifuLabel4.Margin = new System.Windows.Forms.Padding(4);
             this.bunifuLabel4.Name = "bunifuLabel4";
             this.bunifuLabel4.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel4.Size = new System.Drawing.Size(139, 25);
@@ -572,7 +572,7 @@
             this.bunifuLabel5.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel5.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.bunifuLabel5.Location = new System.Drawing.Point(18, 410);
-            this.bunifuLabel5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bunifuLabel5.Margin = new System.Windows.Forms.Padding(4);
             this.bunifuLabel5.Name = "bunifuLabel5";
             this.bunifuLabel5.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel5.Size = new System.Drawing.Size(152, 25);
@@ -589,7 +589,7 @@
             this.availableBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.availableBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.availableBalanceLabel.Location = new System.Drawing.Point(182, 346);
-            this.availableBalanceLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.availableBalanceLabel.Margin = new System.Windows.Forms.Padding(4);
             this.availableBalanceLabel.Name = "availableBalanceLabel";
             this.availableBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.availableBalanceLabel.Size = new System.Drawing.Size(42, 25);
@@ -606,7 +606,7 @@
             this.daysRequestedLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.daysRequestedLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.daysRequestedLabel.Location = new System.Drawing.Point(182, 378);
-            this.daysRequestedLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.daysRequestedLabel.Margin = new System.Windows.Forms.Padding(4);
             this.daysRequestedLabel.Name = "daysRequestedLabel";
             this.daysRequestedLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.daysRequestedLabel.Size = new System.Drawing.Size(42, 25);
@@ -623,7 +623,7 @@
             this.remainingBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.remainingBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.remainingBalanceLabel.Location = new System.Drawing.Point(182, 410);
-            this.remainingBalanceLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.remainingBalanceLabel.Margin = new System.Windows.Forms.Padding(4);
             this.remainingBalanceLabel.Name = "remainingBalanceLabel";
             this.remainingBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.remainingBalanceLabel.Size = new System.Drawing.Size(42, 25);
@@ -639,7 +639,7 @@
             this.bunifuLabel9.CursorType = null;
             this.bunifuLabel9.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.bunifuLabel9.Location = new System.Drawing.Point(397, 18);
-            this.bunifuLabel9.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bunifuLabel9.Margin = new System.Windows.Forms.Padding(4);
             this.bunifuLabel9.Name = "bunifuLabel9";
             this.bunifuLabel9.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel9.Size = new System.Drawing.Size(138, 25);
@@ -656,7 +656,7 @@
             this.workFromHomeRadioButton.BorderThickness = 1;
             this.workFromHomeRadioButton.Checked = false;
             this.workFromHomeRadioButton.Location = new System.Drawing.Point(450, 50);
-            this.workFromHomeRadioButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.workFromHomeRadioButton.Margin = new System.Windows.Forms.Padding(4);
             this.workFromHomeRadioButton.Name = "workFromHomeRadioButton";
             this.workFromHomeRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
             this.workFromHomeRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -674,8 +674,8 @@
             this.bunifuLabel10.AutoEllipsis = false;
             this.bunifuLabel10.CursorType = null;
             this.bunifuLabel10.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel10.Location = new System.Drawing.Point(578, 18);
-            this.bunifuLabel10.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bunifuLabel10.Location = new System.Drawing.Point(567, 18);
+            this.bunifuLabel10.Margin = new System.Windows.Forms.Padding(4);
             this.bunifuLabel10.Name = "bunifuLabel10";
             this.bunifuLabel10.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel10.Size = new System.Drawing.Size(160, 25);
@@ -692,7 +692,7 @@
             this.externalAssignmentRadioButton.BorderThickness = 1;
             this.externalAssignmentRadioButton.Checked = true;
             this.externalAssignmentRadioButton.Location = new System.Drawing.Point(651, 50);
-            this.externalAssignmentRadioButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.externalAssignmentRadioButton.Margin = new System.Windows.Forms.Padding(4);
             this.externalAssignmentRadioButton.Name = "externalAssignmentRadioButton";
             this.externalAssignmentRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
             this.externalAssignmentRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -722,9 +722,9 @@
             this.bunifuGroupBox1.LabelIndent = 10;
             this.bunifuGroupBox1.LineStyle = Bunifu.UI.WinForms.BunifuGroupBox.LineStyles.Solid;
             this.bunifuGroupBox1.Location = new System.Drawing.Point(14, 54);
-            this.bunifuGroupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bunifuGroupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.bunifuGroupBox1.Name = "bunifuGroupBox1";
-            this.bunifuGroupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bunifuGroupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.bunifuGroupBox1.Size = new System.Drawing.Size(735, 89);
             this.bunifuGroupBox1.TabIndex = 35;
             this.bunifuGroupBox1.TabStop = false;
@@ -737,7 +737,7 @@
             this.casualRadioButton.BorderThickness = 1;
             this.casualRadioButton.Checked = false;
             this.casualRadioButton.Location = new System.Drawing.Point(131, 27);
-            this.casualRadioButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.casualRadioButton.Margin = new System.Windows.Forms.Padding(4);
             this.casualRadioButton.Name = "casualRadioButton";
             this.casualRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
             this.casualRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -757,7 +757,7 @@
             this.annualRadioButton.BorderThickness = 1;
             this.annualRadioButton.Checked = true;
             this.annualRadioButton.Location = new System.Drawing.Point(42, 26);
-            this.annualRadioButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.annualRadioButton.Margin = new System.Windows.Forms.Padding(4);
             this.annualRadioButton.Name = "annualRadioButton";
             this.annualRadioButton.OutlineColor = System.Drawing.Color.DodgerBlue;
             this.annualRadioButton.OutlineColorTabFocused = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -777,7 +777,7 @@
             this.annualLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.annualLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.annualLabel.Location = new System.Drawing.Point(29, -6);
-            this.annualLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.annualLabel.Margin = new System.Windows.Forms.Padding(4);
             this.annualLabel.Name = "annualLabel";
             this.annualLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.annualLabel.Size = new System.Drawing.Size(55, 25);
@@ -794,7 +794,7 @@
             this.casualLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.casualLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.casualLabel.Location = new System.Drawing.Point(115, -5);
-            this.casualLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.casualLabel.Margin = new System.Windows.Forms.Padding(4);
             this.casualLabel.Name = "casualLabel";
             this.casualLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.casualLabel.Size = new System.Drawing.Size(51, 25);
@@ -817,9 +817,9 @@
             this.leaveGroupBox.LabelIndent = 10;
             this.leaveGroupBox.LineStyle = Bunifu.UI.WinForms.BunifuGroupBox.LineStyles.Solid;
             this.leaveGroupBox.Location = new System.Drawing.Point(14, 267);
-            this.leaveGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.leaveGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.leaveGroupBox.Name = "leaveGroupBox";
-            this.leaveGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.leaveGroupBox.Padding = new System.Windows.Forms.Padding(4);
             this.leaveGroupBox.Size = new System.Drawing.Size(189, 59);
             this.leaveGroupBox.TabIndex = 40;
             this.leaveGroupBox.TabStop = false;
@@ -845,7 +845,7 @@
             this.toDayDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.Right;
             this.toDayDatePicker.LeftTextMargin = 5;
             this.toDayDatePicker.Location = new System.Drawing.Point(74, 210);
-            this.toDayDatePicker.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.toDayDatePicker.Margin = new System.Windows.Forms.Padding(4);
             this.toDayDatePicker.MinimumSize = new System.Drawing.Size(4, 32);
             this.toDayDatePicker.Name = "toDayDatePicker";
             this.toDayDatePicker.Size = new System.Drawing.Size(256, 32);
@@ -879,7 +879,7 @@
             this.Controls.Add(this.bunifuGroupBox1);
             this.Controls.Add(this.leaveGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "addRequestForm";
             this.Text = "Add a Request";
             this.Load += new System.EventHandler(this.addRequestForm_Load);

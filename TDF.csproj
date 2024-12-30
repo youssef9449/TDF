@@ -271,6 +271,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\delete.png" />
+    <None Include="Resources\edit.png" />
     <None Include="Resources\show.png" />
     <None Include="Resources\hide.png" />
     <None Include="Resources\imgAbout.png" />
