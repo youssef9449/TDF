@@ -18,20 +18,20 @@ namespace TDF.Net
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new loginForm());
 
-            try
-            {
-                using (var connection = GetConnection())
-                {
-                    connection.Open();
-                }
-                Application.Run(new loginForm());
+            /* try
+             {
+                 using (var connection = GetConnection())
+                 {
+                     connection.Open();
+                 }
 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Connection failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Connection failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }*/
         }
 
         public static void loadForm(Form form)

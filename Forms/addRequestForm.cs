@@ -29,14 +29,14 @@ namespace TDF.Net.Forms
 
             RequestToEdit = request;
 
-            PopulateFieldsWithRequestData();
+            populateFieldsWithRequestData();
         }
 
         int numberOfDaysRequested, availableAnnualBalance, availableCasualBalance = 0;
         public static bool requestAddedOrUpdated;
 
         #region Methods
-        private void PopulateFieldsWithRequestData()
+        private void populateFieldsWithRequestData()
         {
             switch (RequestToEdit.RequestType)
             {
@@ -66,10 +66,12 @@ namespace TDF.Net.Forms
 
                     if (RequestToEdit.RequestType == "Annual")
                     {
+                        casualRadioButton.Checked = false;
                         annualRadioButton.Checked = true;
                     }
                     else
                     {
+                        annualRadioButton.Checked = false;
                         casualRadioButton.Checked = true;
                     }
                     break;
@@ -89,7 +91,7 @@ namespace TDF.Net.Forms
             annualRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
             casualRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
         }
-        private int GetWorkingDays(DateTime start, DateTime end)
+        private int getWorkingDays(DateTime start, DateTime end)
         {
             int workingDays = 0;
             for (DateTime date = start; date <= end; date = date.AddDays(1))
@@ -102,7 +104,7 @@ namespace TDF.Net.Forms
             }
             return workingDays;
         }
-        private int GetLeaveDays(string leaveType, int userID)
+        private int getLeaveDays(string leaveType, int userID)
         {
             int days = 0;
 
@@ -154,43 +156,43 @@ namespace TDF.Net.Forms
                 {
                     if (annualRadioButton.Checked)
                     {
-                        availableAnnualBalance = GetLeaveDays("AnnualBalance", loggedInUser.userID);
+                        availableAnnualBalance = getLeaveDays("AnnualBalance", loggedInUser.userID);
                         availableBalanceLabel.Text = availableAnnualBalance.ToString();
 
-                        numberOfDaysRequested = GetWorkingDays(fromDate, toDate);
+                        numberOfDaysRequested = getWorkingDays(fromDate, toDate);
                         daysRequestedLabel.Text = numberOfDaysRequested.ToString();
                         remainingBalanceLabel.Text = (availableAnnualBalance - numberOfDaysRequested).ToString();
                     }
                     else
                     {
-                        availableCasualBalance = GetLeaveDays("CasualBalance", loggedInUser.userID);
+                        availableCasualBalance = getLeaveDays("CasualBalance", loggedInUser.userID);
                         availableBalanceLabel.Text = availableCasualBalance.ToString();
 
-                        numberOfDaysRequested = GetWorkingDays(fromDate, toDate);
+                        numberOfDaysRequested = getWorkingDays(fromDate, toDate);
                         daysRequestedLabel.Text = numberOfDaysRequested.ToString();
                         remainingBalanceLabel.Text = (availableCasualBalance - numberOfDaysRequested).ToString();
                     }
                 }
                 else
                 {
-                    numberOfDaysRequested = GetWorkingDays(fromDate, toDate);
+                    numberOfDaysRequested = getWorkingDays(fromDate, toDate);
                     daysRequestedLabel.Text = numberOfDaysRequested.ToString();
                 }
             }
         }
-        void SetTimeControlsVisibility(bool isVisible)
+        void setTimeControlsVisibility(bool isVisible)
         {
             fromTimeTextBox.Visible = isVisible;
             toTimeTextBox.Visible = isVisible;
             fromLabel.Visible = isVisible;
             toLabel.Visible = isVisible;
         }
-        void SetDateControlsVisibility(bool isVisible)
+        void setDateControlsVisibility(bool isVisible)
         {
             toDateLabel.Visible = isVisible;
             toDayDatePicker.Visible = isVisible;
         }
-        void SetBalanceControlsVisibility(bool isVisible)
+        void setBalanceControlsVisibility(bool isVisible)
         {
             bunifuLabel3.Visible = isVisible;
             bunifuLabel4.Visible = isVisible;
@@ -199,7 +201,7 @@ namespace TDF.Net.Forms
             daysRequestedLabel.Visible = isVisible;
             remainingBalanceLabel.Visible = isVisible;
         }
-        private bool ValidateTimeInputs(string fromText, string toText, out DateTime from, out DateTime to)
+        private bool validateTimeInputs(string fromText, string toText, out DateTime from, out DateTime to)
         {
             from = default;
             to = default;
@@ -220,7 +222,7 @@ namespace TDF.Net.Forms
 
             return true;
         }
-        private bool ValidateDayInputs(string fromText, string toText, out DateTime fromDay, out DateTime toDay)
+        private bool validateDayInputs(string fromText, string toText, out DateTime fromDay, out DateTime toDay)
         {
             fromDay = default;
             toDay = default;
@@ -241,7 +243,7 @@ namespace TDF.Net.Forms
 
             return true;
         }
-        private void AddNewRequest(string requestType)
+        private void addNewRequest(string requestType)
         {
             DateTime? fromTime = (requestType == "Permission" || requestType == "External Assignment")
                 ? Convert.ToDateTime(fromTimeTextBox.Text)
@@ -268,7 +270,7 @@ namespace TDF.Net.Forms
 
             newRequest.add();
         }
-        private void UpdateExistingRequest(string requestType)
+        private void updateExistingRequest(string requestType)
         {
             RequestToEdit.RequestType = requestType;
             RequestToEdit.RequestReason = reasonTextBox.Text;
@@ -313,9 +315,9 @@ namespace TDF.Net.Forms
             if (dayoffRadioButton.Checked)
             {
                 // Hide time-related controls and show date-related controls
-                SetTimeControlsVisibility(false);
-                SetDateControlsVisibility(true);
-                SetBalanceControlsVisibility(true);
+                setTimeControlsVisibility(false);
+                setDateControlsVisibility(true);
+                setBalanceControlsVisibility(true);
                 updateLeaveBalance();
                 leaveGroupBox.Visible = true;
 
@@ -326,9 +328,9 @@ namespace TDF.Net.Forms
             if (exitRadioButton.Checked)
             {
                 // Show time-related controls and hide date-related controls
-                SetTimeControlsVisibility(true);
-                SetDateControlsVisibility(false);
-                SetBalanceControlsVisibility(false);
+                setTimeControlsVisibility(true);
+                setDateControlsVisibility(false);
+                setBalanceControlsVisibility(false);
                 leaveGroupBox.Visible = false;
             }
         }
@@ -337,9 +339,9 @@ namespace TDF.Net.Forms
             if (workFromHomeRadioButton.Checked)
             {
                 // Hide time-related controls and show date-related controls
-                SetTimeControlsVisibility(false);
-                SetDateControlsVisibility(true);
-                SetBalanceControlsVisibility(false);
+                setTimeControlsVisibility(false);
+                setDateControlsVisibility(true);
+                setBalanceControlsVisibility(false);
                 leaveGroupBox.Visible = false;
                 daysRequestedLabel.Visible = true;
                 bunifuLabel3.Visible = true;
@@ -350,9 +352,9 @@ namespace TDF.Net.Forms
             if (externalAssignmentRadioButton.Checked)
             {
                 // Show time-related controls and hide date-related controls
-                SetTimeControlsVisibility(true);
-                SetDateControlsVisibility(false);
-                SetBalanceControlsVisibility(false);
+                setTimeControlsVisibility(true);
+                setDateControlsVisibility(false);
+                setBalanceControlsVisibility(false);
                 leaveGroupBox.Visible = false;
             }
         }
@@ -383,7 +385,7 @@ namespace TDF.Net.Forms
 
             if (exitRadioButton.Checked || externalAssignmentRadioButton.Checked)
             {
-                if (!ValidateTimeInputs(fromTimeTextBox.Text, toTimeTextBox.Text, out DateTime from, out DateTime to))
+                if (!validateTimeInputs(fromTimeTextBox.Text, toTimeTextBox.Text, out DateTime from, out DateTime to))
                     return;
 
                 if (from >= to)
@@ -396,7 +398,7 @@ namespace TDF.Net.Forms
             // Validate inputs for day-based requests
             else
             {
-                if (!ValidateDayInputs(fromDayDatePicker.Text, toDayDatePicker.Text, out DateTime fromDay, out DateTime toDay))
+                if (!validateDayInputs(fromDayDatePicker.Text, toDayDatePicker.Text, out DateTime fromDay, out DateTime toDay))
                     return;
 
                 if (fromDay > toDay)
@@ -420,11 +422,11 @@ namespace TDF.Net.Forms
             // Create or update request
             if (RequestToEdit == null)
             {
-                AddNewRequest(requestType);
+                addNewRequest(requestType);
             }
             else
             {
-                UpdateExistingRequest(requestType);
+                updateExistingRequest(requestType);
             }
         }
         #endregion
