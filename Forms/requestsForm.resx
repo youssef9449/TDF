@@ -200,8 +200,8 @@
   <data name="RequestReason.HeaderText" xml:space="preserve">
     <value>Reason</value>
   </data>
-  <data name="RequestReason.Width" type="System.Int32, mscorlib">
-    <value>87</value>
+  <data name="RequestReason.MinimumWidth" type="System.Int32, mscorlib">
+    <value>150</value>
   </data>
   <metadata name="RequestBeginningTime.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -227,8 +227,8 @@
   <data name="RequestRejectReason.HeaderText" xml:space="preserve">
     <value>Notes</value>
   </data>
-  <data name="RequestRejectReason.Width" type="System.Int32, mscorlib">
-    <value>78</value>
+  <data name="RequestRejectReason.MinimumWidth" type="System.Int32, mscorlib">
+    <value>100</value>
   </data>
   <metadata name="RequestStatus.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -245,6 +245,9 @@
   <data name="Edit.HeaderText" xml:space="preserve">
     <value>Edit</value>
   </data>
+  <data name="Edit.MinimumWidth" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
   <data name="Edit.Width" type="System.Int32, mscorlib">
     <value>62</value>
   </data>
@@ -253,6 +256,9 @@
   </metadata>
   <data name="Remove.HeaderText" xml:space="preserve">
     <value>Remove</value>
+  </data>
+  <data name="Remove.MinimumWidth" type="System.Int32, mscorlib">
+    <value>20</value>
   </data>
   <data name="Remove.Width" type="System.Int32, mscorlib">
     <value>94</value>
@@ -289,7 +295,7 @@
     <value>30</value>
   </data>
   <data name="requestsDataGridView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1349, 488</value>
+    <value>1555, 685</value>
   </data>
   <data name="requestsDataGridView.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -305,105 +311,6 @@
   </data>
   <data name="&gt;&gt;requestsDataGridView.ZOrder" xml:space="preserve">
     <value>8</value>
-  </data>
-  <data name="refreshButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAHkAAAAeCAYAAAAIC7GrAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABzSURBVGhD7dExAYAwAMAwlMwy+EMG/wYCULDmyNWzx7jm
-        Pa612NW8v8l/gZ2YHGBygMkBJgeYHGBygMkBJgeYHGBygMkBJgeYHGBygMkBJgeYHGBygMkBJgeYHGBy
-        gMkBJgeYHGBygMkBxzjn8xfYxDmfF4C45K5p94a1AAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="refreshButton.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 10pt</value>
-  </data>
-  <data name="refreshButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>143, 139</value>
-  </data>
-  <data name="refreshButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>121, 30</value>
-  </data>
-  <data name="refreshButton.TabIndex" type="System.Int32, mscorlib">
-    <value>15</value>
-  </data>
-  <data name="&gt;&gt;refreshButton.Name" xml:space="preserve">
-    <value>refreshButton</value>
-  </data>
-  <data name="&gt;&gt;refreshButton.Type" xml:space="preserve">
-    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
-  </data>
-  <data name="&gt;&gt;refreshButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;refreshButton.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="addRequestButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxAQAgEMQwlGAZ/CGD/eEE4IAMmbq29Vmr
-        z3P4Va1M8Ar8xASYABMQJsAEmIAwASbABIQJMAEmIEyACTABYQJMgAkIE2ACTECYABNgAsIEmAATEK2P
-        2q/AJ0btC25HZhtGd5yEAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="addRequestButton.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 10pt</value>
-  </data>
-  <data name="addRequestButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 139</value>
-  </data>
-  <data name="addRequestButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>129, 30</value>
-  </data>
-  <data name="addRequestButton.TabIndex" type="System.Int32, mscorlib">
-    <value>14</value>
-  </data>
-  <data name="&gt;&gt;addRequestButton.Name" xml:space="preserve">
-    <value>addRequestButton</value>
-  </data>
-  <data name="&gt;&gt;addRequestButton.Type" xml:space="preserve">
-    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
-  </data>
-  <data name="&gt;&gt;addRequestButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;addRequestButton.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="applyButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxAQAgEMQwlGAZ/CGD/eEE4IAMmbq29Vmr
-        z3P4Va1M8Ar8xASYABMQJsAEmIAwASbABIQJMAEmIEyACTABYQJMgAkIE2ACTECYABNgAsIEmAATEK2P
-        2q/AJ0btC25HZhtGd5yEAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="applyButton.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Segoe UI, 10pt</value>
-  </data>
-  <data name="applyButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>275, 139</value>
-  </data>
-  <data name="applyButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>129, 30</value>
-  </data>
-  <data name="applyButton.TabIndex" type="System.Int32, mscorlib">
-    <value>16</value>
-  </data>
-  <data name="applyButton.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="&gt;&gt;applyButton.Name" xml:space="preserve">
-    <value>applyButton</value>
-  </data>
-  <data name="&gt;&gt;applyButton.Type" xml:space="preserve">
-    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
-  </data>
-  <data name="&gt;&gt;applyButton.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;applyButton.ZOrder" xml:space="preserve">
-    <value>5</value>
   </data>
   <data name="pendingRadioButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>76, 80</value>
@@ -536,76 +443,74 @@
   </data>
   <data name="controlBox.CloseBoxOptions.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAWBJREFUeF7t
-        ml1KA0EQBvdAgofxUS/go3oN9cAi0e6QgjBMQjbZ6ZnpfAVN2LxsV+3PQ8gihBBCCCGEWMvj4XMEwnf5
-        ttnZvO6P+uI7+C5f+6MAPm3+DtM7AvLs47s15cHm14YT+vjxs000Lza1XXzHpjzZ/Ngcnzj6TiivvI/v
-        5LuF0DNCd3noEWEYeYiMMJw8REQYVh5aRhheHlpEmEYetowwnTxsEWFaebglwvTycE2ENPKwJkI6ebgk
-        Qlp5OBchvTycinAX8lCLcDyp5cEFyx8yfPy79PJO7Zn34Z2QmlPyTOoINXm/7cvHIWWEmjwvvNqLMVWE
-        c/KQNsIl8pAuwhp5SBPhGnmYPsIt8jBthC3kYboIW8rDNBFayMPwEVrKw7ARIuRhuAiR8jBMhB7y0D1C
-        T3noFkF/kTHebThh9JUvKe+EN5sQPmx6ywMRfKdQ7vqPkkIIIYQQQkzNsvwD7lugSvSs96AAAAAASUVO
-        RK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAV9JREFUeF7t
+        mltKxEAQRe+CBBczn7oBP9VtqAsWGaVgLkjRCZOZdFd15R7oj0kCqXPy+BgCCCGEEEIIITby6DcEMnyW
+        LwBnAC9+RwA2g83y6Xf04gPA72VFR6A857HZuvIA4OffCW3Z7yd/4ACeF2axGbtyAvDtTjz6TvBX3pbN
+        ZLMNITJCuDyJiJBGnoyMkE6ejIiQVp70jJBenvSIMI082TPCdPJkjwjTypN7IkwvT26JUEaebIlQTp5c
+        E6GsPFmLUF6eLEU4hDxpRTiMPDFB/0eGLdtWXt5oPfO2/IuxJEvyh4jQkrfb3j8OJSO05PnCa70YS0VY
+        kydlI1wjT8pF2CJPykS4RZ5MH+EeeTJthD3kyXQR9pQn00ToIU/SR+gpT9JGGCFP0kUYKU/SRIiQJ+ER
+        IuVJWAR9IgPgLfDKe/yd8OoP6MV7AnnCCDbTUIZ/nLhCplmEEEIIIYSYgT/uW6BKJvM8NgAAAABJRU5E
+        rkJggg==
 </value>
   </data>
   <data name="controlBox.HelpBoxOptions.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        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
+        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
 </value>
   </data>
   <data name="controlBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1277, 3</value>
+    <value>1483, 3</value>
   </data>
   <data name="controlBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>2, 2, 2, 2</value>
   </data>
   <data name="controlBox.MaximizeBoxOptions.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAPhJREFUeF7t
-        zjFqBDEURME52AR7/0vZiaJFOHkqkOEXdNzvGWOMMcYY42+f9/35T1vZ5+xObt7KPmd3cvNW9jm7k5u3
-        ss/hBxHv4wcR7+MHEe/jBxHv4wcR7+MHEe/jBxHv4wcR7+MHEe/jBxHv4wcR7+MHEe/jBxHv4wcR7+MH
-        Ee/jBxHv4wcR7+MHEe/jBxHv4wcR7+MHEe/jBxHv4wcR7+MHEe/jBxHv4wcR7+MHEe/jBxHv4wcR7+MH
-        Ee/jBxHv4wcR7+MHEe/jBxHv4wcR7+MHEe/7Prh9K/uc3cnNW9nn7E5u3so+Z3dy81b2GGOMMcYYW8/z
-        C7YiSb2gIuVpAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAO5JREFUeF7t
+        zjFKAFAUA0EPZuH9L6W1r7BZBr6QgdTZj4+ZmZmZmT99fX5+/6fd/uwevL7bn92D13f7s3vw+m5/xg8i
+        3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i
+        3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i
+        3scPIt7HDyLexw8i3scPIt7HDyLedw9e3+3P7sHru/3ZPXh9tz+7B6/v9s/MzMzM/PYDtiJJvWGis6gA
+        AAAASUVORK5CYII=
 </value>
   </data>
   <data name="controlBox.MaximizeBoxOptions.IconAlt" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        vAAADrwBlbxySQAAAVJJREFUeF7t0DGKBEEMQ9E+2AR7/0vtJo7sEghvqzSBHlTSGL7oJyIiIiLiHT+f
-        z+83vJpz32mM49Wc+05jHK/m3Hca43g15z7XEFd3cA1xdQfXEFd3cA1xdb9GfoD6B/SA69Wcgb1b6wHX
-        qzkDe7fWA65Xcwb2bq0HXK/mDOzdmjwAsF32bk0eANgue7cmDwBsl71bkwcAtsverckDANtl79bkAYDt
-        sndr8gDAdtm7NXkAYLvs3Zo8ALBd9m5NHgDYLnu3Jg8AbJe9W5MHALbL3q3JAwDbZe/W5AGA7bJ3a/IA
-        wHbZuzV5AGC77N2aPACgbv/eX529Rx4AULd/76/O3iMPAKjbv/dXZ++RBwDU7d/7q7P3yAOAqzu4hri6
-        g2uIqzu4hri6g2uIqzu4hri6Qx/iejXnvtMYx6s5953GOF7Nue80xvFqTkRERETEvzzPH6EKJUw2nm3a
-        AAAAAElFTkSuQmCC
+        vAAADrwBlbxySQAAAVFJREFUeF7t0DEKw0AQQ9EczEXuf6mkcmEtAjGsVi70YJsw+It8PlVVVVVVW3yv
+        6/eGh7uOwSGph7uOwSGph7uOwSGph7uOSQ1JdRepIanuIjUk1V2khqS6r9E/wP0HYCD1cNdNvRvDQOrh
+        rpt6N4aB1MNdN/VuDAOph7tu6t2YPUCoXfVuzB4g1K56N2YPEGpXvRuzBwi1q96N2QOE2lXvxuwBQu2q
+        d2P2AKF21bsxe4BQu+rdmD1AqF31bsweINSuejdmDxBqV70bswcItavejdkDhNpV78bsAULtqndj9gCh
+        dtW7MXuAULvq3Zg9QLAu/o7v+ZUN7AGCdfF3fM+vbGAPEKyLv+N7fmUDe4BgXfwd3/MrG9gDRKq7SA1J
+        dRepIanuIjUk1V2khqS6i9SQVHeBQ1IPdx2DQ1IPdx2DQ1IPdx2DQ1IPd1VVVVVVzfwBoQolTLYK4HsA
+        AAAASUVORK5CYII=
 </value>
   </data>
   <data name="controlBox.MinimizeBoxOptions.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABGdBTUEAALGPC/xhBQAAAEFJREFUaEPt
-        zqERADAIBEEKi0j/TSUGicCB2J05+/MBAAAAsMs9520qb/VVI5Plrb5qZLK81VeNTJa3AAAAAFaI+I9U
-        9vF/bLpBAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABGdBTUEAALGPC/xhBQAAAD9JREFUaEPt
+        zqENADAMA8EOFtD9l2q5SWAC7qSnls8BAAAAWOVWvU3lv1YOTJf/WjkwXf5r5cB0+Q8AAABg1gePVPbx
+        KHRxOwAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="controlBox.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
@@ -629,6 +534,111 @@
   <data name="&gt;&gt;controlBox.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="dataGridViewImageColumn1.HeaderText" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="dataGridViewImageColumn1.MinimumWidth" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="refreshButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAHkAAAAeCAYAAAAIC7GrAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABxSURBVGhD7dExAYAwAMCwKZll8IcM/sEPDtYcefp2zHNd
+        83wedrWu8Y/sxuQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNM
+        DjA5wOQAkwNMDhjzWPc3spFj3S+AuOSulfWbyQAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="refreshButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 10pt</value>
+  </data>
+  <data name="refreshButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>143, 139</value>
+  </data>
+  <data name="refreshButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 30</value>
+  </data>
+  <data name="refreshButton.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="&gt;&gt;refreshButton.Name" xml:space="preserve">
+    <value>refreshButton</value>
+  </data>
+  <data name="&gt;&gt;refreshButton.Type" xml:space="preserve">
+    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
+  </data>
+  <data name="&gt;&gt;refreshButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;refreshButton.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="addRequestButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxFcAgFARBlGAZ/CGD/pN3KRMJTDHN1tv6
+        rNXnOdyqVvtHbmMCTIAJMAFhAkyACTABYQJMgAkwAWECTIAJMAFhAkyACTABYQJMgAkwAWECTIAJeCcY
+        tb+Ri4zaD25HZhvCCrDQAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="addRequestButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 10pt</value>
+  </data>
+  <data name="addRequestButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 139</value>
+  </data>
+  <data name="addRequestButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>129, 30</value>
+  </data>
+  <data name="addRequestButton.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;addRequestButton.Name" xml:space="preserve">
+    <value>addRequestButton</value>
+  </data>
+  <data name="&gt;&gt;addRequestButton.Type" xml:space="preserve">
+    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
+  </data>
+  <data name="&gt;&gt;addRequestButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;addRequestButton.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="applyButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxFcAgFARBlGAZ/CGD/pN3KRMJTDHN1tv6
+        rNXnOdyqVvtHbmMCTIAJMAFhAkyACTABYQJMgAkwAWECTIAJMAFhAkyACTABYQJMgAkwAWECTIAJeCcY
+        tb+Ri4zaD25HZhvCCrDQAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="applyButton.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Segoe UI, 10pt</value>
+  </data>
+  <data name="applyButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>275, 139</value>
+  </data>
+  <data name="applyButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>129, 30</value>
+  </data>
+  <data name="applyButton.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="applyButton.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;applyButton.Name" xml:space="preserve">
+    <value>applyButton</value>
+  </data>
+  <data name="&gt;&gt;applyButton.Type" xml:space="preserve">
+    <value>Bunifu.UI.WinForms.BunifuButton.BunifuButton, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
+  </data>
+  <data name="&gt;&gt;applyButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;applyButton.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -636,13 +646,19 @@
     <value>6, 13</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>1349, 677</value>
+    <value>1555, 874</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterScreen</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Requests</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn1.Name" xml:space="preserve">
+    <value>dataGridViewImageColumn1</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;RequestID.Name" xml:space="preserve">
     <value>RequestID</value>
@@ -720,13 +736,13 @@
     <value>Edit</value>
   </data>
   <data name="&gt;&gt;Edit.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewButtonColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;Remove.Name" xml:space="preserve">
     <value>Remove</value>
   </data>
   <data name="&gt;&gt;Remove.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewButtonColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;Approve.Name" xml:space="preserve">
     <value>Approve</value>

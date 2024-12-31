@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using TDF.Classes;
+using static TDF.Net.Database;
 
 namespace TDF.Net
 {
@@ -17,18 +18,20 @@ namespace TDF.Net
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            try
-            {
-                using (var connection = Database.GetConnection())
-                {
-                    connection.Open();
-                }
-                Application.Run(new loginForm());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Connection failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            Application.Run(new loginForm());
+
+            /* try
+             {
+                 using (var connection = GetConnection())
+                 {
+                     connection.Open();
+                 }
+
+             }
+             catch (Exception ex)
+             {
+                 MessageBox.Show($"Connection failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+             }*/
         }
 
         public static void loadForm(Form form)
@@ -309,6 +312,98 @@ namespace TDF.Net
                             radioButton.OutlineColorUnchecked = Color.Black;
                         }
                     }
+                }
+                if (ctrl.GetType() == typeof(BunifuFormControlBox))
+                {
+                    BunifuFormControlBox controlBox = (BunifuFormControlBox)ctrl;
+                    controlBox.CloseBoxOptions.HoverColor = ThemeColor.SecondaryColor;
+                    controlBox.CloseBoxOptions.IconHoverColor = Color.Black;
+                    controlBox.CloseBoxOptions.IconPressedColor = Color.Black;
+                    controlBox.CloseBoxOptions.PressedColor = ThemeColor.SecondaryColor;
+                    controlBox.MaximizeBoxOptions.HoverColor = ThemeColor.SecondaryColor;
+                    controlBox.MaximizeBoxOptions.PressedColor = ThemeColor.SecondaryColor;
+                    controlBox.MinimizeBoxOptions.HoverColor = ThemeColor.SecondaryColor;
+                    controlBox.MinimizeBoxOptions.PressedColor = ThemeColor.SecondaryColor;
+                }
+            }
+        }
+        public static void loadFormLite(Form form)
+        {
+            foreach (Control ctrl in form.Controls)
+            {
+                if (ctrl is Panel pbl)
+                {
+                    pbl.BackColor = ThemeColor.PrimaryColor;
+
+                    foreach (Control innerCtrl in pbl.Controls)
+                    {
+                        if (innerCtrl is BunifuFormControlBox controlBox)
+                        {
+                            controlBox.BackColor = ThemeColor.PrimaryColor;
+                            controlBox.CloseBoxOptions.HoverColor = ThemeColor.SecondaryColor;
+                            controlBox.CloseBoxOptions.IconHoverColor = Color.Black;
+                            controlBox.CloseBoxOptions.IconPressedColor = Color.Black;
+                            controlBox.CloseBoxOptions.PressedColor = ThemeColor.SecondaryColor;
+                            controlBox.MaximizeBoxOptions.HoverColor = ThemeColor.SecondaryColor;
+                            controlBox.MaximizeBoxOptions.PressedColor = ThemeColor.SecondaryColor;
+                            controlBox.MinimizeBoxOptions.HoverColor = ThemeColor.SecondaryColor;
+                            controlBox.MinimizeBoxOptions.PressedColor = ThemeColor.SecondaryColor;
+                        }
+                    }
+                }
+                if (ctrl.GetType() == typeof(BunifuButton))
+                {
+                    BunifuButton btn = (BunifuButton)ctrl;
+
+                    /* btn.BackColor = ThemeColor.PrimaryColor;
+                     btn.ForeColor = Color.White;
+
+                     btn.OnDisabledState.BorderColor = ThemeColor.SecondaryColor;
+                     btn.OnDisabledState.FillColor = btn.BackColor;
+
+                     btn.onHoverState.BorderColor = ThemeColor.PrimaryColor;
+                     btn.onHoverState.FillColor = btn.BackColor;
+
+                     btn.OnIdleState.BorderColor = btn.OnDisabledState.BorderColor;
+                     btn.OnIdleState.FillColor = btn.BackColor;
+
+                     btn.OnPressedState.BorderColor = btn.OnDisabledState.BorderColor;
+                     btn.OnPressedState.FillColor = btn.BackColor;*/
+
+                    btn.OnDisabledState.BorderColor = ThemeColor.SecondaryColor;
+                    btn.OnDisabledState.FillColor = ThemeColor.PrimaryColor;
+                    btn.OnDisabledState.ForeColor = Color.White;
+
+                    btn.onHoverState.BorderColor = ThemeColor.SecondaryColor;
+                    btn.onHoverState.FillColor = ThemeColor.SecondaryColor;
+                    btn.onHoverState.ForeColor = Color.White;
+
+                    btn.OnIdleState.BorderColor = ThemeColor.SecondaryColor;
+                    btn.OnIdleState.FillColor = ThemeColor.PrimaryColor;
+                    btn.OnIdleState.ForeColor = Color.White;
+
+                    btn.OnPressedState.BorderColor = ThemeColor.SecondaryColor;
+                    btn.OnPressedState.FillColor = ThemeColor.PrimaryColor;
+                    btn.OnPressedState.ForeColor = Color.White;
+                    btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
+
+                    btn.Refresh();
+                }
+                if (ctrl.GetType() == typeof(BunifuTextBox))
+                {
+                    BunifuTextBox textBox = (BunifuTextBox)ctrl;
+                    textBox.BorderColorActive = ThemeColor.SecondaryColor;
+                    textBox.BorderColorHover = ThemeColor.PrimaryColor;
+                    textBox.BorderColorIdle = ThemeColor.SecondaryColor;
+                }
+                if (ctrl.GetType() == typeof(BunifuDropdown))
+                {
+                    BunifuDropdown dropdownList = (BunifuDropdown)ctrl;
+                    dropdownList.IndicatorColor = ThemeColor.SecondaryColor;
+                    dropdownList.ItemBackColor = ThemeColor.SecondaryColor;
+                    dropdownList.ItemForeColor = Color.White;
+                    dropdownList.ItemHighLightColor = ThemeColor.PrimaryColor;
+                    dropdownList.BorderColor = ThemeColor.SecondaryColor;
                 }
                 if (ctrl.GetType() == typeof(BunifuFormControlBox))
                 {

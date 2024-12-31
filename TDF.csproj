@@ -57,9 +57,6 @@
     <Reference Include="Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9, processorArchitecture=MSIL">
       <HintPath>packages\Bunifu.UI.WinForms.7.2.0\lib\net48\Bunifu.UI.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="Bunifu.UI.WinForms.BunifuPictureBox">
-      <HintPath>..\..\BunifuCrackV5-main\Bunifu.UI.WinForms.BunifuPictureBox.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
@@ -149,6 +146,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\IniFile.cs" />
+    <Compile Include="Classes\NetworkUtils.cs" />
     <Compile Include="Classes\Requests.cs" />
     <Compile Include="Classes\ThemeColor.cs" />
     <Compile Include="Classes\User.cs" />
@@ -189,12 +187,6 @@
     <Compile Include="Forms\settingsForm.Designer.cs">
       <DependentUpon>settingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\teamForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\teamForm.Designer.cs">
-      <DependentUpon>teamForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security.cs" />
@@ -220,9 +212,6 @@
     <EmbeddedResource Include="Forms\settingsForm.resx">
       <DependentUpon>settingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\teamForm.resx">
-      <DependentUpon>teamForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -245,7 +234,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="Properties\App.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.8.1">
@@ -282,6 +271,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\pdf.png" />
+    <None Include="Resources\delete.png" />
+    <None Include="Resources\edit.png" />
     <None Include="Resources\show.png" />
     <None Include="Resources\hide.png" />
     <None Include="Resources\imgAbout.png" />

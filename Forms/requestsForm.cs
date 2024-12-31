@@ -7,6 +7,10 @@ using TDF.Classes;
 using TDF.Net.Classes;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
+using static TDF.Net.Forms.addRequestForm;
+using Bunifu.UI.WinForms;
+using Excel = Microsoft.Office.Interop.Excel;
+
 
 
 namespace TDF.Net.Forms
@@ -16,6 +20,29 @@ namespace TDF.Net.Forms
         public requestsForm()
         {
             InitializeComponent();
+            requestsDataGridView.CellMouseEnter += requestsDataGridView_CellMouseEnter;
+            requestsDataGridView.CellMouseLeave += requestsDataGridView_CellMouseLeave;
+            requestsDataGridView.Columns["RequestType"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            requestsDataGridView.ColumnHeadersHeight = 40;
+            // Create a new DataGridViewImageColumn
+            DataGridViewImageColumn pictureColumn = new DataGridViewImageColumn
+            {
+                Name = "Report",
+                HeaderText = "Report",
+                Image = Properties.Resources.pdf, // Use the "pdf" image from resources
+                //ImageLayout = DataGridViewImageCellLayout.Zoom // Adjust layout as needed
+            };
+
+            // Add the column to the DataGridView
+            requestsDataGridView.Columns.Add(pictureColumn);
+
+            // Optional: Set the "Report" image for existing rows (if rows are already populated)
+           // foreach (DataGridViewRow row in requestsDataGridView.Rows)
+           // {
+           //     row.Cells["Report"].Value = Properties.Resources.pdf;
+           // }
+
+
             Program.loadForm(this);
             controlBox.BackColor = Color.White;
             controlBox.CloseBoxOptions.HoverColor = Color.White;
@@ -25,11 +52,23 @@ namespace TDF.Net.Forms
         }
 
         #region Events
+        private void requestsDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            string columnName = requestsDataGridView.Columns[e.ColumnIndex].Name;
+
+            if (columnName == "Edit" || columnName == "Remove" || columnName == "Report")
+            {
+                requestsDataGridView.Cursor = Cursors.Hand;
+            }
+
+        }
+        private void requestsDataGridView_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            requestsDataGridView.Cursor = Cursors.Default;
+        }
         private void requestsForm_Resize(object sender, EventArgs e)
         {
             Invalidate();
-            /*sizeChangecount++;
-            requestsDataGridView.Columns["RequestReason"].AutoSizeMode = sizeChangecount > 1 ? DataGridViewAutoSizeColumnMode.Fill : DataGridViewAutoSizeColumnMode.ColumnHeader;*/
         }
         private void Requests_Load(object sender, EventArgs e)
         {
@@ -41,6 +80,9 @@ namespace TDF.Net.Forms
             closedRadioButton.Visible = true;
             pendingRadioButton.Visible = true;
 
+            requestsDataGridView.ClearSelection();
+            requestsDataGridView.CurrentCell = null;
+
             refreshRequestsTable();
         }
         protected override void OnPaint(PaintEventArgs e)
@@ -48,58 +90,17 @@ namespace TDF.Net.Forms
             base.OnPaint(e);
             ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
         }
-        private void panel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && e.Clicks == 1)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, 0x112, 0xf012, 0);
-            }
-        }
         private void requestsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex >= 0 & e.RowIndex >= 0)
             {
-                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit")
+                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit" && (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending" || hasAdminRole || hasManagerRole))
                 {
                     if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending")
                     {
-                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewButtonCell)
+                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell)
                         {
-                            // Get the underlying data row from the DataGridView
-                            DataRow row = ((DataRowView)requestsDataGridView.Rows[e.RowIndex].DataBoundItem).Row;
-
-                            // Retrieve the request data from the DataRow
-                            DateTime requestFromDay = Convert.ToDateTime(row["RequestFromDay"]);
-
-                            Request selectedRequest = new Request
-                            {
-                                RequestID = row["RequestID"] != DBNull.Value ? Convert.ToInt32(row["RequestID"]) : 0,
-                                RequestType = row["RequestType"] != DBNull.Value ? row["RequestType"].ToString() : string.Empty,
-                                RequestReason = row["RequestReason"] != DBNull.Value ? row["RequestReason"].ToString() : string.Empty,
-                                RequestFromDay = requestFromDay,
-                                RequestToDay = row["RequestToDay"] != DBNull.Value ? Convert.ToDateTime(row["RequestToDay"]) : requestFromDay,
-
-                                // Converting TimeSpan to DateTime by adding the TimeSpan to the requestFromDay
-                                RequestBeginningTime = row["RequestBeginningTime"] != DBNull.Value ?
-                                                       requestFromDay.Add((TimeSpan)row["RequestBeginningTime"]) : requestFromDay,
-                                RequestEndingTime = row["RequestEndingTime"] != DBNull.Value ?
-                                                    requestFromDay.Add((TimeSpan)row["RequestEndingTime"]) : requestFromDay,
-
-                                RequestStatus = row["RequestStatus"] != DBNull.Value ? row["RequestStatus"].ToString() : string.Empty
-                            };
-
-                            // Open the AddRequestForm with the selected request data for editing
-                            addRequestForm addRequestForm = new addRequestForm(selectedRequest); // Assuming AddRequestForm has a constructor that takes a Request object
-                            addRequestForm.ShowDialog();
-
-                            // Optionally, refresh the DataGridView after editing (if changes are saved)
-                            //refreshRequestsTable();
-
-                            if (addRequestForm.requestAddedOrUpdated)
-                            {
-                                refreshRequestsTable();
-                            }
+                            openRequestToEdit(e);
                         }
                     }
                     else
@@ -111,13 +112,13 @@ namespace TDF.Net.Forms
 
                 if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Remove")
                 {
-                    if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() != "Pending")
+                    if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending")
                     {
-                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewButtonCell buttonCell)
+                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell imageCell)
                         {
-                            var confirmResult = MessageBox.Show("Are you sure you want to delete this request?",
-                                                                "Confirm Delete",
-                                                                MessageBoxButtons.YesNo);
+                            DialogResult confirmResult = MessageBox.Show("Are you sure you want to delete this request?",
+                                                                         "Confirm Delete",
+                                                                          MessageBoxButtons.YesNo);
 
                             if (confirmResult == DialogResult.Yes)
                             {
@@ -139,30 +140,30 @@ namespace TDF.Net.Forms
                 }
 
                 if (e.RowIndex >= 0 &&
-                 (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" ||
-                  requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject"))
+             (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" ||
+              requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject"))
                 {
-                    // Get the current row
                     DataGridViewRow currentRow = requestsDataGridView.Rows[e.RowIndex];
 
-                    // Toggle checkboxes based on current selection
                     if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve")
                     {
-                        // If "Approve" was clicked, uncheck "Reject"
                         currentRow.Cells["Reject"].Value = false;
                     }
                     else if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject")
                     {
-                        // If "Reject" was clicked, uncheck "Approve"
                         currentRow.Cells["Approve"].Value = false;
                     }
+                }
+                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Report")
+                {
+                    openExcelFile();
+
                 }
             }
         }
         private void requestsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            // Check if the current cell is in the column that holds the status
-            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestStatus") // Change to your actual column name
+            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestStatus")
             {
                 // Check the value of the cell
                 if (e.Value != null && e.Value.ToString() == "Approved")
@@ -182,26 +183,26 @@ namespace TDF.Net.Forms
             if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestBeginningTime" ||
                 requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestEndingTime" ||
                 requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestToDay" ||
-                requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestRejectReason")
+                requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestRejectReason" ||
+                requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestReason")
             {
-                // Check if the cell value is null or empty
+
                 if (e.Value == null || string.IsNullOrEmpty(e.Value.ToString()))
                 {
-                    e.Value = "-"; // Set the display value to "-"
-                    e.FormattingApplied = true; // Indicate that formatting is applied
+                    e.Value = "-"; 
+                    e.FormattingApplied = true; 
                 }
             }
             if (requestsDataGridView.Columns[e.ColumnIndex].Name == "NumberOfDays")
             {
-                // Check if the cell value is null or empty
                 if ((int)e.Value == 0 || string.IsNullOrEmpty(e.Value.ToString()))
                 {
-                    e.Value = "-"; // Set the display value to "-"
-                    e.FormattingApplied = true; // Indicate that formatting is applied
+                    e.Value = "-";
+                    e.FormattingApplied = true; 
                 }
             }
         }
-        private void pendingRadioButton_CheckedChanged(object sender, Bunifu.UI.WinForms.BunifuRadioButton.CheckedChangedEventArgs e)
+        private void pendingRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
             refreshRequestsTable();
         }
@@ -216,38 +217,38 @@ namespace TDF.Net.Forms
             {
                 if (hasManagerRole || hasAdminRole)
                 {
-                    LoadRequestsForManagerOrAdmin(requestsTable);
-                    ConfigureDataGridViewForManagerOrAdmin();
+                    loadRequestsForManagerOrAdmin(requestsTable);
+                    configureDataGridViewForManagerOrAdmin();
                 }
                 else
                 {
-                    LoadRequestsForUser(requestsTable);
-                    ConfigureDataGridViewForUser();
+                    loadRequestsForUser(requestsTable);
+                    configureDataGridViewForUser();
                 }
 
                 requestsDataGridView.DataSource = requestsTable;
                 //CalculateNumberOfDaysForRequests();
-                ReorderDataGridViewColumns();
+                reorderDataGridViewColumns();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void LoadRequestsForManagerOrAdmin(DataTable requestsTable)
+        private void loadRequestsForManagerOrAdmin(DataTable requestsTable)
         {
-            string query = BuildQueryForManagerOrAdmin();
-            ExecuteQuery(query, requestsTable);
+            string query = buildQueryForManagerOrAdmin();
+            executeQuery(query, requestsTable);
         }
-        private void LoadRequestsForUser(DataTable requestsTable)
+        private void loadRequestsForUser(DataTable requestsTable)
         {
-            string query = BuildQueryForUser();
-            ExecuteQuery(query, requestsTable, cmd =>
+            string query = buildQueryForUser();
+            executeQuery(query, requestsTable, cmd =>
             {
                 cmd.Parameters.AddWithValue("@UserID", loggedInUser.userID);
             });
         }
-        private string BuildQueryForManagerOrAdmin()
+        private string buildQueryForManagerOrAdmin()
         {
             string baseQuery = @"
         SELECT 
@@ -283,7 +284,7 @@ namespace TDF.Net.Forms
 
             return baseQuery + condition;
         }
-        private string BuildQueryForUser()
+        private string buildQueryForUser()
         {
             return @"
         SELECT 
@@ -311,7 +312,7 @@ namespace TDF.Net.Forms
             r.RequestUserID = @UserID AND 
             " + (pendingRadioButton.Checked ? "r.RequestStatus = 'Pending'" : "NOT r.RequestStatus = 'Pending'");
         }
-        private void ExecuteQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
+        private void executeQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
         {
             using (SqlConnection conn = Database.GetConnection())
             {
@@ -326,49 +327,125 @@ namespace TDF.Net.Forms
                 }
             }
         }
-        private void ConfigureDataGridViewForManagerOrAdmin()
+        private void configureDataGridViewForManagerOrAdmin()
         {
             requestsDataGridView.Columns["RequestUserFullName"].Visible = true;
             requestsDataGridView.Columns["Approve"].Visible = true;
             requestsDataGridView.Columns["Reject"].Visible = true;
-            requestsDataGridView.Columns["Edit"].Visible = false;
+            requestsDataGridView.Columns["Edit"].Visible = pendingRadioButton.Checked;
             requestsDataGridView.Columns["Remove"].Visible = false;
+            if (requestsDataGridView.Columns["Report"] != null)
+            {
+                requestsDataGridView.Columns["Report"].Visible = false;
+            }
             requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = false;
         }
-        private void ConfigureDataGridViewForUser()
+        private void configureDataGridViewForUser()
         {
-            requestsDataGridView.Columns["RequestReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-            //requestsDataGridView.Columns["RequestRejectReason"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-            requestsDataGridView.Columns["RequestReason"].Width = 145;
             bool isPending = pendingRadioButton.Checked;
             requestsDataGridView.Columns["Edit"].Visible = isPending;
             requestsDataGridView.Columns["Remove"].Visible = isPending;
+            requestsDataGridView.Columns["RequestRejectReason"].Visible = !isPending;
+            requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = true;
+
         }
-       /* private void CalculateNumberOfDaysForRequests()
+        private void openRequestToEdit(DataGridViewCellEventArgs e)
         {
-            foreach (DataGridViewRow row in requestsDataGridView.Rows)
+            // Get the underlying data row from the DataGridView
+            DataRow row = ((DataRowView)requestsDataGridView.Rows[e.RowIndex].DataBoundItem).Row;
+
+            // Retrieve the request data from the DataRow
+            DateTime requestFromDay = Convert.ToDateTime(row["RequestFromDay"]);
+
+            Request selectedRequest = new Request
             {
-                if (row.Cells["RequestFromDay"].Value != null && row.Cells["RequestToDay"].Value != null &&
-                    DateTime.TryParse(row.Cells["RequestFromDay"].Value.ToString(), out var beginningDate) &&
-                    DateTime.TryParse(row.Cells["RequestToDay"].Value.ToString(), out var endingDate))
-                {
-                    row.Cells["NumberOfDays"].Value = (endingDate - beginningDate).Days + 1;
-                }
-                else
-                {
-                    row.Cells["NumberOfDays"].Value = "-";
-                }
+                RequestID = row["RequestID"] != DBNull.Value ? Convert.ToInt32(row["RequestID"]) : 0,
+                RequestType = row["RequestType"] != DBNull.Value ? row["RequestType"].ToString() : string.Empty,
+                RequestReason = row["RequestReason"] != DBNull.Value ? row["RequestReason"].ToString() : string.Empty,
+                RequestFromDay = requestFromDay,
+                RequestToDay = row["RequestToDay"] != DBNull.Value ? Convert.ToDateTime(row["RequestToDay"]) : requestFromDay,
+
+                // Converting TimeSpan to DateTime by adding the TimeSpan to the requestFromDay
+                RequestBeginningTime = row["RequestBeginningTime"] != DBNull.Value ?
+                                       requestFromDay.Add((TimeSpan)row["RequestBeginningTime"]) : requestFromDay,
+                RequestEndingTime = row["RequestEndingTime"] != DBNull.Value ?
+                                    requestFromDay.Add((TimeSpan)row["RequestEndingTime"]) : requestFromDay,
+
+                RequestStatus = row["RequestStatus"] != DBNull.Value ? row["RequestStatus"].ToString() : string.Empty
+            };
+
+            // Open the AddRequestForm with the selected request data for editing
+            addRequestForm addRequestForm = new addRequestForm(selectedRequest); // Assuming AddRequestForm has a constructor that takes a Request object
+            addRequestForm.ShowDialog();
+
+            // Optionally, refresh the DataGridView after editing (if changes are saved)
+            //refreshRequestsTable();
+
+            if (requestAddedOrUpdated)
+            {
+                refreshRequestsTable();
             }
-        }*/
-        private void ReorderDataGridViewColumns()
+        }
+        private void reorderDataGridViewColumns()
         {
             requestsDataGridView.Columns["Edit"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Remove"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
-            requestsDataGridView.Columns["RequestStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 3;
-            requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 3;
+            if (requestsDataGridView.Columns["Report"] != null)
+            {
+                requestsDataGridView.Columns["Report"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
+            }
+            requestsDataGridView.Columns["RequestStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
+            requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Approve"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
+        }
+        private void openExcelFile()
+        {
+            try
+            {
+                // Path to the Excel file
+                string filePath = @"Forms\Leave Request form";
+
+                // Create Excel application
+                Excel.Application excelApp = new Excel.Application
+                {
+                    Visible = false, // Open Excel hidden
+                    DisplayAlerts = false // Suppress prompts
+                };
+
+                Excel.Workbook workbook = null;
+
+                try
+                {
+                    // Try to open the workbook in editable mode
+                    workbook = excelApp.Workbooks.Open(
+                        filePath,
+                        ReadOnly: false, // Attempt to open as editable
+                        IgnoreReadOnlyRecommended: true
+                    );
+                }
+                catch
+                {
+                    // Fallback: Open in read-only mode if editable mode fails
+                    workbook = excelApp.Workbooks.Open(
+                        filePath,
+                        ReadOnly: true, // Open as read-only
+                        IgnoreReadOnlyRecommended: true
+                    );
+                }
+
+                // Optionally work with the workbook here
+                // workbook.Worksheets[1] (Access sheets, modify content, etc.)
+
+                // Note: The file remains open and hidden to the user
+                // Uncomment below if you want to make Excel visible for debugging
+                 excelApp.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors
+                MessageBox.Show($"Error opening Excel file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         #endregion
 
@@ -378,7 +455,7 @@ namespace TDF.Net.Forms
             addRequestForm addRequestForm = new addRequestForm();
             addRequestForm.ShowDialog();
 
-            if (addRequestForm.requestAddedOrUpdated)
+            if (requestAddedOrUpdated)
             {
                 refreshRequestsTable();
             }

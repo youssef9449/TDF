@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Net.Classes;
@@ -20,7 +21,7 @@ namespace TDF.Net
         private bool signingup = false;
         private bool changingPassword = false;
         public static User loggedInUser;
-        public static List<string> departments = GetDepartments();
+        public static List<string> departments = new List<string>();
 
         #region Buttons
         private void loginButton_Click(object sender, EventArgs e)
@@ -39,12 +40,12 @@ namespace TDF.Net
                 }
 
                 // Verify current password and update to the new one if correct
-                if (VerifyCurrentPassword(username, currentPassword))
+                if (verifyCurrentPassword(username, currentPassword))
                 {
                     string salt = Security.generateSalt();
                     string hashedNewPassword = Security.hashPassword(newPassword, salt);
-                    UpdatePasswordInDatabase(username, hashedNewPassword, salt);
-                    ClearFormFields();
+                    updatePasswordInDatabase(username, hashedNewPassword, salt);
+                    clearFormFields();
                     MessageBox.Show("Password changed successfully!");
                 }
                 else
@@ -59,8 +60,6 @@ namespace TDF.Net
         }
         private void signupButton_Click(object sender, EventArgs e)
         {
-            //List<string> departments = iniFile.ReadSectionValues("Departments");
-
             if (!signingup && !changingPassword)
             {
                 signingup = true;
@@ -73,7 +72,7 @@ namespace TDF.Net
                 departmentDropdown.Visible = true;
                 nameTextBox.UseSystemPasswordChar = false;
                 //passPictureBox.Visible = true;
-                ClearFormFields();
+                clearFormFields();
                 departmentDropdown.DataSource = departments;
                 departmentDropdown.SelectedIndex = -1;
 
@@ -94,7 +93,7 @@ namespace TDF.Net
                 departmentDropdown.Visible = false;
                 nameTextBox.UseSystemPasswordChar = true;
                 // passPictureBox.Visible = false;
-                ClearFormFields();
+                clearFormFields();
                 return;
             }
 
@@ -109,7 +108,7 @@ namespace TDF.Net
                 return;
             }
 
-            if (IsUsernameTaken(username))
+            if (isUsernameTaken(username))
             {
                 MessageBox.Show("Username is already taken. Please choose a different username.");
                 return;
@@ -138,7 +137,7 @@ namespace TDF.Net
             signupButton.Text = "Sign Up";
             updateButton.Text = "Change password";
 
-            ClearFormFields();
+            clearFormFields();
         }
         private void updateButton_Click(object sender, EventArgs e)
         {
@@ -170,7 +169,7 @@ namespace TDF.Net
             departmentDropdown.Visible = false;
             departmentLabel.Visible = false;
 
-            ClearFormFields();
+            clearFormFields();
         }
         #endregion
 
@@ -186,7 +185,7 @@ namespace TDF.Net
                 mainForm mainForm = new mainForm(this);
                 //Owner = mainForm;
                 Hide();
-                ClearFormFields();
+                clearFormFields();
                 mainForm.Show();
             }
             else
@@ -194,7 +193,7 @@ namespace TDF.Net
                 MessageBox.Show("Invalid username or password");
             }
         }
-        public static List<string> GetDepartments()
+        public static async Task<List<string>> getDepartmentsAsync()
         {
             List<string> departments = new List<string>();
 
@@ -206,10 +205,10 @@ namespace TDF.Net
 
                 try
                 {
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
+                    await connection.OpenAsync();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
 
-                    while (reader.Read())
+                    while (await reader.ReadAsync())
                     {
                         string department = reader["Department"].ToString();
                         departments.Add(department);
@@ -226,13 +225,19 @@ namespace TDF.Net
             departments.Sort();
             return departments;
         }
+        private async Task loadDepartmentsAsync()
+        {
+            departments = await getDepartmentsAsync();
+            departmentDropdown.DataSource = departments;
+            departmentDropdown.SelectedIndex = -1;
+        }
         void updateTheme()
         {
             Color color = ThemeColor.SelectThemeColor();
             ThemeColor.PrimaryColor = color;
             ThemeColor.SecondaryColor = ThemeColor.changeColorBrightness(color, -0.3);
             ThemeColor.LightColor = ThemeColor.changeColorBrightness(color, +0.6);
-            loadForm(this);
+            loadFormLite(this);
         }
         private bool validateLogin(string username, string password)
         {
@@ -258,7 +263,7 @@ namespace TDF.Net
             }
             return false;
         }
-        private bool IsUsernameTaken(string username)
+        private bool isUsernameTaken(string username)
         {
             using (SqlConnection conn = Database.GetConnection())
             {
@@ -273,13 +278,13 @@ namespace TDF.Net
                 }
             }
         }
-        private void ClearFormFields()
+        private void clearFormFields()
         {
             txtUsername.Clear();
             txtPassword.Clear();
             nameTextBox.Clear();
         }
-        private bool VerifyCurrentPassword(string username, string currentPassword)
+        private bool verifyCurrentPassword(string username, string currentPassword)
         {
             using (SqlConnection conn = Database.GetConnection())
             {
@@ -308,7 +313,7 @@ namespace TDF.Net
                 }
             }
         }
-        private void UpdatePasswordInDatabase(string username, string newPasswordHash, string salt)
+        private void updatePasswordInDatabase(string username, string newPasswordHash, string salt)
         {
             using (SqlConnection conn = Database.GetConnection())
             {
@@ -375,40 +380,39 @@ namespace TDF.Net
 
             return userDetails;
         }
-        private void EnsureAdminExists()
+        private async Task ensureAdminExistsAsync()
         {
             using (SqlConnection conn = Database.GetConnection())
             {
-                conn.Open();
+                await conn.OpenAsync();  // Use asynchronous open connection
 
                 string checkQuery = "SELECT COUNT(1) FROM Users WHERE Role = 'Admin'";
                 using (SqlCommand cmd = new SqlCommand(checkQuery, conn))
                 {
-                    int adminExists = (int)cmd.ExecuteScalar();
+                    int adminExists = (int)await cmd.ExecuteScalarAsync();  // Use asynchronous ExecuteScalar
 
-                    if (adminExists == 0) // 
+                    if (adminExists == 0)
                     {
                         DialogResult result = MessageBox.Show(
-                            "No Admin found. Do you want to create a default Admin user ?",
+                            "No Admin found. Do you want to create a default Admin user?",
                             "Create Admin", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                         if (result == DialogResult.Yes)
                         {
-                            // Hash password and create user
                             string salt = Security.generateSalt();
                             string hashedPassword = Security.hashPassword("123", salt);
 
-                            string insertQuery = "INSERT INTO Users (UserName, PasswordHash, Salt, Role, FullName, Department) VALUES (@UserName, @PasswordHash, @Salt, @Role, @FullName, @Department)";
-                            using (SqlCommand insertCmd = new SqlCommand(insertQuery, conn))
+                            User admin = new User
                             {
-                                insertCmd.Parameters.AddWithValue("@UserName", "admin");
-                                insertCmd.Parameters.AddWithValue("@PasswordHash", hashedPassword);
-                                insertCmd.Parameters.AddWithValue("@Salt", salt);
-                                insertCmd.Parameters.AddWithValue("@FullName", "Administrator");
-                                insertCmd.Parameters.AddWithValue("@Role", "Admin");
-                                insertCmd.Parameters.AddWithValue("@Department", "All");
-                                insertCmd.ExecuteNonQuery();
-                            }
+                                UserName = "admin",
+                                Salt = salt,
+                                PasswordHash = hashedPassword,
+                                FullName = "Administrator",
+                                Role = "Admin",
+                                Department = "All"
+                            };
+
+                            admin.add();
 
                             MessageBox.Show("Default Admin created. User Name: 'admin', Password: '123'. Please change the password immediately.",
                                             "Admin Created", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -420,9 +424,10 @@ namespace TDF.Net
         #endregion
 
         #region Events
-        private void loginForm_Shown(object sender, EventArgs e)
+        private async void loginForm_Shown(object sender, EventArgs e)
         {
-            EnsureAdminExists();
+           await loadDepartmentsAsync(); 
+           await ensureAdminExistsAsync();
         }
         protected override void OnPaint(PaintEventArgs e)
         {

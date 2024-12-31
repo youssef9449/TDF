@@ -30,7 +30,6 @@ namespace TDF.Net.Classes
 
         public Request(string requestType, string requestReason, string requestUserFullName, DateTime requestFromDay, DateTime requestToDay, int requestUserID, string requestDepartment, int requestNumberOfDays, DateTime? requestBeginningTime, DateTime? requestEndingTime)
         {
-
             RequestType = requestType;
             RequestReason = requestReason;
             RequestFromDay = requestFromDay;
