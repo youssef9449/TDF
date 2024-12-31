@@ -193,17 +193,17 @@ namespace TDF.Net.Forms
                 if (hasManagerRole || hasAdminRole)
                 {
                     loadRequestsForManagerOrAdmin(requestsTable);
-                    ConfigureDataGridViewForManagerOrAdmin();
+                    configureDataGridViewForManagerOrAdmin();
                 }
                 else
                 {
                     loadRequestsForUser(requestsTable);
-                    ConfigureDataGridViewForUser();
+                    configureDataGridViewForUser();
                 }
 
                 requestsDataGridView.DataSource = requestsTable;
                 //CalculateNumberOfDaysForRequests();
-                ReorderDataGridViewColumns();
+                reorderDataGridViewColumns();
             }
             catch (Exception ex)
             {
@@ -213,12 +213,12 @@ namespace TDF.Net.Forms
         private void loadRequestsForManagerOrAdmin(DataTable requestsTable)
         {
             string query = buildQueryForManagerOrAdmin();
-            ExecuteQuery(query, requestsTable);
+            executeQuery(query, requestsTable);
         }
         private void loadRequestsForUser(DataTable requestsTable)
         {
-            string query = BuildQueryForUser();
-            ExecuteQuery(query, requestsTable, cmd =>
+            string query = buildQueryForUser();
+            executeQuery(query, requestsTable, cmd =>
             {
                 cmd.Parameters.AddWithValue("@UserID", loggedInUser.userID);
             });
@@ -259,7 +259,7 @@ namespace TDF.Net.Forms
 
             return baseQuery + condition;
         }
-        private string BuildQueryForUser()
+        private string buildQueryForUser()
         {
             return @"
         SELECT 
@@ -287,7 +287,7 @@ namespace TDF.Net.Forms
             r.RequestUserID = @UserID AND 
             " + (pendingRadioButton.Checked ? "r.RequestStatus = 'Pending'" : "NOT r.RequestStatus = 'Pending'");
         }
-        private void ExecuteQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
+        private void executeQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
         {
             using (SqlConnection conn = Database.GetConnection())
             {
@@ -302,21 +302,23 @@ namespace TDF.Net.Forms
                 }
             }
         }
-        private void ConfigureDataGridViewForManagerOrAdmin()
+        private void configureDataGridViewForManagerOrAdmin()
         {
             requestsDataGridView.Columns["RequestUserFullName"].Visible = true;
             requestsDataGridView.Columns["Approve"].Visible = true;
             requestsDataGridView.Columns["Reject"].Visible = true;
-            //requestsDataGridView.Columns["Edit"].Visible = false;
+            requestsDataGridView.Columns["Edit"].Visible = pendingRadioButton.Checked;
             requestsDataGridView.Columns["Remove"].Visible = false;
             requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = false;
         }
-        private void ConfigureDataGridViewForUser()
+        private void configureDataGridViewForUser()
         {
             bool isPending = pendingRadioButton.Checked;
             requestsDataGridView.Columns["Edit"].Visible = isPending;
             requestsDataGridView.Columns["Remove"].Visible = isPending;
             requestsDataGridView.Columns["RequestRejectReason"].Visible = !isPending;
+            requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = true;
+
         }
         private void openRequestToEdit(DataGridViewCellEventArgs e)
         {
@@ -355,7 +357,7 @@ namespace TDF.Net.Forms
                 refreshRequestsTable();
             }
         }
-        private void ReorderDataGridViewColumns()
+        private void reorderDataGridViewColumns()
         {
             requestsDataGridView.Columns["Edit"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Remove"].DisplayIndex = requestsDataGridView.Columns.Count - 1;

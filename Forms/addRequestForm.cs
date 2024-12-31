@@ -38,58 +38,56 @@ namespace TDF.Net.Forms
         #region Methods
         private void populateFieldsWithRequestData()
         {
+            // Set radio button states based on the request type
+            void SetRadioButtonStates(bool workFromHome, bool externalAssignment, bool dayOff, bool exit, bool? annual = null)
+            {
+                workFromHomeRadioButton.Checked = workFromHome;
+                externalAssignmentRadioButton.Checked = externalAssignment;
+                dayoffRadioButton.Checked = dayOff;
+                exitRadioButton.Checked = exit;
+
+                if (annual.HasValue)
+                {
+                    annualRadioButton.Checked = annual.Value;
+                    casualRadioButton.Checked = !annual.Value;
+                }
+            }
+
             switch (RequestToEdit.RequestType)
             {
                 case "Work From Home":
-                    workFromHomeRadioButton.Checked = true;
-                    externalAssignmentRadioButton.Checked = false;
-                    dayoffRadioButton.Checked = false;
-                    exitRadioButton.Checked = false;
+                    SetRadioButtonStates(workFromHome: true, externalAssignment: false, dayOff: false, exit: false);
                     break;
                 case "Permission":
-                    exitRadioButton.Checked = true;
-                    workFromHomeRadioButton.Checked = false;
-                    externalAssignmentRadioButton.Checked = false;
-                    dayoffRadioButton.Checked = false;
+                    SetRadioButtonStates(workFromHome: false, externalAssignment: false, dayOff: false, exit: true);
                     break;
                 case "External Assignment":
-                    externalAssignmentRadioButton.Checked = true;
-                    exitRadioButton.Checked = false;
-                    workFromHomeRadioButton.Checked = false;
-                    dayoffRadioButton.Checked = false;
+                    SetRadioButtonStates(workFromHome: false, externalAssignment: true, dayOff: false, exit: false);
                     break;
                 default:
-                    dayoffRadioButton.Checked = true;
-                    externalAssignmentRadioButton.Checked = false;
-                    exitRadioButton.Checked = false;
-                    workFromHomeRadioButton.Checked = false;
-
-                    if (RequestToEdit.RequestType == "Annual")
-                    {
-                        casualRadioButton.Checked = false;
-                        annualRadioButton.Checked = true;
-                    }
-                    else
-                    {
-                        annualRadioButton.Checked = false;
-                        casualRadioButton.Checked = true;
-                    }
+                    var isAnnual = RequestToEdit.RequestType == "Annual";
+                    SetRadioButtonStates(workFromHome: false, externalAssignment: false, dayOff: true, exit: false, annual: isAnnual);
                     break;
             }
 
+            // Populate other fields
             reasonTextBox.Text = RequestToEdit.RequestReason;
             fromDayDatePicker.Value = RequestToEdit.RequestFromDay;
-            toDayDatePicker.Value = (DateTime)(DateTime.TryParse(RequestToEdit.RequestToDay.ToString(), out DateTime to) ? RequestToEdit.RequestToDay : null);
-            fromTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestBeginningTime.Value.TimeOfDay.ToString(@"hh\:mm");
-            toTimeTextBox.Text = dayoffRadioButton.Checked ? "" : RequestToEdit.RequestEndingTime.Value.TimeOfDay.ToString(@"hh\:mm");
+            toDayDatePicker.Value = DateTime.TryParse(RequestToEdit.RequestToDay?.ToString(), out var toDate) ? toDate : DateTime.Now;
 
-            reasonTextBox.ReadOnly = hasManagerRole || hasAdminRole;
-            workFromHomeRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
-            externalAssignmentRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
-            dayoffRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
-            exitRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
-            annualRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
-            casualRadioButton.Enabled = !(hasManagerRole || hasAdminRole);
+            var isDayOff = dayoffRadioButton.Checked;
+            fromTimeTextBox.Text = isDayOff ? string.Empty : RequestToEdit.RequestBeginningTime?.TimeOfDay.ToString(@"hh\:mm");
+            toTimeTextBox.Text = isDayOff ? string.Empty : RequestToEdit.RequestEndingTime?.TimeOfDay.ToString(@"hh\:mm");
+
+            // Adjust control states based on user role
+            bool isEditable = !(hasManagerRole || hasAdminRole);
+            reasonTextBox.ReadOnly = !isEditable;
+            workFromHomeRadioButton.Enabled = isEditable;
+            externalAssignmentRadioButton.Enabled = isEditable;
+            dayoffRadioButton.Enabled = isEditable;
+            exitRadioButton.Enabled = isEditable;
+            annualRadioButton.Enabled = isEditable;
+            casualRadioButton.Enabled = isEditable;
         }
         private int getWorkingDays(DateTime start, DateTime end)
         {
