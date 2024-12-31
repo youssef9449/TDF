@@ -54,10 +54,11 @@ namespace TDF.Net.Forms
         {
             string columnName = requestsDataGridView.Columns[e.ColumnIndex].Name;
 
-            if (columnName == "Edit" || columnName == "Remove")
+            if (columnName == "Edit" || columnName == "Remove" || columnName == "Report")
             {
                 requestsDataGridView.Cursor = Cursors.Hand;
             }
+
         }
         private void requestsDataGridView_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
         {
@@ -136,7 +137,11 @@ namespace TDF.Net.Forms
                     }
                 }
 
-                if (e.RowIndex >= 0 &&
+                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Report")
+                {
+
+                }
+                    if (e.RowIndex >= 0 &&
                  (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" ||
                   requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject"))
                 {
@@ -386,8 +391,8 @@ namespace TDF.Net.Forms
             {
                 requestsDataGridView.Columns["Report"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             }
-            requestsDataGridView.Columns["RequestStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 3;
-            requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 3;
+            requestsDataGridView.Columns["RequestStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
+            requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Approve"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
         }
