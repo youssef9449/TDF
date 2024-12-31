@@ -516,7 +516,9 @@
             this.roleDropdown.ItemHighLightForeColor = System.Drawing.Color.White;
             this.roleDropdown.Items.AddRange(new object[] {
             "User",
-            "Manager"});
+            "Team Leader",
+            "Manager",
+            "Admin"});
             this.roleDropdown.ItemTopMargin = 3;
             this.roleDropdown.Location = new System.Drawing.Point(24, 355);
             this.roleDropdown.Margin = new System.Windows.Forms.Padding(4);

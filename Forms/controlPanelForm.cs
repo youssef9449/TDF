@@ -24,17 +24,22 @@ namespace TDF.Forms
         }
 
         #region Methods
-        void updateDepartments()
+        private async void updateDepartments()
         {
-            departments = getDepartments();
+            // Await the asynchronous method to load the departments
+            departments = await getDepartmentsAsync();
+
+            // Update the UI components once the departments are loaded
             depDropdown.DataSource = departments;
             depListBox.DataSource = departments;
             depDropdown.Text = "";
             depTextBox.Text = "";
 
+            // Reset the bindings to ensure proper data binding
             depDropdown.BindingContext = new BindingContext();
             depListBox.BindingContext = new BindingContext();
         }
+
         void loadUserNames()
         {
             string query, filter;

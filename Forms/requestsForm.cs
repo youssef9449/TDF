@@ -31,7 +31,6 @@ namespace TDF.Net.Forms
             controlBox.CloseBoxOptions.PressedColor = Color.White;
         }
 
-
         #region Events
         private void requestsDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
