@@ -9,6 +9,8 @@ using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Forms.addRequestForm;
 using Bunifu.UI.WinForms;
+using Excel = Microsoft.Office.Interop.Excel;
+
 
 
 namespace TDF.Net.Forms
@@ -137,13 +139,9 @@ namespace TDF.Net.Forms
                     }
                 }
 
-                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Report")
-                {
-
-                }
-                    if (e.RowIndex >= 0 &&
-                 (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" ||
-                  requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject"))
+                if (e.RowIndex >= 0 &&
+             (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" ||
+              requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject"))
                 {
                     DataGridViewRow currentRow = requestsDataGridView.Rows[e.RowIndex];
 
@@ -155,6 +153,11 @@ namespace TDF.Net.Forms
                     {
                         currentRow.Cells["Approve"].Value = false;
                     }
+                }
+                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Report")
+                {
+                    openExcelFile();
+
                 }
             }
         }
@@ -395,6 +398,54 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Approve"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
+        }
+        private void openExcelFile()
+        {
+            try
+            {
+                // Path to the Excel file
+                string filePath = @"Forms\Leave Request form";
+
+                // Create Excel application
+                Excel.Application excelApp = new Excel.Application
+                {
+                    Visible = false, // Open Excel hidden
+                    DisplayAlerts = false // Suppress prompts
+                };
+
+                Excel.Workbook workbook = null;
+
+                try
+                {
+                    // Try to open the workbook in editable mode
+                    workbook = excelApp.Workbooks.Open(
+                        filePath,
+                        ReadOnly: false, // Attempt to open as editable
+                        IgnoreReadOnlyRecommended: true
+                    );
+                }
+                catch
+                {
+                    // Fallback: Open in read-only mode if editable mode fails
+                    workbook = excelApp.Workbooks.Open(
+                        filePath,
+                        ReadOnly: true, // Open as read-only
+                        IgnoreReadOnlyRecommended: true
+                    );
+                }
+
+                // Optionally work with the workbook here
+                // workbook.Worksheets[1] (Access sheets, modify content, etc.)
+
+                // Note: The file remains open and hidden to the user
+                // Uncomment below if you want to make Excel visible for debugging
+                 excelApp.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors
+                MessageBox.Show($"Error opening Excel file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         #endregion
 
