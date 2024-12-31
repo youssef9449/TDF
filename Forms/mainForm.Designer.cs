@@ -217,7 +217,7 @@ namespace TDF.Net
             // TDFpictureBox
             // 
             this.TDFpictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TDFpictureBox.Image = global::TDF.Properties.Resources._327169915_547132580497251_8075721205915457573_n___Copy;
+            this.TDFpictureBox.Image = global::TDF.Properties.Resources.TDF_Logo;
             this.TDFpictureBox.Location = new System.Drawing.Point(0, 0);
             this.TDFpictureBox.Margin = new System.Windows.Forms.Padding(4);
             this.TDFpictureBox.Name = "TDFpictureBox";

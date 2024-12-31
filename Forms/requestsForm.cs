@@ -22,6 +22,24 @@ namespace TDF.Net.Forms
             requestsDataGridView.CellMouseLeave += requestsDataGridView_CellMouseLeave;
             requestsDataGridView.Columns["RequestType"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             requestsDataGridView.ColumnHeadersHeight = 40;
+            // Create a new DataGridViewImageColumn
+            DataGridViewImageColumn pictureColumn = new DataGridViewImageColumn
+            {
+                Name = "Report",
+                HeaderText = "Report",
+                Image = Properties.Resources.pdf, // Use the "pdf" image from resources
+                //ImageLayout = DataGridViewImageCellLayout.Zoom // Adjust layout as needed
+            };
+
+            // Add the column to the DataGridView
+            requestsDataGridView.Columns.Add(pictureColumn);
+
+            // Optional: Set the "Report" image for existing rows (if rows are already populated)
+           // foreach (DataGridViewRow row in requestsDataGridView.Rows)
+           // {
+           //     row.Cells["Report"].Value = Properties.Resources.pdf;
+           // }
+
 
             Program.loadForm(this);
             controlBox.BackColor = Color.White;
@@ -308,6 +326,10 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["Reject"].Visible = true;
             requestsDataGridView.Columns["Edit"].Visible = pendingRadioButton.Checked;
             requestsDataGridView.Columns["Remove"].Visible = false;
+            if (requestsDataGridView.Columns["Report"] != null)
+            {
+                requestsDataGridView.Columns["Report"].Visible = false;
+            }
             requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = false;
         }
         private void configureDataGridViewForUser()
@@ -360,6 +382,10 @@ namespace TDF.Net.Forms
         {
             requestsDataGridView.Columns["Edit"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Remove"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
+            if (requestsDataGridView.Columns["Report"] != null)
+            {
+                requestsDataGridView.Columns["Report"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
+            }
             requestsDataGridView.Columns["RequestStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 3;
             requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 3;
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;

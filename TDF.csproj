@@ -271,6 +271,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\pdf.png" />
     <None Include="Resources\delete.png" />
     <None Include="Resources\edit.png" />
     <None Include="Resources\show.png" />
