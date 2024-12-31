@@ -665,8 +665,6 @@ namespace TDF.Forms
                 MessageBox.Show("Password reset canceled.", "Canceled", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-        #endregion
-
         private void leaveButton_Click(object sender, EventArgs e)
         {
             // Check if at least one user is selected
@@ -754,5 +752,7 @@ namespace TDF.Forms
                 MessageBox.Show("Updated leave balance successfully.");
             }
         }
+        #endregion
+
     }
 }
