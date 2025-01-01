@@ -2,6 +2,7 @@
 using Bunifu.UI.WinForms.BunifuButton;
 using System;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 using TDF.Classes;
 using static TDF.Net.Database;
@@ -16,6 +17,11 @@ namespace TDF.Net
         [STAThread]
         static void Main()
         {
+            CultureInfo english = new CultureInfo("en-GB");
+            CultureInfo.DefaultThreadCurrentUICulture = english;
+            CultureInfo.DefaultThreadCurrentCulture = english;
+            CultureInfo.CurrentCulture = english;
+            CultureInfo.CurrentUICulture = english;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new loginForm());

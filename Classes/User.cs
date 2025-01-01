@@ -14,13 +14,15 @@ namespace TDF.Net.Classes
         public string Role { get; set; }
         public string Department { get; set; }
         public Image Picture { get; set; }
+        public string Title { get; set; }
+
 
         public User()
         {
 
         }
 
-        public User(string userName, string fullName, string passwordHash, string salt, string role, Image picture, string department)
+        public User(string userName, string fullName, string passwordHash, string salt, string role, Image picture, string department, string title)
         {
             UserName = userName;
             FullName = fullName;
@@ -29,6 +31,7 @@ namespace TDF.Net.Classes
             Role = role;
             Picture = picture;
             Department = department;
+            Title = title;
         }
 
         public void add()
@@ -38,8 +41,8 @@ namespace TDF.Net.Classes
                 conn.Open();
 
                 // Step 1: Insert into Users table and get the generated UserID
-                string query = "INSERT INTO Users (UserName, PasswordHash, Salt, FullName, Role, Department) " +
-                               "VALUES (@UserName, @PasswordHash, @Salt, @FullName, @Role, @Department); " +
+                string query = "INSERT INTO Users (UserName, PasswordHash, Salt, FullName, Role, Department, Title) " +
+                               "VALUES (@UserName, @PasswordHash, @Salt, @FullName, @Role, @Department, @Title); " +
                                "SELECT SCOPE_IDENTITY();"; // Retrieve the last inserted identity (UserID)
 
                 int userId = 0;
@@ -51,14 +54,15 @@ namespace TDF.Net.Classes
                     cmd.Parameters.AddWithValue("@FullName", FullName);
                     cmd.Parameters.AddWithValue("@Role", Role);
                     cmd.Parameters.AddWithValue("@Department", Department);
+                    cmd.Parameters.AddWithValue("@Title", Title);
 
                     // Execute the query and get the UserID
                     userId = Convert.ToInt32(cmd.ExecuteScalar());
                 }
 
                 // Step 2: Insert into AnnualLeave table using the UserID
-                string secondQuery = "INSERT INTO AnnualLeave (UserID, FullName, Annual, CasualLeave, AnnualUsed, CasualUsed) " +
-                                     "VALUES (@UserID, @FullName, @Annual, @CasualLeave, @AnnualUsed, @CasualUsed)";
+                string secondQuery = "INSERT INTO AnnualLeave (UserID, FullName, Annual, CasualLeave, AnnualUsed, CasualUsed, Permissons, PermissonsUsed) " +
+                                     "VALUES (@UserID, @FullName, @Annual, @CasualLeave, @AnnualUsed, @CasualUsed, @Permissons, @PermissonsUsed)";
 
                 using (SqlCommand cmd = new SqlCommand(secondQuery, conn))
                 {
@@ -68,26 +72,12 @@ namespace TDF.Net.Classes
                     cmd.Parameters.AddWithValue("@CasualLeave", 7); // Set default Casual leave balance
                     cmd.Parameters.AddWithValue("@AnnualUsed", 0); // Set default Annual used
                     cmd.Parameters.AddWithValue("@CasualUsed", 0); // Set default Casual used
+                    cmd.Parameters.AddWithValue("@Permissons", 2); // Set default Annual used
+                    cmd.Parameters.AddWithValue("@PermissonsUsed", 0); // Set default Casual used
 
                     cmd.ExecuteNonQuery();
                 }
             }
         }
-
-        /* public void Update(string newPasswordHash)
-         {
-             using (SqlConnection conn = Database.GetConnection())
-             {
-                 conn.Open();
-                 string query = "UPDATE Users SET PasswordHash = @PasswordHash, Salt = @Salt WHERE UserName = @UserName";
-                 using (SqlCommand cmd = new SqlCommand(query, conn))
-                 {
-                     cmd.Parameters.AddWithValue("@PasswordHash", newPasswordHash);
-                     cmd.Parameters.AddWithValue("@Salt", Salt);
-                     cmd.Parameters.AddWithValue("@UserName", UserName);
-                     cmd.ExecuteNonQuery();
-                 }
-             }
-         }*/
     }
 }

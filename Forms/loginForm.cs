@@ -22,6 +22,8 @@ namespace TDF.Net
         private bool changingPassword = false;
         public static User loggedInUser;
         public static List<string> departments = new List<string>();
+        public static List<string> titles = new List<string>();
+
 
         #region Buttons
         private void loginButton_Click(object sender, EventArgs e)
@@ -70,6 +72,8 @@ namespace TDF.Net
                 signupButton.Text = "Submit";
                 departmentLabel.Visible = true;
                 departmentDropdown.Visible = true;
+                titleLabel.Visible = true;
+                titlesDropdown.Visible = true;
                 nameTextBox.UseSystemPasswordChar = false;
                 //passPictureBox.Visible = true;
                 clearFormFields();
@@ -91,6 +95,8 @@ namespace TDF.Net
                 updateButton.Visible = true;
                 departmentLabel.Visible = false;
                 departmentDropdown.Visible = false;
+                titleLabel.Visible = false;
+                titlesDropdown.Visible = false;
                 nameTextBox.UseSystemPasswordChar = true;
                 // passPictureBox.Visible = false;
                 clearFormFields();
@@ -101,8 +107,9 @@ namespace TDF.Net
             string password = txtPassword.Text;
             string name = nameTextBox.Text;
             string department = departmentDropdown.Text;
+            string title = titlesDropdown.Text;
 
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(department))
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(department) || string.IsNullOrEmpty(title))
             {
                 MessageBox.Show("Please fill the empty blank boxes.");
                 return;
@@ -121,6 +128,7 @@ namespace TDF.Net
             newUser.FullName = name;
             newUser.Role = "User";
             newUser.Department = department;
+            newUser.Title = title;
 
             newUser.add();
 
@@ -133,6 +141,8 @@ namespace TDF.Net
             updateButton.Visible = true;
             departmentDropdown.Visible = false;
             departmentLabel.Visible = false;
+            titleLabel.Visible = false;
+            titlesDropdown.Visible = false;
             signingup = false;
             signupButton.Text = "Sign Up";
             updateButton.Text = "Change password";
@@ -197,7 +207,7 @@ namespace TDF.Net
         {
             List<string> departments = new List<string>();
 
-            string query = "SELECT Department FROM Departments";
+            string query = "SELECT DISTINCT Department FROM Departments";
 
             using (SqlConnection connection = Database.GetConnection())
             {
@@ -231,7 +241,45 @@ namespace TDF.Net
             departmentDropdown.DataSource = departments;
             departmentDropdown.SelectedIndex = -1;
         }
-        void updateTheme()
+        private async Task<List<string>> getTitlesAsync()
+        {
+            List<string> titles = new List<string>();
+
+            string query = $"SELECT DISTINCT Title FROM Departments Where Department = '{departmentDropdown.Text}'";
+
+            using (SqlConnection connection = Database.GetConnection())
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+
+                try
+                {
+                    await connection.OpenAsync();
+                    SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                    while (await reader.ReadAsync())
+                    {
+                        string title = reader["Title"].ToString();
+                        titles.Add(title);
+                    }
+
+                    reader.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error retrieving titles: " + ex.Message);
+                }
+            }
+
+            titles.Sort();
+            return titles;
+        }
+        private async Task loadTitlesAsync()
+        {
+            titles = await getTitlesAsync();
+            titlesDropdown.DataSource = titles;
+            titlesDropdown.SelectedIndex = -1;
+        }
+        private void updateTheme()
         {
             Color color = ThemeColor.SelectThemeColor();
             ThemeColor.PrimaryColor = color;
@@ -342,7 +390,7 @@ namespace TDF.Net
                 conn.Open();
 
                 // Query to retrieve UserID, Username, UserRole, FullName, and Picture from the database
-                string query = "SELECT UserID, UserName, Role, FullName, Picture, Department FROM Users WHERE UserName = @UserName";
+                string query = "SELECT UserID, UserName, Role, FullName, Picture, Department, Title FROM Users WHERE UserName = @UserName";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@UserName", username);
@@ -367,6 +415,9 @@ namespace TDF.Net
 
                                 // Retrieve and set the Department
                                 Department = reader["Department"] != DBNull.Value ? reader["Department"].ToString() : null,
+
+                                // Retrieve and set the Title
+                                Title = reader["Title"] != DBNull.Value ? reader["Title"].ToString() : null,
 
                                 // Retrieve and set the Picture if it exists
                                 Picture = reader["Picture"] != DBNull.Value
@@ -460,6 +511,10 @@ namespace TDF.Net
                     e.SuppressKeyPress = true;
                 }
             }
+        }
+        private async void departmentDropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await loadTitlesAsync();
         }
         #endregion
     }

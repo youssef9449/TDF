@@ -72,6 +72,7 @@ namespace TDF.Net.Forms
             this.RequestStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Edit = new System.Windows.Forms.DataGridViewImageColumn();
             this.Remove = new System.Windows.Forms.DataGridViewImageColumn();
+            this.Report = new System.Windows.Forms.DataGridViewImageColumn();
             this.Approve = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Reject = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.requestsDataGridView)).BeginInit();
@@ -84,7 +85,6 @@ namespace TDF.Net.Forms
             this.requestsDataGridView.AllowUserToDeleteRows = false;
             this.requestsDataGridView.AllowUserToResizeColumns = false;
             this.requestsDataGridView.AllowUserToResizeRows = false;
-            this.requestsDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(251)))), ((int)(((byte)(255)))));
             dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
@@ -104,6 +104,7 @@ namespace TDF.Net.Forms
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.requestsDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.requestsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.requestsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.RequestID,
             this.RequestUserFullName,
@@ -119,6 +120,7 @@ namespace TDF.Net.Forms
             this.RequestStatus,
             this.Edit,
             this.Remove,
+            this.Report,
             this.Approve,
             this.Reject});
             this.requestsDataGridView.CurrentTheme.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(251)))), ((int)(((byte)(255)))));
@@ -150,6 +152,7 @@ namespace TDF.Net.Forms
             this.requestsDataGridView.EnableHeadersVisualStyles = false;
             this.requestsDataGridView.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
             this.requestsDataGridView.HeaderBackColor = System.Drawing.Color.DodgerBlue;
+            this.requestsDataGridView.HeaderBgColor = System.Drawing.Color.Empty;
             this.requestsDataGridView.HeaderForeColor = System.Drawing.Color.White;
             this.requestsDataGridView.Name = "requestsDataGridView";
             dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -170,6 +173,8 @@ namespace TDF.Net.Forms
             this.requestsDataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.Light;
             this.requestsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellContentClick);
             this.requestsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.requestsDataGridView_CellFormatting);
+            this.requestsDataGridView.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellMouseEnter);
+            this.requestsDataGridView.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellMouseLeave);
             // 
             // pendingRadioButton
             // 
@@ -574,7 +579,7 @@ namespace TDF.Net.Forms
             // 
             // RequestType
             // 
-            this.RequestType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RequestType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.RequestType.DataPropertyName = "RequestType";
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.RequestType.DefaultCellStyle = dataGridViewCellStyle3;
@@ -588,7 +593,7 @@ namespace TDF.Net.Forms
             this.RequestFromDay.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.RequestFromDay.DataPropertyName = "RequestFromDay";
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.Format = "d";
+            dataGridViewCellStyle4.Format = "dd/MM/yyyy";
             dataGridViewCellStyle4.NullValue = null;
             this.RequestFromDay.DefaultCellStyle = dataGridViewCellStyle4;
             this.RequestFromDay.Frozen = true;
@@ -601,7 +606,7 @@ namespace TDF.Net.Forms
             this.RequestToDay.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.RequestToDay.DataPropertyName = "RequestToDay";
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.Format = "d";
+            dataGridViewCellStyle5.Format = "dd/MM/yyyy";
             dataGridViewCellStyle5.NullValue = null;
             this.RequestToDay.DefaultCellStyle = dataGridViewCellStyle5;
             this.RequestToDay.Frozen = true;
@@ -702,6 +707,13 @@ namespace TDF.Net.Forms
             this.Remove.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.Remove.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
+            // Report
+            // 
+            this.Report.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            resources.ApplyResources(this.Report, "Report");
+            this.Report.Image = global::TDF.Properties.Resources.pdf;
+            this.Report.Name = "Report";
+            // 
             // Approve
             // 
             this.Approve.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
@@ -754,21 +766,22 @@ namespace TDF.Net.Forms
         private Bunifu.UI.WinForms.BunifuLabel closedLabel;
         private Bunifu.UI.WinForms.BunifuFormControlBox controlBox;
         private System.Windows.Forms.DataGridViewImageColumn dataGridViewImageColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RequestID;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RequestUserFullName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RequestType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RequestFromDay;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RequestToDay;
-        private System.Windows.Forms.DataGridViewTextBoxColumn NumberOfDays;
-        private System.Windows.Forms.DataGridViewTextBoxColumn remainingBalance;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RequestReason;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RequestBeginningTime;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RequestEndingTime;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RequestRejectReason;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RequestStatus;
-        private System.Windows.Forms.DataGridViewImageColumn Edit;
-        private System.Windows.Forms.DataGridViewImageColumn Remove;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Approve;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn Reject;
+        private DataGridViewTextBoxColumn RequestID;
+        private DataGridViewTextBoxColumn RequestUserFullName;
+        private DataGridViewTextBoxColumn RequestType;
+        private DataGridViewTextBoxColumn RequestFromDay;
+        private DataGridViewTextBoxColumn RequestToDay;
+        private DataGridViewTextBoxColumn NumberOfDays;
+        private DataGridViewTextBoxColumn remainingBalance;
+        private DataGridViewTextBoxColumn RequestReason;
+        private DataGridViewTextBoxColumn RequestBeginningTime;
+        private DataGridViewTextBoxColumn RequestEndingTime;
+        private DataGridViewTextBoxColumn RequestRejectReason;
+        private DataGridViewTextBoxColumn RequestStatus;
+        private DataGridViewImageColumn Edit;
+        private DataGridViewImageColumn Remove;
+        private DataGridViewImageColumn Report;
+        private DataGridViewCheckBoxColumn Approve;
+        private DataGridViewCheckBoxColumn Reject;
     }
 }

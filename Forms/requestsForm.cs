@@ -10,8 +10,11 @@ using static TDF.Net.mainForm;
 using static TDF.Net.Forms.addRequestForm;
 using Bunifu.UI.WinForms;
 using Excel = Microsoft.Office.Interop.Excel;
-
-
+using Microsoft.Office.Interop.Excel;
+using System.Runtime.InteropServices;
+using System.IO;
+using DataTable = System.Data.DataTable;
+using System.Linq;
 
 namespace TDF.Net.Forms
 {
@@ -20,28 +23,6 @@ namespace TDF.Net.Forms
         public requestsForm()
         {
             InitializeComponent();
-            requestsDataGridView.CellMouseEnter += requestsDataGridView_CellMouseEnter;
-            requestsDataGridView.CellMouseLeave += requestsDataGridView_CellMouseLeave;
-            requestsDataGridView.Columns["RequestType"].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            requestsDataGridView.ColumnHeadersHeight = 40;
-            // Create a new DataGridViewImageColumn
-            DataGridViewImageColumn pictureColumn = new DataGridViewImageColumn
-            {
-                Name = "Report",
-                HeaderText = "Report",
-                Image = Properties.Resources.pdf, // Use the "pdf" image from resources
-                //ImageLayout = DataGridViewImageCellLayout.Zoom // Adjust layout as needed
-            };
-
-            // Add the column to the DataGridView
-            requestsDataGridView.Columns.Add(pictureColumn);
-
-            // Optional: Set the "Report" image for existing rows (if rows are already populated)
-           // foreach (DataGridViewRow row in requestsDataGridView.Rows)
-           // {
-           //     row.Cells["Report"].Value = Properties.Resources.pdf;
-           // }
-
 
             Program.loadForm(this);
             controlBox.BackColor = Color.White;
@@ -54,13 +35,15 @@ namespace TDF.Net.Forms
         #region Events
         private void requestsDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
-            string columnName = requestsDataGridView.Columns[e.ColumnIndex].Name;
-
-            if (columnName == "Edit" || columnName == "Remove" || columnName == "Report")
+            if (e.RowIndex >= 0)
             {
-                requestsDataGridView.Cursor = Cursors.Hand;
-            }
+                string columnName = requestsDataGridView.Columns[e.ColumnIndex].Name;
 
+                if (columnName == "Edit" || columnName == "Remove" || columnName == "Report")
+                {
+                    requestsDataGridView.Cursor = Cursors.Hand;
+                }
+            }
         }
         private void requestsDataGridView_CellMouseLeave(object sender, DataGridViewCellEventArgs e)
         {
@@ -73,15 +56,6 @@ namespace TDF.Net.Forms
         private void Requests_Load(object sender, EventArgs e)
         {
             applyButton.Visible = hasManagerRole || hasAdminRole;
-
-            pendingLabel.Visible = true;
-            closedLabel.Visible = true;
-
-            closedRadioButton.Visible = true;
-            pendingRadioButton.Visible = true;
-
-            requestsDataGridView.ClearSelection();
-            requestsDataGridView.CurrentCell = null;
 
             refreshRequestsTable();
         }
@@ -139,9 +113,7 @@ namespace TDF.Net.Forms
                     }
                 }
 
-                if (e.RowIndex >= 0 &&
-             (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" ||
-              requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject"))
+                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" || requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject")
                 {
                     DataGridViewRow currentRow = requestsDataGridView.Rows[e.RowIndex];
 
@@ -156,8 +128,25 @@ namespace TDF.Net.Forms
                 }
                 if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Report")
                 {
-                    openExcelFile();
+                    DataGridViewRow currentRow = requestsDataGridView.Rows[e.RowIndex];
 
+                    string requestType = currentRow.Cells["RequestType"].Value?.ToString();
+                    DateTime beginningDate = Convert.ToDateTime(currentRow.Cells["RequestFromDay"].Value?.ToString());
+                    DateTime endingDate = Convert.ToDateTime(currentRow.Cells["RequestToDay"].Value?.ToString());
+                    string numberOfDays = currentRow.Cells["NumberOfDays"].Value?.ToString();
+                    string availableBalance = currentRow.Cells["RemainingBalance"].Value?.ToString();
+                    string reason = currentRow.Cells["RequestReason"].Value?.ToString();
+                    string beginningTime = currentRow.Cells["RequestBeginningTime"].Value?.ToString();
+                    string endingTime = currentRow.Cells["RequestEndingTime"].Value?.ToString();
+                    string status = currentRow.Cells["RequestStatus"].Value?.ToString();
+
+
+                    if (status == "Rejected")
+                    {
+                        MessageBox.Show("Generating a report for a rejected request is not possible.");
+                        return;
+                    }
+                    openExcelFile(requestType, beginningDate, endingDate, numberOfDays, availableBalance, reason, beginningTime, endingTime, status);
                 }
             }
         }
@@ -227,7 +216,6 @@ namespace TDF.Net.Forms
                 }
 
                 requestsDataGridView.DataSource = requestsTable;
-                //CalculateNumberOfDaysForRequests();
                 reorderDataGridViewColumns();
             }
             catch (Exception ex)
@@ -279,7 +267,10 @@ namespace TDF.Net.Forms
 
             if (!hasAdminRole)
             {
-                condition += $" AND r.RequestDepartment = '{loggedInUser.Department}'";
+                // Split the manager's departments and build conditions dynamically
+                string[] departments = loggedInUser.Department.Split(new string[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
+                string departmentCondition = string.Join(" OR ", departments.Select(d => $"r.RequestDepartment LIKE '%{d.Trim()}%'"));
+                condition += $" AND ({departmentCondition})";
             }
 
             return baseQuery + condition;
@@ -399,54 +390,255 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Approve"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
         }
-        private void openExcelFile()
+        public string getManagerName()
         {
+            string fullName = string.Empty;
+
+            string query = "SELECT TOP 1 FullName FROM Users WHERE Department LIKE @Department AND Role = @Role";
+
             try
             {
-                // Path to the Excel file
-                string filePath = @"Forms\Leave Request form";
-
-                // Create Excel application
-                Excel.Application excelApp = new Excel.Application
+                using (SqlConnection connection = Database.GetConnection())
                 {
-                    Visible = false, // Open Excel hidden
-                    DisplayAlerts = false // Suppress prompts
-                };
+                    connection.Open();
 
-                Excel.Workbook workbook = null;
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Department", "%" + loggedInUser.Department + "%");
+                        command.Parameters.AddWithValue("@Role", "Manager");
 
-                try
-                {
-                    // Try to open the workbook in editable mode
-                    workbook = excelApp.Workbooks.Open(
-                        filePath,
-                        ReadOnly: false, // Attempt to open as editable
-                        IgnoreReadOnlyRecommended: true
-                    );
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read()) // Only take the first result
+                            {
+                                fullName = reader["FullName"].ToString();
+                            }
+                        }
+                    }
                 }
-                catch
-                {
-                    // Fallback: Open in read-only mode if editable mode fails
-                    workbook = excelApp.Workbooks.Open(
-                        filePath,
-                        ReadOnly: true, // Open as read-only
-                        IgnoreReadOnlyRecommended: true
-                    );
-                }
-
-                // Optionally work with the workbook here
-                // workbook.Worksheets[1] (Access sheets, modify content, etc.)
-
-                // Note: The file remains open and hidden to the user
-                // Uncomment below if you want to make Excel visible for debugging
-                 excelApp.Visible = true;
             }
             catch (Exception ex)
             {
-                // Handle any errors
-                MessageBox.Show($"Error opening Excel file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+
+            return fullName;
+        }
+        public (int Annual, int Casual, int AnnualUsed, int CasualUsed) getLeaveBalances()
+        {
+            string query = @"SELECT Annual, CasualLeave, AnnualUsed, CasualUsed 
+        FROM AnnualLeave 
+        WHERE UserID = @UserID";
+
+            using (SqlConnection conn = Database.GetConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", loggedInUser.userID);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int annual = reader.GetInt32(reader.GetOrdinal("Annual"));
+                            int casual = reader.GetInt32(reader.GetOrdinal("CasualLeave"));
+                            int annualUsed = reader.GetInt32(reader.GetOrdinal("AnnualUsed"));
+                            int casualUsed = reader.GetInt32(reader.GetOrdinal("CasualUsed"));
+
+                            return (annual, casual, annualUsed, casualUsed);
+                        }
+                    }
+                }
+            }
+
+            // If no record found, return defaults
+            return (0, 0, 0, 0);
+        }
+        private void openExcelFile(string requestType, DateTime beginningDate, DateTime endingDate, string numberOfDays, string availableBalance, string reason, string beginningTime, string endingTime, string status)
+        {
+            if (requestType == "Annual" || requestType == "Casual")
+            {
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Forms", "Leave Request form.xlsx");
+
+                Excel.Application excelApp = null;
+                Workbook workbook = null;
+                Worksheet worksheet = null;
+
+                try
+                {
+                    // Initialize Excel application
+                    excelApp = new Excel.Application
+                    {
+                        Visible = false,
+                        DisplayAlerts = false
+                    };
+
+                    // Open the workbook
+                    workbook = excelApp.Workbooks.Open(filePath, ReadOnly: false, IgnoreReadOnlyRecommended: true);
+                    worksheet = workbook.Worksheets[1]; // Assuming data will be written to the first worksheet
+
+                    (int Annual, int Casual, int AnnualUsed, int CasualUsed) = getLeaveBalances();
+
+                    worksheet.Columns[10].ClearContents();
+                    worksheet.Cells[2, 3].Value = DateTime.Now.Date;
+                    worksheet.Cells[3, 3].Value = loggedInUser.FullName;
+                    worksheet.Cells[16, 3].Value = beginningDate.Date;
+                    worksheet.Cells[17, 3].Value = endingDate.Date;
+                    worksheet.Cells[5, 3].Value = loggedInUser.Department;
+                    worksheet.Cells[4, 3].Value = loggedInUser.Title;
+                    worksheet.Cells[6, 3].Value = getManagerName();
+
+                    worksheet.Cells[26, 4].Value = status == "Approved" ? worksheet.Cells[6, 3].Value : "";
+
+
+                    if (requestType == "Annual")
+                    {
+                        worksheet.Cells[10, 10].Value = "TRUE";
+                        worksheet.Cells[23, 2].Value = Annual;
+                        worksheet.Cells[23, 3].Value = AnnualUsed;
+                    }
+                    else
+                    {
+                        worksheet.Cells[12, 10].Value = "TRUE";
+                        worksheet.Cells[23, 2].Value = Casual;
+                        worksheet.Cells[23, 3].Value = CasualUsed;
+                    }
+
+                    worksheet.Cells[8, 10].Value = numberOfDays;
+                    //excelApp.Visible = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error writing to the Excel file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    try
+                    {
+                        // Get the desktop path
+                        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                        // Get the current timestamp
+                        string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss"); // Format: YYYYMMDD_HHmmss
+
+                        // Construct the PDF file name and path
+                        string pdfFileName = $"{loggedInUser.FullName}_{requestType}_{numberOfDays}_Days_{status}_{timestamp}.pdf";
+                        string pdfFilePath = Path.Combine(desktopPath, pdfFileName);
+
+                        // Export the worksheet to PDF
+                        workbook.ExportAsFixedFormat(
+                            XlFixedFormatType.xlTypePDF,
+                            pdfFilePath,
+                            XlFixedFormatQuality.xlQualityStandard,
+                            IncludeDocProperties: true,
+                            IgnorePrintAreas: false,
+                            OpenAfterPublish: false
+                        );
+
+                        MessageBox.Show($"File successfully saved on the Desktop as PDF: {pdfFilePath}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error saving the file as PDF: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
+                        // Ensure Excel is closed and resources are cleaned up, even if an error occurs
+                        if (workbook != null)
+                        {
+                            workbook.Close(false);  // Close the workbook without saving changes
+                            Marshal.ReleaseComObject(workbook);
+                        }
+                        if (worksheet != null)
+                        {
+                            Marshal.ReleaseComObject(worksheet);
+                        }
+                        if (excelApp != null)
+                        {
+                            excelApp.Quit();  // Quit the Excel application
+                            Marshal.ReleaseComObject(excelApp);
+                        }
+                    }
+                }
+            }
+            else if (requestType == "Permisson")
+            {
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Forms", "Permission.xlsx");
+
+                Excel.Application excelApp = null;
+                Workbook workbook = null;
+                Worksheet worksheet = null;
+
+                try
+                {
+                    // Initialize Excel application
+                    excelApp = new Excel.Application
+                    {
+                        Visible = false,
+                        DisplayAlerts = false
+                    };
+
+                    // Open the workbook
+                    workbook = excelApp.Workbooks.Open(filePath, ReadOnly: false, IgnoreReadOnlyRecommended: true);
+                    worksheet = workbook.Worksheets[1]; // Assuming data will be written to the first worksheet
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error writing to the Excel file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    try
+                    {
+                        // Get the desktop path
+                        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                        // Get the current timestamp
+                        string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss"); // Format: YYYYMMDD_HHmmss
+
+                        // Construct the PDF file name and path
+                        string pdfFileName = $"{loggedInUser.FullName}_{requestType}_{status}_{timestamp}.pdf";
+                        string pdfFilePath = Path.Combine(desktopPath, pdfFileName);
+
+                        // Export the worksheet to PDF
+                        workbook.ExportAsFixedFormat(
+                            XlFixedFormatType.xlTypePDF,
+                            pdfFilePath,
+                            XlFixedFormatQuality.xlQualityStandard,
+                            IncludeDocProperties: true,
+                            IgnorePrintAreas: false,
+                            OpenAfterPublish: false
+                        );
+
+                        MessageBox.Show($"File successfully saved on the Desktop as PDF: {pdfFilePath}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error saving the file as PDF: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
+                        // Ensure Excel is closed and resources are cleaned up, even if an error occurs
+                        if (workbook != null)
+                        {
+                            workbook.Close(false);  // Close the workbook without saving changes
+                            Marshal.ReleaseComObject(workbook);
+                        }
+                        if (worksheet != null)
+                        {
+                            Marshal.ReleaseComObject(worksheet);
+                        }
+                        if (excelApp != null)
+                        {
+                            excelApp.Quit();  // Quit the Excel application
+                            Marshal.ReleaseComObject(excelApp);
+                        }
+                    }
+                }
             }
         }
+
         #endregion
 
         #region Buttons
