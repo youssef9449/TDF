@@ -262,6 +262,7 @@ namespace TDF.Net.Forms
             CASE 
                 WHEN r.RequestType = 'Annual' THEN al.AnnualBalance
                 WHEN r.RequestType = 'Casual' THEN al.CasualBalance
+                WHEN r.RequestType = 'Permission' THEN al.PermissionsBalance
                 ELSE NULL
             END AS remainingBalance
         FROM 
@@ -301,6 +302,7 @@ namespace TDF.Net.Forms
             CASE 
                 WHEN r.RequestType = 'Annual' THEN al.AnnualBalance
                 WHEN r.RequestType = 'Casual' THEN al.CasualBalance
+                WHEN r.RequestType = 'Permission' THEN al.PermissionsBalance
                 ELSE NULL
             END AS remainingBalance
         FROM 
