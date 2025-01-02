@@ -126,26 +126,34 @@ namespace TDF.Net.Forms
                         currentRow.Cells["Approve"].Value = false;
                     }
                 }
+
                 if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Report")
                 {
                     DataGridViewRow currentRow = requestsDataGridView.Rows[e.RowIndex];
 
                     string requestType = currentRow.Cells["RequestType"].Value?.ToString();
-                    DateTime beginningDate = Convert.ToDateTime(currentRow.Cells["RequestFromDay"].Value?.ToString());
-                    DateTime endingDate = Convert.ToDateTime(currentRow.Cells["RequestToDay"].Value?.ToString());
-                    string numberOfDays = currentRow.Cells["NumberOfDays"].Value?.ToString();
-                    string availableBalance = currentRow.Cells["RemainingBalance"].Value?.ToString();
-                    string reason = currentRow.Cells["RequestReason"].Value?.ToString();
-                    string beginningTime = currentRow.Cells["RequestBeginningTime"].Value?.ToString();
-                    string endingTime = currentRow.Cells["RequestEndingTime"].Value?.ToString();
-                    string status = currentRow.Cells["RequestStatus"].Value?.ToString();
 
+                    DateTime? beginningDate = DateTime.TryParse(currentRow.Cells["RequestFromDay"].Value?.ToString(), out DateTime parsedBeginningDate)
+                        ? parsedBeginningDate
+                        : (DateTime?)null;
+
+                    DateTime? endingDate = DateTime.TryParse(currentRow.Cells["RequestToDay"].Value?.ToString(), out DateTime parsedEndingDate)
+                        ? parsedEndingDate
+                        : (DateTime?)null;
+
+                    string numberOfDays = currentRow.Cells["NumberOfDays"].Value?.ToString() ?? string.Empty;
+                    string availableBalance = currentRow.Cells["RemainingBalance"].Value?.ToString() ?? string.Empty;
+                    string reason = currentRow.Cells["RequestReason"].Value?.ToString() ?? string.Empty;
+                    string beginningTime = currentRow.Cells["RequestBeginningTime"].Value?.ToString() ?? string.Empty;
+                    string endingTime = currentRow.Cells["RequestEndingTime"].Value?.ToString() ?? string.Empty;
+                    string status = currentRow.Cells["RequestStatus"].Value?.ToString() ?? string.Empty;
 
                     if (status == "Rejected")
                     {
                         MessageBox.Show("Generating a report for a rejected request is not possible.");
                         return;
                     }
+
                     openExcelFile(requestType, beginningDate, endingDate, numberOfDays, availableBalance, reason, beginningTime, endingTime, status);
                 }
             }
@@ -455,11 +463,25 @@ namespace TDF.Net.Forms
             // If no record found, return defaults
             return (0, 0, 0, 0);
         }
-        private void openExcelFile(string requestType, DateTime beginningDate, DateTime endingDate, string numberOfDays, string availableBalance, string reason, string beginningTime, string endingTime, string status)
+        public int getPermissionUsed()
+        {
+            string query = "SELECT PermissionsUsed FROM AnnualLeave WHERE UserID = @UserID";
+
+            using (var conn = Database.GetConnection())
+            using (var cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@UserID", loggedInUser.userID);
+                conn.Open();
+
+                return (int?)cmd.ExecuteScalar() ?? 0;
+            }
+        }
+
+        private void openExcelFile(string requestType, DateTime? beginningDate, DateTime? endingDate, string numberOfDays, string availableBalance, string reason, string beginningTime, string endingTime, string status)
         {
             if (requestType == "Annual" || requestType == "Casual")
             {
-                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Forms", "Leave Request form.xlsx");
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Forms", "Leave Request.xlsx");
 
                 Excel.Application excelApp = null;
                 Workbook workbook = null;
@@ -467,7 +489,6 @@ namespace TDF.Net.Forms
 
                 try
                 {
-                    // Initialize Excel application
                     excelApp = new Excel.Application
                     {
                         Visible = false,
@@ -483,8 +504,8 @@ namespace TDF.Net.Forms
                     worksheet.Columns[10].ClearContents();
                     worksheet.Cells[2, 3].Value = DateTime.Now.Date;
                     worksheet.Cells[3, 3].Value = loggedInUser.FullName;
-                    worksheet.Cells[16, 3].Value = beginningDate.Date;
-                    worksheet.Cells[17, 3].Value = endingDate.Date;
+                    worksheet.Cells[16, 3].Value = beginningDate;
+                    worksheet.Cells[17, 3].Value = endingDate;
                     worksheet.Cells[5, 3].Value = loggedInUser.Department;
                     worksheet.Cells[4, 3].Value = loggedInUser.Title;
                     worksheet.Cells[6, 3].Value = getManagerName();
@@ -523,7 +544,7 @@ namespace TDF.Net.Forms
                         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss"); // Format: YYYYMMDD_HHmmss
 
                         // Construct the PDF file name and path
-                        string pdfFileName = $"{loggedInUser.FullName}_{requestType}_{numberOfDays}_Days_{status}_{timestamp}.pdf";
+                        string pdfFileName = $"{loggedInUser.FullName}_{status}_{requestType}_{numberOfDays}_Days_{timestamp}.pdf";
                         string pdfFilePath = Path.Combine(desktopPath, pdfFileName);
 
                         // Export the worksheet to PDF
@@ -562,7 +583,7 @@ namespace TDF.Net.Forms
                     }
                 }
             }
-            else if (requestType == "Permisson")
+            else if (requestType == "Permission")
             {
                 string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Forms", "Permission.xlsx");
 
@@ -572,16 +593,29 @@ namespace TDF.Net.Forms
 
                 try
                 {
-                    // Initialize Excel application
                     excelApp = new Excel.Application
                     {
                         Visible = false,
                         DisplayAlerts = false
                     };
 
-                    // Open the workbook
                     workbook = excelApp.Workbooks.Open(filePath, ReadOnly: false, IgnoreReadOnlyRecommended: true);
-                    worksheet = workbook.Worksheets[1]; // Assuming data will be written to the first worksheet
+                    worksheet = workbook.Worksheets[1];
+
+                    worksheet.Columns[9].ClearContents();
+                    worksheet.Cells[2, 3].Value = DateTime.Now.Date;
+                    worksheet.Cells[3, 3].Value = loggedInUser.FullName;
+                    worksheet.Cells[4, 3].Value = loggedInUser.Title;
+                    worksheet.Cells[5, 3].Value = loggedInUser.Department;
+                    worksheet.Cells[6, 3].Value = getManagerName();
+                    worksheet.Cells[11, 3].Value = beginningTime;
+                    worksheet.Cells[11, 5].Value = endingTime;
+                    worksheet.Cells[13, 3].Value = beginningDate;
+                    worksheet.Cells[16, 2].Value = reason;
+                    worksheet.Cells[19, 9].Value = getPermissionUsed();
+
+                    worksheet.Cells[22, 4].Value = status == "Approved" ? worksheet.Cells[6, 3].Value : "";
+
                 }
                 catch (Exception ex)
                 {
@@ -598,7 +632,7 @@ namespace TDF.Net.Forms
                         string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss"); // Format: YYYYMMDD_HHmmss
 
                         // Construct the PDF file name and path
-                        string pdfFileName = $"{loggedInUser.FullName}_{requestType}_{status}_{timestamp}.pdf";
+                        string pdfFileName = $"{loggedInUser.FullName}_{status}_{requestType}_{timestamp}.pdf";
                         string pdfFilePath = Path.Combine(desktopPath, pdfFileName);
 
                         // Export the worksheet to PDF
@@ -619,7 +653,7 @@ namespace TDF.Net.Forms
                     }
                     finally
                     {
-                        // Ensure Excel is closed and resources are cleaned up, even if an error occurs
+                       /* // Ensure Excel is closed and resources are cleaned up, even if an error occurs
                         if (workbook != null)
                         {
                             workbook.Close(false);  // Close the workbook without saving changes
@@ -633,7 +667,7 @@ namespace TDF.Net.Forms
                         {
                             excelApp.Quit();  // Quit the Excel application
                             Marshal.ReleaseComObject(excelApp);
-                        }
+                        }*/
                     }
                 }
             }
@@ -686,7 +720,7 @@ namespace TDF.Net.Forms
                         string requestType = row.Cells["RequestType"].Value?.ToString();
                         int numberOfDays = Convert.ToInt32(row.Cells["NumberOfDays"].Value);
                         string userFullName = row.Cells["RequestUserFullName"].Value?.ToString();
-                        string currentStatus = row.Cells["RequestStatus"].Value?.ToString(); // Current status from the DataGridView
+                        string currentStatus = row.Cells["RequestStatus"].Value?.ToString();
 
                         // Update request status and rejection reason
                         string query = @"UPDATE Requests 
@@ -706,7 +740,7 @@ namespace TDF.Net.Forms
                         }
 
                         // Handle balance adjustment if the status is changing between "Approved" and "Rejected"
-                        if (newStatus == "Approved" && currentStatus != "Approved" && (requestType == "Annual" || requestType == "Casual"))
+                        if (newStatus == "Approved" && currentStatus != "Approved" && (requestType == "Annual" || requestType == "Casual" || requestType == "Permission"))
                         {
                             string updateLeaveQuery = "";
 
@@ -722,6 +756,12 @@ namespace TDF.Net.Forms
                                              SET CasualUsed = CasualUsed + @NumberOfDays
                                              WHERE FullName = @FullName";
                             }
+                            else
+                            {
+                                updateLeaveQuery = @"UPDATE AnnualLeave
+                                             SET PermissionsUsed = PermissionsUsed + 1
+                                             WHERE FullName = @FullName";
+                            }
 
                             using (SqlCommand cmd = new SqlCommand(updateLeaveQuery, conn))
                             {
@@ -731,7 +771,7 @@ namespace TDF.Net.Forms
                                 cmd.ExecuteNonQuery();
                             }
                         }
-                        else if (newStatus == "Rejected" && currentStatus == "Approved" && (requestType == "Annual" || requestType == "Casual"))
+                        else if (newStatus == "Rejected" && currentStatus == "Approved" && (requestType == "Annual" || requestType == "Casual" || requestType == "Permission"))
                         {
                             string updateLeaveQuery = "";
 
@@ -745,6 +785,12 @@ namespace TDF.Net.Forms
                             {
                                 updateLeaveQuery = @"UPDATE AnnualLeave
                                              SET CasualUsed = CasualUsed - @NumberOfDays
+                                             WHERE FullName = @FullName";
+                            }
+                            else
+                            {
+                                updateLeaveQuery = @"UPDATE AnnualLeave
+                                             SET PermissionsUsed = PermissionsUsed - 1
                                              WHERE FullName = @FullName";
                             }
 
