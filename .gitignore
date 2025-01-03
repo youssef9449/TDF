@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/bin/Release/TDF.exe
+/bin/Release/TDF.pdb
+/bin/Release/aa/TDF.resources.dll
+/bin/Debug/TDF.exe
+/bin/Debug/TDF.pdb
+/bin/Debug/aa/TDF.resources.dll
