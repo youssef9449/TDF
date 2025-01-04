@@ -61,8 +61,8 @@ namespace TDF.Net.Classes
                 }
 
                 // Step 2: Insert into AnnualLeave table using the UserID
-                string secondQuery = "INSERT INTO AnnualLeave (UserID, FullName, Annual, CasualLeave, AnnualUsed, CasualUsed, Permissons, PermissonsUsed) " +
-                                     "VALUES (@UserID, @FullName, @Annual, @CasualLeave, @AnnualUsed, @CasualUsed, @Permissons, @PermissonsUsed)";
+                string secondQuery = "INSERT INTO AnnualLeave (UserID, FullName, Annual, CasualLeave, AnnualUsed, CasualUsed, Permissions, PermissionsUsed, UnpaidUsed) " +
+                                     "VALUES (@UserID, @FullName, @Annual, @CasualLeave, @AnnualUsed, @CasualUsed, @Permissions, @PermissionsUsed, @UnpaidUsed)";
 
                 using (SqlCommand cmd = new SqlCommand(secondQuery, conn))
                 {
@@ -72,9 +72,9 @@ namespace TDF.Net.Classes
                     cmd.Parameters.AddWithValue("@CasualLeave", 7); // Set default Casual leave balance
                     cmd.Parameters.AddWithValue("@AnnualUsed", 0); // Set default Annual used
                     cmd.Parameters.AddWithValue("@CasualUsed", 0); // Set default Casual used
-                    cmd.Parameters.AddWithValue("@Permissons", 2); // Set default Annual used
-                    cmd.Parameters.AddWithValue("@PermissonsUsed", 0); // Set default Casual used
-
+                    cmd.Parameters.AddWithValue("@Permissions", 2); // Set default Permissions used
+                    cmd.Parameters.AddWithValue("@PermissionsUsed", 0); // Set default Permissions used
+                    cmd.Parameters.AddWithValue("@UnpaidUsed", 0); // Set default Unpaid used
                     cmd.ExecuteNonQuery();
                 }
             }

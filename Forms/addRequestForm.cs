@@ -32,42 +32,57 @@ namespace TDF.Net.Forms
             populateFieldsWithRequestData();
         }
 
-        int numberOfDaysRequested, availableAnnualBalance, availableCasualBalance = 0;
+        int numberOfDaysRequested, availableBalance = 0;
         public static bool requestAddedOrUpdated;
 
         #region Methods
         private void populateFieldsWithRequestData()
         {
+
+            switch (RequestToEdit.RequestType)
+            {
+                case "Work From Home":
+                    SetRadioButtonStates(workFromHome: true, externalAssignment: false, dayOff: false, exit: false, annual: false, casual: false);
+                    break;
+                case "Permission":
+                    SetRadioButtonStates(workFromHome: false, externalAssignment: false, dayOff: false, exit: true, annual: false, casual: false);
+                    break;
+                case "External Assignment":
+                    SetRadioButtonStates(workFromHome: false, externalAssignment: true, dayOff: false, exit: false, annual: false, casual: false);
+                    break;
+                default:
+                    bool isAnnual = RequestToEdit.RequestType == "Annual";
+                    bool isCasual = RequestToEdit.RequestType == "Emergency";
+
+                    SetRadioButtonStates(workFromHome: false, externalAssignment: false, dayOff: true, exit: false, isAnnual, isCasual);
+                    break;
+            }
             // Set radio button states based on the request type
-            void SetRadioButtonStates(bool workFromHome, bool externalAssignment, bool dayOff, bool exit, bool? annual = null)
+            void SetRadioButtonStates(bool workFromHome, bool externalAssignment, bool dayOff, bool exit, bool annual, bool casual)
             {
                 workFromHomeRadioButton.Checked = workFromHome;
                 externalAssignmentRadioButton.Checked = externalAssignment;
                 dayoffRadioButton.Checked = dayOff;
                 exitRadioButton.Checked = exit;
 
-                if (annual.HasValue)
+                if (annual)
                 {
-                    annualRadioButton.Checked = annual.Value;
-                    casualRadioButton.Checked = !annual.Value;
+                    annualRadioButton.Checked = true;
+                    casualRadioButton.Checked = false;
+                    unpaidRadioButton.Checked = false;
                 }
-            }
-
-            switch (RequestToEdit.RequestType)
-            {
-                case "Work From Home":
-                    SetRadioButtonStates(workFromHome: true, externalAssignment: false, dayOff: false, exit: false);
-                    break;
-                case "Permission":
-                    SetRadioButtonStates(workFromHome: false, externalAssignment: false, dayOff: false, exit: true);
-                    break;
-                case "External Assignment":
-                    SetRadioButtonStates(workFromHome: false, externalAssignment: true, dayOff: false, exit: false);
-                    break;
-                default:
-                    var isAnnual = RequestToEdit.RequestType == "Annual";
-                    SetRadioButtonStates(workFromHome: false, externalAssignment: false, dayOff: true, exit: false, annual: isAnnual);
-                    break;
+                else if (casual)
+                {
+                    casualRadioButton.Checked = true;
+                    annualRadioButton.Checked = false;
+                    unpaidRadioButton.Checked = false;
+                }
+                else
+                {
+                    casualRadioButton.Checked = false;
+                    annualRadioButton.Checked = false;
+                    unpaidRadioButton.Checked = true;
+                }
             }
 
             // Populate other fields
@@ -75,7 +90,7 @@ namespace TDF.Net.Forms
             fromDayDatePicker.Value = RequestToEdit.RequestFromDay;
             toDayDatePicker.Value = DateTime.TryParse(RequestToEdit.RequestToDay?.ToString(), out var toDate) ? toDate : DateTime.Now;
 
-            var isDayOff = dayoffRadioButton.Checked;
+            bool isDayOff = dayoffRadioButton.Checked;
             fromTimeTextBox.Text = isDayOff ? string.Empty : RequestToEdit.RequestBeginningTime?.TimeOfDay.ToString(@"hh\:mm");
             toTimeTextBox.Text = isDayOff ? string.Empty : RequestToEdit.RequestEndingTime?.TimeOfDay.ToString(@"hh\:mm");
 
@@ -138,7 +153,23 @@ namespace TDF.Net.Forms
 
             return days;
         }
-        private void updateLeaveBalance()
+        private void updateBalanceLabels(string leaveType, int userId, int daysRequested)
+        {
+            availableBalance = getLeaveDays(leaveType, userId);
+            availableBalanceLabel.Text = availableBalance.ToString();
+            remainingBalanceLabel.Text = (availableBalance - daysRequested).ToString();
+            balanceLabel.Visible = true;
+            availableBalanceLabel.Visible = true;
+            remainingLabel.Visible = true;
+            remainingBalanceLabel.Visible = true;
+
+        }
+        private void updateDays(DateTime toDate, DateTime fromDate)
+        {
+            numberOfDaysRequested = getWorkingDays(fromDate, toDate);
+            daysRequestedLabel.Text = numberOfDaysRequested.ToString();
+        }
+        private void updateLeaveBalanceLabel()
         {
             DateTime toDate = Convert.ToDateTime(toDayDatePicker.Value).Date;
             DateTime fromDate = Convert.ToDateTime(fromDayDatePicker.Value).Date;
@@ -150,51 +181,49 @@ namespace TDF.Net.Forms
             }
             else
             {
+                updateDays(toDate, fromDate);
+
                 if (dayoffRadioButton.Checked)
                 {
+                    updateDays(toDate, fromDate);
+
                     if (annualRadioButton.Checked)
                     {
-                        availableAnnualBalance = getLeaveDays("AnnualBalance", loggedInUser.userID);
-                        availableBalanceLabel.Text = availableAnnualBalance.ToString();
+                        updateBalanceLabels("AnnualBalance", loggedInUser.userID, numberOfDaysRequested);
 
-                        numberOfDaysRequested = getWorkingDays(fromDate, toDate);
-                        daysRequestedLabel.Text = numberOfDaysRequested.ToString();
-                        remainingBalanceLabel.Text = (availableAnnualBalance - numberOfDaysRequested).ToString();
+                    }
+                    else if (casualRadioButton.Checked)
+                    {
+                        updateBalanceLabels("CasualBalance", loggedInUser.userID, numberOfDaysRequested);
                     }
                     else
                     {
-                        availableCasualBalance = getLeaveDays("CasualBalance", loggedInUser.userID);
-                        availableBalanceLabel.Text = availableCasualBalance.ToString();
-
-                        numberOfDaysRequested = getWorkingDays(fromDate, toDate);
-                        daysRequestedLabel.Text = numberOfDaysRequested.ToString();
-                        remainingBalanceLabel.Text = (availableCasualBalance - numberOfDaysRequested).ToString();
+                        balanceLabel.Visible = false;
+                        availableBalanceLabel.Visible = false;
+                        remainingLabel.Visible = false;
+                        remainingBalanceLabel.Visible = false;
                     }
-                }
-                else
-                {
-                    numberOfDaysRequested = getWorkingDays(fromDate, toDate);
-                    daysRequestedLabel.Text = numberOfDaysRequested.ToString();
                 }
             }
         }
-        void setTimeControlsVisibility(bool isVisible)
+
+        private void setTimeControlsVisibility(bool isVisible)
         {
             fromTimeTextBox.Visible = isVisible;
             toTimeTextBox.Visible = isVisible;
             fromLabel.Visible = isVisible;
             toLabel.Visible = isVisible;
         }
-        void setDateControlsVisibility(bool isVisible)
+        private  void setDateControlsVisibility(bool isVisible)
         {
             toDateLabel.Visible = isVisible;
             toDayDatePicker.Visible = isVisible;
         }
-        void setBalanceControlsVisibility(bool isVisible)
+        private void setBalanceControlsVisibility(bool isVisible)
         {
-            bunifuLabel3.Visible = isVisible;
-            bunifuLabel4.Visible = isVisible;
-            bunifuLabel5.Visible = isVisible;
+            daysLabel.Visible = isVisible;
+            balanceLabel.Visible = isVisible;
+            remainingLabel.Visible = isVisible;
             availableBalanceLabel.Visible = isVisible;
             daysRequestedLabel.Visible = isVisible;
             remainingBalanceLabel.Visible = isVisible;
@@ -316,7 +345,7 @@ namespace TDF.Net.Forms
                 setTimeControlsVisibility(false);
                 setDateControlsVisibility(true);
                 setBalanceControlsVisibility(true);
-                updateLeaveBalance();
+                updateLeaveBalanceLabel();
                 leaveGroupBox.Visible = true;
 
             }
@@ -342,7 +371,7 @@ namespace TDF.Net.Forms
                 setBalanceControlsVisibility(false);
                 leaveGroupBox.Visible = false;
                 daysRequestedLabel.Visible = true;
-                bunifuLabel3.Visible = true;
+                daysLabel.Visible = true;
             }
         }
         private void externalAssignmentRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
@@ -358,21 +387,24 @@ namespace TDF.Net.Forms
         }
         private void annualRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
-            updateLeaveBalance();
+            updateLeaveBalanceLabel();
 
         }
         private void casualRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
-            updateLeaveBalance();
+            updateLeaveBalanceLabel();
+        }
+        private void unpaidRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            updateLeaveBalanceLabel();
         }
         private void toDayDatePicker_ValueChanged(object sender, EventArgs e)
         {
-            updateLeaveBalance();
+            updateLeaveBalanceLabel();
         }
         private void fromDayDatePicker_ValueChanged(object sender, EventArgs e)
         {
-            updateLeaveBalance();
-
+            updateLeaveBalanceLabel();
         }
         #endregion
 
@@ -404,8 +436,23 @@ namespace TDF.Net.Forms
                     MessageBox.Show("Ending date can't be earlier than the beginning date.");
                     return;
                 }
+            }
 
-                //numberOfDaysRequested = (toDay - fromDay).Days + 1;
+            if (annualRadioButton.Checked)
+            {
+                if (numberOfDaysRequested > availableBalance)
+                {
+                    MessageBox.Show("You don't have enough annual balance. You can adjust your dates accordingly and request the remaining days as unpaid.");
+                    return;
+                }
+            }
+            if (casualRadioButton.Checked)
+            {
+                if (numberOfDaysRequested > availableBalance)
+                {
+                    MessageBox.Show("You don't have enough Emergency balance. You can adjust your dates accordingly and request the remaining days as unpaid.");
+                    return;
+                }
             }
 
             // Determine request type
@@ -414,7 +461,7 @@ namespace TDF.Net.Forms
                 : workFromHomeRadioButton.Checked
                 ? "Work From Home"
                 : dayoffRadioButton.Checked
-                ? (annualRadioButton.Checked ? "Annual" : "Casual")
+                ? (annualRadioButton.Checked ? "Annual" : casualRadioButton.Checked ? "Emergency" : "Unpaid")
                 : "External Assignment";
 
             // Create or update request

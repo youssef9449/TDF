@@ -460,7 +460,8 @@ namespace TDF.Net
                                 PasswordHash = hashedPassword,
                                 FullName = "Administrator",
                                 Role = "Admin",
-                                Department = "All"
+                                Department = "All",
+                                Title = "Administrator"
                             };
 
                             admin.add();

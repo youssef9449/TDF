@@ -142,8 +142,8 @@ namespace TDF.Net.Forms
                         ? parsedEndingDate
                         : (DateTime?)null;
 
-                    string numberOfDays = currentRow.Cells["NumberOfDays"].Value?.ToString() ?? string.Empty;
-                    string availableBalance = currentRow.Cells["RemainingBalance"].Value?.ToString() ?? string.Empty;
+                    int numberOfDays = int.TryParse(currentRow.Cells["NumberOfDays"].Value?.ToString(), out int result) ? result : 0;
+                    int availableBalance = int.TryParse(currentRow.Cells["RemainingBalance"].Value?.ToString(), out int balance) ? balance : 0;
                     string reason = currentRow.Cells["RequestReason"].Value?.ToString() ?? string.Empty;
                     string beginningTime = currentRow.Cells["RequestBeginningTime"].Value?.ToString() ?? string.Empty;
                     string endingTime = currentRow.Cells["RequestEndingTime"].Value?.ToString() ?? string.Empty;
@@ -266,7 +266,7 @@ namespace TDF.Net.Forms
             r.RequestNumberOfDays,
             CASE 
                 WHEN r.RequestType = 'Annual' THEN al.AnnualBalance
-                WHEN r.RequestType = 'Casual' THEN al.CasualBalance
+                WHEN r.RequestType = 'Emergency' THEN al.CasualBalance
                 WHEN r.RequestType = 'Permission' THEN al.PermissionsBalance
                 ELSE NULL
             END AS remainingBalance
@@ -306,7 +306,7 @@ namespace TDF.Net.Forms
             r.RequestNumberOfDays,
             CASE 
                 WHEN r.RequestType = 'Annual' THEN al.AnnualBalance
-                WHEN r.RequestType = 'Casual' THEN al.CasualBalance
+                WHEN r.RequestType = 'Emergency' THEN al.CasualBalance
                 WHEN r.RequestType = 'Permission' THEN al.PermissionsBalance
                 ELSE NULL
             END AS remainingBalance
@@ -445,8 +445,8 @@ namespace TDF.Net.Forms
         public (int Annual, int Casual, int AnnualUsed, int CasualUsed) getLeaveBalances()
         {
             string query = @"SELECT Annual, CasualLeave, AnnualUsed, CasualUsed 
-        FROM AnnualLeave 
-        WHERE UserID = @UserID";
+                             FROM AnnualLeave 
+                             WHERE UserID = @UserID";
 
             using (SqlConnection conn = Database.GetConnection())
             {
@@ -486,11 +486,11 @@ namespace TDF.Net.Forms
                 return (int?)cmd.ExecuteScalar() ?? 0;
             }
         }
-        private void createPDF(string requestType, DateTime? beginningDate, DateTime? endingDate, string numberOfDays, string availableBalance, string reason, string beginningTime, string endingTime, string status)
+        private void createPDF(string requestType, DateTime? beginningDate, DateTime? endingDate, int numberOfDays, int availableBalance, string reason, string beginningTime, string endingTime, string status)
         {
             string filePath = string.Empty;
 
-            if (requestType == "Annual" || requestType == "Casual")
+            if (requestType == "Annual" || requestType == "Emergency" || requestType == "Unpaid")
             {
                 filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Forms", "Leave.xlsx");
             }
@@ -526,9 +526,9 @@ namespace TDF.Net.Forms
                 worksheet.Cells[5, 3].Value = loggedInUser.Department;
                 worksheet.Cells[4, 3].Value = loggedInUser.Title;
                 worksheet.Cells[6, 3].Value = managerName;
-                worksheet.Cells[7, 3].Value = managerDepartment;
+                worksheet.Cells[7, 3].Value = managerDepartment + " Department";
 
-                if (requestType == "Annual" || requestType == "Casual")
+                if (requestType == "Annual" || requestType == "Emergency" || requestType == "Unpaid")
                 {
                     (int Annual, int Casual, int AnnualUsed, int CasualUsed) = getLeaveBalances();
 
@@ -536,17 +536,31 @@ namespace TDF.Net.Forms
                     worksheet.Cells[16, 3].Value = beginningDate;
                     worksheet.Cells[17, 3].Value = endingDate;
 
+
                     if (requestType == "Annual")
                     {
+                        /*if (AnnualUsed + numberOfDays >= Annual)
+                        {
+                            worksheet.Cells[13, 10].Value = "TRUE";
+                        }
+                        else
+                        {
+                            worksheet.Cells[10, 10].Value = "TRUE";
+                        }*/
                         worksheet.Cells[10, 10].Value = "TRUE";
                         worksheet.Cells[23, 2].Value = Annual;
                         worksheet.Cells[23, 3].Value = AnnualUsed;
                     }
-                    else
+                    else if (requestType == "Emergency")
                     {
                         worksheet.Cells[12, 10].Value = "TRUE";
                         worksheet.Cells[23, 2].Value = Casual;
                         worksheet.Cells[23, 3].Value = CasualUsed;
+                    }
+                    else
+                    {
+                        worksheet.Cells[13, 10].Value = "TRUE";
+
                     }
 
                     worksheet.Cells[8, 10].Value = numberOfDays;
@@ -563,7 +577,7 @@ namespace TDF.Net.Forms
 
                     worksheet.Cells[22, 4].Value = status == "Approved" ? worksheet.Cells[6, 3].Value : "";
                 }
-                else // "Work From Home_Business Trip"
+                else if (requestType == "Work From Home" || requestType == "External Assignment") // "Work From Home_Business Trip"
                 {
                     worksheet.Columns[9].ClearContents();
                     worksheet.Cells[19, 2].Value = reason;
@@ -716,7 +730,7 @@ namespace TDF.Net.Forms
                         }
 
                         // Handle balance adjustment if the status is changing between "Approved" and "Rejected"
-                        if (newStatus == "Approved" && currentStatus != "Approved" && (requestType == "Annual" || requestType == "Casual" || requestType == "Permission"))
+                        if (newStatus == "Approved" && currentStatus != "Approved" && (requestType == "Annual" || requestType == "Emergency" || requestType == "Unpaid" || requestType == "Permission"))
                         {
                             string updateLeaveQuery = "";
 
@@ -726,10 +740,16 @@ namespace TDF.Net.Forms
                                              SET AnnualUsed = AnnualUsed + @NumberOfDays
                                              WHERE FullName = @FullName";
                             }
-                            else if (requestType == "Casual")
+                            else if (requestType == "Emergency")
                             {
                                 updateLeaveQuery = @"UPDATE AnnualLeave
                                              SET CasualUsed = CasualUsed + @NumberOfDays
+                                             WHERE FullName = @FullName";
+                            }
+                            else if (requestType == "Unpaid")
+                            {
+                                updateLeaveQuery = @"UPDATE AnnualLeave
+                                             SET UnpaidUsed = UnpaidUsed + @NumberOfDays
                                              WHERE FullName = @FullName";
                             }
                             else
@@ -747,7 +767,7 @@ namespace TDF.Net.Forms
                                 cmd.ExecuteNonQuery();
                             }
                         }
-                        else if (newStatus == "Rejected" && currentStatus == "Approved" && (requestType == "Annual" || requestType == "Casual" || requestType == "Permission"))
+                        else if (newStatus == "Rejected" && currentStatus == "Approved" && (requestType == "Annual" || requestType == "Emergency" || requestType == "Unpaid" || requestType == "Permission"))
                         {
                             string updateLeaveQuery = "";
 
@@ -757,10 +777,16 @@ namespace TDF.Net.Forms
                                              SET AnnualUsed = AnnualUsed - @NumberOfDays
                                              WHERE FullName = @FullName";
                             }
-                            else if (requestType == "Casual")
+                            else if (requestType == "Emergency")
                             {
                                 updateLeaveQuery = @"UPDATE AnnualLeave
                                              SET CasualUsed = CasualUsed - @NumberOfDays
+                                             WHERE FullName = @FullName";
+                            }
+                            else if (requestType == "Unpaid")
+                            {
+                                updateLeaveQuery = @"UPDATE AnnualLeave
+                                             SET UnpaidUsed = UnpaidUsed - @NumberOfDays
                                              WHERE FullName = @FullName";
                             }
                             else

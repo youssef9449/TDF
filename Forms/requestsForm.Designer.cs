@@ -55,6 +55,8 @@ namespace TDF.Net.Forms
             this.closedLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
+            this.dataGridViewImageColumn2 = new System.Windows.Forms.DataGridViewImageColumn();
+            this.dataGridViewImageColumn3 = new System.Windows.Forms.DataGridViewImageColumn();
             this.refreshButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.addRequestButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.applyButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
@@ -97,7 +99,7 @@ namespace TDF.Net.Forms
             this.requestsDataGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 11.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold);
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(115)))), ((int)(((byte)(204)))));
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
@@ -294,6 +296,22 @@ namespace TDF.Net.Forms
             this.dataGridViewImageColumn1.Name = "dataGridViewImageColumn1";
             this.dataGridViewImageColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // dataGridViewImageColumn2
+            // 
+            this.dataGridViewImageColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            resources.ApplyResources(this.dataGridViewImageColumn2, "dataGridViewImageColumn2");
+            this.dataGridViewImageColumn2.Image = global::TDF.Properties.Resources.delete;
+            this.dataGridViewImageColumn2.Name = "dataGridViewImageColumn2";
+            this.dataGridViewImageColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewImageColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // dataGridViewImageColumn3
+            // 
+            this.dataGridViewImageColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            resources.ApplyResources(this.dataGridViewImageColumn3, "dataGridViewImageColumn3");
+            this.dataGridViewImageColumn3.Image = global::TDF.Properties.Resources.pdf;
+            this.dataGridViewImageColumn3.Name = "dataGridViewImageColumn3";
             // 
             // refreshButton
             // 
@@ -589,7 +607,7 @@ namespace TDF.Net.Forms
             // 
             // RequestFromDay
             // 
-            this.RequestFromDay.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RequestFromDay.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.RequestFromDay.DataPropertyName = "RequestFromDay";
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle4.Format = "dd/MM/yyyy";
@@ -602,7 +620,7 @@ namespace TDF.Net.Forms
             // 
             // RequestToDay
             // 
-            this.RequestToDay.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RequestToDay.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.RequestToDay.DataPropertyName = "RequestToDay";
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle5.Format = "dd/MM/yyyy";
@@ -767,6 +785,8 @@ namespace TDF.Net.Forms
         private Bunifu.UI.WinForms.BunifuLabel closedLabel;
         private Bunifu.UI.WinForms.BunifuFormControlBox controlBox;
         private System.Windows.Forms.DataGridViewImageColumn dataGridViewImageColumn1;
+        private DataGridViewImageColumn dataGridViewImageColumn2;
+        private DataGridViewImageColumn dataGridViewImageColumn3;
         private DataGridViewTextBoxColumn RequestID;
         private DataGridViewTextBoxColumn RequestUserFullName;
         private DataGridViewTextBoxColumn RequestType;

@@ -156,34 +156,35 @@
     <value>Request Type</value>
   </data>
   <data name="RequestType.Width" type="System.Int32, mscorlib">
-    <value>133</value>
+    <value>116</value>
   </data>
   <metadata name="RequestFromDay.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="RequestFromDay.HeaderText" xml:space="preserve">
-    <value>Beginning Date</value>
+    <value>From</value>
   </data>
   <data name="RequestFromDay.Width" type="System.Int32, mscorlib">
-    <value>146</value>
+    <value>65</value>
   </data>
   <metadata name="RequestToDay.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="RequestToDay.HeaderText" xml:space="preserve">
-    <value>Ending Date</value>
+    <value>To</value>
   </data>
   <data name="RequestToDay.Width" type="System.Int32, mscorlib">
-    <value>122</value>
+    <value>48</value>
   </data>
   <metadata name="NumberOfDays.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="NumberOfDays.HeaderText" xml:space="preserve">
-    <value>Number of days</value>
+    <value>No. of Days
+</value>
   </data>
   <data name="NumberOfDays.Width" type="System.Int32, mscorlib">
-    <value>151</value>
+    <value>106</value>
   </data>
   <metadata name="remainingBalance.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -192,7 +193,7 @@
     <value>Available Balance</value>
   </data>
   <data name="remainingBalance.Width" type="System.Int32, mscorlib">
-    <value>160</value>
+    <value>142</value>
   </data>
   <metadata name="RequestReason.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -207,19 +208,16 @@
     <value>True</value>
   </metadata>
   <data name="RequestBeginningTime.HeaderText" xml:space="preserve">
-    <value>Beginning Time</value>
-  </data>
-  <data name="RequestBeginningTime.Width" type="System.Int32, mscorlib">
-    <value>148</value>
+    <value>From Time</value>
   </data>
   <metadata name="RequestEndingTime.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="RequestEndingTime.HeaderText" xml:space="preserve">
-    <value>Ending Time</value>
+    <value>To Time</value>
   </data>
   <data name="RequestEndingTime.Width" type="System.Int32, mscorlib">
-    <value>124</value>
+    <value>83</value>
   </data>
   <metadata name="RequestRejectReason.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -237,7 +235,7 @@
     <value>Status</value>
   </data>
   <data name="RequestStatus.Width" type="System.Int32, mscorlib">
-    <value>79</value>
+    <value>72</value>
   </data>
   <metadata name="Edit.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -249,7 +247,7 @@
     <value>20</value>
   </data>
   <data name="Edit.Width" type="System.Int32, mscorlib">
-    <value>62</value>
+    <value>57</value>
   </data>
   <metadata name="Remove.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -261,7 +259,7 @@
     <value>20</value>
   </data>
   <data name="Remove.Width" type="System.Int32, mscorlib">
-    <value>94</value>
+    <value>83</value>
   </data>
   <metadata name="Report.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -273,7 +271,7 @@
     <value>20</value>
   </data>
   <data name="Report.Width" type="System.Int32, mscorlib">
-    <value>66</value>
+    <value>56</value>
   </data>
   <metadata name="Approve.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -542,6 +540,18 @@
   <data name="dataGridViewImageColumn1.MinimumWidth" type="System.Int32, mscorlib">
     <value>20</value>
   </data>
+  <data name="dataGridViewImageColumn2.HeaderText" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="dataGridViewImageColumn2.MinimumWidth" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="dataGridViewImageColumn3.HeaderText" xml:space="preserve">
+    <value>Report</value>
+  </data>
+  <data name="dataGridViewImageColumn3.MinimumWidth" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
   <data name="refreshButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAHkAAAAeCAYAAAAIC7GrAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -660,6 +670,18 @@
     <value>dataGridViewImageColumn1</value>
   </data>
   <data name="&gt;&gt;dataGridViewImageColumn1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn2.Name" xml:space="preserve">
+    <value>dataGridViewImageColumn2</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn3.Name" xml:space="preserve">
+    <value>dataGridViewImageColumn3</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn3.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;RequestID.Name" xml:space="preserve">
