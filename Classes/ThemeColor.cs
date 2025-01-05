@@ -10,7 +10,7 @@ namespace TDF.Classes
         static int tempIndex;
 
         public static Color primaryColor { get; set; }
-        public static Color secondaryColor { get; set; }
+        public static Color darkColor { get; set; }
         public static Color lightColor { get; set; }
         public static List<string> colorList = new List<string>()
         {
@@ -29,6 +29,23 @@ namespace TDF.Classes
     "#43B76E", // Green
     "#B71C46"  // Maroon Red
         };
+        public static Dictionary<string, string> colorNames = new Dictionary<string, string>()
+    {
+        { "#3F51B5", "Indigo Blue" },
+        { "#9C27B0", "Purple" },
+        { "#2196F3", "Blue" },
+        { "#E41A4A", "Red Pink" },
+        { "#5978BB", "Light Blue" },
+        { "#018790", "Teal Green" },
+        { "#00B0AD", "Aqua" },
+        { "#721D47", "Dark Magenta" },
+        { "#A12059", "Deep Pink" },
+        { "#126881", "Dark Cyan" },
+        { "#0094BC", "Sky Blue" },
+        { "#E4126B", "Pinkish Red" },
+        { "#43B76E", "Green" },
+        { "#B71C46", "Maroon Red" }
+    };
         static ThemeColor()
         {
             random = new Random();

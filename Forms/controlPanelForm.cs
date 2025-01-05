@@ -17,13 +17,14 @@ namespace TDF.Forms
         public controlPanelForm()
         {
             InitializeComponent();
-            Program.loadForm(this);
+            Program.applyTheme(this);
             controlBox.BackColor = Color.White;
             controlBox.CloseBoxOptions.HoverColor = Color.White;
-            controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.secondaryColor;
+            controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.darkColor;
             controlBox.CloseBoxOptions.IconPressedColor = ThemeColor.primaryColor;
             controlBox.CloseBoxOptions.PressedColor = Color.White;
         }
+
         List<string> title = new List<string>();
 
         #region Methods
@@ -48,34 +49,34 @@ namespace TDF.Forms
             depDropdown.BindingContext = new BindingContext();
             depCheckedListBox.BindingContext = new BindingContext();
         }
-        private void loadUserNames()
+        private string buildUsersQuery(string filter, string searchValue)
         {
-            string query, filter;
-
-            filter = filterDropdown.Text;
+            string baseQuery = "SELECT FullName, Department, Role, Title FROM Users WHERE NOT Role = 'Admin'";
 
             switch (filter)
             {
                 case "Name":
-                    query = $"SELECT FullName, Department, Role, Title FROM Users where FullName LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
-                    break;
+                    return $"{baseQuery} AND FullName LIKE @searchValue";
                 case "Department":
-                    query = $"SELECT FullName, Department, Role, Title FROM Users where Department LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
-                    break;
+                    return $"{baseQuery} AND Department LIKE @searchValue";
                 case "Role":
-                    query = $"SELECT FullName, Department, Role, Title FROM Users where Role LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
-                    break;
+                    return $"{baseQuery} AND Role LIKE @searchValue";
                 case "Title":
-                    query = $"SELECT FullName, Department, Role, Title FROM Users where Title LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
-                    break;
+                    return $"{baseQuery} AND Title LIKE @searchValue";
                 default:
-                    query = $"SELECT FullName, Department, Role, Title FROM Users where NOT Role = 'Admin' And (Role LIKE '%{searchTextBox.Text}%' OR Department LIKE '%{searchTextBox.Text}%' OR FullName LIKE '%{searchTextBox.Text}%' OR Title LIKE '%{searchTextBox.Text}%')";
-                    break;
+                    return $"{baseQuery} AND (FullName LIKE @searchValue OR Department LIKE @searchValue OR Role LIKE @searchValue OR Title LIKE @searchValue)";
             }
+        }
+        private void loadUserNames()
+        {
+            string filter = filterDropdown.Text;
+            string searchValue = searchTextBox.Text;
+            string query = buildUsersQuery(filter, searchValue);
             
             using (SqlConnection connection = Database.GetConnection())
             {
                 SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@searchValue", $"%{searchValue}%");
 
                 try
                 {
@@ -225,7 +226,7 @@ namespace TDF.Forms
         private void panel_Paint(object sender, PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.secondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void controlPanelForm_Resize(object sender, EventArgs e)
         {
@@ -238,7 +239,7 @@ namespace TDF.Forms
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.secondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private async void depDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -854,22 +855,48 @@ namespace TDF.Forms
 
             loadUserNames();
         }
-
-        #endregion
-
         private void titleButton_Click(object sender, EventArgs e)
         {
             if (!userSelected())
             {
                 return;
             }
-            if (string.IsNullOrEmpty(titleDropdown.Text))
+
+            string title = titleDropdown.Text;
+
+            if (string.IsNullOrEmpty(title))
             {
-                MessageBox.Show("Please enter a title first.");
+                MessageBox.Show("Please select a title from the dropdown menu.");
                 titleDropdown.Focus();
                 return;
             }
 
+            using (SqlConnection conn = Database.GetConnection())
+            {
+                conn.Open();
+
+                foreach (object selectedItem in usersCheckedListBox.CheckedItems)
+                {
+                    // Split the selected item to get the FullName (format: "FullName - Department")
+                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+
+                    string query = "UPDATE Users SET Title = @Title WHERE FullName = @FullName";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Title", title);
+                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                MessageBox.Show($"Selected users have been granted {title} title.");
+            }
+
+            loadUserNames();
+            titleDropdown.Text = "";
+            depDropdown.Text = "";
         }
+        #endregion
     }
 }

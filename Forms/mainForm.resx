@@ -2323,6 +2323,9 @@
         ibsc4s/+ofmzAywRG1OC8EaIBWBC7CvcAjYQB8CM+P80zf/zf5r/Dy1dUBU9U7i6AAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="bunifuLabel5.BaseStylesheet" xml:space="preserve">
+    <value>#bunifu-label { padding: 0px; font-family: 'Segoe UI'; font-size: 10pt; width: 100%; height: 100%; font-style: normal; font-weight: normal; text-decoration: none; color: rgb(0, 0, 0); text-align: left; }</value>
+  </data>
   <data name="logoutButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAKoAAAAwCAYAAACBi+GnAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8

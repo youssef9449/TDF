@@ -24,10 +24,10 @@ namespace TDF.Net.Forms
         {
             InitializeComponent();
 
-            Program.loadForm(this);
+            Program.applyTheme(this);
             controlBox.BackColor = Color.White;
             controlBox.CloseBoxOptions.HoverColor = Color.White;
-            controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.secondaryColor;
+            controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.darkColor;
             controlBox.CloseBoxOptions.IconPressedColor = ThemeColor.primaryColor;
             controlBox.CloseBoxOptions.PressedColor = Color.White;
 
@@ -63,7 +63,7 @@ namespace TDF.Net.Forms
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.secondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void requestsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {

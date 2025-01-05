@@ -40,7 +40,7 @@ namespace TDF.Net
              }*/
         }
 
-        public static void loadForm(Form form)
+        public static void applyTheme(Form form)
         {
             foreach (Control ctrl in form.Controls)
             {
@@ -53,14 +53,14 @@ namespace TDF.Net
                         if (innerCtrl is BunifuFormControlBox controlBox)
                         {
                             controlBox.BackColor = ThemeColor.primaryColor;
-                            controlBox.CloseBoxOptions.HoverColor = ThemeColor.secondaryColor;
+                            controlBox.CloseBoxOptions.HoverColor = ThemeColor.darkColor;
                             controlBox.CloseBoxOptions.IconHoverColor = Color.Black;
                             controlBox.CloseBoxOptions.IconPressedColor = Color.Black;
-                            controlBox.CloseBoxOptions.PressedColor = ThemeColor.secondaryColor;
-                            controlBox.MaximizeBoxOptions.HoverColor = ThemeColor.secondaryColor;
-                            controlBox.MaximizeBoxOptions.PressedColor = ThemeColor.secondaryColor;
-                            controlBox.MinimizeBoxOptions.HoverColor = ThemeColor.secondaryColor;
-                            controlBox.MinimizeBoxOptions.PressedColor = ThemeColor.secondaryColor;
+                            controlBox.CloseBoxOptions.PressedColor = ThemeColor.darkColor;
+                            controlBox.MaximizeBoxOptions.HoverColor = ThemeColor.darkColor;
+                            controlBox.MaximizeBoxOptions.PressedColor = ThemeColor.darkColor;
+                            controlBox.MinimizeBoxOptions.HoverColor = ThemeColor.darkColor;
+                            controlBox.MinimizeBoxOptions.PressedColor = ThemeColor.darkColor;
                         }
                     }
                 }
@@ -77,19 +77,19 @@ namespace TDF.Net
                     {
                         if (innerCtrl is BunifuButton2 BunifuButton)
                         {
-                            BunifuButton.OnDisabledState.BorderColor = ThemeColor.secondaryColor;
+                            BunifuButton.OnDisabledState.BorderColor = ThemeColor.darkColor;
                             BunifuButton.OnDisabledState.FillColor = ThemeColor.primaryColor;
                             BunifuButton.OnDisabledState.ForeColor = Color.White;
 
-                            BunifuButton.onHoverState.BorderColor = ThemeColor.secondaryColor;
-                            BunifuButton.onHoverState.FillColor = ThemeColor.secondaryColor;
+                            BunifuButton.onHoverState.BorderColor = ThemeColor.darkColor;
+                            BunifuButton.onHoverState.FillColor = ThemeColor.darkColor;
                             BunifuButton.onHoverState.ForeColor = Color.White;
 
-                            BunifuButton.OnIdleState.BorderColor = ThemeColor.secondaryColor;
+                            BunifuButton.OnIdleState.BorderColor = ThemeColor.darkColor;
                             BunifuButton.OnIdleState.FillColor = ThemeColor.primaryColor;
                             BunifuButton.OnIdleState.ForeColor = Color.White;
 
-                            BunifuButton.OnPressedState.BorderColor = ThemeColor.secondaryColor;
+                            BunifuButton.OnPressedState.BorderColor = ThemeColor.darkColor;
                             BunifuButton.OnPressedState.FillColor = ThemeColor.primaryColor;
                             BunifuButton.OnPressedState.ForeColor = Color.White;
                             BunifuButton.Font = new Font(BunifuButton.Font, BunifuButton.Font.Style | FontStyle.Bold);
@@ -101,33 +101,33 @@ namespace TDF.Net
                 if (ctrl.GetType() == typeof(TabControl))
                 {
                     TabControl tc = (TabControl)ctrl;
-                    tc.ForeColor = ThemeColor.secondaryColor;
+                    tc.ForeColor = ThemeColor.darkColor;
 
                     foreach (Control control in tc.Controls)
                     {
                         if (control.GetType() == typeof(TabPage))
                         {
                             TabPage tabPage = control as TabPage;
-                            tabPage.ForeColor = ThemeColor.secondaryColor;
+                            tabPage.ForeColor = ThemeColor.darkColor;
 
                             foreach (Control ct in tabPage.Controls)
                             {
                                 if (ct.GetType() == typeof(BunifuButton))
                                 {
                                     BunifuButton btn = (BunifuButton)ct;
-                                    btn.OnDisabledState.BorderColor = ThemeColor.secondaryColor;
+                                    btn.OnDisabledState.BorderColor = ThemeColor.darkColor;
                                     btn.OnDisabledState.FillColor = ThemeColor.primaryColor;
                                     btn.OnDisabledState.ForeColor = Color.White;
 
-                                    btn.onHoverState.BorderColor = ThemeColor.secondaryColor;
-                                    btn.onHoverState.FillColor = ThemeColor.secondaryColor;
+                                    btn.onHoverState.BorderColor = ThemeColor.darkColor;
+                                    btn.onHoverState.FillColor = ThemeColor.darkColor;
                                     btn.onHoverState.ForeColor = Color.White;
 
-                                    btn.OnIdleState.BorderColor = ThemeColor.secondaryColor;
+                                    btn.OnIdleState.BorderColor = ThemeColor.darkColor;
                                     btn.OnIdleState.FillColor = ThemeColor.primaryColor;
                                     btn.OnIdleState.ForeColor = Color.White;
 
-                                    btn.OnPressedState.BorderColor = ThemeColor.secondaryColor;
+                                    btn.OnPressedState.BorderColor = ThemeColor.darkColor;
                                     btn.OnPressedState.FillColor = ThemeColor.primaryColor;
                                     btn.OnPressedState.ForeColor = Color.White;
                                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
@@ -137,7 +137,7 @@ namespace TDF.Net
                                 if (ct.GetType() == typeof(Label))
                                 {
                                     Label label = (Label)ct;
-                                    label.ForeColor = ThemeColor.secondaryColor;
+                                    label.ForeColor = ThemeColor.darkColor;
                                 }
                             }
                         }
@@ -148,12 +148,12 @@ namespace TDF.Net
                     Button btn = (Button)ctrl;
                     btn.BackColor = ThemeColor.primaryColor;
                     btn.ForeColor = Color.White;
-                    btn.FlatAppearance.BorderColor = ThemeColor.secondaryColor;
+                    btn.FlatAppearance.BorderColor = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(Label))
                 {
                     Label label = (Label)ctrl;
-                    label.ForeColor = ThemeColor.secondaryColor;
+                    label.ForeColor = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(MaskedTextBox))
                 {
@@ -178,19 +178,19 @@ namespace TDF.Net
                      btn.OnPressedState.BorderColor = btn.OnDisabledState.BorderColor;
                      btn.OnPressedState.FillColor = btn.BackColor;*/
 
-                    btn.OnDisabledState.BorderColor = ThemeColor.secondaryColor;
+                    btn.OnDisabledState.BorderColor = ThemeColor.darkColor;
                     btn.OnDisabledState.FillColor = ThemeColor.primaryColor;
                     btn.OnDisabledState.ForeColor = Color.White;
 
-                    btn.onHoverState.BorderColor = ThemeColor.secondaryColor;
-                    btn.onHoverState.FillColor = ThemeColor.secondaryColor;
+                    btn.onHoverState.BorderColor = ThemeColor.darkColor;
+                    btn.onHoverState.FillColor = ThemeColor.darkColor;
                     btn.onHoverState.ForeColor = Color.White;
 
-                    btn.OnIdleState.BorderColor = ThemeColor.secondaryColor;
+                    btn.OnIdleState.BorderColor = ThemeColor.darkColor;
                     btn.OnIdleState.FillColor = ThemeColor.primaryColor;
                     btn.OnIdleState.ForeColor = Color.White;
 
-                    btn.OnPressedState.BorderColor = ThemeColor.secondaryColor;
+                    btn.OnPressedState.BorderColor = ThemeColor.darkColor;
                     btn.OnPressedState.FillColor = ThemeColor.primaryColor;
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
@@ -201,19 +201,19 @@ namespace TDF.Net
                 {
                     BunifuButton2 btn = (BunifuButton2)ctrl;
 
-                    btn.OnDisabledState.BorderColor = ThemeColor.secondaryColor;
+                    btn.OnDisabledState.BorderColor = ThemeColor.darkColor;
                     btn.OnDisabledState.FillColor = ThemeColor.primaryColor;
                     btn.OnDisabledState.ForeColor = Color.White;
 
-                    btn.onHoverState.BorderColor = ThemeColor.secondaryColor;
-                    btn.onHoverState.FillColor = ThemeColor.secondaryColor;
+                    btn.onHoverState.BorderColor = ThemeColor.darkColor;
+                    btn.onHoverState.FillColor = ThemeColor.darkColor;
                     btn.onHoverState.ForeColor = Color.White;
 
-                    btn.OnIdleState.BorderColor = ThemeColor.secondaryColor;
+                    btn.OnIdleState.BorderColor = ThemeColor.darkColor;
                     btn.OnIdleState.FillColor = ThemeColor.primaryColor;
                     btn.OnIdleState.ForeColor = Color.White;
 
-                    btn.OnPressedState.BorderColor = ThemeColor.secondaryColor;
+                    btn.OnPressedState.BorderColor = ThemeColor.darkColor;
                     btn.OnPressedState.FillColor = ThemeColor.primaryColor;
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
@@ -228,12 +228,12 @@ namespace TDF.Net
                 if (ctrl.GetType() == typeof(BunifuDatePicker))
                 {
                     BunifuDatePicker DatePicker = (BunifuDatePicker)ctrl;
-                    DatePicker.BorderColor = ThemeColor.secondaryColor;
+                    DatePicker.BorderColor = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(BunifuCheckBox))
                 {
                     BunifuCheckBox chkbox = (BunifuCheckBox)ctrl;
-                    chkbox.OnCheck.CheckBoxColor = ThemeColor.secondaryColor;
+                    chkbox.OnCheck.CheckBoxColor = ThemeColor.darkColor;
                     chkbox.OnCheck.BorderColor = ThemeColor.primaryColor;
                     chkbox.OnHoverChecked.CheckBoxColor = ThemeColor.lightColor;
                     chkbox.OnHoverUnchecked.CheckBoxColor = ThemeColor.lightColor;
@@ -241,18 +241,18 @@ namespace TDF.Net
                 if (ctrl.GetType() == typeof(BunifuTextBox))
                 {
                     BunifuTextBox textBox = (BunifuTextBox)ctrl;
-                    textBox.BorderColorActive = ThemeColor.secondaryColor;
+                    textBox.BorderColorActive = ThemeColor.darkColor;
                     textBox.BorderColorHover = ThemeColor.primaryColor;
-                    textBox.BorderColorIdle = ThemeColor.secondaryColor;
+                    textBox.BorderColorIdle = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(BunifuDropdown))
                 {
                     BunifuDropdown dropdownList = (BunifuDropdown)ctrl;
-                    dropdownList.IndicatorColor = ThemeColor.secondaryColor;
-                    dropdownList.ItemBackColor = ThemeColor.secondaryColor;
+                    dropdownList.IndicatorColor = ThemeColor.darkColor;
+                    dropdownList.ItemBackColor = ThemeColor.darkColor;
                     dropdownList.ItemForeColor = Color.White;
                     dropdownList.ItemHighLightColor = ThemeColor.primaryColor;
-                    dropdownList.BorderColor = ThemeColor.secondaryColor;
+                    dropdownList.BorderColor = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(BunifuRadioButton))
                 {
@@ -271,7 +271,7 @@ namespace TDF.Net
                     dgv.GridColor = ThemeColor.primaryColor;
 
                     dgv.ColumnHeadersDefaultCellStyle.Font = new Font(dgv.Font.FontFamily, 10, FontStyle.Bold);
-                    dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = ThemeColor.secondaryColor;
+                    dgv.ColumnHeadersDefaultCellStyle.SelectionBackColor = ThemeColor.darkColor;
                     dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
                     dgv.DefaultCellStyle.SelectionBackColor = ThemeColor.lightColor;
@@ -283,27 +283,27 @@ namespace TDF.Net
                 if (ctrl.GetType() == typeof(RadioButton))
                 {
                     RadioButton rb = (RadioButton)ctrl;
-                    rb.ForeColor = ThemeColor.secondaryColor;
+                    rb.ForeColor = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(CheckBox))
                 {
                     CheckBox cb = (CheckBox)ctrl;
-                    cb.ForeColor = ThemeColor.secondaryColor;
+                    cb.ForeColor = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(ComboBox))
                 {
                     ComboBox cb = (ComboBox)ctrl;
-                    cb.ForeColor = ThemeColor.secondaryColor;
+                    cb.ForeColor = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(ListBox))
                 {
                     ListBox lb = (ListBox)ctrl;
-                    lb.ForeColor = ThemeColor.secondaryColor;
+                    lb.ForeColor = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(CheckedListBox))
                 {
                     CheckedListBox clb = (CheckedListBox)ctrl;
-                    clb.ForeColor = ThemeColor.secondaryColor;
+                    clb.ForeColor = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(BunifuGroupBox))
                 {
@@ -322,23 +322,23 @@ namespace TDF.Net
                 if (ctrl.GetType() == typeof(BunifuFormControlBox))
                 {
                     BunifuFormControlBox controlBox = (BunifuFormControlBox)ctrl;
-                    controlBox.CloseBoxOptions.HoverColor = ThemeColor.secondaryColor;
+                    controlBox.CloseBoxOptions.HoverColor = ThemeColor.darkColor;
                     controlBox.CloseBoxOptions.IconHoverColor = Color.Black;
                     controlBox.CloseBoxOptions.IconPressedColor = Color.Black;
-                    controlBox.CloseBoxOptions.PressedColor = ThemeColor.secondaryColor;
-                    controlBox.MaximizeBoxOptions.HoverColor = ThemeColor.secondaryColor;
-                    controlBox.MaximizeBoxOptions.PressedColor = ThemeColor.secondaryColor;
-                    controlBox.MinimizeBoxOptions.HoverColor = ThemeColor.secondaryColor;
-                    controlBox.MinimizeBoxOptions.PressedColor = ThemeColor.secondaryColor;
+                    controlBox.CloseBoxOptions.PressedColor = ThemeColor.darkColor;
+                    controlBox.MaximizeBoxOptions.HoverColor = ThemeColor.darkColor;
+                    controlBox.MaximizeBoxOptions.PressedColor = ThemeColor.darkColor;
+                    controlBox.MinimizeBoxOptions.HoverColor = ThemeColor.darkColor;
+                    controlBox.MinimizeBoxOptions.PressedColor = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(CheckedListBox))
                 {
                     CheckedListBox checkedListBox = (CheckedListBox)ctrl;
-                    checkedListBox.ForeColor = ThemeColor.secondaryColor;
+                    checkedListBox.ForeColor = ThemeColor.darkColor;
                 }
             }
         }
-        public static void loadFormLite(Form form)
+        public static void applyThemeLite(Form form)
         {
             foreach (Control ctrl in form.Controls)
             {
@@ -351,14 +351,14 @@ namespace TDF.Net
                         if (innerCtrl is BunifuFormControlBox controlBox)
                         {
                             controlBox.BackColor = ThemeColor.primaryColor;
-                            controlBox.CloseBoxOptions.HoverColor = ThemeColor.secondaryColor;
+                            controlBox.CloseBoxOptions.HoverColor = ThemeColor.darkColor;
                             controlBox.CloseBoxOptions.IconHoverColor = Color.Black;
                             controlBox.CloseBoxOptions.IconPressedColor = Color.Black;
-                            controlBox.CloseBoxOptions.PressedColor = ThemeColor.secondaryColor;
-                            controlBox.MaximizeBoxOptions.HoverColor = ThemeColor.secondaryColor;
-                            controlBox.MaximizeBoxOptions.PressedColor = ThemeColor.secondaryColor;
-                            controlBox.MinimizeBoxOptions.HoverColor = ThemeColor.secondaryColor;
-                            controlBox.MinimizeBoxOptions.PressedColor = ThemeColor.secondaryColor;
+                            controlBox.CloseBoxOptions.PressedColor = ThemeColor.darkColor;
+                            controlBox.MaximizeBoxOptions.HoverColor = ThemeColor.darkColor;
+                            controlBox.MaximizeBoxOptions.PressedColor = ThemeColor.darkColor;
+                            controlBox.MinimizeBoxOptions.HoverColor = ThemeColor.darkColor;
+                            controlBox.MinimizeBoxOptions.PressedColor = ThemeColor.darkColor;
                         }
                     }
                 }
@@ -381,19 +381,19 @@ namespace TDF.Net
                      btn.OnPressedState.BorderColor = btn.OnDisabledState.BorderColor;
                      btn.OnPressedState.FillColor = btn.BackColor;*/
 
-                    btn.OnDisabledState.BorderColor = ThemeColor.secondaryColor;
+                    btn.OnDisabledState.BorderColor = ThemeColor.darkColor;
                     btn.OnDisabledState.FillColor = ThemeColor.primaryColor;
                     btn.OnDisabledState.ForeColor = Color.White;
 
-                    btn.onHoverState.BorderColor = ThemeColor.secondaryColor;
-                    btn.onHoverState.FillColor = ThemeColor.secondaryColor;
+                    btn.onHoverState.BorderColor = ThemeColor.darkColor;
+                    btn.onHoverState.FillColor = ThemeColor.darkColor;
                     btn.onHoverState.ForeColor = Color.White;
 
-                    btn.OnIdleState.BorderColor = ThemeColor.secondaryColor;
+                    btn.OnIdleState.BorderColor = ThemeColor.darkColor;
                     btn.OnIdleState.FillColor = ThemeColor.primaryColor;
                     btn.OnIdleState.ForeColor = Color.White;
 
-                    btn.OnPressedState.BorderColor = ThemeColor.secondaryColor;
+                    btn.OnPressedState.BorderColor = ThemeColor.darkColor;
                     btn.OnPressedState.FillColor = ThemeColor.primaryColor;
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
@@ -403,30 +403,30 @@ namespace TDF.Net
                 if (ctrl.GetType() == typeof(BunifuTextBox))
                 {
                     BunifuTextBox textBox = (BunifuTextBox)ctrl;
-                    textBox.BorderColorActive = ThemeColor.secondaryColor;
+                    textBox.BorderColorActive = ThemeColor.darkColor;
                     textBox.BorderColorHover = ThemeColor.primaryColor;
-                    textBox.BorderColorIdle = ThemeColor.secondaryColor;
+                    textBox.BorderColorIdle = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(BunifuDropdown))
                 {
                     BunifuDropdown dropdownList = (BunifuDropdown)ctrl;
-                    dropdownList.IndicatorColor = ThemeColor.secondaryColor;
-                    dropdownList.ItemBackColor = ThemeColor.secondaryColor;
+                    dropdownList.IndicatorColor = ThemeColor.darkColor;
+                    dropdownList.ItemBackColor = ThemeColor.darkColor;
                     dropdownList.ItemForeColor = Color.White;
                     dropdownList.ItemHighLightColor = ThemeColor.primaryColor;
-                    dropdownList.BorderColor = ThemeColor.secondaryColor;
+                    dropdownList.BorderColor = ThemeColor.darkColor;
                 }
                 if (ctrl.GetType() == typeof(BunifuFormControlBox))
                 {
                     BunifuFormControlBox controlBox = (BunifuFormControlBox)ctrl;
-                    controlBox.CloseBoxOptions.HoverColor = ThemeColor.secondaryColor;
+                    controlBox.CloseBoxOptions.HoverColor = ThemeColor.darkColor;
                     controlBox.CloseBoxOptions.IconHoverColor = Color.Black;
                     controlBox.CloseBoxOptions.IconPressedColor = Color.Black;
-                    controlBox.CloseBoxOptions.PressedColor = ThemeColor.secondaryColor;
-                    controlBox.MaximizeBoxOptions.HoverColor = ThemeColor.secondaryColor;
-                    controlBox.MaximizeBoxOptions.PressedColor = ThemeColor.secondaryColor;
-                    controlBox.MinimizeBoxOptions.HoverColor = ThemeColor.secondaryColor;
-                    controlBox.MinimizeBoxOptions.PressedColor = ThemeColor.secondaryColor;
+                    controlBox.CloseBoxOptions.PressedColor = ThemeColor.darkColor;
+                    controlBox.MaximizeBoxOptions.HoverColor = ThemeColor.darkColor;
+                    controlBox.MaximizeBoxOptions.PressedColor = ThemeColor.darkColor;
+                    controlBox.MinimizeBoxOptions.HoverColor = ThemeColor.darkColor;
+                    controlBox.MinimizeBoxOptions.PressedColor = ThemeColor.darkColor;
                 }
             }
         }

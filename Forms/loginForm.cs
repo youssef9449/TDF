@@ -25,7 +25,6 @@ namespace TDF.Net
         public static List<string> titles = new List<string>();
 
 
-
         #region Methods
         private void startLoggingIn()
         {
@@ -126,9 +125,9 @@ namespace TDF.Net
         {
             Color color = ThemeColor.selectThemeColor();
             ThemeColor.primaryColor = color;
-            ThemeColor.secondaryColor = ThemeColor.changeColorBrightness(color, -0.3);
+            ThemeColor.darkColor = ThemeColor.changeColorBrightness(color, -0.3);
             ThemeColor.lightColor = ThemeColor.changeColorBrightness(color, +0.6);
-            loadFormLite(this);
+            applyThemeLite(this);
         }
         private bool validateLogin(string username, string password)
         {
@@ -326,7 +325,7 @@ namespace TDF.Net
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.secondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {
@@ -339,7 +338,7 @@ namespace TDF.Net
         private void panel_Paint(object sender, PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.secondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void txtPassword_KeyDown(object sender, KeyEventArgs e)
         {

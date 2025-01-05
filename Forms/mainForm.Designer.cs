@@ -45,6 +45,8 @@ namespace TDF.Net
             this.formPanel = new System.Windows.Forms.Panel();
             this.TDFpictureBox = new System.Windows.Forms.PictureBox();
             this.gradientPanel = new Bunifu.UI.WinForms.BunifuGradientPanel();
+            this.bunifuLabel5 = new Bunifu.UI.WinForms.BunifuLabel();
+            this.colorDropdown = new System.Windows.Forms.ComboBox();
             this.panel = new System.Windows.Forms.Panel();
             this.logoutButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.circularPictureBox = new TDF.Classes.CircularPictureBox();
@@ -232,6 +234,8 @@ namespace TDF.Net
             this.gradientPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("gradientPanel.BackgroundImage")));
             this.gradientPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.gradientPanel.BorderRadius = 1;
+            this.gradientPanel.Controls.Add(this.bunifuLabel5);
+            this.gradientPanel.Controls.Add(this.colorDropdown);
             this.gradientPanel.Controls.Add(this.panel);
             this.gradientPanel.Controls.Add(this.logoutButton);
             this.gradientPanel.Controls.Add(this.circularPictureBox);
@@ -250,6 +254,35 @@ namespace TDF.Net
             this.gradientPanel.Size = new System.Drawing.Size(177, 919);
             this.gradientPanel.TabIndex = 0;
             this.gradientPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.gradientPanel_Paint);
+            // 
+            // bunifuLabel5
+            // 
+            this.bunifuLabel5.AllowParentOverrides = false;
+            this.bunifuLabel5.AutoEllipsis = false;
+            this.bunifuLabel5.Cursor = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel5.CursorType = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel5.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.bunifuLabel5.Location = new System.Drawing.Point(62, 853);
+            this.bunifuLabel5.Name = "bunifuLabel5";
+            this.bunifuLabel5.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.bunifuLabel5.Size = new System.Drawing.Size(52, 23);
+            this.bunifuLabel5.TabIndex = 8;
+            this.bunifuLabel5.Text = "Theme";
+            this.bunifuLabel5.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.bunifuLabel5.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            this.bunifuLabel5.Visible = false;
+            // 
+            // colorDropdown
+            // 
+            this.colorDropdown.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.colorDropdown.FormattingEnabled = true;
+            this.colorDropdown.Location = new System.Drawing.Point(0, 882);
+            this.colorDropdown.Name = "colorDropdown";
+            this.colorDropdown.Size = new System.Drawing.Size(177, 25);
+            this.colorDropdown.TabIndex = 7;
+            this.colorDropdown.Visible = false;
+            this.colorDropdown.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.colorDropdown_DrawItem);
+            this.colorDropdown.SelectedIndexChanged += new System.EventHandler(this.colorDropdown_SelectedIndexChanged);
             // 
             // panel
             // 
@@ -595,6 +628,7 @@ namespace TDF.Net
             this.formPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.TDFpictureBox)).EndInit();
             this.gradientPanel.ResumeLayout(false);
+            this.gradientPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).EndInit();
             this.ResumeLayout(false);
 
@@ -620,5 +654,7 @@ namespace TDF.Net
         private System.Windows.Forms.PictureBox TDFpictureBox;
         private System.Windows.Forms.Panel panel;
         private Bunifu.UI.WinForms.BunifuLabel usernameLabel;
+        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel5;
+        private System.Windows.Forms.ComboBox colorDropdown;
     }
 }

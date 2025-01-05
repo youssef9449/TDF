@@ -313,11 +313,11 @@ namespace TDF.Net.Forms
         #region Events
         private void addRequestForm_Load(object sender, EventArgs e)
         {
-            Program.loadForm(this);
+            Program.applyTheme(this);
 
-            availableBalanceLabel.ForeColor = ThemeColor.secondaryColor;
-            daysRequestedLabel.ForeColor = ThemeColor.secondaryColor;
-            remainingBalanceLabel.ForeColor = ThemeColor.secondaryColor;
+            availableBalanceLabel.ForeColor = ThemeColor.darkColor;
+            daysRequestedLabel.ForeColor = ThemeColor.darkColor;
+            remainingBalanceLabel.ForeColor = ThemeColor.darkColor;
         }
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {
@@ -330,12 +330,12 @@ namespace TDF.Net.Forms
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.secondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void panel_Paint(object sender, PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.secondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void dayoffRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
