@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
@@ -6,10 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using TDF.Classes;
 using TDF.Forms;
 using TDF.Net.Forms;
-using static Bunifu.UI.WinForms.BunifuDataGridView;
 using static TDF.Classes.ThemeColor;
 using static TDF.Net.loginForm;
 using static TDF.Net.Program;
@@ -26,8 +25,11 @@ namespace TDF.Net
 
             applyTheme(this);
             formPanel.BackColor = Color.White;
-            hasManagerRole = loggedInUser.Role != null && (string.Equals(loggedInUser.Role, "Manager", StringComparison.OrdinalIgnoreCase) || 
-                                                           string.Equals(loggedInUser.Role, "Team Leader", StringComparison.OrdinalIgnoreCase));
+
+            List<string> managerRoles = new List<string> { "Manager", "Team Leader" };
+
+            hasManagerRole = loggedInUser.Role != null && managerRoles.Any(role =>
+                 string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
 
             hasAdminRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
             this.loginForm = loginForm; // Store a reference to the login form
