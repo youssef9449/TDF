@@ -148,7 +148,7 @@
     <Compile Include="Classes\IniFile.cs" />
     <Compile Include="Classes\NetworkUtils.cs" />
     <Compile Include="Classes\Requests.cs" />
-    <Compile Include="Classes\ThemeColor.cs" />
+    <Compile Include="Classes\themeColor.cs" />
     <Compile Include="Classes\User.cs" />
     <Compile Include="Forms\controlPanelForm.cs">
       <SubType>Form</SubType>

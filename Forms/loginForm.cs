@@ -25,163 +25,6 @@ namespace TDF.Net
         public static List<string> titles = new List<string>();
 
 
-        #region Buttons
-        private void loginButton_Click(object sender, EventArgs e)
-        {
-            if (changingPassword)
-            {
-                string username = txtUsername.Text;
-                string currentPassword = txtPassword.Text;
-                string newPassword = nameTextBox.Text;
-
-                // Basic input validation
-                if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(currentPassword) || string.IsNullOrEmpty(newPassword))
-                {
-                    MessageBox.Show("All fields are required.");
-                    return;
-                }
-
-                // Verify current password and update to the new one if correct
-                if (verifyCurrentPassword(username, currentPassword))
-                {
-                    string salt = Security.generateSalt();
-                    string hashedNewPassword = Security.hashPassword(newPassword, salt);
-                    updatePasswordInDatabase(username, hashedNewPassword, salt);
-                    clearFormFields();
-                    MessageBox.Show("Password changed successfully!");
-                }
-                else
-                {
-                    MessageBox.Show("Username or current password is incorrect.");
-                }
-            }
-            else
-            {
-                startLoggingIn();
-            }
-        }
-        private void signupButton_Click(object sender, EventArgs e)
-        {
-            if (!signingup && !changingPassword)
-            {
-                signingup = true;
-                nameTextBox.Visible = true;
-                nameLabel.Visible = true;
-                loginButton.Visible = false;
-                updateButton.Text = "Go Back";
-                signupButton.Text = "Submit";
-                departmentLabel.Visible = true;
-                departmentDropdown.Visible = true;
-                titleLabel.Visible = true;
-                titlesDropdown.Visible = true;
-                nameTextBox.UseSystemPasswordChar = false;
-                //passPictureBox.Visible = true;
-                clearFormFields();
-                departmentDropdown.DataSource = departments;
-                departmentDropdown.SelectedIndex = -1;
-
-                return;
-            }
-            if (changingPassword)
-            {
-                changingPassword = false;
-                nameLabel.Text = "User Name:";
-                passwordLabel.Text = "Password:";
-                loginButton.Text = "Log In";
-                signupButton.Text = "Sign Up";
-                loginButton.Visible = true;
-                nameTextBox.Visible = false;
-                nameLabel.Visible = false;
-                updateButton.Visible = true;
-                departmentLabel.Visible = false;
-                departmentDropdown.Visible = false;
-                titleLabel.Visible = false;
-                titlesDropdown.Visible = false;
-                nameTextBox.UseSystemPasswordChar = true;
-                // passPictureBox.Visible = false;
-                clearFormFields();
-                return;
-            }
-
-            string username = txtUsername.Text;
-            string password = txtPassword.Text;
-            string name = nameTextBox.Text;
-            string department = departmentDropdown.Text;
-            string title = titlesDropdown.Text;
-
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(department) || string.IsNullOrEmpty(title))
-            {
-                MessageBox.Show("Please fill the empty blank boxes.");
-                return;
-            }
-
-            if (isUsernameTaken(username))
-            {
-                MessageBox.Show("Username is already taken. Please choose a different username.");
-                return;
-            }
-
-            User newUser = new User();
-            newUser.UserName = username;
-            newUser.Salt = Security.generateSalt();
-            newUser.PasswordHash = Security.hashPassword(password, newUser.Salt);
-            newUser.FullName = name;
-            newUser.Role = "User";
-            newUser.Department = department;
-            newUser.Title = title;
-
-            newUser.add();
-
-            MessageBox.Show("User registered successfully!");
-
-            nameTextBox.Visible = false;
-            nameLabel.Visible = false;
-            signupButton.Visible = true;
-            loginButton.Visible = true;
-            updateButton.Visible = true;
-            departmentDropdown.Visible = false;
-            departmentLabel.Visible = false;
-            titleLabel.Visible = false;
-            titlesDropdown.Visible = false;
-            signingup = false;
-            signupButton.Text = "Sign Up";
-            updateButton.Text = "Change password";
-
-            clearFormFields();
-        }
-        private void updateButton_Click(object sender, EventArgs e)
-        {
-            if (!signingup)
-            {
-                nameTextBox.UseSystemPasswordChar = true;
-                changingPassword = true;
-                nameLabel.Text = "New Password:";
-                passwordLabel.Text = "Old Password:";
-                loginButton.Text = "Submit";
-                signupButton.Text = "Go back";
-                nameTextBox.Visible = true;
-                nameLabel.Visible = true;
-                updateButton.Visible = false;
-                //passPictureBox.Visible = false;
-            }
-            else
-            {
-                nameTextBox.UseSystemPasswordChar = false;
-                signingup = false;
-                nameTextBox.Visible = false;
-                nameLabel.Visible = false;
-                loginButton.Visible = true;
-                updateButton.Text = "Change Password";
-                signupButton.Text = "Sign Up";
-                //passPictureBox.Visible = false;
-            }
-
-            departmentDropdown.Visible = false;
-            departmentLabel.Visible = false;
-
-            clearFormFields();
-        }
-        #endregion
 
         #region Methods
         private void startLoggingIn()
@@ -241,11 +84,11 @@ namespace TDF.Net
             departmentDropdown.DataSource = departments;
             departmentDropdown.SelectedIndex = -1;
         }
-        private async Task<List<string>> getTitlesAsync()
+        public static async Task<List<string>> getTitlesAsync(string department)
         {
             List<string> titles = new List<string>();
 
-            string query = $"SELECT DISTINCT Title FROM Departments Where Department = '{departmentDropdown.Text}'";
+            string query = $"SELECT DISTINCT Title FROM Departments Where Department = '{department}'";
 
             using (SqlConnection connection = Database.GetConnection())
             {
@@ -275,16 +118,16 @@ namespace TDF.Net
         }
         private async Task loadTitlesAsync()
         {
-            titles = await getTitlesAsync();
+            titles = await getTitlesAsync(departmentDropdown.Text);
             titlesDropdown.DataSource = titles;
             titlesDropdown.SelectedIndex = -1;
         }
         private void updateTheme()
         {
-            Color color = ThemeColor.SelectThemeColor();
-            ThemeColor.PrimaryColor = color;
-            ThemeColor.SecondaryColor = ThemeColor.changeColorBrightness(color, -0.3);
-            ThemeColor.LightColor = ThemeColor.changeColorBrightness(color, +0.6);
+            Color color = ThemeColor.selectThemeColor();
+            ThemeColor.primaryColor = color;
+            ThemeColor.secondaryColor = ThemeColor.changeColorBrightness(color, -0.3);
+            ThemeColor.lightColor = ThemeColor.changeColorBrightness(color, +0.6);
             loadFormLite(this);
         }
         private bool validateLogin(string username, string password)
@@ -478,13 +321,12 @@ namespace TDF.Net
         #region Events
         private async void loginForm_Shown(object sender, EventArgs e)
         {
-           await loadDepartmentsAsync(); 
            await ensureAdminExistsAsync();
         }
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.secondaryColor, ButtonBorderStyle.Solid);
         }
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {
@@ -497,7 +339,7 @@ namespace TDF.Net
         private void panel_Paint(object sender, PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.secondaryColor, ButtonBorderStyle.Solid);
         }
         private void txtPassword_KeyDown(object sender, KeyEventArgs e)
         {
@@ -518,5 +360,168 @@ namespace TDF.Net
             await loadTitlesAsync();
         }
         #endregion
+
+        #region Buttons
+        private void loginButton_Click(object sender, EventArgs e)
+        {
+            if (changingPassword)
+            {
+                string username = txtUsername.Text;
+                string currentPassword = txtPassword.Text;
+                string newPassword = nameTextBox.Text;
+
+                // Basic input validation
+                if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(currentPassword) || string.IsNullOrEmpty(newPassword))
+                {
+                    MessageBox.Show("All fields are required.");
+                    return;
+                }
+
+                // Verify current password and update to the new one if correct
+                if (verifyCurrentPassword(username, currentPassword))
+                {
+                    string salt = Security.generateSalt();
+                    string hashedNewPassword = Security.hashPassword(newPassword, salt);
+                    updatePasswordInDatabase(username, hashedNewPassword, salt);
+                    clearFormFields();
+                    MessageBox.Show("Password changed successfully!");
+                }
+                else
+                {
+                    MessageBox.Show("Username or current password is incorrect.");
+                }
+            }
+            else
+            {
+                startLoggingIn();
+            }
+        }
+        private async void signupButton_Click(object sender, EventArgs e)
+        {
+            if (!signingup && !changingPassword)
+            {
+                await loadDepartmentsAsync();
+
+                signingup = true;
+                nameTextBox.Visible = true;
+                nameLabel.Visible = true;
+                loginButton.Visible = false;
+                updateButton.Text = "Go Back";
+                signupButton.Text = "Submit";
+                departmentLabel.Visible = true;
+                departmentDropdown.Visible = true;
+                titleLabel.Visible = true;
+                titlesDropdown.Visible = true;
+                nameTextBox.UseSystemPasswordChar = false;
+                //passPictureBox.Visible = true;
+                clearFormFields();
+                departmentDropdown.DataSource = departments;
+                departmentDropdown.SelectedIndex = -1;
+
+                return;
+            }
+            if (changingPassword)
+            {
+                changingPassword = false;
+                nameLabel.Text = "User Name:";
+                passwordLabel.Text = "Password:";
+                loginButton.Text = "Log In";
+                signupButton.Text = "Sign Up";
+                loginButton.Visible = true;
+                nameTextBox.Visible = false;
+                nameLabel.Visible = false;
+                updateButton.Visible = true;
+                departmentLabel.Visible = false;
+                departmentDropdown.Visible = false;
+                titleLabel.Visible = false;
+                titlesDropdown.Visible = false;
+                nameTextBox.UseSystemPasswordChar = true;
+                // passPictureBox.Visible = false;
+                clearFormFields();
+                return;
+            }
+
+            string username = txtUsername.Text;
+            string password = txtPassword.Text;
+            string name = nameTextBox.Text;
+            string department = departmentDropdown.Text;
+            string title = titlesDropdown.Text;
+
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(name) || string.IsNullOrEmpty(department) || string.IsNullOrEmpty(title))
+            {
+                MessageBox.Show("Please fill the empty blank boxes.");
+                return;
+            }
+
+            if (isUsernameTaken(username))
+            {
+                MessageBox.Show("Username is already taken. Please choose a different username.");
+                return;
+            }
+
+            User newUser = new User();
+            newUser.UserName = username;
+            newUser.Salt = Security.generateSalt();
+            newUser.PasswordHash = Security.hashPassword(password, newUser.Salt);
+            newUser.FullName = name;
+            newUser.Role = "User";
+            newUser.Department = department;
+            newUser.Title = title;
+
+            newUser.add();
+
+            MessageBox.Show("User registered successfully!");
+
+            nameTextBox.Visible = false;
+            nameLabel.Visible = false;
+            signupButton.Visible = true;
+            loginButton.Visible = true;
+            updateButton.Visible = true;
+            departmentDropdown.Visible = false;
+            departmentLabel.Visible = false;
+            titleLabel.Visible = false;
+            titlesDropdown.Visible = false;
+            signingup = false;
+            signupButton.Text = "Sign Up";
+            updateButton.Text = "Change password";
+
+            clearFormFields();
+        }
+        private void updateButton_Click(object sender, EventArgs e)
+        {
+            if (!signingup)
+            {
+                nameTextBox.UseSystemPasswordChar = true;
+                changingPassword = true;
+                nameLabel.Text = "New Password:";
+                passwordLabel.Text = "Old Password:";
+                loginButton.Text = "Submit";
+                signupButton.Text = "Go back";
+                nameTextBox.Visible = true;
+                nameLabel.Visible = true;
+                updateButton.Visible = false;
+                //passPictureBox.Visible = false;
+            }
+            else
+            {
+                nameTextBox.UseSystemPasswordChar = false;
+                signingup = false;
+                nameTextBox.Visible = false;
+                nameLabel.Visible = false;
+                loginButton.Visible = true;
+                updateButton.Text = "Change Password";
+                signupButton.Text = "Sign Up";
+                titlesDropdown.Visible = false;
+                titleLabel.Visible = false;
+                //passPictureBox.Visible = false;
+            }
+
+            departmentDropdown.Visible = false;
+            departmentLabel.Visible = false;
+
+            clearFormFields();
+        }
+        #endregion
+
     }
 }

@@ -9,10 +9,10 @@ namespace TDF.Classes
         static Random random;
         static int tempIndex;
 
-        public static Color PrimaryColor { get; set; }
-        public static Color SecondaryColor { get; set; }
-        public static Color LightColor { get; set; }
-        public static List<string> ColorList = new List<string>()
+        public static Color primaryColor { get; set; }
+        public static Color secondaryColor { get; set; }
+        public static Color lightColor { get; set; }
+        public static List<string> colorList = new List<string>()
         {
     "#3F51B5", // Blue Indigo
     "#9C27B0", // Purple
@@ -55,16 +55,16 @@ namespace TDF.Classes
             }
             return Color.FromArgb(color.A, (byte)red, (byte)green, (byte)blue);
         }
-        public static Color SelectThemeColor()
+        public static Color selectThemeColor()
         {
-            int index = random.Next(ColorList.Count);
+            int index = random.Next(colorList.Count);
 
             while (tempIndex == index)
             {
-                index = random.Next(ColorList.Count);
+                index = random.Next(colorList.Count);
             }
             tempIndex = index;
-            string color = ColorList[index];
+            string color = colorList[index];
             return ColorTranslator.FromHtml(color);
         }
     }

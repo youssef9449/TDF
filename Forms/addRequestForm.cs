@@ -315,9 +315,9 @@ namespace TDF.Net.Forms
         {
             Program.loadForm(this);
 
-            availableBalanceLabel.ForeColor = ThemeColor.SecondaryColor;
-            daysRequestedLabel.ForeColor = ThemeColor.SecondaryColor;
-            remainingBalanceLabel.ForeColor = ThemeColor.SecondaryColor;
+            availableBalanceLabel.ForeColor = ThemeColor.secondaryColor;
+            daysRequestedLabel.ForeColor = ThemeColor.secondaryColor;
+            remainingBalanceLabel.ForeColor = ThemeColor.secondaryColor;
         }
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {
@@ -330,12 +330,12 @@ namespace TDF.Net.Forms
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.secondaryColor, ButtonBorderStyle.Solid);
         }
         private void panel_Paint(object sender, PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.secondaryColor, ButtonBorderStyle.Solid);
         }
         private void dayoffRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
@@ -396,7 +396,15 @@ namespace TDF.Net.Forms
         }
         private void unpaidRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
-            updateLeaveBalanceLabel();
+            if (unpaidRadioButton.Checked)
+            {
+                    if (getLeaveDays("AnnualBalance", loggedInUser.userID) + getLeaveDays("CasualBalance", loggedInUser.userID) > 0 && RequestToEdit == null)
+                    {
+                        MessageBox.Show("You have Annual or Emergency balance. You can use it instead.");
+                    }
+
+                updateLeaveBalanceLabel();
+            }
         }
         private void toDayDatePicker_ValueChanged(object sender, EventArgs e)
         {
@@ -406,6 +414,7 @@ namespace TDF.Net.Forms
         {
             updateLeaveBalanceLabel();
         }
+
         #endregion
 
         #region Buttons
@@ -442,7 +451,7 @@ namespace TDF.Net.Forms
             {
                 if (numberOfDaysRequested > availableBalance)
                 {
-                    MessageBox.Show("You don't have enough annual balance. You can adjust your dates accordingly and request the remaining days as unpaid.");
+                    MessageBox.Show("You don't have enough Annual balance. You can adjust your dates accordingly and request the remaining days as unpaid.");
                     return;
                 }
             }
@@ -454,6 +463,8 @@ namespace TDF.Net.Forms
                     return;
                 }
             }
+
+
 
             // Determine request type
             string requestType = exitRadioButton.Checked

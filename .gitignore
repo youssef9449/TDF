@@ -27,3 +27,5 @@
 /obj/Release/TDF.exe
 /obj/Release/TDF.Net.loginForm.resources
 /obj/Release/TDF.pdb
+/.vs
+.vs/
