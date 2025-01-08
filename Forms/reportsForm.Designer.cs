@@ -29,17 +29,12 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(reportsForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges3 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
             this.reportsDataGridView = new Bunifu.UI.WinForms.BunifuDataGridView();
-            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.userName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.requestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Days = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fromDatePicker = new Bunifu.UI.WinForms.BunifuDatePicker();
             this.bunifuLabel1 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel2 = new Bunifu.UI.WinForms.BunifuLabel();
@@ -47,6 +42,12 @@
             this.bunifuButton21 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.depDropdown = new Bunifu.UI.WinForms.BunifuDropdown();
             this.depLabel = new Bunifu.UI.WinForms.BunifuLabel();
+            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.userName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.requestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Days = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.reportsDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -122,10 +123,10 @@
             this.reportsDataGridView.AllowUserToDeleteRows = false;
             this.reportsDataGridView.AllowUserToResizeColumns = false;
             this.reportsDataGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(251)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.Black;
-            this.reportsDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(251)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
+            this.reportsDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.reportsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -134,14 +135,14 @@
             this.reportsDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.reportsDataGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.reportsDataGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI Semibold", 11.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(115)))), ((int)(((byte)(204)))));
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.reportsDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.DodgerBlue;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 11.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(115)))), ((int)(((byte)(204)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.reportsDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.reportsDataGridView.ColumnHeadersHeight = 40;
             this.reportsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.reportsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -149,7 +150,8 @@
             this.userName,
             this.requestType,
             this.Days,
-            this.Status});
+            this.Status,
+            this.Department});
             this.reportsDataGridView.CurrentTheme.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(251)))), ((int)(((byte)(255)))));
             this.reportsDataGridView.CurrentTheme.AlternatingRowsStyle.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
             this.reportsDataGridView.CurrentTheme.AlternatingRowsStyle.ForeColor = System.Drawing.Color.Black;
@@ -168,14 +170,14 @@
             this.reportsDataGridView.CurrentTheme.RowsStyle.ForeColor = System.Drawing.Color.Black;
             this.reportsDataGridView.CurrentTheme.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
             this.reportsDataGridView.CurrentTheme.RowsStyle.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle9.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.reportsDataGridView.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.reportsDataGridView.DefaultCellStyle = dataGridViewCellStyle3;
             this.reportsDataGridView.EnableHeadersVisualStyles = false;
             this.reportsDataGridView.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
             this.reportsDataGridView.HeaderBackColor = System.Drawing.Color.DodgerBlue;
@@ -190,41 +192,6 @@
             this.reportsDataGridView.Size = new System.Drawing.Size(1365, 652);
             this.reportsDataGridView.TabIndex = 51;
             this.reportsDataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.Light;
-            // 
-            // Date
-            // 
-            this.Date.HeaderText = "Date";
-            this.Date.MinimumWidth = 6;
-            this.Date.Name = "Date";
-            this.Date.ReadOnly = true;
-            // 
-            // userName
-            // 
-            this.userName.HeaderText = "Name";
-            this.userName.MinimumWidth = 6;
-            this.userName.Name = "userName";
-            this.userName.ReadOnly = true;
-            // 
-            // requestType
-            // 
-            this.requestType.HeaderText = "Request";
-            this.requestType.MinimumWidth = 6;
-            this.requestType.Name = "requestType";
-            this.requestType.ReadOnly = true;
-            // 
-            // Days
-            // 
-            this.Days.HeaderText = "No. of Days";
-            this.Days.MinimumWidth = 6;
-            this.Days.Name = "Days";
-            this.Days.ReadOnly = true;
-            // 
-            // Status
-            // 
-            this.Status.HeaderText = "Status";
-            this.Status.MinimumWidth = 6;
-            this.Status.Name = "Status";
-            this.Status.ReadOnly = true;
             // 
             // fromDatePicker
             // 
@@ -326,17 +293,17 @@
             this.bunifuButton21.ColorContrastOnClick = 45;
             this.bunifuButton21.ColorContrastOnHover = 45;
             this.bunifuButton21.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges3.BottomLeft = true;
-            borderEdges3.BottomRight = true;
-            borderEdges3.TopLeft = true;
-            borderEdges3.TopRight = true;
-            this.bunifuButton21.CustomizableEdges = borderEdges3;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.bunifuButton21.CustomizableEdges = borderEdges1;
             this.bunifuButton21.DialogResult = System.Windows.Forms.DialogResult.None;
             this.bunifuButton21.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.bunifuButton21.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
             this.bunifuButton21.DisabledForecolor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
             this.bunifuButton21.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton2.ButtonStates.Pressed;
-            this.bunifuButton21.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.bunifuButton21.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.bunifuButton21.ForeColor = System.Drawing.Color.White;
             this.bunifuButton21.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.bunifuButton21.IconLeftCursor = System.Windows.Forms.Cursors.Default;
@@ -456,6 +423,54 @@
             this.depLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
             this.depLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
+            // Date
+            // 
+            this.Date.DataPropertyName = "RequestFromDay";
+            this.Date.HeaderText = "Date";
+            this.Date.MinimumWidth = 6;
+            this.Date.Name = "Date";
+            this.Date.ReadOnly = true;
+            // 
+            // userName
+            // 
+            this.userName.DataPropertyName = "RequestUserFullName";
+            this.userName.HeaderText = "Name";
+            this.userName.MinimumWidth = 6;
+            this.userName.Name = "userName";
+            this.userName.ReadOnly = true;
+            // 
+            // requestType
+            // 
+            this.requestType.DataPropertyName = "RequestType";
+            this.requestType.HeaderText = "Request";
+            this.requestType.MinimumWidth = 6;
+            this.requestType.Name = "requestType";
+            this.requestType.ReadOnly = true;
+            // 
+            // Days
+            // 
+            this.Days.DataPropertyName = "RequestNumberOfDays";
+            this.Days.HeaderText = "No. of Days";
+            this.Days.MinimumWidth = 6;
+            this.Days.Name = "Days";
+            this.Days.ReadOnly = true;
+            // 
+            // Status
+            // 
+            this.Status.DataPropertyName = "RequestStatus";
+            this.Status.HeaderText = "Status";
+            this.Status.MinimumWidth = 6;
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
+            // 
+            // Department
+            // 
+            this.Department.DataPropertyName = "RequestDepartment";
+            this.Department.HeaderText = "Department";
+            this.Department.MinimumWidth = 6;
+            this.Department.Name = "Department";
+            this.Department.ReadOnly = true;
+            // 
             // reportsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -487,11 +502,6 @@
         #endregion
         private Bunifu.UI.WinForms.BunifuFormControlBox controlBox;
         private Bunifu.UI.WinForms.BunifuDataGridView reportsDataGridView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Date;
-        private System.Windows.Forms.DataGridViewTextBoxColumn userName;
-        private System.Windows.Forms.DataGridViewTextBoxColumn requestType;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Days;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Status;
         private Bunifu.UI.WinForms.BunifuDatePicker fromDatePicker;
         private Bunifu.UI.WinForms.BunifuLabel bunifuLabel1;
         private Bunifu.UI.WinForms.BunifuLabel bunifuLabel2;
@@ -499,5 +509,11 @@
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton2 bunifuButton21;
         private Bunifu.UI.WinForms.BunifuDropdown depDropdown;
         private Bunifu.UI.WinForms.BunifuLabel depLabel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Date;
+        private System.Windows.Forms.DataGridViewTextBoxColumn userName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn requestType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Days;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Status;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Department;
     }
 }

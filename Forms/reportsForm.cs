@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
@@ -64,7 +66,8 @@ namespace TDF.Forms
                 return;
             }
 
-            string baseQuery = "Select RequestUserFullName, RequestType, RequestStatus, RequestDepartment from Requests Where RequestFromDate >= @startDate AND RequestFromDate <= @endDate";
+            string baseQuery = "Select RequestUserFullName, RequestType, RequestNumberOfDays, RequestStatus, RequestFromDay, RequestDepartment from Requests " +
+                "Where CONVERT(date, RequestFromDay, 120) >=  @startDate AND CONVERT(date, RequestFromDay, 120) <= @endDate";
 
             string condition = depDropdown.Text != "All" ? " AND RequestDepartment = @department" : ""; // Filter by department if selected
             using (SqlConnection connection = Database.getConnection())
@@ -79,6 +82,10 @@ namespace TDF.Forms
                 }
                 try
                 {
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+                    reportsDataGridView.DataSource = dataTable;
 
                 }
                 catch (Exception ex)
@@ -92,7 +99,7 @@ namespace TDF.Forms
 
         private void generateButton_Click(object sender, EventArgs e)
         {
-
+            updateReport();
         }
     }
 }
