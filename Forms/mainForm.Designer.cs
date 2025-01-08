@@ -40,11 +40,11 @@ namespace TDF.Net
             this.bunifuLabel1 = new Bunifu.UI.WinForms.BunifuLabel();
             this.requestsLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.panelTitleBar = new System.Windows.Forms.Panel();
+            this.formPanel = new System.Windows.Forms.Panel();
+            this.TDFpictureBox = new System.Windows.Forms.PictureBox();
             this.maxImage = new System.Windows.Forms.PictureBox();
             this.minImg = new System.Windows.Forms.PictureBox();
             this.closeImg = new System.Windows.Forms.PictureBox();
-            this.formPanel = new System.Windows.Forms.Panel();
-            this.TDFpictureBox = new System.Windows.Forms.PictureBox();
             this.gradientPanel = new Bunifu.UI.WinForms.BunifuGradientPanel();
             this.reportButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.bunifuLabel5 = new Bunifu.UI.WinForms.BunifuLabel();
@@ -56,11 +56,11 @@ namespace TDF.Net
             this.usernameLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.panelTitleBar.SuspendLayout();
+            this.formPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TDFpictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeImg)).BeginInit();
-            this.formPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TDFpictureBox)).BeginInit();
             this.gradientPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).BeginInit();
             this.SuspendLayout();
@@ -160,6 +160,26 @@ namespace TDF.Net
             this.panelTitleBar.TabIndex = 6;
             this.panelTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
             // 
+            // formPanel
+            // 
+            this.formPanel.Controls.Add(this.TDFpictureBox);
+            this.formPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.formPanel.Location = new System.Drawing.Point(152, 66);
+            this.formPanel.Name = "formPanel";
+            this.formPanel.Size = new System.Drawing.Size(945, 574);
+            this.formPanel.TabIndex = 11;
+            // 
+            // TDFpictureBox
+            // 
+            this.TDFpictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TDFpictureBox.Image = global::TDF.Properties.Resources.TDF_Logo;
+            this.TDFpictureBox.Location = new System.Drawing.Point(0, 0);
+            this.TDFpictureBox.Name = "TDFpictureBox";
+            this.TDFpictureBox.Size = new System.Drawing.Size(945, 574);
+            this.TDFpictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.TDFpictureBox.TabIndex = 0;
+            this.TDFpictureBox.TabStop = false;
+            // 
             // maxImage
             // 
             this.maxImage.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -203,26 +223,6 @@ namespace TDF.Net
             this.closeImg.MouseClick += new System.Windows.Forms.MouseEventHandler(this.closeImg_MouseClick);
             this.closeImg.MouseEnter += new System.EventHandler(this.closeImg_MouseEnter);
             this.closeImg.MouseLeave += new System.EventHandler(this.closeImg_MouseLeave);
-            // 
-            // formPanel
-            // 
-            this.formPanel.Controls.Add(this.TDFpictureBox);
-            this.formPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.formPanel.Location = new System.Drawing.Point(152, 66);
-            this.formPanel.Name = "formPanel";
-            this.formPanel.Size = new System.Drawing.Size(945, 574);
-            this.formPanel.TabIndex = 11;
-            // 
-            // TDFpictureBox
-            // 
-            this.TDFpictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TDFpictureBox.Image = global::TDF.Properties.Resources.TDF_Logo;
-            this.TDFpictureBox.Location = new System.Drawing.Point(0, 0);
-            this.TDFpictureBox.Name = "TDFpictureBox";
-            this.TDFpictureBox.Size = new System.Drawing.Size(945, 574);
-            this.TDFpictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.TDFpictureBox.TabIndex = 0;
-            this.TDFpictureBox.TabStop = false;
             // 
             // gradientPanel
             // 
@@ -703,11 +703,11 @@ namespace TDF.Net
             this.Load += new System.EventHandler(this.mainForm_Load);
             this.Resize += new System.EventHandler(this.mainForm_Resize);
             this.panelTitleBar.ResumeLayout(false);
+            this.formPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.TDFpictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeImg)).EndInit();
-            this.formPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.TDFpictureBox)).EndInit();
             this.gradientPanel.ResumeLayout(false);
             this.gradientPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).EndInit();
