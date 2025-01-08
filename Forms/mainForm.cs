@@ -415,6 +415,12 @@ namespace TDF.Net
         {
             showFormInPanel(new requestsForm());
         }
+
+        private void reportButton_Click(object sender, EventArgs e)
+        {
+            showFormInPanel(new reportsForm());
+        }
+
         private void controlPanelButton_Click(object sender, EventArgs e)
         {
             showFormInPanel(new controlPanelForm());

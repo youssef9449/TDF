@@ -323,7 +323,6 @@ namespace TDF.Net
         private async void loginForm_Shown(object sender, EventArgs e)
         {
             await ensureAdminExistsAsync();
-            loadDepartments();
 
         }
         protected override void OnPaint(PaintEventArgs e)
@@ -403,6 +402,7 @@ namespace TDF.Net
         {
             if (!signingup && !changingPassword)
             {
+                loadDepartments();
                 signingup = true;
                 nameTextBox.Visible = true;
                 nameLabel.Visible = true;

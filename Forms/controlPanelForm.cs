@@ -18,11 +18,7 @@ namespace TDF.Forms
         {
             InitializeComponent();
             Program.applyTheme(this);
-            controlBox.BackColor = Color.White;
-            controlBox.CloseBoxOptions.HoverColor = Color.White;
-            controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.darkColor;
-            controlBox.CloseBoxOptions.IconPressedColor = ThemeColor.primaryColor;
-            controlBox.CloseBoxOptions.PressedColor = Color.White;
+
         }
 
         List<string> title = new List<string>();
@@ -30,7 +26,6 @@ namespace TDF.Forms
         #region Methods
         private void updateDepartments()
         {
-            // Await the asynchronous method to load the departments
             departments =  getDepartments();
 
             // Update the UI components once the departments are loaded

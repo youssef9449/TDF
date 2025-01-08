@@ -33,6 +33,7 @@ namespace TDF.Net
             Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
             Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
             Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges3 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges4 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
             this.bunifuLabel4 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel3 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel2 = new Bunifu.UI.WinForms.BunifuLabel();
@@ -45,14 +46,15 @@ namespace TDF.Net
             this.formPanel = new System.Windows.Forms.Panel();
             this.TDFpictureBox = new System.Windows.Forms.PictureBox();
             this.gradientPanel = new Bunifu.UI.WinForms.BunifuGradientPanel();
+            this.reportButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.bunifuLabel5 = new Bunifu.UI.WinForms.BunifuLabel();
             this.colorDropdown = new System.Windows.Forms.ComboBox();
             this.panel = new System.Windows.Forms.Panel();
             this.logoutButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
-            this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.controlPanelButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.requestsButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.usernameLabel = new Bunifu.UI.WinForms.BunifuLabel();
+            this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.panelTitleBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
@@ -234,6 +236,7 @@ namespace TDF.Net
             this.gradientPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("gradientPanel.BackgroundImage")));
             this.gradientPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.gradientPanel.BorderRadius = 1;
+            this.gradientPanel.Controls.Add(this.reportButton);
             this.gradientPanel.Controls.Add(this.bunifuLabel5);
             this.gradientPanel.Controls.Add(this.colorDropdown);
             this.gradientPanel.Controls.Add(this.panel);
@@ -254,6 +257,97 @@ namespace TDF.Net
             this.gradientPanel.Size = new System.Drawing.Size(177, 919);
             this.gradientPanel.TabIndex = 0;
             this.gradientPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.gradientPanel_Paint);
+            // 
+            // reportButton
+            // 
+            this.reportButton.AllowAnimations = true;
+            this.reportButton.AllowMouseEffects = true;
+            this.reportButton.AllowToggling = false;
+            this.reportButton.AnimationSpeed = 200;
+            this.reportButton.AutoGenerateColors = false;
+            this.reportButton.AutoRoundBorders = false;
+            this.reportButton.AutoSizeLeftIcon = true;
+            this.reportButton.AutoSizeRightIcon = true;
+            this.reportButton.BackColor = System.Drawing.Color.Transparent;
+            this.reportButton.BackColor1 = System.Drawing.Color.DodgerBlue;
+            this.reportButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("reportButton.BackgroundImage")));
+            this.reportButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderStyles.Solid;
+            this.reportButton.ButtonText = "Reports";
+            this.reportButton.ButtonTextMarginLeft = 0;
+            this.reportButton.ColorContrastOnClick = 45;
+            this.reportButton.ColorContrastOnHover = 45;
+            this.reportButton.Cursor = System.Windows.Forms.Cursors.Default;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.reportButton.CustomizableEdges = borderEdges1;
+            this.reportButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.reportButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.reportButton.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.reportButton.DisabledForecolor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
+            this.reportButton.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton2.ButtonStates.Pressed;
+            this.reportButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.reportButton.ForeColor = System.Drawing.Color.White;
+            this.reportButton.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.reportButton.IconLeftCursor = System.Windows.Forms.Cursors.Default;
+            this.reportButton.IconLeftPadding = new System.Windows.Forms.Padding(11, 3, 3, 3);
+            this.reportButton.IconMarginLeft = 11;
+            this.reportButton.IconPadding = 10;
+            this.reportButton.IconRightAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.reportButton.IconRightCursor = System.Windows.Forms.Cursors.Default;
+            this.reportButton.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
+            this.reportButton.IconSize = 25;
+            this.reportButton.IdleBorderColor = System.Drawing.Color.DodgerBlue;
+            this.reportButton.IdleBorderRadius = 1;
+            this.reportButton.IdleBorderThickness = 1;
+            this.reportButton.IdleFillColor = System.Drawing.Color.DodgerBlue;
+            this.reportButton.IdleIconLeftImage = null;
+            this.reportButton.IdleIconRightImage = null;
+            this.reportButton.IndicateFocus = false;
+            this.reportButton.Location = new System.Drawing.Point(4, 441);
+            this.reportButton.Margin = new System.Windows.Forms.Padding(4);
+            this.reportButton.Name = "reportButton";
+            this.reportButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.reportButton.OnDisabledState.BorderRadius = 1;
+            this.reportButton.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderStyles.Solid;
+            this.reportButton.OnDisabledState.BorderThickness = 1;
+            this.reportButton.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.reportButton.OnDisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
+            this.reportButton.OnDisabledState.IconLeftImage = null;
+            this.reportButton.OnDisabledState.IconRightImage = null;
+            this.reportButton.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            this.reportButton.onHoverState.BorderRadius = 1;
+            this.reportButton.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderStyles.Solid;
+            this.reportButton.onHoverState.BorderThickness = 1;
+            this.reportButton.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            this.reportButton.onHoverState.ForeColor = System.Drawing.Color.White;
+            this.reportButton.onHoverState.IconLeftImage = null;
+            this.reportButton.onHoverState.IconRightImage = null;
+            this.reportButton.OnIdleState.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.reportButton.OnIdleState.BorderRadius = 1;
+            this.reportButton.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderStyles.Solid;
+            this.reportButton.OnIdleState.BorderThickness = 1;
+            this.reportButton.OnIdleState.FillColor = System.Drawing.Color.DodgerBlue;
+            this.reportButton.OnIdleState.ForeColor = System.Drawing.Color.White;
+            this.reportButton.OnIdleState.IconLeftImage = null;
+            this.reportButton.OnIdleState.IconRightImage = null;
+            this.reportButton.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.reportButton.OnPressedState.BorderRadius = 1;
+            this.reportButton.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderStyles.Solid;
+            this.reportButton.OnPressedState.BorderThickness = 1;
+            this.reportButton.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.reportButton.OnPressedState.ForeColor = System.Drawing.Color.White;
+            this.reportButton.OnPressedState.IconLeftImage = null;
+            this.reportButton.OnPressedState.IconRightImage = null;
+            this.reportButton.Size = new System.Drawing.Size(170, 48);
+            this.reportButton.TabIndex = 9;
+            this.reportButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.reportButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            this.reportButton.TextMarginLeft = 0;
+            this.reportButton.TextPadding = new System.Windows.Forms.Padding(0);
+            this.reportButton.UseDefaultRadiusAndThickness = true;
+            this.reportButton.Click += new System.EventHandler(this.reportButton_Click);
             // 
             // bunifuLabel5
             // 
@@ -313,11 +407,11 @@ namespace TDF.Net
             this.logoutButton.ColorContrastOnClick = 45;
             this.logoutButton.ColorContrastOnHover = 45;
             this.logoutButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.logoutButton.CustomizableEdges = borderEdges1;
+            borderEdges2.BottomLeft = true;
+            borderEdges2.BottomRight = true;
+            borderEdges2.TopLeft = true;
+            borderEdges2.TopRight = true;
+            this.logoutButton.CustomizableEdges = borderEdges2;
             this.logoutButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.logoutButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.logoutButton.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -341,7 +435,7 @@ namespace TDF.Net
             this.logoutButton.IdleIconLeftImage = null;
             this.logoutButton.IdleIconRightImage = null;
             this.logoutButton.IndicateFocus = false;
-            this.logoutButton.Location = new System.Drawing.Point(4, 385);
+            this.logoutButton.Location = new System.Drawing.Point(4, 378);
             this.logoutButton.Margin = new System.Windows.Forms.Padding(4);
             this.logoutButton.Name = "logoutButton";
             this.logoutButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
@@ -385,20 +479,6 @@ namespace TDF.Net
             this.logoutButton.UseDefaultRadiusAndThickness = true;
             this.logoutButton.Click += new System.EventHandler(this.logoutButton_Click);
             // 
-            // circularPictureBox
-            // 
-            this.circularPictureBox.BackColor = System.Drawing.Color.White;
-            this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
-            this.circularPictureBox.Location = new System.Drawing.Point(25, 100);
-            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
-            this.circularPictureBox.Name = "circularPictureBox";
-            this.circularPictureBox.Size = new System.Drawing.Size(127, 123);
-            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.circularPictureBox.TabIndex = 1;
-            this.circularPictureBox.TabStop = false;
-            this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);
-            // 
             // controlPanelButton
             // 
             this.controlPanelButton.AllowAnimations = true;
@@ -418,11 +498,11 @@ namespace TDF.Net
             this.controlPanelButton.ColorContrastOnClick = 45;
             this.controlPanelButton.ColorContrastOnHover = 45;
             this.controlPanelButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges2.BottomLeft = true;
-            borderEdges2.BottomRight = true;
-            borderEdges2.TopLeft = true;
-            borderEdges2.TopRight = true;
-            this.controlPanelButton.CustomizableEdges = borderEdges2;
+            borderEdges3.BottomLeft = true;
+            borderEdges3.BottomRight = true;
+            borderEdges3.TopLeft = true;
+            borderEdges3.TopRight = true;
+            this.controlPanelButton.CustomizableEdges = borderEdges3;
             this.controlPanelButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.controlPanelButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.controlPanelButton.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -446,7 +526,7 @@ namespace TDF.Net
             this.controlPanelButton.IdleIconLeftImage = null;
             this.controlPanelButton.IdleIconRightImage = null;
             this.controlPanelButton.IndicateFocus = false;
-            this.controlPanelButton.Location = new System.Drawing.Point(4, 455);
+            this.controlPanelButton.Location = new System.Drawing.Point(4, 504);
             this.controlPanelButton.Margin = new System.Windows.Forms.Padding(4);
             this.controlPanelButton.Name = "controlPanelButton";
             this.controlPanelButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
@@ -510,11 +590,11 @@ namespace TDF.Net
             this.requestsButton.ColorContrastOnClick = 45;
             this.requestsButton.ColorContrastOnHover = 45;
             this.requestsButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges3.BottomLeft = true;
-            borderEdges3.BottomRight = true;
-            borderEdges3.TopLeft = true;
-            borderEdges3.TopRight = true;
-            this.requestsButton.CustomizableEdges = borderEdges3;
+            borderEdges4.BottomLeft = true;
+            borderEdges4.BottomRight = true;
+            borderEdges4.TopLeft = true;
+            borderEdges4.TopRight = true;
+            this.requestsButton.CustomizableEdges = borderEdges4;
             this.requestsButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.requestsButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.requestsButton.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -600,6 +680,20 @@ namespace TDF.Net
             this.usernameLabel.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             this.usernameLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
+            // circularPictureBox
+            // 
+            this.circularPictureBox.BackColor = System.Drawing.Color.White;
+            this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
+            this.circularPictureBox.Location = new System.Drawing.Point(25, 100);
+            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
+            this.circularPictureBox.Name = "circularPictureBox";
+            this.circularPictureBox.Size = new System.Drawing.Size(127, 123);
+            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.circularPictureBox.TabIndex = 1;
+            this.circularPictureBox.TabStop = false;
+            this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
@@ -656,5 +750,6 @@ namespace TDF.Net
         private Bunifu.UI.WinForms.BunifuLabel usernameLabel;
         private Bunifu.UI.WinForms.BunifuLabel bunifuLabel5;
         private System.Windows.Forms.ComboBox colorDropdown;
+        private Bunifu.UI.WinForms.BunifuButton.BunifuButton2 reportButton;
     }
 }

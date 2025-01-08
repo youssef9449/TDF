@@ -93,7 +93,9 @@ namespace TDF.Net
                             BunifuButton.OnPressedState.FillColor = ThemeColor.primaryColor;
                             BunifuButton.OnPressedState.ForeColor = Color.White;
                             BunifuButton.Font = new Font(BunifuButton.Font, BunifuButton.Font.Style | FontStyle.Bold);
-
+                            // BunifuButton.AutoRoundBorders = true;
+                            // BunifuButton.AutoGenerateColors = true;
+                            BunifuButton.Invalidate();
                             BunifuButton.Refresh();
                         }
                     }
@@ -163,21 +165,6 @@ namespace TDF.Net
                 {
                     BunifuButton btn = (BunifuButton)ctrl;
 
-                    /* btn.BackColor = ThemeColor.PrimaryColor;
-                     btn.ForeColor = Color.White;
-
-                     btn.OnDisabledState.BorderColor = ThemeColor.SecondaryColor;
-                     btn.OnDisabledState.FillColor = btn.BackColor;
-
-                     btn.onHoverState.BorderColor = ThemeColor.PrimaryColor;
-                     btn.onHoverState.FillColor = btn.BackColor;
-
-                     btn.OnIdleState.BorderColor = btn.OnDisabledState.BorderColor;
-                     btn.OnIdleState.FillColor = btn.BackColor;
-
-                     btn.OnPressedState.BorderColor = btn.OnDisabledState.BorderColor;
-                     btn.OnPressedState.FillColor = btn.BackColor;*/
-
                     btn.OnDisabledState.BorderColor = ThemeColor.darkColor;
                     btn.OnDisabledState.FillColor = ThemeColor.primaryColor;
                     btn.OnDisabledState.ForeColor = Color.White;
@@ -194,7 +181,9 @@ namespace TDF.Net
                     btn.OnPressedState.FillColor = ThemeColor.primaryColor;
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
-
+                    // btn.AutoRoundBorders = true;
+                    // btn.AutoGenerateColors = true;
+                    btn.Invalidate();
                     btn.Refresh();
                 }
                 if (ctrl.GetType() == typeof(BunifuButton2))
@@ -218,6 +207,9 @@ namespace TDF.Net
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
 
+                    // btn.AutoRoundBorders = true;
+                    // btn.AutoGenerateColors = true;
+                    btn.Invalidate();
                     btn.Refresh();
                 }
                 /* if (ctrl.GetType() == typeof(BunifuLabel))
@@ -265,8 +257,6 @@ namespace TDF.Net
                 {
                     BunifuDataGridView dgv = (BunifuDataGridView)ctrl;
 
-                    //dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleVertical;
-                    //dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
                     dgv.CellBorderStyle = DataGridViewCellBorderStyle.Single;
                     dgv.GridColor = ThemeColor.primaryColor;
 
@@ -336,6 +326,15 @@ namespace TDF.Net
                     CheckedListBox checkedListBox = (CheckedListBox)ctrl;
                     checkedListBox.ForeColor = ThemeColor.darkColor;
                 }
+                if (ctrl.GetType() == typeof(BunifuFormControlBox))
+                {
+                    BunifuFormControlBox controlBox = (BunifuFormControlBox)ctrl;
+                    controlBox.BackColor = Color.White;
+                    controlBox.CloseBoxOptions.HoverColor = Color.White;
+                    controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.darkColor;
+                    controlBox.CloseBoxOptions.IconPressedColor = ThemeColor.primaryColor;
+                    controlBox.CloseBoxOptions.PressedColor = Color.White;
+                }
             }
         }
         public static void applyThemeLite(Form form)
@@ -366,21 +365,6 @@ namespace TDF.Net
                 {
                     BunifuButton btn = (BunifuButton)ctrl;
 
-                    /* btn.BackColor = ThemeColor.PrimaryColor;
-                     btn.ForeColor = Color.White;
-
-                     btn.OnDisabledState.BorderColor = ThemeColor.SecondaryColor;
-                     btn.OnDisabledState.FillColor = btn.BackColor;
-
-                     btn.onHoverState.BorderColor = ThemeColor.PrimaryColor;
-                     btn.onHoverState.FillColor = btn.BackColor;
-
-                     btn.OnIdleState.BorderColor = btn.OnDisabledState.BorderColor;
-                     btn.OnIdleState.FillColor = btn.BackColor;
-
-                     btn.OnPressedState.BorderColor = btn.OnDisabledState.BorderColor;
-                     btn.OnPressedState.FillColor = btn.BackColor;*/
-
                     btn.OnDisabledState.BorderColor = ThemeColor.darkColor;
                     btn.OnDisabledState.FillColor = ThemeColor.primaryColor;
                     btn.OnDisabledState.ForeColor = Color.White;
@@ -397,8 +381,35 @@ namespace TDF.Net
                     btn.OnPressedState.FillColor = ThemeColor.primaryColor;
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
-
+                    // btn.AutoRoundBorders = true;
+                    // btn.AutoGenerateColors = true;
+                    btn.Invalidate();
                     btn.Refresh();
+                }
+                if (ctrl.GetType() == typeof(BunifuButton2))
+                {
+                    BunifuButton2 btn2 = (BunifuButton2)ctrl;
+
+                    btn2.OnDisabledState.BorderColor = ThemeColor.darkColor;
+                    btn2.OnDisabledState.FillColor = ThemeColor.primaryColor;
+                    btn2.OnDisabledState.ForeColor = Color.White;
+
+                    btn2.onHoverState.BorderColor = ThemeColor.darkColor;
+                    btn2.onHoverState.FillColor = ThemeColor.darkColor;
+                    btn2.onHoverState.ForeColor = Color.White;
+
+                    btn2.OnIdleState.BorderColor = ThemeColor.darkColor;
+                    btn2.OnIdleState.FillColor = ThemeColor.primaryColor;
+                    btn2.OnIdleState.ForeColor = Color.White;
+
+                    btn2.OnPressedState.BorderColor = ThemeColor.darkColor;
+                    btn2.OnPressedState.FillColor = ThemeColor.primaryColor;
+                    btn2.OnPressedState.ForeColor = Color.White;
+                    btn2.Font = new Font(btn2.Font, btn2.Font.Style | FontStyle.Bold);
+                    // btn2.AutoRoundBorders = true;
+                    // btn2.AutoGenerateColors = true;
+                    btn2.Invalidate();
+                    btn2.Refresh();
                 }
                 if (ctrl.GetType() == typeof(BunifuTextBox))
                 {
