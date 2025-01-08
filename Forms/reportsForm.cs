@@ -91,6 +91,16 @@ namespace TDF.Forms
             {
                 condition = " AND RequestUserFullName = @filterValue";
             }
+            if (statusDropdown.Text != "All")
+            {
+                condition += " AND RequestStatus = @status";
+            }
+
+            if (typeDropdown.Text != "All")
+            {
+                condition += " AND RequestType = @type";
+            }
+
 
             using (SqlConnection connection = Database.getConnection())
             {
@@ -102,6 +112,15 @@ namespace TDF.Forms
                 if (!string.IsNullOrEmpty(condition))
                 {
                     command.Parameters.AddWithValue("@filterValue", depnameDropdown.Text);
+                }
+                if (statusDropdown.Text != "All")
+                {
+                    command.Parameters.AddWithValue("@status", statusDropdown.Text);
+                }
+
+                if (typeDropdown.Text != "All")
+                {
+                    command.Parameters.AddWithValue("@type", typeDropdown.Text);
                 }
 
                 try

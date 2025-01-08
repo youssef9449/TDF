@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(reportsForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
             this.reportsDataGridView = new Bunifu.UI.WinForms.BunifuDataGridView();
             this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -129,10 +129,10 @@
             this.reportsDataGridView.AllowUserToDeleteRows = false;
             this.reportsDataGridView.AllowUserToResizeColumns = false;
             this.reportsDataGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(251)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
-            this.reportsDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(251)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
+            this.reportsDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             this.reportsDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -141,14 +141,14 @@
             this.reportsDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.reportsDataGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.reportsDataGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 11.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(115)))), ((int)(((byte)(204)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.reportsDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.DodgerBlue;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI Semibold", 11.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(115)))), ((int)(((byte)(204)))));
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.reportsDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.reportsDataGridView.ColumnHeadersHeight = 40;
             this.reportsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.reportsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -176,14 +176,14 @@
             this.reportsDataGridView.CurrentTheme.RowsStyle.ForeColor = System.Drawing.Color.Black;
             this.reportsDataGridView.CurrentTheme.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
             this.reportsDataGridView.CurrentTheme.RowsStyle.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.reportsDataGridView.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.reportsDataGridView.DefaultCellStyle = dataGridViewCellStyle6;
             this.reportsDataGridView.EnableHeadersVisualStyles = false;
             this.reportsDataGridView.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
             this.reportsDataGridView.HeaderBackColor = System.Drawing.Color.DodgerBlue;
@@ -254,7 +254,7 @@
             this.fromDatePicker.BorderRadius = 1;
             this.fromDatePicker.Color = System.Drawing.Color.Silver;
             this.fromDatePicker.DateBorderThickness = Bunifu.UI.WinForms.BunifuDatePicker.BorderThickness.Thin;
-            this.fromDatePicker.DateTextAlign = Bunifu.UI.WinForms.BunifuDatePicker.TextAlign.Left;
+            this.fromDatePicker.DateTextAlign = Bunifu.UI.WinForms.BunifuDatePicker.TextAlign.Center;
             this.fromDatePicker.DisabledColor = System.Drawing.Color.Gray;
             this.fromDatePicker.DisplayWeekNumbers = false;
             this.fromDatePicker.DPHeight = 0;
@@ -265,7 +265,7 @@
             this.fromDatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.fromDatePicker.Icon = ((System.Drawing.Image)(resources.GetObject("fromDatePicker.Icon")));
             this.fromDatePicker.IconColor = System.Drawing.Color.Transparent;
-            this.fromDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.Right;
+            this.fromDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.None;
             this.fromDatePicker.LeftTextMargin = 5;
             this.fromDatePicker.Location = new System.Drawing.Point(1000, 129);
             this.fromDatePicker.MinimumSize = new System.Drawing.Size(4, 32);
@@ -312,7 +312,7 @@
             this.toDatePicker.BorderRadius = 1;
             this.toDatePicker.Color = System.Drawing.Color.Silver;
             this.toDatePicker.DateBorderThickness = Bunifu.UI.WinForms.BunifuDatePicker.BorderThickness.Thin;
-            this.toDatePicker.DateTextAlign = Bunifu.UI.WinForms.BunifuDatePicker.TextAlign.Left;
+            this.toDatePicker.DateTextAlign = Bunifu.UI.WinForms.BunifuDatePicker.TextAlign.Center;
             this.toDatePicker.DisabledColor = System.Drawing.Color.Gray;
             this.toDatePicker.DisplayWeekNumbers = false;
             this.toDatePicker.DPHeight = 0;
@@ -323,13 +323,14 @@
             this.toDatePicker.Format = System.Windows.Forms.DateTimePickerFormat.Short;
             this.toDatePicker.Icon = ((System.Drawing.Image)(resources.GetObject("toDatePicker.Icon")));
             this.toDatePicker.IconColor = System.Drawing.Color.Transparent;
-            this.toDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.Right;
+            this.toDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.None;
             this.toDatePicker.LeftTextMargin = 5;
             this.toDatePicker.Location = new System.Drawing.Point(1189, 129);
             this.toDatePicker.MinimumSize = new System.Drawing.Size(4, 32);
             this.toDatePicker.Name = "toDatePicker";
             this.toDatePicker.Size = new System.Drawing.Size(158, 32);
             this.toDatePicker.TabIndex = 55;
+            this.toDatePicker.Value = new System.DateTime(2025, 1, 8, 14, 50, 0, 0);
             // 
             // bunifuButton21
             // 
@@ -350,11 +351,11 @@
             this.bunifuButton21.ColorContrastOnClick = 45;
             this.bunifuButton21.ColorContrastOnHover = 45;
             this.bunifuButton21.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.bunifuButton21.CustomizableEdges = borderEdges1;
+            borderEdges2.BottomLeft = true;
+            borderEdges2.BottomRight = true;
+            borderEdges2.TopLeft = true;
+            borderEdges2.TopRight = true;
+            this.bunifuButton21.CustomizableEdges = borderEdges2;
             this.bunifuButton21.DialogResult = System.Windows.Forms.DialogResult.None;
             this.bunifuButton21.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.bunifuButton21.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -437,7 +438,7 @@
             this.depnameDropdown.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.depnameDropdown.DropdownBorderThickness = Bunifu.UI.WinForms.BunifuDropdown.BorderThickness.Thin;
             this.depnameDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.depnameDropdown.DropDownTextAlign = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
+            this.depnameDropdown.DropDownTextAlign = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Center;
             this.depnameDropdown.FillDropDown = true;
             this.depnameDropdown.FillIndicator = false;
             this.depnameDropdown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -462,7 +463,7 @@
             this.depnameDropdown.Size = new System.Drawing.Size(260, 32);
             this.depnameDropdown.TabIndex = 58;
             this.depnameDropdown.Text = null;
-            this.depnameDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
+            this.depnameDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Center;
             this.depnameDropdown.TextLeftMargin = 5;
             // 
             // filterLabel
@@ -513,7 +514,7 @@
             this.filterDropdown.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.filterDropdown.DropdownBorderThickness = Bunifu.UI.WinForms.BunifuDropdown.BorderThickness.Thin;
             this.filterDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.filterDropdown.DropDownTextAlign = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
+            this.filterDropdown.DropDownTextAlign = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Center;
             this.filterDropdown.FillDropDown = true;
             this.filterDropdown.FillIndicator = false;
             this.filterDropdown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -541,7 +542,7 @@
             this.filterDropdown.Size = new System.Drawing.Size(260, 32);
             this.filterDropdown.TabIndex = 60;
             this.filterDropdown.Text = null;
-            this.filterDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
+            this.filterDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Center;
             this.filterDropdown.TextLeftMargin = 5;
             this.filterDropdown.SelectedIndexChanged += new System.EventHandler(this.filterDropdown_SelectedIndexChanged);
             // 
@@ -577,7 +578,7 @@
             this.statusDropdown.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.statusDropdown.DropdownBorderThickness = Bunifu.UI.WinForms.BunifuDropdown.BorderThickness.Thin;
             this.statusDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.statusDropdown.DropDownTextAlign = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
+            this.statusDropdown.DropDownTextAlign = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Center;
             this.statusDropdown.FillDropDown = true;
             this.statusDropdown.FillIndicator = false;
             this.statusDropdown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -608,7 +609,7 @@
             this.statusDropdown.Sorted = true;
             this.statusDropdown.TabIndex = 62;
             this.statusDropdown.Text = null;
-            this.statusDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
+            this.statusDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Center;
             this.statusDropdown.TextLeftMargin = 5;
             // 
             // bunifuLabel5
@@ -643,7 +644,7 @@
             this.typeDropdown.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.typeDropdown.DropdownBorderThickness = Bunifu.UI.WinForms.BunifuDropdown.BorderThickness.Thin;
             this.typeDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.typeDropdown.DropDownTextAlign = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
+            this.typeDropdown.DropDownTextAlign = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Center;
             this.typeDropdown.FillDropDown = true;
             this.typeDropdown.FillIndicator = false;
             this.typeDropdown.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -676,7 +677,7 @@
             this.typeDropdown.Sorted = true;
             this.typeDropdown.TabIndex = 64;
             this.typeDropdown.Text = null;
-            this.typeDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
+            this.typeDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Center;
             this.typeDropdown.TextLeftMargin = 5;
             // 
             // reportsForm
