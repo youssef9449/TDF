@@ -36,7 +36,7 @@ namespace TDF.Net.Classes
 
         public void add()
         {
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 

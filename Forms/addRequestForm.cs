@@ -123,7 +123,7 @@ namespace TDF.Net.Forms
 
             try
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 

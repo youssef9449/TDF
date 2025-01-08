@@ -28,10 +28,10 @@ namespace TDF.Forms
         List<string> title = new List<string>();
 
         #region Methods
-        private async void updateDepartments()
+        private void updateDepartments()
         {
             // Await the asynchronous method to load the departments
-            departments = await getDepartmentsAsync();
+            departments =  getDepartments();
 
             // Update the UI components once the departments are loaded
             depDropdown.DataSource = departments;
@@ -73,7 +73,7 @@ namespace TDF.Forms
             string searchValue = searchTextBox.Text;
             string query = buildUsersQuery(filter, searchValue);
             
-            using (SqlConnection connection = Database.GetConnection())
+            using (SqlConnection connection = Database.getConnection())
             {
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@searchValue", $"%{searchValue}%");
@@ -116,7 +116,7 @@ namespace TDF.Forms
 
                 bool headerSkipped = false;
 
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 
@@ -265,7 +265,7 @@ namespace TDF.Forms
                 return;
             }
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -305,7 +305,7 @@ namespace TDF.Forms
 
             if (result == DialogResult.Yes)
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 
@@ -358,7 +358,7 @@ namespace TDF.Forms
                 return;
             }
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -417,7 +417,7 @@ namespace TDF.Forms
 
             int usersAffected, requestsAffected;
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -481,7 +481,7 @@ namespace TDF.Forms
                 return;
             }
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -536,7 +536,7 @@ namespace TDF.Forms
             }
 
             int usersAffected, requestsAffected;
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -597,7 +597,7 @@ namespace TDF.Forms
 
             string oldName = usersCheckedListBox.SelectedItem.ToString().Split('-')[0].Trim();
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -691,7 +691,7 @@ namespace TDF.Forms
 
             if (confirmation == DialogResult.Yes)
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 
@@ -763,7 +763,7 @@ namespace TDF.Forms
             }
 
             // Proceed with updating the database
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -823,7 +823,7 @@ namespace TDF.Forms
             // Join the selected items with a "-" separator
             string selectedDepartments = string.Join(" - ", selectedItems);
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -871,7 +871,7 @@ namespace TDF.Forms
                 return;
             }
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 

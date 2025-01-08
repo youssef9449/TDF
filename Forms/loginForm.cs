@@ -16,6 +16,8 @@ namespace TDF.Net
         {
             InitializeComponent();
             updateTheme();
+            loadDepartments();
+
         }
 
         private bool signingup = false;
@@ -45,22 +47,22 @@ namespace TDF.Net
                 MessageBox.Show("Invalid username or password");
             }
         }
-        public static async Task<List<string>> getDepartmentsAsync()
+        public static List<string> getDepartments()
         {
-            List<string> departments = new List<string>();
+           List<string> departments = new List<string>();
 
             string query = "SELECT DISTINCT Department FROM Departments";
 
-            using (SqlConnection connection = Database.GetConnection())
+            using (SqlConnection connection = Database.getConnection())
             {
                 SqlCommand command = new SqlCommand(query, connection);
 
                 try
                 {
-                    await connection.OpenAsync();
-                    SqlDataReader reader = await command.ExecuteReaderAsync();
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
 
-                    while (await reader.ReadAsync())
+                    while (reader.Read())
                     {
                         string department = reader["Department"].ToString();
                         departments.Add(department);
@@ -77,9 +79,9 @@ namespace TDF.Net
             departments.Sort();
             return departments;
         }
-        private async Task loadDepartmentsAsync()
+        private void loadDepartments()
         {
-            departments = await getDepartmentsAsync();
+            departments = getDepartments();
             departmentDropdown.DataSource = departments;
             departmentDropdown.SelectedIndex = -1;
         }
@@ -89,7 +91,7 @@ namespace TDF.Net
 
             string query = $"SELECT DISTINCT Title FROM Departments Where Department = '{department}'";
 
-            using (SqlConnection connection = Database.GetConnection())
+            using (SqlConnection connection = Database.getConnection())
             {
                 SqlCommand command = new SqlCommand(query, connection);
 
@@ -131,7 +133,7 @@ namespace TDF.Net
         }
         private bool validateLogin(string username, string password)
         {
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
                 string query = "SELECT PasswordHash, Salt FROM Users WHERE UserName = @UserName";
@@ -155,7 +157,7 @@ namespace TDF.Net
         }
         private bool isUsernameTaken(string username)
         {
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
                 string query = "SELECT COUNT(1) FROM Users WHERE UserName = @UserName";
@@ -176,7 +178,7 @@ namespace TDF.Net
         }
         private bool verifyCurrentPassword(string username, string currentPassword)
         {
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
                 string query = "SELECT PasswordHash, Salt FROM Users WHERE UserName = @UserName";
@@ -205,7 +207,7 @@ namespace TDF.Net
         }
         private void updatePasswordInDatabase(string username, string newPasswordHash, string salt)
         {
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
                 string query = "UPDATE Users SET PasswordHash = @PasswordHash, Salt = @Salt WHERE UserName = @UserName";
@@ -227,7 +229,7 @@ namespace TDF.Net
 
             User userDetails = null;
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -275,7 +277,7 @@ namespace TDF.Net
         }
         private async Task ensureAdminExistsAsync()
         {
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 await conn.OpenAsync();  // Use asynchronous open connection
 
@@ -320,7 +322,9 @@ namespace TDF.Net
         #region Events
         private async void loginForm_Shown(object sender, EventArgs e)
         {
-           await ensureAdminExistsAsync();
+            await ensureAdminExistsAsync();
+            loadDepartments();
+
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -395,12 +399,10 @@ namespace TDF.Net
                 startLoggingIn();
             }
         }
-        private async void signupButton_Click(object sender, EventArgs e)
+        private void signupButton_Click(object sender, EventArgs e)
         {
             if (!signingup && !changingPassword)
             {
-                await loadDepartmentsAsync();
-
                 signingup = true;
                 nameTextBox.Visible = true;
                 nameLabel.Visible = true;

@@ -17,6 +17,12 @@ namespace TDF.Net
 {
     public partial class mainForm : Form
     {
+        public mainForm()
+        {
+            InitializeComponent();
+            MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
+        }
+
         public mainForm(loginForm loginForm)
         {
             InitializeComponent();
@@ -148,7 +154,7 @@ namespace TDF.Net
 
             try
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
                     string query = "UPDATE Users SET Picture = @Picture WHERE UserName = @UserName";
@@ -287,7 +293,7 @@ namespace TDF.Net
 
             if (confirmation == DialogResult.Yes)
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 

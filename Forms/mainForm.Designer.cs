@@ -390,10 +390,10 @@ namespace TDF.Net
             this.circularPictureBox.BackColor = System.Drawing.Color.White;
             this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
-            this.circularPictureBox.Location = new System.Drawing.Point(30, 100);
+            this.circularPictureBox.Location = new System.Drawing.Point(25, 100);
             this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
             this.circularPictureBox.Name = "circularPictureBox";
-            this.circularPictureBox.Size = new System.Drawing.Size(117, 123);
+            this.circularPictureBox.Size = new System.Drawing.Size(127, 123);
             this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.circularPictureBox.TabIndex = 1;
             this.circularPictureBox.TabStop = false;
