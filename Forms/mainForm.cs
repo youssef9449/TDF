@@ -1,26 +1,41 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using TDF.Classes;
 using TDF.Forms;
 using TDF.Net.Forms;
+using static TDF.Classes.ThemeColor;
 using static TDF.Net.loginForm;
+using static TDF.Net.Program;
 
 namespace TDF.Net
 {
     public partial class mainForm : Form
     {
+        public mainForm()
+        {
+            InitializeComponent();
+            MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
+        }
+
         public mainForm(loginForm loginForm)
         {
             InitializeComponent();
             MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
-            Program.loadForm(this);
+            //initializeCustomColorDropdown();
+
+            applyTheme(this);
             formPanel.BackColor = Color.White;
-            hasManagerRole = loggedInUser.Role != null && (string.Equals(loggedInUser.Role, "Manager", StringComparison.OrdinalIgnoreCase) || 
-                                                           string.Equals(loggedInUser.Role, "Team Leader", StringComparison.OrdinalIgnoreCase));
+
+            List<string> managerRoles = new List<string> { "Manager", "Team Leader" };
+
+            hasManagerRole = loggedInUser.Role != null && managerRoles.Any(role =>
+                 string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
 
             hasAdminRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
             this.loginForm = loginForm; // Store a reference to the login form
@@ -37,6 +52,22 @@ namespace TDF.Net
         public static extern void SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         #region Methods
+        private void initializeCustomColorDropdown()
+        {
+            // Set ComboBox properties
+            colorDropdown.DrawMode = DrawMode.OwnerDrawFixed;
+            colorDropdown.DropDownStyle = ComboBoxStyle.DropDownList;
+            colorDropdown.Items.Clear();
+
+            // Add colors from ThemeColor.ColorList
+            foreach (var colorHex in colorList)
+            {
+                colorDropdown.Items.Add(colorHex);
+            }
+
+            // Attach DrawItem event for custom rendering
+            colorDropdown.DrawItem += colorDropdown_DrawItem;
+        }
         public void updateUserDataControls()
         {
             circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : circularPictureBox.Image;
@@ -123,7 +154,7 @@ namespace TDF.Net
 
             try
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
                     string query = "UPDATE Users SET Picture = @Picture WHERE UserName = @UserName";
@@ -185,12 +216,12 @@ namespace TDF.Net
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, darkColor, ButtonBorderStyle.Solid);
         }
         private void gradientPanel_Paint(object sender, PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, panel.ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, panel.ClientRectangle, darkColor, ButtonBorderStyle.Solid);
         }
         private void panelTitleBar_MouseDown(object sender, MouseEventArgs e)
         {
@@ -262,7 +293,7 @@ namespace TDF.Net
 
             if (confirmation == DialogResult.Yes)
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 
@@ -316,6 +347,67 @@ namespace TDF.Net
 
             contextMenu.Show(Cursor.Position);
         }
+        private void colorDropdown_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            try
+            {
+                // Ensure a valid index
+                if (e.Index < 0 || e.Index >= colorDropdown.Items.Count)
+                    return;
+
+                // Get the current color hex code from the dropdown item
+                string colorHex = colorDropdown.Items[e.Index].ToString();
+
+                // Get the actual color from the hex code
+                Color color = ColorTranslator.FromHtml(colorHex);
+
+                // Get the color name from the dictionary
+                string colorName = colorNames.ContainsKey(colorHex) ? colorNames[colorHex] : "Unknown Color";
+
+                // Draw the background
+                e.DrawBackground();
+
+                // Draw the color swatch
+                using (Brush brush = new SolidBrush(color))
+                {
+                    e.Graphics.FillRectangle(brush, new Rectangle(e.Bounds.Left + 2, e.Bounds.Top + 2, 20, e.Bounds.Height - 4));
+                }
+
+                // Draw the color name (not hex code)
+                using (Brush textBrush = new SolidBrush(e.ForeColor))
+                {
+                    e.Graphics.DrawString(colorName, e.Font, textBrush, e.Bounds.Left + 25, e.Bounds.Top + 2);
+                }
+
+                // Draw the focus rectangle if the item is selected
+                e.DrawFocusRectangle();
+            }
+            catch (ArgumentException ex)
+            {
+                Debug.WriteLine($"ArgumentException: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Unexpected error: {ex.Message}");
+            }
+        }
+        private void colorDropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (colorDropdown.SelectedIndex >= 0)
+            {
+                string selectedColorHex = colorDropdown.SelectedItem.ToString();
+                Color selectedColor = ColorTranslator.FromHtml(selectedColorHex);
+                primaryColor = selectedColor;
+                darkColor = changeColorBrightness(selectedColor, -0.3);
+                lightColor = changeColorBrightness(selectedColor, +0.6);
+                applyTheme(this);
+                formPanel.BackColor = Color.White;
+
+                Invalidate();
+                Refresh();
+
+            }
+        }
         #endregion
 
         #region Buttons
@@ -323,6 +415,12 @@ namespace TDF.Net
         {
             showFormInPanel(new requestsForm());
         }
+
+        private void reportButton_Click(object sender, EventArgs e)
+        {
+            showFormInPanel(new reportsForm());
+        }
+
         private void controlPanelButton_Click(object sender, EventArgs e)
         {
             showFormInPanel(new controlPanelForm());

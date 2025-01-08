@@ -60,7 +60,7 @@ namespace TDF.Net.Classes
 
             try
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     conn.Open();
@@ -106,7 +106,7 @@ namespace TDF.Net.Classes
         {
             try
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 
@@ -170,7 +170,7 @@ namespace TDF.Net.Classes
 
         public void delete()
         {
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 try
                 {

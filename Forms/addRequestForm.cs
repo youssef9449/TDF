@@ -117,21 +117,42 @@ namespace TDF.Net.Forms
             }
             return workingDays;
         }
-        private int getLeaveDays(string leaveType, int userID)
+        public static int getLeaveDays(string leaveType, int? userID = null, string userName = null)
         {
             int days = 0;
 
             try
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 
-                    string query = $"SELECT {leaveType} FROM AnnualLeave WHERE UserID = @UserID";
+                    // Determine the query based on the provided parameters
+                    string query;
+                    if (userID.HasValue)
+                    {
+                        query = $"SELECT {leaveType} FROM AnnualLeave WHERE UserID = @UserID";
+                    }
+                    else if (!string.IsNullOrEmpty(userName))
+                    {
+                        query = $"SELECT {leaveType} FROM AnnualLeave WHERE FullName = @FullName";
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Either userID or FullName must be provided.");
+                    }
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@UserID", userID);
+                        // Add the appropriate parameter
+                        if (userID.HasValue)
+                        {
+                            cmd.Parameters.AddWithValue("@UserID", userID.Value);
+                        }
+                        else if (!string.IsNullOrEmpty(userName))
+                        {
+                            cmd.Parameters.AddWithValue("@FullName", userName);
+                        }
 
                         object result = cmd.ExecuteScalar();
 
@@ -153,6 +174,7 @@ namespace TDF.Net.Forms
 
             return days;
         }
+
         private void updateBalanceLabels(string leaveType, int userId, int daysRequested)
         {
             availableBalance = getLeaveDays(leaveType, userId);
@@ -313,11 +335,11 @@ namespace TDF.Net.Forms
         #region Events
         private void addRequestForm_Load(object sender, EventArgs e)
         {
-            Program.loadForm(this);
+            Program.applyTheme(this);
 
-            availableBalanceLabel.ForeColor = ThemeColor.SecondaryColor;
-            daysRequestedLabel.ForeColor = ThemeColor.SecondaryColor;
-            remainingBalanceLabel.ForeColor = ThemeColor.SecondaryColor;
+            availableBalanceLabel.ForeColor = ThemeColor.darkColor;
+            daysRequestedLabel.ForeColor = ThemeColor.darkColor;
+            remainingBalanceLabel.ForeColor = ThemeColor.darkColor;
         }
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {
@@ -330,12 +352,12 @@ namespace TDF.Net.Forms
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void panel_Paint(object sender, PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void dayoffRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
@@ -396,7 +418,15 @@ namespace TDF.Net.Forms
         }
         private void unpaidRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
-            updateLeaveBalanceLabel();
+            if (unpaidRadioButton.Checked)
+            {
+                    if (getLeaveDays("AnnualBalance", loggedInUser.userID) + getLeaveDays("CasualBalance", loggedInUser.userID) > 0 && RequestToEdit == null)
+                    {
+                        MessageBox.Show("You have Annual or Emergency balance. You can use it instead.");
+                    }
+
+                updateLeaveBalanceLabel();
+            }
         }
         private void toDayDatePicker_ValueChanged(object sender, EventArgs e)
         {
@@ -406,6 +436,7 @@ namespace TDF.Net.Forms
         {
             updateLeaveBalanceLabel();
         }
+
         #endregion
 
         #region Buttons
@@ -442,7 +473,7 @@ namespace TDF.Net.Forms
             {
                 if (numberOfDaysRequested > availableBalance)
                 {
-                    MessageBox.Show("You don't have enough annual balance. You can adjust your dates accordingly and request the remaining days as unpaid.");
+                    MessageBox.Show("You don't have enough Annual balance. You can adjust your dates accordingly and request the remaining days as unpaid.");
                     return;
                 }
             }
@@ -454,6 +485,8 @@ namespace TDF.Net.Forms
                     return;
                 }
             }
+
+
 
             // Determine request type
             string requestType = exitRadioButton.Checked

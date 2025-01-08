@@ -24,11 +24,11 @@ namespace TDF.Net.Forms
         {
             InitializeComponent();
 
-            Program.loadForm(this);
+            Program.applyTheme(this);
             controlBox.BackColor = Color.White;
             controlBox.CloseBoxOptions.HoverColor = Color.White;
-            controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.SecondaryColor;
-            controlBox.CloseBoxOptions.IconPressedColor = ThemeColor.PrimaryColor;
+            controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.darkColor;
+            controlBox.CloseBoxOptions.IconPressedColor = ThemeColor.primaryColor;
             controlBox.CloseBoxOptions.PressedColor = Color.White;
 
         }
@@ -63,7 +63,7 @@ namespace TDF.Net.Forms
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void requestsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -320,7 +320,7 @@ namespace TDF.Net.Forms
         }
         private void executeQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
         {
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -414,7 +414,7 @@ namespace TDF.Net.Forms
 
             try
             {
-                using (SqlConnection connection = Database.GetConnection())
+                using (SqlConnection connection = Database.getConnection())
                 {
                     connection.Open();
 
@@ -448,7 +448,7 @@ namespace TDF.Net.Forms
                              FROM AnnualLeave 
                              WHERE UserID = @UserID";
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -477,7 +477,7 @@ namespace TDF.Net.Forms
         {
             string query = "SELECT PermissionsUsed FROM AnnualLeave WHERE UserID = @UserID";
 
-            using (var conn = Database.GetConnection())
+            using (var conn = Database.getConnection())
             using (var cmd = new SqlCommand(query, conn))
             {
                 cmd.Parameters.AddWithValue("@UserID", loggedInUser.userID);
@@ -682,7 +682,7 @@ namespace TDF.Net.Forms
         }
         private void applyButton_Click(object sender, EventArgs e)
         {
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 

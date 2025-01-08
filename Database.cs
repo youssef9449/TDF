@@ -12,9 +12,7 @@ namespace TDF.Net
 
         static Database()
         {
-            //connectionString = "Server=TDF40\\SQLEXPRESS;Database=Users;Trusted_Connection=True;";
-            //connectionString = "Data Source=192.168.1.151,1433;Network Library=DBMSSOCN;Initial Catalog=Users;Trusted_Connection=True;";
-            connectionString = BuildConnectionString();
+            connectionString = buildConnectionString();
         }
 
         private const string ConfigFileName = "config.ini";
@@ -27,7 +25,7 @@ namespace TDF.Net
         static int Port = 1433;
 
 
-        public static string BuildConnectionString()
+        public static string buildConnectionString()
         {
             // Read connection method from the config file
             string connectionMethod = iniFile.Read("Database", "ConnectionMethod", "").ToLower();
@@ -105,7 +103,7 @@ namespace TDF.Net
 
             return connectionString;
         }
-        public static void EnsureConfigFileExists()
+        public static void ensureConfigFileExists()
         {
             string configFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigFileName);
 
@@ -131,7 +129,7 @@ namespace TDF.Net
                                  "Config File Created", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-        public static SqlConnection GetConnection()
+        public static SqlConnection getConnection()
         {
             return new SqlConnection(connectionString);
         }

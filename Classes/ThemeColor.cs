@@ -9,10 +9,10 @@ namespace TDF.Classes
         static Random random;
         static int tempIndex;
 
-        public static Color PrimaryColor { get; set; }
-        public static Color SecondaryColor { get; set; }
-        public static Color LightColor { get; set; }
-        public static List<string> ColorList = new List<string>()
+        public static Color primaryColor { get; set; }
+        public static Color darkColor { get; set; }
+        public static Color lightColor { get; set; }
+        public static List<string> colorList = new List<string>()
         {
     "#3F51B5", // Blue Indigo
     "#9C27B0", // Purple
@@ -29,6 +29,23 @@ namespace TDF.Classes
     "#43B76E", // Green
     "#B71C46"  // Maroon Red
         };
+        public static Dictionary<string, string> colorNames = new Dictionary<string, string>()
+    {
+        { "#3F51B5", "Indigo Blue" },
+        { "#9C27B0", "Purple" },
+        { "#2196F3", "Blue" },
+        { "#E41A4A", "Red Pink" },
+        { "#5978BB", "Light Blue" },
+        { "#018790", "Teal Green" },
+        { "#00B0AD", "Aqua" },
+        { "#721D47", "Dark Magenta" },
+        { "#A12059", "Deep Pink" },
+        { "#126881", "Dark Cyan" },
+        { "#0094BC", "Sky Blue" },
+        { "#E4126B", "Pinkish Red" },
+        { "#43B76E", "Green" },
+        { "#B71C46", "Maroon Red" }
+    };
         static ThemeColor()
         {
             random = new Random();
@@ -55,16 +72,16 @@ namespace TDF.Classes
             }
             return Color.FromArgb(color.A, (byte)red, (byte)green, (byte)blue);
         }
-        public static Color SelectThemeColor()
+        public static Color selectThemeColor()
         {
-            int index = random.Next(ColorList.Count);
+            int index = random.Next(colorList.Count);
 
             while (tempIndex == index)
             {
-                index = random.Next(ColorList.Count);
+                index = random.Next(colorList.Count);
             }
             tempIndex = index;
-            string color = ColorList[index];
+            string color = colorList[index];
             return ColorTranslator.FromHtml(color);
         }
     }

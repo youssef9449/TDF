@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TDF.Classes;
-using TDF.Net;
+using TDF.Net; 
 using static TDF.Net.loginForm;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -15,63 +17,61 @@ namespace TDF.Forms
         public controlPanelForm()
         {
             InitializeComponent();
-            Program.loadForm(this);
-            controlBox.BackColor = Color.White;
-            controlBox.CloseBoxOptions.HoverColor = Color.White;
-            controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.SecondaryColor;
-            controlBox.CloseBoxOptions.IconPressedColor = ThemeColor.PrimaryColor;
-            controlBox.CloseBoxOptions.PressedColor = Color.White;
+            Program.applyTheme(this);
+
         }
 
+        List<string> title = new List<string>();
+
         #region Methods
-        private async void updateDepartments()
+        private void updateDepartments()
         {
-            // Await the asynchronous method to load the departments
-            departments = await getDepartmentsAsync();
+            departments =  getDepartments();
 
             // Update the UI components once the departments are loaded
             depDropdown.DataSource = departments;
-            depListBox.DataSource = departments;
-            depDropdown.Text = "";
+
+            depCheckedListBox.Items.Clear();
+            foreach (string department in departments)
+            {
+                depCheckedListBox.Items.Add(department);
+            }
+
+            depDropdown.SelectedIndex = -1;
             depTextBox.Text = "";
 
             // Reset the bindings to ensure proper data binding
             depDropdown.BindingContext = new BindingContext();
-            depListBox.BindingContext = new BindingContext();
+            depCheckedListBox.BindingContext = new BindingContext();
         }
-
-        void loadUserNames()
+        private string buildUsersQuery(string filter, string searchValue)
         {
-            string query, filter;
+            string baseQuery = "SELECT FullName, Department, Role, Title FROM Users WHERE NOT Role = 'Admin'";
 
-            filter = filterDropdown.Text;
-
-            if (string.IsNullOrEmpty(filter))
+            switch (filter)
             {
-                query = $"SELECT FullName, Department, Role FROM Users where NOT Role ='Admin'";
+                case "Name":
+                    return $"{baseQuery} AND FullName LIKE @searchValue";
+                case "Department":
+                    return $"{baseQuery} AND Department LIKE @searchValue";
+                case "Role":
+                    return $"{baseQuery} AND Role LIKE @searchValue";
+                case "Title":
+                    return $"{baseQuery} AND Title LIKE @searchValue";
+                default:
+                    return $"{baseQuery} AND (FullName LIKE @searchValue OR Department LIKE @searchValue OR Role LIKE @searchValue OR Title LIKE @searchValue)";
             }
-            else
-            {
-                switch (filter)
-                {
-                    case "Name":
-                        query = $"SELECT FullName, Department, Role FROM Users where FullName LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
-                        break;
-                    case "Department":
-                        query = $"SELECT FullName, Department, Role FROM Users where Department LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
-                        break;
-                    case "Role":
-                        query = $"SELECT FullName, Department, Role FROM Users where Role LIKE '%{searchTextBox.Text}%' AND NOT Role ='Admin'";
-                        break;
-                    default:
-                        query = $"SELECT FullName, Department, Role FROM Users where NOT Role ='Admin' And (Role LIKE '%{searchTextBox.Text}%' OR Department LIKE '%{searchTextBox.Text}%' OR FullName LIKE '%{searchTextBox.Text}%');";
-                        break;
-                }
-            }
-
-            using (SqlConnection connection = Database.GetConnection())
+        }
+        private void loadUserNames()
+        {
+            string filter = filterDropdown.Text;
+            string searchValue = searchTextBox.Text;
+            string query = buildUsersQuery(filter, searchValue);
+            
+            using (SqlConnection connection = Database.getConnection())
             {
                 SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@searchValue", $"%{searchValue}%");
 
                 try
                 {
@@ -85,7 +85,8 @@ namespace TDF.Forms
                         string fullName = reader["FullName"].ToString();
                         string departmentName = reader["Department"].ToString();
                         string role = reader["Role"].ToString();
-                        string displayName = $"{fullName} - {departmentName} - {role}";
+                        string title = reader["Title"].ToString();
+                        string displayName = $"{fullName} - {departmentName} - {title} - {role}";
 
                         usersCheckedListBox.Items.Add(displayName);
                     }
@@ -98,7 +99,7 @@ namespace TDF.Forms
                 }
             }
         }
-        public static void ImportUsersFromExcel(string filePath)
+        private void importUsersFromExcel(string filePath)
         {
             try
             {
@@ -110,7 +111,7 @@ namespace TDF.Forms
 
                 bool headerSkipped = false;
 
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 
@@ -175,6 +176,24 @@ namespace TDF.Forms
                 MessageBox.Show("Error importing users: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        private bool userSelected()
+        {
+            if (usersCheckedListBox.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("Please select at least one user.", "No user Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            return true;
+        }
+        private bool departmentSelected()
+        {
+            if (depCheckedListBox.CheckedItems.Count == 0)
+            {
+                MessageBox.Show("Please select at least one department.", "No department Selected", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            return true;
+        }
         #endregion
 
         #region Events
@@ -183,7 +202,7 @@ namespace TDF.Forms
             updateDepartments();
 
             filterDropdown.Text = "";
-            depDropdown.Text = "";
+            depDropdown.SelectedIndex = -1;
 
             loadUserNames();
         }
@@ -202,21 +221,34 @@ namespace TDF.Forms
         private void panel_Paint(object sender, PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        private void controlPanelForm_Resize(object sender, EventArgs e)
+        {
+            Invalidate();
+        }
+        private void filterDropdown_SelectedValueChanged(object sender, EventArgs e)
+        {
+            loadUserNames();
         }
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.SecondaryColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        private async void depDropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            title = await getTitlesAsync(depDropdown.Text);
+            titleDropdown.DataSource = title;
+            titleDropdown.SelectedIndex = -1;
         }
         #endregion
 
         #region Buttons
         private void roleButton_Click(object sender, EventArgs e)
         {
-            if (usersCheckedListBox.CheckedItems.Count == 0)
+            if (!userSelected())
             {
-                MessageBox.Show("Please select user(s) to update.");
                 return;
             }
 
@@ -228,7 +260,7 @@ namespace TDF.Forms
                 return;
             }
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -255,6 +287,10 @@ namespace TDF.Forms
         }
         private void deleteButton_Click(object sender, EventArgs e)
         {
+            if (!userSelected())
+            {
+                return;
+            }
             DialogResult result = MessageBox.Show(
                 "Are you sure you want to delete the selected users ? " +
                 "this will also delete the requests associated with them.",
@@ -264,7 +300,7 @@ namespace TDF.Forms
 
             if (result == DialogResult.Yes)
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 
@@ -307,19 +343,17 @@ namespace TDF.Forms
         }
         private void depButton_Click(object sender, EventArgs e)
         {
-            if (usersCheckedListBox.CheckedItems.Count == 0)
+            if (!userSelected())
             {
-                MessageBox.Show($"Please select user(s) to update.");
                 return;
             }
-
             if (string.IsNullOrEmpty(depDropdown.Text))
             {
                 MessageBox.Show("Please select a department from the dropdown menu.");
                 return;
             }
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -354,6 +388,10 @@ namespace TDF.Forms
         }
         private void updateDepButton_Click(object sender, EventArgs e)
         {
+            if (!departmentSelected())
+            {
+                return;
+            }
             string newDepartmentName = depTextBox.Text;
 
             if (string.IsNullOrEmpty(newDepartmentName))
@@ -363,18 +401,18 @@ namespace TDF.Forms
                 return;
             }
 
-            string oldDepartmentName = depListBox.SelectedItem?.ToString();
+            string oldDepartmentName = depCheckedListBox.SelectedItem?.ToString();
 
             if (string.IsNullOrEmpty(oldDepartmentName))
             {
                 MessageBox.Show("Please choose a department to update.");
-                depListBox.Focus();
+                depCheckedListBox.Focus();
                 return;
             }
 
             int usersAffected, requestsAffected;
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -438,7 +476,7 @@ namespace TDF.Forms
                 return;
             }
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -472,12 +510,10 @@ namespace TDF.Forms
         }
         private void deleteDepButton_Click(object sender, EventArgs e)
         {
-            string departmentName = depListBox.SelectedItem?.ToString(); // Use null-safe access
+            string departmentName = depCheckedListBox.SelectedItem?.ToString(); // Use null-safe access
 
-            if (string.IsNullOrEmpty(departmentName))
+            if (!departmentSelected())
             {
-                MessageBox.Show("Please choose a department to delete.");
-                depListBox.Focus();
                 return;
             }
 
@@ -495,7 +531,7 @@ namespace TDF.Forms
             }
 
             int usersAffected, requestsAffected;
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -534,9 +570,8 @@ namespace TDF.Forms
         }
         private void renameButton_Click(object sender, EventArgs e)
         {
-            if (usersCheckedListBox.CheckedItems.Count == 0)
+            if (!userSelected())
             {
-                MessageBox.Show("Please select a user to rename.");
                 return;
             }
 
@@ -557,7 +592,7 @@ namespace TDF.Forms
 
             string oldName = usersCheckedListBox.SelectedItem.ToString().Split('-')[0].Trim();
 
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -616,7 +651,7 @@ namespace TDF.Forms
 
                         try
                         {
-                            ImportUsersFromExcel(filePath);
+                            importUsersFromExcel(filePath);
                             loadUserNames();
                             MessageBox.Show("Import successful.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -634,9 +669,8 @@ namespace TDF.Forms
         }
         private void resetPasswordButton_Click(object sender, EventArgs e)
         {
-            if (usersCheckedListBox.CheckedItems.Count == 0)
+            if (!userSelected())
             {
-                MessageBox.Show("Please select a user to reset the password.");
                 return;
             }
             if (string.IsNullOrEmpty(passwordTextBox.Text))
@@ -652,7 +686,7 @@ namespace TDF.Forms
 
             if (confirmation == DialogResult.Yes)
             {
-                using (SqlConnection conn = Database.GetConnection())
+                using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 
@@ -687,13 +721,10 @@ namespace TDF.Forms
         }
         private void leaveButton_Click(object sender, EventArgs e)
         {
-            // Check if at least one user is selected
-            if (usersCheckedListBox.CheckedItems.Count == 0)
+            if (!userSelected())
             {
-                MessageBox.Show("Please select user(s) to update.");
                 return;
             }
-
             // Initialize variables for leave values
             int? annual = null, casualLeave = null;
 
@@ -727,7 +758,7 @@ namespace TDF.Forms
             }
 
             // Proceed with updating the database
-            using (SqlConnection conn = Database.GetConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
 
@@ -772,17 +803,95 @@ namespace TDF.Forms
                 MessageBox.Show("Updated leave balance successfully.");
             }
         }
-
-        private void controlPanelForm_Resize(object sender, EventArgs e)
+        private void userDepButton_Click(object sender, EventArgs e)
         {
-            Invalidate();
-        }
+            if (!userSelected())
+            {
+                return;
+            }
+            if (!departmentSelected())
+            {
+                return;
+            }
+            var selectedItems = depCheckedListBox.CheckedItems.Cast<string>();
 
-        private void filterDropdown_SelectedValueChanged(object sender, EventArgs e)
-        {
+            // Join the selected items with a "-" separator
+            string selectedDepartments = string.Join(" - ", selectedItems);
+
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+
+                foreach (object selectedItem in usersCheckedListBox.CheckedItems)
+                {
+                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+
+                    string query = "UPDATE Users SET Department = @Department WHERE FullName = @FullName";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Department", selectedDepartments);
+                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    string secondQuery = "UPDATE Requests SET RequestDepartment = @Department WHERE RequestUserFullName = @FullName";
+                    using (SqlCommand cmd = new SqlCommand(secondQuery, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Department", selectedDepartments);
+                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                MessageBox.Show($"Selected users have been moved to the {selectedDepartments} department.");
+            }
+
             loadUserNames();
         }
-        #endregion
+        private void titleButton_Click(object sender, EventArgs e)
+        {
+            if (!userSelected())
+            {
+                return;
+            }
 
+            string title = titleDropdown.Text;
+
+            if (string.IsNullOrEmpty(title))
+            {
+                MessageBox.Show("Please select a title from the dropdown menu.");
+                titleDropdown.Focus();
+                return;
+            }
+
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+
+                foreach (object selectedItem in usersCheckedListBox.CheckedItems)
+                {
+                    // Split the selected item to get the FullName (format: "FullName - Department")
+                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+
+                    string query = "UPDATE Users SET Title = @Title WHERE FullName = @FullName";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Title", title);
+                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                MessageBox.Show($"Selected users have been granted {title} title.");
+            }
+
+            loadUserNames();
+            titleDropdown.Text = "";
+            depDropdown.Text = "";
+        }
+        #endregion
     }
 }
