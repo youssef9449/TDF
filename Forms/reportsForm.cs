@@ -5,7 +5,10 @@ using System.Data.SqlClient;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Net;
+using static TDF.Net.Forms.addRequestForm;
 using static TDF.Net.loginForm;
+using static TDF.Net.mainForm;
+
 
 namespace TDF.Forms
 {
@@ -21,7 +24,13 @@ namespace TDF.Forms
         private void reportForm_Load(object sender, EventArgs e)
         {
             Program.applyTheme(this);
-            filterDropdown.SelectedIndex = 0;
+            totalBalanceLabel.ForeColor = ThemeColor.darkColor;
+            usedBalanceLabel.ForeColor = ThemeColor.darkColor;
+            availableBalanceLabel.ForeColor = ThemeColor.darkColor;
+            filtersGroupBox.Visible = hasManagerRole || hasAdminRole;
+            nameORdepDropdown.Visible = hasManagerRole || hasAdminRole;
+            filterDropdown.SelectedIndex = hasManagerRole || hasAdminRole ? 0 : 1;
+            nameORdepDropdown.SelectedIndex = hasManagerRole || hasAdminRole ? 0 : 1;
             statusDropdown.SelectedIndex = 0;
             typeDropdown.SelectedIndex = 0;
         }
@@ -47,23 +56,69 @@ namespace TDF.Forms
                 updateDropDown(getNames);
             }
         }
+        private void typeDropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
+            {
+                bool isAnnualOrEmergency = typeDropdown.Text == "Annual" || typeDropdown.Text == "Emergency";
+
+                balanceGroupBox.Visible = isAnnualOrEmergency;
+
+                if (isAnnualOrEmergency)
+                {
+                    string leaveType = typeDropdown.Text == "Annual" ? "Annual" : "CasualLeave";
+                    string usedLeaveType = typeDropdown.Text == "Annual" ? "AnnualUsed" : "CasualUsed";
+
+                    totalBalanceLabel.Text = getLeaveDays(leaveType, userName: nameORdepDropdown.Text).ToString();
+                    usedBalanceLabel.Text = getUsedLeaveDays(usedLeaveType, userName: nameORdepDropdown.Text).ToString();
+
+                    int totalBalance = int.Parse(totalBalanceLabel.Text);
+                    int usedBalance = int.Parse(usedBalanceLabel.Text);
+
+                    availableBalanceLabel.Text = (totalBalance - usedBalance).ToString();
+                }
+            }
+        }
+        private void nameORdepDropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
+            {
+                bool isAnnualOrEmergency = typeDropdown.Text == "Annual" || typeDropdown.Text == "Emergency";
+
+                balanceGroupBox.Visible = isAnnualOrEmergency;
+
+                if (isAnnualOrEmergency)
+                {
+                    string leaveType = typeDropdown.Text == "Annual" ? "Annual" : "CasualLeave";
+                    string usedLeaveType = typeDropdown.Text == "Annual" ? "AnnualUsed" : "CasualUsed";
+
+                    totalBalanceLabel.Text = getLeaveDays(leaveType, userName: nameORdepDropdown.Text).ToString();
+                    usedBalanceLabel.Text = getUsedLeaveDays(usedLeaveType, userName: nameORdepDropdown.Text).ToString();
+
+                    int totalBalance = int.Parse(totalBalanceLabel.Text);
+                    int usedBalance = int.Parse(usedBalanceLabel.Text);
+
+                    availableBalanceLabel.Text = (totalBalance - usedBalance).ToString();
+                }
+            }
+        }
         #endregion
 
         #region Methods
         private void updateDropDown(Func<List<string>> method)
         {
-            depnameDropdown.Items.Clear();
+            nameORdepDropdown.Items.Clear();
 
             List<string> list = method();
 
             foreach (string item in list)
             {
-                depnameDropdown.Items.Add(item);
+                nameORdepDropdown.Items.Add(item);
             }
 
-            depnameDropdown.Items.Insert(0, "All");
+            nameORdepDropdown.Items.Insert(0, "All");
 
-            depnameDropdown.SelectedIndex = 0;
+            nameORdepDropdown.SelectedIndex = 0;
         }
         private void updateReport()
         {
@@ -83,11 +138,11 @@ namespace TDF.Forms
 
             // Determine filter condition based on the dropdown selection
             string condition = "";
-            if (filterDropdown.Text == "Department" && depnameDropdown.Text != "All")
+            if (filterDropdown.Text == "Department" && nameORdepDropdown.Text != "All")
             {
                 condition = " AND RequestDepartment = @filterValue";
             }
-            else if (filterDropdown.Text == "Name" && depnameDropdown.Text != "All")
+            else if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
             {
                 condition = " AND RequestUserFullName = @filterValue";
             }
@@ -95,12 +150,10 @@ namespace TDF.Forms
             {
                 condition += " AND RequestStatus = @status";
             }
-
             if (typeDropdown.Text != "All")
             {
                 condition += " AND RequestType = @type";
             }
-
 
             using (SqlConnection connection = Database.getConnection())
             {
@@ -111,7 +164,7 @@ namespace TDF.Forms
                 // Add parameter for filter value if applicable
                 if (!string.IsNullOrEmpty(condition))
                 {
-                    command.Parameters.AddWithValue("@filterValue", depnameDropdown.Text);
+                    command.Parameters.AddWithValue("@filterValue", nameORdepDropdown.Text);
                 }
                 if (statusDropdown.Text != "All")
                 {
@@ -171,13 +224,73 @@ namespace TDF.Forms
             names.Sort();
             return names;
         }
+        private int getUsedLeaveDays(string leaveType, int? userID = null, string userName = null)
+        {
+            int days = 0;
+
+            try
+            {
+                using (SqlConnection conn = Database.getConnection())
+                {
+                    conn.Open();
+
+                    // Determine the query based on the provided parameters
+                    string query;
+                    if (userID.HasValue)
+                    {
+                        query = $"SELECT {leaveType} FROM AnnualLeave WHERE UserID = @UserID";
+                    }
+                    else if (!string.IsNullOrEmpty(userName))
+                    {
+                        query = $"SELECT {leaveType} FROM AnnualLeave WHERE FullName = @FullName";
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Either userID or FullName must be provided.");
+                    }
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        // Add the appropriate parameter
+                        if (userID.HasValue)
+                        {
+                            cmd.Parameters.AddWithValue("@UserID", userID.Value);
+                        }
+                        else if (!string.IsNullOrEmpty(userName))
+                        {
+                            cmd.Parameters.AddWithValue("@FullName", userName);
+                        }
+
+                        object result = cmd.ExecuteScalar();
+
+                        if (result != null && int.TryParse(result.ToString(), out int sum))
+                        {
+                            days = sum;
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("A database error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return days;
+        }
+
         #endregion
 
         #region Buttons
         private void generateButton_Click(object sender, EventArgs e)
         {
             updateReport();
+
         }
+
         #endregion
 
     }

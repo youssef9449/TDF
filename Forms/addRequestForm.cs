@@ -117,7 +117,7 @@ namespace TDF.Net.Forms
             }
             return workingDays;
         }
-        private int getLeaveDays(string leaveType, int userID)
+        public static int getLeaveDays(string leaveType, int? userID = null, string userName = null)
         {
             int days = 0;
 
@@ -127,11 +127,32 @@ namespace TDF.Net.Forms
                 {
                     conn.Open();
 
-                    string query = $"SELECT {leaveType} FROM AnnualLeave WHERE UserID = @UserID";
+                    // Determine the query based on the provided parameters
+                    string query;
+                    if (userID.HasValue)
+                    {
+                        query = $"SELECT {leaveType} FROM AnnualLeave WHERE UserID = @UserID";
+                    }
+                    else if (!string.IsNullOrEmpty(userName))
+                    {
+                        query = $"SELECT {leaveType} FROM AnnualLeave WHERE FullName = @FullName";
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Either userID or FullName must be provided.");
+                    }
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@UserID", userID);
+                        // Add the appropriate parameter
+                        if (userID.HasValue)
+                        {
+                            cmd.Parameters.AddWithValue("@UserID", userID.Value);
+                        }
+                        else if (!string.IsNullOrEmpty(userName))
+                        {
+                            cmd.Parameters.AddWithValue("@FullName", userName);
+                        }
 
                         object result = cmd.ExecuteScalar();
 
@@ -153,6 +174,7 @@ namespace TDF.Net.Forms
 
             return days;
         }
+
         private void updateBalanceLabels(string leaveType, int userId, int daysRequested)
         {
             availableBalance = getLeaveDays(leaveType, userId);
