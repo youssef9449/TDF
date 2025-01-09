@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TDF.Classes;
-using TDF.Net; 
+using TDF.Net;
 using static TDF.Net.loginForm;
+using static TDF.Net.mainForm;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace TDF.Forms
@@ -22,6 +22,7 @@ namespace TDF.Forms
         }
 
         List<string> title = new List<string>();
+        public event Action userUpdated;
 
         #region Methods
         private void updateDepartments()
@@ -892,6 +893,54 @@ namespace TDF.Forms
             titleDropdown.Text = "";
             depDropdown.Text = "";
         }
+        private void spoofButton_Click(object sender, EventArgs e)
+        {
+            if (usersCheckedListBox.CheckedItems.Count != 1)
+            {
+                MessageBox.Show("Please select one user.", "Invalid Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DialogResult result = MessageBox.Show("Are you sure you want to spoof the selected user?", "Confirm Spoofing",
+                         MessageBoxButtons.YesNo,
+                         MessageBoxIcon.Warning);
+
+            if (result == DialogResult.Yes)
+            {
+                string userFullName = usersCheckedListBox.CheckedItems[0].ToString().Split('-')[0].Trim();
+
+                using (SqlConnection conn = Database.getConnection())
+                {
+                    conn.Open();
+                    string query = "SELECT UserID, UserName, FullName, Title, Department, Role FROM Users WHERE FullName = @FullName";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read()) // If a record exists
+                            {
+                                loggedInUser.userID = Convert.ToInt32(reader["UserID"]);
+                                loggedInUser.UserName = reader["UserName"].ToString();
+                                loggedInUser.FullName = reader["FullName"].ToString();
+                                loggedInUser.Title = reader["Title"].ToString();
+                                loggedInUser.Department = reader["Department"].ToString();
+                                loggedInUser.Role = reader["Role"].ToString();
+                                updateRoleStatus();
+                                userUpdated?.Invoke();
+                            }
+                            else
+                            {
+                                MessageBox.Show("No user found with the selected name.", "User Not Found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         #endregion
+
     }
 }

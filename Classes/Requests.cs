@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 
@@ -70,7 +70,7 @@ namespace TDF.Net.Classes
                     cmd.Parameters.AddWithValue("@RequestType", RequestType);
                     cmd.Parameters.AddWithValue("@RequestReason", RequestReason);
                     cmd.Parameters.AddWithValue("@RequestFromDay", RequestFromDay);
-                    cmd.Parameters.AddWithValue("@RequestToDay", RequestToDay ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@RequestToDay", RequestType == "Permission" || RequestType == "External Assignment" ? (object)DBNull.Value : RequestToDay);
                     cmd.Parameters.AddWithValue("@RequestUserID", RequestUserID);
                     cmd.Parameters.AddWithValue("@RequestDepartment", RequestDepartment);
                     cmd.Parameters.AddWithValue("@RequestNumberOfDays", RequestNumberOfDays);

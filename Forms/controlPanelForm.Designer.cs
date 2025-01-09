@@ -65,6 +65,7 @@
             Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties24 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
             Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges11 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges12 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges13 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.usersCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.roleButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.usersLabel = new Bunifu.UI.WinForms.BunifuLabel();
@@ -101,6 +102,7 @@
             this.titleButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.bunifuLabel11 = new Bunifu.UI.WinForms.BunifuLabel();
             this.titleDropdown = new Bunifu.UI.WinForms.BunifuDropdown();
+            this.spoofButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.SuspendLayout();
             // 
             // usersCheckedListBox
@@ -2135,12 +2137,106 @@
             this.titleDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
             this.titleDropdown.TextLeftMargin = 5;
             // 
+            // spoofButton
+            // 
+            this.spoofButton.AllowAnimations = true;
+            this.spoofButton.AllowMouseEffects = true;
+            this.spoofButton.AllowToggling = false;
+            this.spoofButton.AnimationSpeed = 200;
+            this.spoofButton.AutoGenerateColors = false;
+            this.spoofButton.AutoRoundBorders = false;
+            this.spoofButton.AutoSizeLeftIcon = true;
+            this.spoofButton.AutoSizeRightIcon = true;
+            this.spoofButton.BackColor = System.Drawing.Color.Transparent;
+            this.spoofButton.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(122)))), ((int)(((byte)(183)))));
+            this.spoofButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("spoofButton.BackgroundImage")));
+            this.spoofButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.spoofButton.ButtonText = "Spoof";
+            this.spoofButton.ButtonTextMarginLeft = 0;
+            this.spoofButton.ColorContrastOnClick = 45;
+            this.spoofButton.ColorContrastOnHover = 45;
+            this.spoofButton.Cursor = System.Windows.Forms.Cursors.Default;
+            borderEdges13.BottomLeft = true;
+            borderEdges13.BottomRight = true;
+            borderEdges13.TopLeft = true;
+            borderEdges13.TopRight = true;
+            this.spoofButton.CustomizableEdges = borderEdges13;
+            this.spoofButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.spoofButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.spoofButton.DisabledFillColor = System.Drawing.Color.Empty;
+            this.spoofButton.DisabledForecolor = System.Drawing.Color.Empty;
+            this.spoofButton.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton.ButtonStates.Pressed;
+            this.spoofButton.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.spoofButton.ForeColor = System.Drawing.Color.White;
+            this.spoofButton.IconLeft = null;
+            this.spoofButton.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.spoofButton.IconLeftCursor = System.Windows.Forms.Cursors.Default;
+            this.spoofButton.IconLeftPadding = new System.Windows.Forms.Padding(11, 3, 3, 3);
+            this.spoofButton.IconMarginLeft = 11;
+            this.spoofButton.IconPadding = 10;
+            this.spoofButton.IconRight = null;
+            this.spoofButton.IconRightAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.spoofButton.IconRightCursor = System.Windows.Forms.Cursors.Default;
+            this.spoofButton.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
+            this.spoofButton.IconSize = 25;
+            this.spoofButton.IdleBorderColor = System.Drawing.Color.Empty;
+            this.spoofButton.IdleBorderRadius = 0;
+            this.spoofButton.IdleBorderThickness = 0;
+            this.spoofButton.IdleFillColor = System.Drawing.Color.Empty;
+            this.spoofButton.IdleIconLeftImage = null;
+            this.spoofButton.IdleIconRightImage = null;
+            this.spoofButton.IndicateFocus = false;
+            this.spoofButton.Location = new System.Drawing.Point(38, 752);
+            this.spoofButton.Margin = new System.Windows.Forms.Padding(4);
+            this.spoofButton.Name = "spoofButton";
+            this.spoofButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.spoofButton.OnDisabledState.BorderRadius = 1;
+            this.spoofButton.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.spoofButton.OnDisabledState.BorderThickness = 1;
+            this.spoofButton.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.spoofButton.OnDisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
+            this.spoofButton.OnDisabledState.IconLeftImage = null;
+            this.spoofButton.OnDisabledState.IconRightImage = null;
+            this.spoofButton.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
+            this.spoofButton.onHoverState.BorderRadius = 1;
+            this.spoofButton.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.spoofButton.onHoverState.BorderThickness = 1;
+            this.spoofButton.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
+            this.spoofButton.onHoverState.ForeColor = System.Drawing.Color.White;
+            this.spoofButton.onHoverState.IconLeftImage = null;
+            this.spoofButton.onHoverState.IconRightImage = null;
+            this.spoofButton.OnIdleState.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.spoofButton.OnIdleState.BorderRadius = 1;
+            this.spoofButton.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.spoofButton.OnIdleState.BorderThickness = 1;
+            this.spoofButton.OnIdleState.FillColor = System.Drawing.Color.DodgerBlue;
+            this.spoofButton.OnIdleState.ForeColor = System.Drawing.Color.White;
+            this.spoofButton.OnIdleState.IconLeftImage = null;
+            this.spoofButton.OnIdleState.IconRightImage = null;
+            this.spoofButton.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.spoofButton.OnPressedState.BorderRadius = 1;
+            this.spoofButton.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.spoofButton.OnPressedState.BorderThickness = 1;
+            this.spoofButton.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.spoofButton.OnPressedState.ForeColor = System.Drawing.Color.White;
+            this.spoofButton.OnPressedState.IconLeftImage = null;
+            this.spoofButton.OnPressedState.IconRightImage = null;
+            this.spoofButton.Size = new System.Drawing.Size(190, 36);
+            this.spoofButton.TabIndex = 58;
+            this.spoofButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.spoofButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            this.spoofButton.TextMarginLeft = 0;
+            this.spoofButton.TextPadding = new System.Windows.Forms.Padding(0);
+            this.spoofButton.UseDefaultRadiusAndThickness = true;
+            this.spoofButton.Click += new System.EventHandler(this.spoofButton_Click);
+            // 
             // controlPanelForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1386, 871);
+            this.Controls.Add(this.spoofButton);
             this.Controls.Add(this.titleDropdown);
             this.Controls.Add(this.bunifuLabel11);
             this.Controls.Add(this.titleButton);
@@ -2227,5 +2323,6 @@
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton titleButton;
         private Bunifu.UI.WinForms.BunifuLabel bunifuLabel11;
         private Bunifu.UI.WinForms.BunifuDropdown titleDropdown;
+        private Bunifu.UI.WinForms.BunifuButton.BunifuButton spoofButton;
     }
 }

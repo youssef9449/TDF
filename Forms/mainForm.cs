@@ -31,15 +31,13 @@ namespace TDF.Net
 
             applyTheme(this);
             formPanel.BackColor = Color.White;
-
-            List<string> managerRoles = new List<string> { "Manager", "Team Leader" };
-
-            hasManagerRole = loggedInUser.Role != null && managerRoles.Any(role =>
-                 string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
-
-            hasAdminRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
             this.loginForm = loginForm; // Store a reference to the login form
+
+            updateRoleStatus();
+            controlPanelButton.Visible = hasAdminRole;
         }
+
+        public static List<string> managerRoles = new List<string> { "Manager", "Team Leader" };
 
         public static bool hasManagerRole, hasAdminRole, updatedUserData;
         private ContextMenuStrip contextMenu;
@@ -52,6 +50,13 @@ namespace TDF.Net
         public static extern void SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         #region Methods
+        public static void updateRoleStatus()
+        {
+            hasManagerRole = loggedInUser.Role != null && managerRoles.Any(role =>
+              string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
+
+            hasAdminRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+        }
         private void initializeCustomColorDropdown()
         {
             // Set ComboBox properties
@@ -211,7 +216,7 @@ namespace TDF.Net
         {
             updateUserDataControls();
             //myTeamButton.Visible = !string.Equals(loggedInUser.Role, "User", StringComparison.OrdinalIgnoreCase);
-            controlPanelButton.Visible = hasAdminRole;
+
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -423,7 +428,10 @@ namespace TDF.Net
 
         private void controlPanelButton_Click(object sender, EventArgs e)
         {
-            showFormInPanel(new controlPanelForm());
+            controlPanelForm controlPanelForm = new controlPanelForm();
+            controlPanelForm.userUpdated += updateUserDataControls; // Subscribe to the event
+
+            showFormInPanel(controlPanelForm);
         }
         private void logoutButton_Click(object sender, EventArgs e)
         {

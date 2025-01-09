@@ -118,9 +118,12 @@ namespace TDF.Forms
                 condition += " AND RequestType = @type";
             }
 
+            // Add the ORDER BY clause to sort by RequestFromDay
+            string orderByClause = " ORDER BY RequestFromDay ASC";
+
             using (SqlConnection connection = Database.getConnection())
             {
-                SqlCommand command = new SqlCommand(baseQuery + condition, connection);
+                SqlCommand command = new SqlCommand(baseQuery + condition + orderByClause, connection);
                 command.Parameters.AddWithValue("@startDate", startDate);
                 command.Parameters.AddWithValue("@endDate", endDate);
 
