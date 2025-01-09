@@ -40,8 +40,11 @@ namespace TDF.Net
              }*/
         }
 
+        static bool roundCorners = true;
+
         public static void applyTheme(Form form)
         {
+
             foreach (Control ctrl in form.Controls)
             {
                 if (ctrl is Panel pbl)

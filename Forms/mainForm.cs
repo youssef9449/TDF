@@ -401,10 +401,10 @@ namespace TDF.Net
                 darkColor = changeColorBrightness(selectedColor, -0.3);
                 lightColor = changeColorBrightness(selectedColor, +0.6);
                 applyTheme(this);
+                formPanel.BackColor = Color.White;
 
                 Invalidate();
                 Refresh();
-                formPanel.BackColor = Color.White;
 
             }
         }
