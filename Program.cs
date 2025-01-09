@@ -94,7 +94,10 @@ namespace TDF.Net
                             BunifuButton.OnPressedState.ForeColor = Color.White;
                             BunifuButton.Font = new Font(BunifuButton.Font, BunifuButton.Font.Style | FontStyle.Bold);
                             // BunifuButton.AutoRoundBorders = true;
-                            BunifuButton.AutoGenerateColors = true;
+                            //BunifuButton.AutoGenerateColors = true;
+                            //BunifuButton.IdleBorderRadius = 12;
+
+                            BunifuButton.Cursor = Cursors.Hand;
                             BunifuButton.Invalidate();
                             BunifuButton.Refresh();
                         }
@@ -181,8 +184,11 @@ namespace TDF.Net
                     btn.OnPressedState.FillColor = ThemeColor.primaryColor;
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
+                    btn.Cursor = Cursors.Hand;
+                   // btn.IdleBorderRadius = 12;
+
                     // btn.AutoRoundBorders = true;
-                    btn.AutoGenerateColors = true;
+                    //btn.AutoGenerateColors = true;
                     btn.Invalidate();
                     btn.Refresh();
                 }
@@ -206,9 +212,11 @@ namespace TDF.Net
                     btn.OnPressedState.FillColor = ThemeColor.primaryColor;
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
+                    btn.Cursor = Cursors.Hand;
+                    //btn.IdleBorderRadius = 12;
 
                     // btn.AutoRoundBorders = true;
-                    btn.AutoGenerateColors = true;
+                    //btn.AutoGenerateColors = true;
                     btn.Invalidate();
                     btn.Refresh();
                 }
@@ -390,8 +398,11 @@ namespace TDF.Net
                     btn.OnPressedState.FillColor = ThemeColor.primaryColor;
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
+                    btn.Cursor = Cursors.Hand;
+                    //btn.IdleBorderRadius = 12;
+
                     // btn.AutoRoundBorders = true;
-                    btn.AutoGenerateColors = true;
+                    // btn.AutoGenerateColors = true;
                     btn.Invalidate();
                     btn.Refresh();
                 }
@@ -415,8 +426,11 @@ namespace TDF.Net
                     btn.OnPressedState.FillColor = ThemeColor.primaryColor;
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
+                    btn.Cursor = Cursors.Hand;
+                    //btn.IdleBorderRadius = 12;
+
                     // btn.AutoRoundBorders = true;
-                    btn.AutoGenerateColors = true;
+                    //btn.AutoGenerateColors = true;
                     btn.Invalidate();
                     btn.Refresh();
                 }

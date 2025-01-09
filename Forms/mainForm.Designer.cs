@@ -51,10 +51,10 @@ namespace TDF.Net
             this.colorDropdown = new System.Windows.Forms.ComboBox();
             this.panel = new System.Windows.Forms.Panel();
             this.logoutButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
+            this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.controlPanelButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.requestsButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.usernameLabel = new Bunifu.UI.WinForms.BunifuLabel();
-            this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.panelTitleBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
@@ -305,7 +305,7 @@ namespace TDF.Net
             this.reportButton.IdleIconLeftImage = null;
             this.reportButton.IdleIconRightImage = null;
             this.reportButton.IndicateFocus = false;
-            this.reportButton.Location = new System.Drawing.Point(4, 441);
+            this.reportButton.Location = new System.Drawing.Point(4, 378);
             this.reportButton.Margin = new System.Windows.Forms.Padding(4);
             this.reportButton.Name = "reportButton";
             this.reportButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
@@ -356,7 +356,7 @@ namespace TDF.Net
             this.bunifuLabel5.Cursor = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel5.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel5.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.bunifuLabel5.Location = new System.Drawing.Point(62, 853);
+            this.bunifuLabel5.Location = new System.Drawing.Point(62, 799);
             this.bunifuLabel5.Name = "bunifuLabel5";
             this.bunifuLabel5.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel5.Size = new System.Drawing.Size(52, 23);
@@ -370,7 +370,7 @@ namespace TDF.Net
             // 
             this.colorDropdown.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.colorDropdown.FormattingEnabled = true;
-            this.colorDropdown.Location = new System.Drawing.Point(0, 882);
+            this.colorDropdown.Location = new System.Drawing.Point(0, 828);
             this.colorDropdown.Name = "colorDropdown";
             this.colorDropdown.Size = new System.Drawing.Size(177, 25);
             this.colorDropdown.TabIndex = 7;
@@ -435,7 +435,7 @@ namespace TDF.Net
             this.logoutButton.IdleIconLeftImage = null;
             this.logoutButton.IdleIconRightImage = null;
             this.logoutButton.IndicateFocus = false;
-            this.logoutButton.Location = new System.Drawing.Point(4, 378);
+            this.logoutButton.Location = new System.Drawing.Point(4, 441);
             this.logoutButton.Margin = new System.Windows.Forms.Padding(4);
             this.logoutButton.Name = "logoutButton";
             this.logoutButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
@@ -478,6 +478,20 @@ namespace TDF.Net
             this.logoutButton.TextPadding = new System.Windows.Forms.Padding(0);
             this.logoutButton.UseDefaultRadiusAndThickness = true;
             this.logoutButton.Click += new System.EventHandler(this.logoutButton_Click);
+            // 
+            // circularPictureBox
+            // 
+            this.circularPictureBox.BackColor = System.Drawing.Color.White;
+            this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
+            this.circularPictureBox.Location = new System.Drawing.Point(25, 100);
+            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
+            this.circularPictureBox.Name = "circularPictureBox";
+            this.circularPictureBox.Size = new System.Drawing.Size(127, 123);
+            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.circularPictureBox.TabIndex = 1;
+            this.circularPictureBox.TabStop = false;
+            this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);
             // 
             // controlPanelButton
             // 
@@ -679,20 +693,6 @@ namespace TDF.Net
             this.usernameLabel.Text = "Welcome, User!";
             this.usernameLabel.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             this.usernameLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
-            // 
-            // circularPictureBox
-            // 
-            this.circularPictureBox.BackColor = System.Drawing.Color.White;
-            this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
-            this.circularPictureBox.Location = new System.Drawing.Point(25, 100);
-            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
-            this.circularPictureBox.Name = "circularPictureBox";
-            this.circularPictureBox.Size = new System.Drawing.Size(127, 123);
-            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.circularPictureBox.TabIndex = 1;
-            this.circularPictureBox.TabStop = false;
-            this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);
             // 
             // mainForm
             // 

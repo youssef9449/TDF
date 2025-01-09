@@ -16,8 +16,6 @@ namespace TDF.Net
         {
             InitializeComponent();
             updateTheme();
-            loadDepartments();
-
         }
 
         private bool signingup = false;

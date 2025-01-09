@@ -27,10 +27,11 @@ namespace TDF.Forms
             totalBalanceLabel.ForeColor = ThemeColor.darkColor;
             usedBalanceLabel.ForeColor = ThemeColor.darkColor;
             availableBalanceLabel.ForeColor = ThemeColor.darkColor;
+            fromDatePicker.Value = new DateTime(DateTime.Now.Year, 1, 1);
             filtersGroupBox.Visible = hasManagerRole || hasAdminRole;
             nameORdepDropdown.Visible = hasManagerRole || hasAdminRole;
             filterDropdown.SelectedIndex = hasManagerRole || hasAdminRole ? 0 : 1;
-            nameORdepDropdown.SelectedIndex = hasManagerRole || hasAdminRole ? 0 : 1;
+            nameORdepDropdown.SelectedItem = hasManagerRole || hasAdminRole ? "All" : loggedInUser.FullName;
             statusDropdown.SelectedIndex = 0;
             typeDropdown.SelectedIndex = 0;
         }
@@ -58,49 +59,11 @@ namespace TDF.Forms
         }
         private void typeDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
-            {
-                bool isAnnualOrEmergency = typeDropdown.Text == "Annual" || typeDropdown.Text == "Emergency";
-
-                balanceGroupBox.Visible = isAnnualOrEmergency;
-
-                if (isAnnualOrEmergency)
-                {
-                    string leaveType = typeDropdown.Text == "Annual" ? "Annual" : "CasualLeave";
-                    string usedLeaveType = typeDropdown.Text == "Annual" ? "AnnualUsed" : "CasualUsed";
-
-                    totalBalanceLabel.Text = getLeaveDays(leaveType, userName: nameORdepDropdown.Text).ToString();
-                    usedBalanceLabel.Text = getUsedLeaveDays(usedLeaveType, userName: nameORdepDropdown.Text).ToString();
-
-                    int totalBalance = int.Parse(totalBalanceLabel.Text);
-                    int usedBalance = int.Parse(usedBalanceLabel.Text);
-
-                    availableBalanceLabel.Text = (totalBalance - usedBalance).ToString();
-                }
-            }
+            updateBalanceLabels();
         }
         private void nameORdepDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
-            {
-                bool isAnnualOrEmergency = typeDropdown.Text == "Annual" || typeDropdown.Text == "Emergency";
-
-                balanceGroupBox.Visible = isAnnualOrEmergency;
-
-                if (isAnnualOrEmergency)
-                {
-                    string leaveType = typeDropdown.Text == "Annual" ? "Annual" : "CasualLeave";
-                    string usedLeaveType = typeDropdown.Text == "Annual" ? "AnnualUsed" : "CasualUsed";
-
-                    totalBalanceLabel.Text = getLeaveDays(leaveType, userName: nameORdepDropdown.Text).ToString();
-                    usedBalanceLabel.Text = getUsedLeaveDays(usedLeaveType, userName: nameORdepDropdown.Text).ToString();
-
-                    int totalBalance = int.Parse(totalBalanceLabel.Text);
-                    int usedBalance = int.Parse(usedBalanceLabel.Text);
-
-                    availableBalanceLabel.Text = (totalBalance - usedBalance).ToString();
-                }
-            }
+            updateBalanceLabels();
         }
         #endregion
 
@@ -281,7 +244,29 @@ namespace TDF.Forms
 
             return days;
         }
+        private void updateBalanceLabels()
+        {
+            if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
+            {
+                bool isAnnualOrEmergencyOrEmergency = typeDropdown.Text == "Annual" || typeDropdown.Text == "Emergency" || typeDropdown.Text == "Permission";
 
+                balanceGroupBox.Visible = isAnnualOrEmergencyOrEmergency;
+
+                if (isAnnualOrEmergencyOrEmergency)
+                {
+                    string leaveType = typeDropdown.Text == "Annual" ? "Annual" : typeDropdown.Text == "Emergency" ? "CasualLeave" : "Permissions";
+                    string usedLeaveType = typeDropdown.Text == "Annual" ? "AnnualUsed" : typeDropdown.Text == "Emergency" ? "CasualUsed" : "PermissionsUsed";
+
+                    totalBalanceLabel.Text = getLeaveDays(leaveType, userName: nameORdepDropdown.Text).ToString();
+                    usedBalanceLabel.Text = getUsedLeaveDays(usedLeaveType, userName: nameORdepDropdown.Text).ToString();
+
+                    int totalBalance = int.Parse(totalBalanceLabel.Text);
+                    int usedBalance = int.Parse(usedBalanceLabel.Text);
+
+                    availableBalanceLabel.Text = (totalBalance - usedBalance).ToString();
+                }
+            }
+        }
         #endregion
 
         #region Buttons
@@ -290,7 +275,6 @@ namespace TDF.Forms
             updateReport();
 
         }
-
         #endregion
 
     }
