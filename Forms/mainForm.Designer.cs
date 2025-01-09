@@ -40,11 +40,11 @@ namespace TDF.Net
             this.bunifuLabel1 = new Bunifu.UI.WinForms.BunifuLabel();
             this.requestsLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.panelTitleBar = new System.Windows.Forms.Panel();
-            this.formPanel = new System.Windows.Forms.Panel();
-            this.TDFpictureBox = new System.Windows.Forms.PictureBox();
             this.maxImage = new System.Windows.Forms.PictureBox();
             this.minImg = new System.Windows.Forms.PictureBox();
             this.closeImg = new System.Windows.Forms.PictureBox();
+            this.formPanel = new System.Windows.Forms.Panel();
+            this.TDFpictureBox = new System.Windows.Forms.PictureBox();
             this.gradientPanel = new Bunifu.UI.WinForms.BunifuGradientPanel();
             this.reportButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.bunifuLabel5 = new Bunifu.UI.WinForms.BunifuLabel();
@@ -56,11 +56,11 @@ namespace TDF.Net
             this.requestsButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.usernameLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.panelTitleBar.SuspendLayout();
-            this.formPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.TDFpictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeImg)).BeginInit();
+            this.formPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.TDFpictureBox)).BeginInit();
             this.gradientPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).BeginInit();
             this.SuspendLayout();
@@ -75,7 +75,7 @@ namespace TDF.Net
             this.bunifuLabel4.Location = new System.Drawing.Point(75, 51);
             this.bunifuLabel4.Name = "bunifuLabel4";
             this.bunifuLabel4.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel4.Size = new System.Drawing.Size(45, 15);
+            this.bunifuLabel4.Size = new System.Drawing.Size(58, 20);
             this.bunifuLabel4.TabIndex = 4;
             this.bunifuLabel4.Text = "Rejected";
             this.bunifuLabel4.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -90,7 +90,7 @@ namespace TDF.Net
             this.bunifuLabel3.Location = new System.Drawing.Point(3, 51);
             this.bunifuLabel3.Name = "bunifuLabel3";
             this.bunifuLabel3.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel3.Size = new System.Drawing.Size(66, 15);
+            this.bunifuLabel3.Size = new System.Drawing.Size(86, 20);
             this.bunifuLabel3.TabIndex = 3;
             this.bunifuLabel3.Text = "    05/10/2024 -    ";
             this.bunifuLabel3.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -107,7 +107,7 @@ namespace TDF.Net
             this.bunifuLabel2.Location = new System.Drawing.Point(75, 30);
             this.bunifuLabel2.Name = "bunifuLabel2";
             this.bunifuLabel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel2.Size = new System.Drawing.Size(50, 15);
+            this.bunifuLabel2.Size = new System.Drawing.Size(63, 20);
             this.bunifuLabel2.TabIndex = 2;
             this.bunifuLabel2.Text = "Accepted";
             this.bunifuLabel2.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -123,7 +123,7 @@ namespace TDF.Net
             this.bunifuLabel1.Location = new System.Drawing.Point(3, 30);
             this.bunifuLabel1.Name = "bunifuLabel1";
             this.bunifuLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel1.Size = new System.Drawing.Size(66, 15);
+            this.bunifuLabel1.Size = new System.Drawing.Size(86, 20);
             this.bunifuLabel1.TabIndex = 1;
             this.bunifuLabel1.Text = "01/10/2024 -    ";
             this.bunifuLabel1.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -140,7 +140,7 @@ namespace TDF.Net
             this.requestsLabel.Location = new System.Drawing.Point(3, 3);
             this.requestsLabel.Name = "requestsLabel";
             this.requestsLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.requestsLabel.Size = new System.Drawing.Size(120, 21);
+            this.requestsLabel.Size = new System.Drawing.Size(146, 25);
             this.requestsLabel.TabIndex = 0;
             this.requestsLabel.Text = "Pending Requests:";
             this.requestsLabel.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
@@ -153,40 +153,22 @@ namespace TDF.Net
             this.panelTitleBar.Controls.Add(this.minImg);
             this.panelTitleBar.Controls.Add(this.closeImg);
             this.panelTitleBar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTitleBar.Location = new System.Drawing.Point(152, 0);
+            this.panelTitleBar.Location = new System.Drawing.Point(177, 0);
+            this.panelTitleBar.Margin = new System.Windows.Forms.Padding(4);
             this.panelTitleBar.Name = "panelTitleBar";
             this.panelTitleBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.panelTitleBar.Size = new System.Drawing.Size(945, 66);
+            this.panelTitleBar.Size = new System.Drawing.Size(1103, 81);
             this.panelTitleBar.TabIndex = 6;
             this.panelTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
-            // 
-            // formPanel
-            // 
-            this.formPanel.Controls.Add(this.TDFpictureBox);
-            this.formPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.formPanel.Location = new System.Drawing.Point(152, 66);
-            this.formPanel.Name = "formPanel";
-            this.formPanel.Size = new System.Drawing.Size(945, 574);
-            this.formPanel.TabIndex = 11;
-            // 
-            // TDFpictureBox
-            // 
-            this.TDFpictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TDFpictureBox.Image = global::TDF.Properties.Resources.TDF_Logo;
-            this.TDFpictureBox.Location = new System.Drawing.Point(0, 0);
-            this.TDFpictureBox.Name = "TDFpictureBox";
-            this.TDFpictureBox.Size = new System.Drawing.Size(945, 574);
-            this.TDFpictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.TDFpictureBox.TabIndex = 0;
-            this.TDFpictureBox.TabStop = false;
             // 
             // maxImage
             // 
             this.maxImage.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.maxImage.Image = ((System.Drawing.Image)(resources.GetObject("maxImage.Image")));
-            this.maxImage.Location = new System.Drawing.Point(867, 22);
+            this.maxImage.Location = new System.Drawing.Point(1012, 27);
+            this.maxImage.Margin = new System.Windows.Forms.Padding(4);
             this.maxImage.Name = "maxImage";
-            this.maxImage.Size = new System.Drawing.Size(20, 20);
+            this.maxImage.Size = new System.Drawing.Size(23, 25);
             this.maxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.maxImage.TabIndex = 10;
             this.maxImage.TabStop = false;
@@ -199,9 +181,10 @@ namespace TDF.Net
             // 
             this.minImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.minImg.Image = ((System.Drawing.Image)(resources.GetObject("minImg.Image")));
-            this.minImg.Location = new System.Drawing.Point(831, 22);
+            this.minImg.Location = new System.Drawing.Point(970, 27);
+            this.minImg.Margin = new System.Windows.Forms.Padding(4);
             this.minImg.Name = "minImg";
-            this.minImg.Size = new System.Drawing.Size(20, 20);
+            this.minImg.Size = new System.Drawing.Size(23, 25);
             this.minImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.minImg.TabIndex = 9;
             this.minImg.TabStop = false;
@@ -214,15 +197,38 @@ namespace TDF.Net
             // 
             this.closeImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.closeImg.Image = ((System.Drawing.Image)(resources.GetObject("closeImg.Image")));
-            this.closeImg.Location = new System.Drawing.Point(903, 22);
+            this.closeImg.Location = new System.Drawing.Point(1055, 27);
+            this.closeImg.Margin = new System.Windows.Forms.Padding(4);
             this.closeImg.Name = "closeImg";
-            this.closeImg.Size = new System.Drawing.Size(20, 20);
+            this.closeImg.Size = new System.Drawing.Size(23, 25);
             this.closeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.closeImg.TabIndex = 1;
             this.closeImg.TabStop = false;
             this.closeImg.MouseClick += new System.Windows.Forms.MouseEventHandler(this.closeImg_MouseClick);
             this.closeImg.MouseEnter += new System.EventHandler(this.closeImg_MouseEnter);
             this.closeImg.MouseLeave += new System.EventHandler(this.closeImg_MouseLeave);
+            // 
+            // formPanel
+            // 
+            this.formPanel.Controls.Add(this.TDFpictureBox);
+            this.formPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.formPanel.Location = new System.Drawing.Point(177, 81);
+            this.formPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.formPanel.Name = "formPanel";
+            this.formPanel.Size = new System.Drawing.Size(1103, 707);
+            this.formPanel.TabIndex = 11;
+            // 
+            // TDFpictureBox
+            // 
+            this.TDFpictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TDFpictureBox.Image = global::TDF.Properties.Resources.TDF_Logo;
+            this.TDFpictureBox.Location = new System.Drawing.Point(0, 0);
+            this.TDFpictureBox.Margin = new System.Windows.Forms.Padding(4);
+            this.TDFpictureBox.Name = "TDFpictureBox";
+            this.TDFpictureBox.Size = new System.Drawing.Size(1103, 707);
+            this.TDFpictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.TDFpictureBox.TabIndex = 0;
+            this.TDFpictureBox.TabStop = false;
             // 
             // gradientPanel
             // 
@@ -245,9 +251,10 @@ namespace TDF.Net
             this.gradientPanel.GradientTopLeft = System.Drawing.Color.DodgerBlue;
             this.gradientPanel.GradientTopRight = System.Drawing.Color.FromArgb(((int)(((byte)(198)))), ((int)(((byte)(60)))), ((int)(((byte)(212)))));
             this.gradientPanel.Location = new System.Drawing.Point(0, 0);
+            this.gradientPanel.Margin = new System.Windows.Forms.Padding(4);
             this.gradientPanel.Name = "gradientPanel";
             this.gradientPanel.Quality = 10;
-            this.gradientPanel.Size = new System.Drawing.Size(152, 640);
+            this.gradientPanel.Size = new System.Drawing.Size(177, 788);
             this.gradientPanel.TabIndex = 0;
             this.gradientPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.gradientPanel_Paint);
             // 
@@ -258,7 +265,7 @@ namespace TDF.Net
             this.reportButton.AllowToggling = false;
             this.reportButton.AnimationSpeed = 200;
             this.reportButton.AutoGenerateColors = false;
-            this.reportButton.AutoRoundBorders = true;
+            this.reportButton.AutoRoundBorders = false;
             this.reportButton.AutoSizeLeftIcon = true;
             this.reportButton.AutoSizeRightIcon = true;
             this.reportButton.BackColor = System.Drawing.Color.Transparent;
@@ -292,14 +299,14 @@ namespace TDF.Net
             this.reportButton.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
             this.reportButton.IconSize = 25;
             this.reportButton.IdleBorderColor = System.Drawing.Color.DodgerBlue;
-            this.reportButton.IdleBorderRadius = 37;
+            this.reportButton.IdleBorderRadius = 1;
             this.reportButton.IdleBorderThickness = 1;
             this.reportButton.IdleFillColor = System.Drawing.Color.DodgerBlue;
             this.reportButton.IdleIconLeftImage = null;
             this.reportButton.IdleIconRightImage = null;
             this.reportButton.IndicateFocus = false;
-            this.reportButton.Location = new System.Drawing.Point(4, 378);
-            this.reportButton.Margin = new System.Windows.Forms.Padding(4);
+            this.reportButton.Location = new System.Drawing.Point(3, 385);
+            this.reportButton.Margin = new System.Windows.Forms.Padding(5);
             this.reportButton.Name = "reportButton";
             this.reportButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.reportButton.OnDisabledState.BorderRadius = 1;
@@ -333,7 +340,7 @@ namespace TDF.Net
             this.reportButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.reportButton.OnPressedState.IconLeftImage = null;
             this.reportButton.OnPressedState.IconRightImage = null;
-            this.reportButton.Size = new System.Drawing.Size(146, 39);
+            this.reportButton.Size = new System.Drawing.Size(170, 48);
             this.reportButton.TabIndex = 9;
             this.reportButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.reportButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -349,10 +356,11 @@ namespace TDF.Net
             this.bunifuLabel5.Cursor = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel5.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel5.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.bunifuLabel5.Location = new System.Drawing.Point(62, 799);
+            this.bunifuLabel5.Location = new System.Drawing.Point(65, 651);
+            this.bunifuLabel5.Margin = new System.Windows.Forms.Padding(4);
             this.bunifuLabel5.Name = "bunifuLabel5";
             this.bunifuLabel5.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel5.Size = new System.Drawing.Size(39, 17);
+            this.bunifuLabel5.Size = new System.Drawing.Size(52, 23);
             this.bunifuLabel5.TabIndex = 8;
             this.bunifuLabel5.Text = "Theme";
             this.bunifuLabel5.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -363,9 +371,10 @@ namespace TDF.Net
             // 
             this.colorDropdown.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.colorDropdown.FormattingEnabled = true;
-            this.colorDropdown.Location = new System.Drawing.Point(0, 828);
+            this.colorDropdown.Location = new System.Drawing.Point(0, 687);
+            this.colorDropdown.Margin = new System.Windows.Forms.Padding(4);
             this.colorDropdown.Name = "colorDropdown";
-            this.colorDropdown.Size = new System.Drawing.Size(152, 21);
+            this.colorDropdown.Size = new System.Drawing.Size(177, 25);
             this.colorDropdown.TabIndex = 7;
             this.colorDropdown.Visible = false;
             this.colorDropdown.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.colorDropdown_DrawItem);
@@ -376,8 +385,9 @@ namespace TDF.Net
             this.panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(39)))), ((int)(((byte)(39)))), ((int)(((byte)(58)))));
             this.panel.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel.Location = new System.Drawing.Point(0, 0);
+            this.panel.Margin = new System.Windows.Forms.Padding(4);
             this.panel.Name = "panel";
-            this.panel.Size = new System.Drawing.Size(152, 66);
+            this.panel.Size = new System.Drawing.Size(177, 81);
             this.panel.TabIndex = 4;
             // 
             // logoutButton
@@ -387,7 +397,7 @@ namespace TDF.Net
             this.logoutButton.AllowToggling = false;
             this.logoutButton.AnimationSpeed = 200;
             this.logoutButton.AutoGenerateColors = false;
-            this.logoutButton.AutoRoundBorders = true;
+            this.logoutButton.AutoRoundBorders = false;
             this.logoutButton.AutoSizeLeftIcon = true;
             this.logoutButton.AutoSizeRightIcon = true;
             this.logoutButton.BackColor = System.Drawing.Color.Transparent;
@@ -421,14 +431,14 @@ namespace TDF.Net
             this.logoutButton.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
             this.logoutButton.IconSize = 25;
             this.logoutButton.IdleBorderColor = System.Drawing.Color.DodgerBlue;
-            this.logoutButton.IdleBorderRadius = 37;
+            this.logoutButton.IdleBorderRadius = 1;
             this.logoutButton.IdleBorderThickness = 1;
             this.logoutButton.IdleFillColor = System.Drawing.Color.DodgerBlue;
             this.logoutButton.IdleIconLeftImage = null;
             this.logoutButton.IdleIconRightImage = null;
             this.logoutButton.IndicateFocus = false;
-            this.logoutButton.Location = new System.Drawing.Point(4, 441);
-            this.logoutButton.Margin = new System.Windows.Forms.Padding(4);
+            this.logoutButton.Location = new System.Drawing.Point(3, 442);
+            this.logoutButton.Margin = new System.Windows.Forms.Padding(5);
             this.logoutButton.Name = "logoutButton";
             this.logoutButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.logoutButton.OnDisabledState.BorderRadius = 1;
@@ -462,7 +472,7 @@ namespace TDF.Net
             this.logoutButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.logoutButton.OnPressedState.IconLeftImage = null;
             this.logoutButton.OnPressedState.IconRightImage = null;
-            this.logoutButton.Size = new System.Drawing.Size(146, 39);
+            this.logoutButton.Size = new System.Drawing.Size(170, 48);
             this.logoutButton.TabIndex = 3;
             this.logoutButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.logoutButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -476,10 +486,10 @@ namespace TDF.Net
             this.circularPictureBox.BackColor = System.Drawing.Color.White;
             this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
-            this.circularPictureBox.Location = new System.Drawing.Point(25, 100);
-            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
+            this.circularPictureBox.Location = new System.Drawing.Point(20, 90);
+            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(5);
             this.circularPictureBox.Name = "circularPictureBox";
-            this.circularPictureBox.Size = new System.Drawing.Size(127, 123);
+            this.circularPictureBox.Size = new System.Drawing.Size(148, 151);
             this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.circularPictureBox.TabIndex = 1;
             this.circularPictureBox.TabStop = false;
@@ -492,7 +502,7 @@ namespace TDF.Net
             this.controlPanelButton.AllowToggling = false;
             this.controlPanelButton.AnimationSpeed = 200;
             this.controlPanelButton.AutoGenerateColors = false;
-            this.controlPanelButton.AutoRoundBorders = true;
+            this.controlPanelButton.AutoRoundBorders = false;
             this.controlPanelButton.AutoSizeLeftIcon = true;
             this.controlPanelButton.AutoSizeRightIcon = true;
             this.controlPanelButton.BackColor = System.Drawing.Color.Transparent;
@@ -526,13 +536,14 @@ namespace TDF.Net
             this.controlPanelButton.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
             this.controlPanelButton.IconSize = 25;
             this.controlPanelButton.IdleBorderColor = System.Drawing.Color.DodgerBlue;
-            this.controlPanelButton.IdleBorderRadius = 37;
+            this.controlPanelButton.IdleBorderRadius = 1;
             this.controlPanelButton.IdleBorderThickness = 1;
             this.controlPanelButton.IdleFillColor = System.Drawing.Color.DodgerBlue;
             this.controlPanelButton.IdleIconLeftImage = null;
             this.controlPanelButton.IdleIconRightImage = null;
             this.controlPanelButton.IndicateFocus = false;
-            this.controlPanelButton.Location = new System.Drawing.Point(3, 409);
+            this.controlPanelButton.Location = new System.Drawing.Point(3, 499);
+            this.controlPanelButton.Margin = new System.Windows.Forms.Padding(4);
             this.controlPanelButton.Name = "controlPanelButton";
             this.controlPanelButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.controlPanelButton.OnDisabledState.BorderRadius = 1;
@@ -566,7 +577,7 @@ namespace TDF.Net
             this.controlPanelButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.controlPanelButton.OnPressedState.IconLeftImage = null;
             this.controlPanelButton.OnPressedState.IconRightImage = null;
-            this.controlPanelButton.Size = new System.Drawing.Size(146, 39);
+            this.controlPanelButton.Size = new System.Drawing.Size(170, 48);
             this.controlPanelButton.TabIndex = 2;
             this.controlPanelButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.controlPanelButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -583,7 +594,7 @@ namespace TDF.Net
             this.requestsButton.AllowToggling = false;
             this.requestsButton.AnimationSpeed = 200;
             this.requestsButton.AutoGenerateColors = false;
-            this.requestsButton.AutoRoundBorders = true;
+            this.requestsButton.AutoRoundBorders = false;
             this.requestsButton.AutoSizeLeftIcon = true;
             this.requestsButton.AutoSizeRightIcon = true;
             this.requestsButton.BackColor = System.Drawing.Color.Transparent;
@@ -617,13 +628,14 @@ namespace TDF.Net
             this.requestsButton.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
             this.requestsButton.IconSize = 25;
             this.requestsButton.IdleBorderColor = System.Drawing.Color.DodgerBlue;
-            this.requestsButton.IdleBorderRadius = 37;
+            this.requestsButton.IdleBorderRadius = 1;
             this.requestsButton.IdleBorderThickness = 1;
             this.requestsButton.IdleFillColor = System.Drawing.Color.DodgerBlue;
             this.requestsButton.IdleIconLeftImage = null;
             this.requestsButton.IdleIconRightImage = null;
             this.requestsButton.IndicateFocus = false;
-            this.requestsButton.Location = new System.Drawing.Point(3, 256);
+            this.requestsButton.Location = new System.Drawing.Point(3, 328);
+            this.requestsButton.Margin = new System.Windows.Forms.Padding(4);
             this.requestsButton.Name = "requestsButton";
             this.requestsButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.requestsButton.OnDisabledState.BorderRadius = 1;
@@ -657,7 +669,7 @@ namespace TDF.Net
             this.requestsButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.requestsButton.OnPressedState.IconLeftImage = null;
             this.requestsButton.OnPressedState.IconRightImage = null;
-            this.requestsButton.Size = new System.Drawing.Size(146, 39);
+            this.requestsButton.Size = new System.Drawing.Size(170, 48);
             this.requestsButton.TabIndex = 1;
             this.requestsButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.requestsButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -674,10 +686,11 @@ namespace TDF.Net
             this.usernameLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.usernameLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.usernameLabel.Location = new System.Drawing.Point(3, 187);
+            this.usernameLabel.Location = new System.Drawing.Point(4, 250);
+            this.usernameLabel.Margin = new System.Windows.Forms.Padding(4);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.usernameLabel.Size = new System.Drawing.Size(149, 63);
+            this.usernameLabel.Size = new System.Drawing.Size(174, 70);
             this.usernameLabel.TabIndex = 1;
             this.usernameLabel.Text = "Welcome, User!";
             this.usernameLabel.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
@@ -685,17 +698,18 @@ namespace TDF.Net
             // 
             // mainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1097, 640);
+            this.ClientSize = new System.Drawing.Size(1280, 788);
             this.ControlBox = false;
             this.Controls.Add(this.formPanel);
             this.Controls.Add(this.panelTitleBar);
             this.Controls.Add(this.gradientPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "mainForm";
             this.ShowIcon = false;
@@ -704,11 +718,11 @@ namespace TDF.Net
             this.Load += new System.EventHandler(this.mainForm_Load);
             this.Resize += new System.EventHandler(this.mainForm_Resize);
             this.panelTitleBar.ResumeLayout(false);
-            this.formPanel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.TDFpictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeImg)).EndInit();
+            this.formPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.TDFpictureBox)).EndInit();
             this.gradientPanel.ResumeLayout(false);
             this.gradientPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).EndInit();
