@@ -39,7 +39,7 @@ namespace TDF.Net
              }*/
         }
 
-       // static bool roundCorners = true;
+        // static bool roundCorners = true;
 
         public static void applyTheme(Form form)
         {

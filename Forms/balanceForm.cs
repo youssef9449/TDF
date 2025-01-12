@@ -17,7 +17,7 @@ namespace TDF.Forms
         public balanceForm(bool isModern)
         {
             InitializeComponent();
-
+            StartPosition = FormStartPosition.CenterScreen;
             if (isModern)
             {
                 controlBox.Visible = !isModern;
@@ -83,6 +83,11 @@ namespace TDF.Forms
                 ReleaseCapture();
                 SendMessage(Handle, 0x112, 0xf012, 0);
             }
+        }
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            Invalidate();  // Forces the form to repaint when resized
         }
         private void closeImg_MouseEnter(object sender, EventArgs e)
         {

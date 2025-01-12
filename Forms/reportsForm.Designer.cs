@@ -32,10 +32,17 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
             this.reportsDataGridView = new Bunifu.UI.WinForms.BunifuDataGridView();
+            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.userName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.requestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Days = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Hours = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fromDatePicker = new Bunifu.UI.WinForms.BunifuDatePicker();
             this.bunifuLabel1 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel2 = new Bunifu.UI.WinForms.BunifuLabel();
@@ -57,16 +64,17 @@
             this.availableBalanceLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.balanceGroupBox = new Bunifu.UI.WinForms.BunifuGroupBox();
             this.filtersGroupBox = new Bunifu.UI.WinForms.BunifuGroupBox();
-            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.userName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.requestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Days = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Hours = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panelTitleBar = new System.Windows.Forms.Panel();
+            this.maxImage = new System.Windows.Forms.PictureBox();
+            this.minImg = new System.Windows.Forms.PictureBox();
+            this.closeImg = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.reportsDataGridView)).BeginInit();
             this.balanceGroupBox.SuspendLayout();
             this.filtersGroupBox.SuspendLayout();
+            this.panelTitleBar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.closeImg)).BeginInit();
             this.SuspendLayout();
             // 
             // controlBox
@@ -100,8 +108,8 @@
             this.controlBox.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
             this.controlBox.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
             this.controlBox.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.controlBox.Location = new System.Drawing.Point(1257, 9);
-            this.controlBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.controlBox.Location = new System.Drawing.Point(1466, 11);
+            this.controlBox.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.controlBox.MaximizeBox = false;
             this.controlBox.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
             this.controlBox.MaximizeBoxOptions.BorderRadius = 0;
@@ -131,7 +139,7 @@
             this.controlBox.Name = "controlBox";
             this.controlBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.controlBox.ShowDesignBorders = false;
-            this.controlBox.Size = new System.Drawing.Size(67, 37);
+            this.controlBox.Size = new System.Drawing.Size(78, 46);
             this.controlBox.TabIndex = 50;
             // 
             // reportsDataGridView
@@ -202,17 +210,81 @@
             this.reportsDataGridView.HeaderBackColor = System.Drawing.Color.DodgerBlue;
             this.reportsDataGridView.HeaderBgColor = System.Drawing.Color.Empty;
             this.reportsDataGridView.HeaderForeColor = System.Drawing.Color.White;
-            this.reportsDataGridView.Location = new System.Drawing.Point(2, 168);
-            this.reportsDataGridView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.reportsDataGridView.Location = new System.Drawing.Point(2, 235);
+            this.reportsDataGridView.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.reportsDataGridView.Name = "reportsDataGridView";
             this.reportsDataGridView.RowHeadersVisible = false;
             this.reportsDataGridView.RowHeadersWidth = 51;
             this.reportsDataGridView.RowTemplate.Height = 40;
             this.reportsDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.reportsDataGridView.Size = new System.Drawing.Size(1330, 537);
+            this.reportsDataGridView.Size = new System.Drawing.Size(1552, 633);
             this.reportsDataGridView.TabIndex = 51;
             this.reportsDataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.Light;
             this.reportsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.reportsDataGridView_CellFormatting);
+            // 
+            // Date
+            // 
+            this.Date.DataPropertyName = "RequestFromDay";
+            this.Date.HeaderText = "Date";
+            this.Date.MinimumWidth = 6;
+            this.Date.Name = "Date";
+            this.Date.ReadOnly = true;
+            // 
+            // userName
+            // 
+            this.userName.DataPropertyName = "RequestUserFullName";
+            this.userName.HeaderText = "Name";
+            this.userName.MinimumWidth = 6;
+            this.userName.Name = "userName";
+            this.userName.ReadOnly = true;
+            // 
+            // requestType
+            // 
+            this.requestType.DataPropertyName = "RequestType";
+            this.requestType.HeaderText = "Request";
+            this.requestType.MinimumWidth = 6;
+            this.requestType.Name = "requestType";
+            this.requestType.ReadOnly = true;
+            // 
+            // Days
+            // 
+            this.Days.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Days.DataPropertyName = "RequestNumberOfDays";
+            this.Days.HeaderText = "No. of Days";
+            this.Days.MinimumWidth = 6;
+            this.Days.Name = "Days";
+            this.Days.ReadOnly = true;
+            this.Days.Width = 145;
+            // 
+            // Hours
+            // 
+            this.Hours.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Hours.DataPropertyName = "Hours";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.Format = "N2";
+            dataGridViewCellStyle3.NullValue = null;
+            this.Hours.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Hours.HeaderText = "Hours";
+            this.Hours.MinimumWidth = 6;
+            this.Hours.Name = "Hours";
+            this.Hours.ReadOnly = true;
+            this.Hours.Width = 94;
+            // 
+            // Status
+            // 
+            this.Status.DataPropertyName = "RequestStatus";
+            this.Status.HeaderText = "Status";
+            this.Status.MinimumWidth = 6;
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
+            // 
+            // Department
+            // 
+            this.Department.DataPropertyName = "RequestDepartment";
+            this.Department.HeaderText = "Department";
+            this.Department.MinimumWidth = 6;
+            this.Department.Name = "Department";
+            this.Department.ReadOnly = true;
             // 
             // fromDatePicker
             // 
@@ -234,11 +306,11 @@
             this.fromDatePicker.IconColor = System.Drawing.Color.Transparent;
             this.fromDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.None;
             this.fromDatePicker.LeftTextMargin = 5;
-            this.fromDatePicker.Location = new System.Drawing.Point(449, 50);
-            this.fromDatePicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.fromDatePicker.Location = new System.Drawing.Point(525, 103);
+            this.fromDatePicker.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.fromDatePicker.MinimumSize = new System.Drawing.Size(4, 32);
             this.fromDatePicker.Name = "fromDatePicker";
-            this.fromDatePicker.Size = new System.Drawing.Size(136, 32);
+            this.fromDatePicker.Size = new System.Drawing.Size(158, 32);
             this.fromDatePicker.TabIndex = 52;
             this.fromDatePicker.Value = new System.DateTime(2025, 1, 9, 0, 0, 0, 0);
             // 
@@ -249,11 +321,11 @@
             this.bunifuLabel1.Cursor = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel1.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel1.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel1.Location = new System.Drawing.Point(492, 19);
-            this.bunifuLabel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bunifuLabel1.Location = new System.Drawing.Point(575, 64);
+            this.bunifuLabel1.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.bunifuLabel1.Name = "bunifuLabel1";
             this.bunifuLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel1.Size = new System.Drawing.Size(37, 20);
+            this.bunifuLabel1.Size = new System.Drawing.Size(46, 25);
             this.bunifuLabel1.TabIndex = 54;
             this.bunifuLabel1.Text = "From:";
             this.bunifuLabel1.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -265,11 +337,11 @@
             this.bunifuLabel2.AutoEllipsis = false;
             this.bunifuLabel2.CursorType = null;
             this.bunifuLabel2.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel2.Location = new System.Drawing.Point(505, 86);
-            this.bunifuLabel2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bunifuLabel2.Location = new System.Drawing.Point(590, 147);
+            this.bunifuLabel2.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.bunifuLabel2.Name = "bunifuLabel2";
             this.bunifuLabel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel2.Size = new System.Drawing.Size(20, 20);
+            this.bunifuLabel2.Size = new System.Drawing.Size(24, 25);
             this.bunifuLabel2.TabIndex = 56;
             this.bunifuLabel2.Text = "To:";
             this.bunifuLabel2.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -295,11 +367,11 @@
             this.toDatePicker.IconColor = System.Drawing.Color.Transparent;
             this.toDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.None;
             this.toDatePicker.LeftTextMargin = 5;
-            this.toDatePicker.Location = new System.Drawing.Point(449, 118);
-            this.toDatePicker.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.toDatePicker.Location = new System.Drawing.Point(525, 186);
+            this.toDatePicker.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.toDatePicker.MinimumSize = new System.Drawing.Size(4, 32);
             this.toDatePicker.Name = "toDatePicker";
-            this.toDatePicker.Size = new System.Drawing.Size(136, 32);
+            this.toDatePicker.Size = new System.Drawing.Size(158, 32);
             this.toDatePicker.TabIndex = 55;
             this.toDatePicker.Value = new System.DateTime(2025, 1, 9, 0, 0, 0, 0);
             // 
@@ -350,8 +422,8 @@
             this.generateButton.IdleIconLeftImage = null;
             this.generateButton.IdleIconRightImage = null;
             this.generateButton.IndicateFocus = true;
-            this.generateButton.Location = new System.Drawing.Point(620, 86);
-            this.generateButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.generateButton.Location = new System.Drawing.Point(724, 147);
+            this.generateButton.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.generateButton.Name = "generateButton";
             this.generateButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.generateButton.OnDisabledState.BorderRadius = 1;
@@ -385,7 +457,7 @@
             this.generateButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.generateButton.OnPressedState.IconLeftImage = null;
             this.generateButton.OnPressedState.IconRightImage = null;
-            this.generateButton.Size = new System.Drawing.Size(129, 32);
+            this.generateButton.Size = new System.Drawing.Size(150, 39);
             this.generateButton.TabIndex = 57;
             this.generateButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.generateButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -430,10 +502,10 @@
             this.nameORdepDropdown.ItemHighLightColor = System.Drawing.Color.DodgerBlue;
             this.nameORdepDropdown.ItemHighLightForeColor = System.Drawing.Color.White;
             this.nameORdepDropdown.ItemTopMargin = 3;
-            this.nameORdepDropdown.Location = new System.Drawing.Point(9, 108);
-            this.nameORdepDropdown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.nameORdepDropdown.Location = new System.Drawing.Point(10, 133);
+            this.nameORdepDropdown.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.nameORdepDropdown.Name = "nameORdepDropdown";
-            this.nameORdepDropdown.Size = new System.Drawing.Size(223, 32);
+            this.nameORdepDropdown.Size = new System.Drawing.Size(259, 32);
             this.nameORdepDropdown.TabIndex = 58;
             this.nameORdepDropdown.Text = null;
             this.nameORdepDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Center;
@@ -447,11 +519,11 @@
             this.filterLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.filterLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.filterLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.filterLabel.Location = new System.Drawing.Point(73, 78);
-            this.filterLabel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.filterLabel.Location = new System.Drawing.Point(85, 96);
+            this.filterLabel.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.filterLabel.Name = "filterLabel";
             this.filterLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.filterLabel.Size = new System.Drawing.Size(83, 20);
+            this.filterLabel.Size = new System.Drawing.Size(99, 25);
             this.filterLabel.TabIndex = 59;
             this.filterLabel.Text = "Department:";
             this.filterLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -464,11 +536,11 @@
             this.bunifuLabel3.Cursor = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel3.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel3.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel3.Location = new System.Drawing.Point(89, 9);
-            this.bunifuLabel3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bunifuLabel3.Location = new System.Drawing.Point(104, 11);
+            this.bunifuLabel3.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.bunifuLabel3.Name = "bunifuLabel3";
             this.bunifuLabel3.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel3.Size = new System.Drawing.Size(56, 20);
+            this.bunifuLabel3.Size = new System.Drawing.Size(67, 25);
             this.bunifuLabel3.TabIndex = 61;
             this.bunifuLabel3.Text = "Filter by:";
             this.bunifuLabel3.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -513,10 +585,10 @@
             "Department",
             "Name"});
             this.filterDropdown.ItemTopMargin = 3;
-            this.filterDropdown.Location = new System.Drawing.Point(9, 41);
-            this.filterDropdown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.filterDropdown.Location = new System.Drawing.Point(10, 50);
+            this.filterDropdown.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.filterDropdown.Name = "filterDropdown";
-            this.filterDropdown.Size = new System.Drawing.Size(223, 32);
+            this.filterDropdown.Size = new System.Drawing.Size(259, 32);
             this.filterDropdown.TabIndex = 60;
             this.filterDropdown.Text = null;
             this.filterDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Center;
@@ -530,11 +602,11 @@
             this.bunifuLabel4.Cursor = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel4.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel4.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel4.Location = new System.Drawing.Point(311, 19);
-            this.bunifuLabel4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bunifuLabel4.Location = new System.Drawing.Point(364, 64);
+            this.bunifuLabel4.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.bunifuLabel4.Name = "bunifuLabel4";
             this.bunifuLabel4.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel4.Size = new System.Drawing.Size(43, 20);
+            this.bunifuLabel4.Size = new System.Drawing.Size(53, 25);
             this.bunifuLabel4.TabIndex = 63;
             this.bunifuLabel4.Text = "Status:";
             this.bunifuLabel4.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -581,10 +653,10 @@
             "Pending",
             "Rejected"});
             this.statusDropdown.ItemTopMargin = 3;
-            this.statusDropdown.Location = new System.Drawing.Point(260, 50);
-            this.statusDropdown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.statusDropdown.Location = new System.Drawing.Point(304, 103);
+            this.statusDropdown.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.statusDropdown.Name = "statusDropdown";
-            this.statusDropdown.Size = new System.Drawing.Size(167, 32);
+            this.statusDropdown.Size = new System.Drawing.Size(194, 32);
             this.statusDropdown.Sorted = true;
             this.statusDropdown.TabIndex = 62;
             this.statusDropdown.Text = null;
@@ -598,11 +670,11 @@
             this.bunifuLabel5.Cursor = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel5.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel5.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel5.Location = new System.Drawing.Point(321, 86);
-            this.bunifuLabel5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bunifuLabel5.Location = new System.Drawing.Point(375, 147);
+            this.bunifuLabel5.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.bunifuLabel5.Name = "bunifuLabel5";
             this.bunifuLabel5.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel5.Size = new System.Drawing.Size(35, 20);
+            this.bunifuLabel5.Size = new System.Drawing.Size(42, 25);
             this.bunifuLabel5.TabIndex = 65;
             this.bunifuLabel5.Text = "Type:";
             this.bunifuLabel5.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -652,10 +724,10 @@
             "Unpaid",
             "Work From Home"});
             this.typeDropdown.ItemTopMargin = 3;
-            this.typeDropdown.Location = new System.Drawing.Point(260, 118);
-            this.typeDropdown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.typeDropdown.Location = new System.Drawing.Point(304, 186);
+            this.typeDropdown.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.typeDropdown.Name = "typeDropdown";
-            this.typeDropdown.Size = new System.Drawing.Size(167, 32);
+            this.typeDropdown.Size = new System.Drawing.Size(194, 32);
             this.typeDropdown.Sorted = true;
             this.typeDropdown.TabIndex = 64;
             this.typeDropdown.Text = null;
@@ -670,11 +742,11 @@
             this.bunifuLabel6.Cursor = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel6.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel6.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel6.Location = new System.Drawing.Point(56, 13);
-            this.bunifuLabel6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bunifuLabel6.Location = new System.Drawing.Point(65, 16);
+            this.bunifuLabel6.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.bunifuLabel6.Name = "bunifuLabel6";
             this.bunifuLabel6.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel6.Size = new System.Drawing.Size(93, 20);
+            this.bunifuLabel6.Size = new System.Drawing.Size(107, 25);
             this.bunifuLabel6.TabIndex = 66;
             this.bunifuLabel6.Text = "Total Balance:";
             this.bunifuLabel6.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -687,11 +759,11 @@
             this.bunifuLabel7.Cursor = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel7.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel7.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel7.Location = new System.Drawing.Point(110, 38);
-            this.bunifuLabel7.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bunifuLabel7.Location = new System.Drawing.Point(128, 47);
+            this.bunifuLabel7.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.bunifuLabel7.Name = "bunifuLabel7";
             this.bunifuLabel7.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel7.Size = new System.Drawing.Size(36, 20);
+            this.bunifuLabel7.Size = new System.Drawing.Size(44, 25);
             this.bunifuLabel7.TabIndex = 67;
             this.bunifuLabel7.Text = "Used:";
             this.bunifuLabel7.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -704,11 +776,11 @@
             this.bunifuLabel8.Cursor = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel8.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel8.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel8.Location = new System.Drawing.Point(28, 63);
-            this.bunifuLabel8.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bunifuLabel8.Location = new System.Drawing.Point(33, 78);
+            this.bunifuLabel8.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.bunifuLabel8.Name = "bunifuLabel8";
             this.bunifuLabel8.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel8.Size = new System.Drawing.Size(121, 20);
+            this.bunifuLabel8.Size = new System.Drawing.Size(139, 25);
             this.bunifuLabel8.TabIndex = 68;
             this.bunifuLabel8.Text = "Available Balance:";
             this.bunifuLabel8.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -721,10 +793,11 @@
             this.totalBalanceLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.totalBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.totalBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.totalBalanceLabel.Location = new System.Drawing.Point(153, 13);
+            this.totalBalanceLabel.Location = new System.Drawing.Point(178, 16);
+            this.totalBalanceLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.totalBalanceLabel.Name = "totalBalanceLabel";
             this.totalBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.totalBalanceLabel.Size = new System.Drawing.Size(36, 20);
+            this.totalBalanceLabel.Size = new System.Drawing.Size(42, 25);
             this.totalBalanceLabel.TabIndex = 69;
             this.totalBalanceLabel.Text = "------";
             this.totalBalanceLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -737,10 +810,11 @@
             this.usedBalanceLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.usedBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.usedBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.usedBalanceLabel.Location = new System.Drawing.Point(153, 40);
+            this.usedBalanceLabel.Location = new System.Drawing.Point(178, 49);
+            this.usedBalanceLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.usedBalanceLabel.Name = "usedBalanceLabel";
             this.usedBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.usedBalanceLabel.Size = new System.Drawing.Size(36, 20);
+            this.usedBalanceLabel.Size = new System.Drawing.Size(42, 25);
             this.usedBalanceLabel.TabIndex = 70;
             this.usedBalanceLabel.Text = "------";
             this.usedBalanceLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -753,10 +827,11 @@
             this.availableBalanceLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.availableBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.availableBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.availableBalanceLabel.Location = new System.Drawing.Point(153, 63);
+            this.availableBalanceLabel.Location = new System.Drawing.Point(178, 78);
+            this.availableBalanceLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.availableBalanceLabel.Name = "availableBalanceLabel";
             this.availableBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.availableBalanceLabel.Size = new System.Drawing.Size(36, 20);
+            this.availableBalanceLabel.Size = new System.Drawing.Size(42, 25);
             this.availableBalanceLabel.TabIndex = 71;
             this.availableBalanceLabel.Text = "------";
             this.availableBalanceLabel.TextAlignment = System.Drawing.ContentAlignment.TopCenter;
@@ -777,11 +852,11 @@
             this.balanceGroupBox.LabelAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.balanceGroupBox.LabelIndent = 10;
             this.balanceGroupBox.LineStyle = Bunifu.UI.WinForms.BunifuGroupBox.LineStyles.Solid;
-            this.balanceGroupBox.Location = new System.Drawing.Point(835, 50);
-            this.balanceGroupBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.balanceGroupBox.Location = new System.Drawing.Point(975, 103);
+            this.balanceGroupBox.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.balanceGroupBox.Name = "balanceGroupBox";
-            this.balanceGroupBox.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.balanceGroupBox.Size = new System.Drawing.Size(212, 98);
+            this.balanceGroupBox.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.balanceGroupBox.Size = new System.Drawing.Size(247, 121);
             this.balanceGroupBox.TabIndex = 72;
             this.balanceGroupBox.TabStop = false;
             this.balanceGroupBox.Visible = false;
@@ -799,84 +874,72 @@
             this.filtersGroupBox.LabelAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.filtersGroupBox.LabelIndent = 10;
             this.filtersGroupBox.LineStyle = Bunifu.UI.WinForms.BunifuGroupBox.LineStyles.Solid;
-            this.filtersGroupBox.Location = new System.Drawing.Point(10, 10);
-            this.filtersGroupBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.filtersGroupBox.Location = new System.Drawing.Point(13, 53);
+            this.filtersGroupBox.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.filtersGroupBox.Name = "filtersGroupBox";
-            this.filtersGroupBox.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.filtersGroupBox.Size = new System.Drawing.Size(244, 145);
+            this.filtersGroupBox.Padding = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.filtersGroupBox.Size = new System.Drawing.Size(285, 178);
             this.filtersGroupBox.TabIndex = 72;
             this.filtersGroupBox.TabStop = false;
             this.filtersGroupBox.Visible = false;
             // 
-            // Date
+            // panelTitleBar
             // 
-            this.Date.DataPropertyName = "RequestFromDay";
-            this.Date.HeaderText = "Date";
-            this.Date.MinimumWidth = 6;
-            this.Date.Name = "Date";
-            this.Date.ReadOnly = true;
+            this.panelTitleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.panelTitleBar.Controls.Add(this.maxImage);
+            this.panelTitleBar.Controls.Add(this.minImg);
+            this.panelTitleBar.Controls.Add(this.closeImg);
+            this.panelTitleBar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTitleBar.Location = new System.Drawing.Point(0, 0);
+            this.panelTitleBar.Margin = new System.Windows.Forms.Padding(4);
+            this.panelTitleBar.Name = "panelTitleBar";
+            this.panelTitleBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.panelTitleBar.Size = new System.Drawing.Size(1556, 60);
+            this.panelTitleBar.TabIndex = 73;
             // 
-            // userName
+            // maxImage
             // 
-            this.userName.DataPropertyName = "RequestUserFullName";
-            this.userName.HeaderText = "Name";
-            this.userName.MinimumWidth = 6;
-            this.userName.Name = "userName";
-            this.userName.ReadOnly = true;
+            this.maxImage.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.maxImage.Image = ((System.Drawing.Image)(resources.GetObject("maxImage.Image")));
+            this.maxImage.Location = new System.Drawing.Point(1465, 17);
+            this.maxImage.Margin = new System.Windows.Forms.Padding(4);
+            this.maxImage.Name = "maxImage";
+            this.maxImage.Size = new System.Drawing.Size(23, 25);
+            this.maxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.maxImage.TabIndex = 10;
+            this.maxImage.TabStop = false;
             // 
-            // requestType
+            // minImg
             // 
-            this.requestType.DataPropertyName = "RequestType";
-            this.requestType.HeaderText = "Request";
-            this.requestType.MinimumWidth = 6;
-            this.requestType.Name = "requestType";
-            this.requestType.ReadOnly = true;
+            this.minImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.minImg.Image = ((System.Drawing.Image)(resources.GetObject("minImg.Image")));
+            this.minImg.Location = new System.Drawing.Point(1423, 17);
+            this.minImg.Margin = new System.Windows.Forms.Padding(4);
+            this.minImg.Name = "minImg";
+            this.minImg.Size = new System.Drawing.Size(23, 25);
+            this.minImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.minImg.TabIndex = 9;
+            this.minImg.TabStop = false;
             // 
-            // Days
+            // closeImg
             // 
-            this.Days.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Days.DataPropertyName = "RequestNumberOfDays";
-            this.Days.HeaderText = "No. of Days";
-            this.Days.MinimumWidth = 6;
-            this.Days.Name = "Days";
-            this.Days.ReadOnly = true;
-            this.Days.Width = 117;
-            // 
-            // Hours
-            // 
-            this.Hours.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Hours.DataPropertyName = "Hours";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.Format = "N2";
-            dataGridViewCellStyle3.NullValue = null;
-            this.Hours.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Hours.HeaderText = "Hours";
-            this.Hours.Name = "Hours";
-            this.Hours.ReadOnly = true;
-            this.Hours.Width = 77;
-            // 
-            // Status
-            // 
-            this.Status.DataPropertyName = "RequestStatus";
-            this.Status.HeaderText = "Status";
-            this.Status.MinimumWidth = 6;
-            this.Status.Name = "Status";
-            this.Status.ReadOnly = true;
-            // 
-            // Department
-            // 
-            this.Department.DataPropertyName = "RequestDepartment";
-            this.Department.HeaderText = "Department";
-            this.Department.MinimumWidth = 6;
-            this.Department.Name = "Department";
-            this.Department.ReadOnly = true;
+            this.closeImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.closeImg.Image = ((System.Drawing.Image)(resources.GetObject("closeImg.Image")));
+            this.closeImg.Location = new System.Drawing.Point(1507, 17);
+            this.closeImg.Margin = new System.Windows.Forms.Padding(4);
+            this.closeImg.Name = "closeImg";
+            this.closeImg.Size = new System.Drawing.Size(23, 25);
+            this.closeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.closeImg.TabIndex = 1;
+            this.closeImg.TabStop = false;
             // 
             // reportsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1334, 708);
+            this.ClientSize = new System.Drawing.Size(1556, 871);
+            this.Controls.Add(this.panelTitleBar);
             this.Controls.Add(this.filtersGroupBox);
             this.Controls.Add(this.bunifuLabel5);
             this.Controls.Add(this.typeDropdown);
@@ -891,6 +954,7 @@
             this.Controls.Add(this.controlBox);
             this.Controls.Add(this.balanceGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.Name = "reportsForm";
             this.Text = "Reports";
@@ -901,6 +965,10 @@
             this.balanceGroupBox.PerformLayout();
             this.filtersGroupBox.ResumeLayout(false);
             this.filtersGroupBox.PerformLayout();
+            this.panelTitleBar.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.maxImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minImg)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.closeImg)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -937,5 +1005,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Hours;
         private System.Windows.Forms.DataGridViewTextBoxColumn Status;
         private System.Windows.Forms.DataGridViewTextBoxColumn Department;
+        private System.Windows.Forms.Panel panelTitleBar;
+        private System.Windows.Forms.PictureBox maxImage;
+        private System.Windows.Forms.PictureBox minImg;
+        private System.Windows.Forms.PictureBox closeImg;
     }
 }

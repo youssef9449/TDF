@@ -199,6 +199,7 @@ namespace TDF.Net
             this.closeImg.TabIndex = 1;
             this.closeImg.TabStop = false;
             this.closeImg.MouseClick += new System.Windows.Forms.MouseEventHandler(this.closeImg_MouseClick);
+            this.closeImg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.closeImg_MouseDown);
             this.closeImg.MouseEnter += new System.EventHandler(this.closeImg_MouseEnter);
             this.closeImg.MouseLeave += new System.EventHandler(this.closeImg_MouseLeave);
             // 

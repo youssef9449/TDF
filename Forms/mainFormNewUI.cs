@@ -33,11 +33,6 @@ namespace TDF.Net
 
         private loginForm loginForm;
 
-        //Drag Form
-        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        public extern static void ReleaseCapture();
-        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        public static extern void SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
 
         #region Methods
         public static void updateRoleStatus()
@@ -178,7 +173,6 @@ namespace TDF.Net
                 }
             }
         }
-
         #endregion
 
         #region Events
@@ -209,6 +203,10 @@ namespace TDF.Net
         private void closeImg_MouseLeave(object sender, EventArgs e)
         {
             closeImg.Image = Properties.Resources.close_nofocus;
+        }
+        private void closeImg_MouseDown(object sender, MouseEventArgs e)
+        {
+            closeImg.Image = Properties.Resources.close_press;
         }
         private void maxImage_MouseEnter(object sender, EventArgs e)
         {
@@ -267,13 +265,15 @@ namespace TDF.Net
         }
         private void reportsImageButton_Click(object sender, EventArgs e)
         {
-            showFormInPanel(new reportsForm());
+           // showFormInPanel(new reportsForm(false));
+            reportsForm reportsForm = new reportsForm(true);
+            reportsForm.Show();
         }
         private void teamImageButton_Click(object sender, EventArgs e)
         {
-          //  balanceForm balanceForm = new balanceForm(true);
-           // balanceForm.Show();
-            showFormInPanel(new balanceForm(false));
+            balanceForm balanceForm = new balanceForm(true);
+            balanceForm.Show();
+            //showFormInPanel(new balanceForm(false));
         }
         private void controlPanelImageButton_Click(object sender, EventArgs e)
         {
@@ -292,6 +292,7 @@ namespace TDF.Net
             loginForm.Show();
         }
         #endregion
+
 
     }
 }

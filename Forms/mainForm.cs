@@ -436,7 +436,7 @@ namespace TDF.Net
         }
         private void reportButton_Click(object sender, EventArgs e)
         {
-            showFormInPanel(new reportsForm());
+            showFormInPanel(new reportsForm(false));
         }
 
         private void teamButton_Click(object sender, EventArgs e)
