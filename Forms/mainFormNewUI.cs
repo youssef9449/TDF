@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using TDF.Forms;
 using TDF.Net.Forms;
@@ -181,7 +179,6 @@ namespace TDF.Net
             }
         }
 
-
         #endregion
 
         #region Events
@@ -274,7 +271,9 @@ namespace TDF.Net
         }
         private void teamImageButton_Click(object sender, EventArgs e)
         {
-            showFormInPanel(new balanceForm());
+          //  balanceForm balanceForm = new balanceForm(true);
+           // balanceForm.Show();
+            showFormInPanel(new balanceForm(false));
         }
         private void controlPanelImageButton_Click(object sender, EventArgs e)
         {

@@ -253,6 +253,11 @@ namespace TDF.Net
         {
             closeImg.Image = Properties.Resources.close_nofocus;
         }
+        private void closeImg_MouseDown(object sender, MouseEventArgs e)
+        {
+            closeImg.Image = Properties.Resources.close_press;
+
+        }
         private void maxImage_MouseEnter(object sender, EventArgs e)
         {
             maxImage.Image = Properties.Resources.max_hover;
@@ -436,7 +441,7 @@ namespace TDF.Net
 
         private void teamButton_Click(object sender, EventArgs e)
         {
-            showFormInPanel(new balanceForm());
+            showFormInPanel(new balanceForm(false));
 
         }
 

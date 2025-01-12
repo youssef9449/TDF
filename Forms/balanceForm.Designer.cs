@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(balanceForm));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
             this.balanceDataGridView = new Bunifu.UI.WinForms.BunifuDataGridView();
             this.UserID = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -54,7 +54,15 @@
             this.PermissionsUsed = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PermissionsBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.refreshButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
+            this.panelTitleBar = new System.Windows.Forms.Panel();
+            this.maxImage = new System.Windows.Forms.PictureBox();
+            this.minImg = new System.Windows.Forms.PictureBox();
+            this.closeImg = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.balanceDataGridView)).BeginInit();
+            this.panelTitleBar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.closeImg)).BeginInit();
             this.SuspendLayout();
             // 
             // controlBox
@@ -88,8 +96,8 @@
             this.controlBox.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
             this.controlBox.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
             this.controlBox.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.controlBox.Location = new System.Drawing.Point(1255, 11);
-            this.controlBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.controlBox.Location = new System.Drawing.Point(1464, 14);
+            this.controlBox.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.controlBox.MaximizeBox = false;
             this.controlBox.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
             this.controlBox.MaximizeBoxOptions.BorderRadius = 0;
@@ -119,7 +127,7 @@
             this.controlBox.Name = "controlBox";
             this.controlBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.controlBox.ShowDesignBorders = false;
-            this.controlBox.Size = new System.Drawing.Size(67, 37);
+            this.controlBox.Size = new System.Drawing.Size(78, 46);
             this.controlBox.TabIndex = 50;
             // 
             // balanceDataGridView
@@ -129,10 +137,10 @@
             this.balanceDataGridView.AllowUserToDeleteRows = false;
             this.balanceDataGridView.AllowUserToResizeColumns = false;
             this.balanceDataGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(251)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
-            this.balanceDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(251)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle10.ForeColor = System.Drawing.Color.Black;
+            this.balanceDataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle10;
             this.balanceDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -141,15 +149,15 @@
             this.balanceDataGridView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.balanceDataGridView.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.balanceDataGridView.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.DodgerBlue;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI Semibold", 11.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.NullValue = null;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(115)))), ((int)(((byte)(204)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.balanceDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle11.BackColor = System.Drawing.Color.DodgerBlue;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Segoe UI Semibold", 11.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle11.NullValue = null;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(115)))), ((int)(((byte)(204)))));
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.balanceDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
             this.balanceDataGridView.ColumnHeadersHeight = 40;
             this.balanceDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.balanceDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -183,37 +191,37 @@
             this.balanceDataGridView.CurrentTheme.RowsStyle.ForeColor = System.Drawing.Color.Black;
             this.balanceDataGridView.CurrentTheme.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
             this.balanceDataGridView.CurrentTheme.RowsStyle.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.balanceDataGridView.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle16.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle16.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle16.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle16.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle16.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle16.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.balanceDataGridView.DefaultCellStyle = dataGridViewCellStyle16;
             this.balanceDataGridView.EnableHeadersVisualStyles = false;
             this.balanceDataGridView.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
             this.balanceDataGridView.HeaderBackColor = System.Drawing.Color.DodgerBlue;
             this.balanceDataGridView.HeaderBgColor = System.Drawing.Color.Empty;
             this.balanceDataGridView.HeaderForeColor = System.Drawing.Color.White;
-            this.balanceDataGridView.Location = new System.Drawing.Point(2, 135);
-            this.balanceDataGridView.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.balanceDataGridView.Location = new System.Drawing.Point(2, 166);
+            this.balanceDataGridView.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
             this.balanceDataGridView.Name = "balanceDataGridView";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Tahoma", 8F);
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.balanceDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle17.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle17.Font = new System.Drawing.Font("Tahoma", 8F);
+            dataGridViewCellStyle17.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.balanceDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle17;
             this.balanceDataGridView.RowHeadersVisible = false;
             this.balanceDataGridView.RowHeadersWidth = 51;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.balanceDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.balanceDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle18;
             this.balanceDataGridView.RowTemplate.Height = 40;
             this.balanceDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.balanceDataGridView.Size = new System.Drawing.Size(1330, 570);
+            this.balanceDataGridView.Size = new System.Drawing.Size(1552, 702);
             this.balanceDataGridView.TabIndex = 51;
             this.balanceDataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.Light;
             this.balanceDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.reportsDataGridView_CellFormatting);
@@ -222,20 +230,19 @@
             // 
             this.UserID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
             this.UserID.DataPropertyName = "UserID";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.UserID.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.UserID.DefaultCellStyle = dataGridViewCellStyle12;
             this.UserID.HeaderText = "UserID";
             this.UserID.MinimumWidth = 6;
             this.UserID.Name = "UserID";
             this.UserID.ReadOnly = true;
             this.UserID.Visible = false;
-            this.UserID.Width = 82;
             // 
             // FullName
             // 
             this.FullName.DataPropertyName = "FullName";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.FullName.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.FullName.DefaultCellStyle = dataGridViewCellStyle13;
             this.FullName.HeaderText = "Name";
             this.FullName.MinimumWidth = 140;
             this.FullName.Name = "FullName";
@@ -245,25 +252,26 @@
             // 
             this.Annual.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.Annual.DataPropertyName = "Annual";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.Annual.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.Annual.DefaultCellStyle = dataGridViewCellStyle14;
             this.Annual.HeaderText = "Annual";
             this.Annual.MinimumWidth = 6;
             this.Annual.Name = "Annual";
             this.Annual.ReadOnly = true;
-            this.Annual.Width = 83;
+            this.Annual.Width = 103;
             // 
             // AnnualUsed
             // 
             this.AnnualUsed.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.AnnualUsed.DataPropertyName = "AnnualUsed";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.NullValue = null;
-            this.AnnualUsed.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle15.NullValue = null;
+            this.AnnualUsed.DefaultCellStyle = dataGridViewCellStyle15;
             this.AnnualUsed.HeaderText = "Annual Used";
+            this.AnnualUsed.MinimumWidth = 6;
             this.AnnualUsed.Name = "AnnualUsed";
             this.AnnualUsed.ReadOnly = true;
-            this.AnnualUsed.Width = 124;
+            this.AnnualUsed.Width = 155;
             // 
             // AnnualBalance
             // 
@@ -273,7 +281,7 @@
             this.AnnualBalance.MinimumWidth = 6;
             this.AnnualBalance.Name = "AnnualBalance";
             this.AnnualBalance.ReadOnly = true;
-            this.AnnualBalance.Width = 113;
+            this.AnnualBalance.Width = 141;
             // 
             // CasualLeave
             // 
@@ -283,7 +291,7 @@
             this.CasualLeave.MinimumWidth = 6;
             this.CasualLeave.Name = "CasualLeave";
             this.CasualLeave.ReadOnly = true;
-            this.CasualLeave.Width = 114;
+            this.CasualLeave.Width = 139;
             // 
             // CasualUsed
             // 
@@ -293,52 +301,57 @@
             this.CasualUsed.MinimumWidth = 6;
             this.CasualUsed.Name = "CasualUsed";
             this.CasualUsed.ReadOnly = true;
-            this.CasualUsed.Width = 155;
+            this.CasualUsed.Width = 191;
             // 
             // CasualBalance
             // 
             this.CasualBalance.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.CasualBalance.DataPropertyName = "CasualBalance";
             this.CasualBalance.HeaderText = "Emergency Bal.";
+            this.CasualBalance.MinimumWidth = 6;
             this.CasualBalance.Name = "CasualBalance";
             this.CasualBalance.ReadOnly = true;
-            this.CasualBalance.Width = 144;
+            this.CasualBalance.Width = 177;
             // 
             // UnpaidUsed
             // 
             this.UnpaidUsed.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.UnpaidUsed.DataPropertyName = "UnpaidUsed";
             this.UnpaidUsed.HeaderText = "Unpaid Used";
+            this.UnpaidUsed.MinimumWidth = 6;
             this.UnpaidUsed.Name = "UnpaidUsed";
             this.UnpaidUsed.ReadOnly = true;
-            this.UnpaidUsed.Width = 126;
+            this.UnpaidUsed.Width = 156;
             // 
             // Permissions
             // 
             this.Permissions.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.Permissions.DataPropertyName = "Permissions";
             this.Permissions.HeaderText = "Permissions";
+            this.Permissions.MinimumWidth = 6;
             this.Permissions.Name = "Permissions";
             this.Permissions.ReadOnly = true;
-            this.Permissions.Width = 118;
+            this.Permissions.Width = 147;
             // 
             // PermissionsUsed
             // 
             this.PermissionsUsed.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.PermissionsUsed.DataPropertyName = "PermissionsUsed";
             this.PermissionsUsed.HeaderText = "Perm. Used";
+            this.PermissionsUsed.MinimumWidth = 6;
             this.PermissionsUsed.Name = "PermissionsUsed";
             this.PermissionsUsed.ReadOnly = true;
-            this.PermissionsUsed.Width = 115;
+            this.PermissionsUsed.Width = 143;
             // 
             // PermissionsBalance
             // 
             this.PermissionsBalance.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.PermissionsBalance.DataPropertyName = "PermissionsBalance";
             this.PermissionsBalance.HeaderText = "Perm. Bal.";
+            this.PermissionsBalance.MinimumWidth = 6;
             this.PermissionsBalance.Name = "PermissionsBalance";
             this.PermissionsBalance.ReadOnly = true;
-            this.PermissionsBalance.Width = 104;
+            this.PermissionsBalance.Width = 129;
             // 
             // refreshButton
             // 
@@ -359,11 +372,11 @@
             this.refreshButton.ColorContrastOnClick = 45;
             this.refreshButton.ColorContrastOnHover = 45;
             this.refreshButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.refreshButton.CustomizableEdges = borderEdges1;
+            borderEdges2.BottomLeft = true;
+            borderEdges2.BottomRight = true;
+            borderEdges2.TopLeft = true;
+            borderEdges2.TopRight = true;
+            this.refreshButton.CustomizableEdges = borderEdges2;
             this.refreshButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.refreshButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.refreshButton.DisabledFillColor = System.Drawing.Color.Empty;
@@ -389,7 +402,8 @@
             this.refreshButton.IdleIconLeftImage = null;
             this.refreshButton.IdleIconRightImage = null;
             this.refreshButton.IndicateFocus = false;
-            this.refreshButton.Location = new System.Drawing.Point(12, 85);
+            this.refreshButton.Location = new System.Drawing.Point(14, 105);
+            this.refreshButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.refreshButton.OnDisabledState.BorderRadius = 1;
@@ -423,7 +437,7 @@
             this.refreshButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.refreshButton.OnPressedState.IconLeftImage = null;
             this.refreshButton.OnPressedState.IconRightImage = null;
-            this.refreshButton.Size = new System.Drawing.Size(121, 30);
+            this.refreshButton.Size = new System.Drawing.Size(141, 37);
             this.refreshButton.TabIndex = 52;
             this.refreshButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.refreshButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -432,22 +446,78 @@
             this.refreshButton.UseDefaultRadiusAndThickness = true;
             this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
             // 
+            // panelTitleBar
+            // 
+            this.panelTitleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.panelTitleBar.Controls.Add(this.maxImage);
+            this.panelTitleBar.Controls.Add(this.minImg);
+            this.panelTitleBar.Controls.Add(this.closeImg);
+            this.panelTitleBar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTitleBar.Location = new System.Drawing.Point(0, 0);
+            this.panelTitleBar.Margin = new System.Windows.Forms.Padding(4);
+            this.panelTitleBar.Name = "panelTitleBar";
+            this.panelTitleBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.panelTitleBar.Size = new System.Drawing.Size(1556, 60);
+            this.panelTitleBar.TabIndex = 53;
+            // 
+            // maxImage
+            // 
+            this.maxImage.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.maxImage.Image = ((System.Drawing.Image)(resources.GetObject("maxImage.Image")));
+            this.maxImage.Location = new System.Drawing.Point(1465, 17);
+            this.maxImage.Margin = new System.Windows.Forms.Padding(4);
+            this.maxImage.Name = "maxImage";
+            this.maxImage.Size = new System.Drawing.Size(23, 25);
+            this.maxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.maxImage.TabIndex = 10;
+            this.maxImage.TabStop = false;
+            // 
+            // minImg
+            // 
+            this.minImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.minImg.Image = ((System.Drawing.Image)(resources.GetObject("minImg.Image")));
+            this.minImg.Location = new System.Drawing.Point(1423, 17);
+            this.minImg.Margin = new System.Windows.Forms.Padding(4);
+            this.minImg.Name = "minImg";
+            this.minImg.Size = new System.Drawing.Size(23, 25);
+            this.minImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.minImg.TabIndex = 9;
+            this.minImg.TabStop = false;
+            // 
+            // closeImg
+            // 
+            this.closeImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.closeImg.Image = ((System.Drawing.Image)(resources.GetObject("closeImg.Image")));
+            this.closeImg.Location = new System.Drawing.Point(1507, 17);
+            this.closeImg.Margin = new System.Windows.Forms.Padding(4);
+            this.closeImg.Name = "closeImg";
+            this.closeImg.Size = new System.Drawing.Size(23, 25);
+            this.closeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.closeImg.TabIndex = 1;
+            this.closeImg.TabStop = false;
+            // 
             // balanceForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1334, 708);
+            this.ClientSize = new System.Drawing.Size(1556, 871);
+            this.Controls.Add(this.panelTitleBar);
             this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.balanceDataGridView);
             this.Controls.Add(this.controlBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.Name = "balanceForm";
             this.Text = "Reports";
             this.Load += new System.EventHandler(this.balanceForm_Load);
             this.Resize += new System.EventHandler(this.balanceForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.balanceDataGridView)).EndInit();
+            this.panelTitleBar.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.maxImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minImg)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.closeImg)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -468,5 +538,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn PermissionsUsed;
         private System.Windows.Forms.DataGridViewTextBoxColumn PermissionsBalance;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton refreshButton;
+        private System.Windows.Forms.Panel panelTitleBar;
+        private System.Windows.Forms.PictureBox maxImage;
+        private System.Windows.Forms.PictureBox minImg;
+        private System.Windows.Forms.PictureBox closeImg;
     }
 }
