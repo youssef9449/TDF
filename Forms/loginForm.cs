@@ -34,10 +34,10 @@ namespace TDF.Net
             {
                 loggedInUser = getCurrentUserDetails(username);
 
-                //mainForm mainForm = new mainForm(this);
-               // mainForm.Show();
+               mainForm mainForm = new mainForm(this);
+                mainForm.Show();
 
-                mainFormNewUI mainFormNewUI = new mainFormNewUI(this);
+               mainFormNewUI mainFormNewUI = new mainFormNewUI(this);
                 mainFormNewUI.Show();
 
                 clearFormFields();

@@ -261,7 +261,9 @@ namespace TDF.Net
         #region Buttons
         private void requestsImageButton_Click(object sender, EventArgs e)
         {
-            showFormInPanel(new requestsForm());
+            //  showFormInPanel(new requestsForm(false));
+            requestsForm requestsForm = new requestsForm(true);
+            requestsForm.Show();
         }
         private void reportsImageButton_Click(object sender, EventArgs e)
         {

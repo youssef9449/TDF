@@ -19,11 +19,34 @@ namespace TDF.Net.Forms
 {
     public partial class requestsForm : Form
     {
-        public requestsForm()
+        public requestsForm(bool isModern)
         {
             InitializeComponent();
 
             Program.applyTheme(this);
+            StartPosition = FormStartPosition.CenterScreen;
+
+            if (isModern)
+            {
+                controlBox.Visible = !isModern;
+                panelTitleBar.MouseDown += new MouseEventHandler(panelTitleBar_MouseDown);
+                closeImg.MouseEnter += new EventHandler(closeImg_MouseEnter);
+                closeImg.MouseLeave += new EventHandler(closeImg_MouseLeave);
+                closeImg.MouseClick += new MouseEventHandler(closeImg_MouseClick);
+                closeImg.MouseDown += new MouseEventHandler(closeImg_MouseDown);
+                maxImage.MouseEnter += new EventHandler(maxImage_MouseEnter);
+                maxImage.MouseLeave += new EventHandler(maxImage_MouseLeave);
+                maxImage.MouseClick += new MouseEventHandler(maxImage_MouseClick);
+                maxImage.MouseDown += new MouseEventHandler(maxImage_MouseDown);
+                minImg.MouseEnter += new EventHandler(minImg_MouseEnter);
+                minImg.MouseLeave += new EventHandler(minImg_MouseLeave);
+                minImg.MouseClick += new MouseEventHandler(minImg_MouseClick);
+                minImg.MouseDown += new MouseEventHandler(minImg_MouseDown);
+            }
+            else
+            {
+                panelTitleBar.Visible = isModern;
+            }
         }
 
         #region Events
@@ -231,12 +254,73 @@ namespace TDF.Net.Forms
             base.OnPaint(e);
 
             // Get the form's scroll position
-            var scrollPos = AutoScrollPosition;
+            System.Drawing.Point scrollPos = AutoScrollPosition;
 
             // Adjust for scroll position when drawing the border
-            var rect = new System.Drawing.Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+            System.Drawing.Rectangle rect = new System.Drawing.Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
 
             ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        private void panelTitleBar_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && e.Clicks == 1)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, 0x112, 0xf012, 0);
+            }
+        }
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            Invalidate();  // Forces the form to repaint when resized
+        }
+        private void closeImg_MouseEnter(object sender, EventArgs e)
+        {
+            closeImg.Image = Properties.Resources.close_hover;
+        }
+        private void closeImg_MouseLeave(object sender, EventArgs e)
+        {
+            closeImg.Image = Properties.Resources.close_nofocus;
+        }
+        private void closeImg_MouseClick(object sender, MouseEventArgs e)
+        {
+            Close();
+        }
+        private void closeImg_MouseDown(object sender, MouseEventArgs e)
+        {
+            closeImg.Image = Properties.Resources.close_press;
+        }
+        private void maxImage_MouseEnter(object sender, EventArgs e)
+        {
+            maxImage.Image = Properties.Resources.max_hover;
+        }
+        private void maxImage_MouseLeave(object sender, EventArgs e)
+        {
+            maxImage.Image = Properties.Resources.close_nofocus;
+        }
+        private void maxImage_MouseDown(object sender, MouseEventArgs e)
+        {
+            maxImage.Image = Properties.Resources.max_press;
+        }
+        private void maxImage_MouseClick(object sender, MouseEventArgs e)
+        {
+            WindowState = WindowState == FormWindowState.Normal ? FormWindowState.Maximized : FormWindowState.Normal;
+        }
+        private void minImg_MouseEnter(object sender, EventArgs e)
+        {
+            minImg.Image = Properties.Resources.min_hover;
+        }
+        private void minImg_MouseLeave(object sender, EventArgs e)
+        {
+            minImg.Image = Properties.Resources.close_nofocus;
+        }
+        private void minImg_MouseDown(object sender, MouseEventArgs e)
+        {
+            minImg.Image = Properties.Resources.min_press;
+        }
+        private void minImg_MouseClick(object sender, MouseEventArgs e)
+        {
+            WindowState = FormWindowState.Minimized;
         }
         #endregion
 
