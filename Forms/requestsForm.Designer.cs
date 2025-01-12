@@ -172,6 +172,7 @@ namespace TDF.Net.Forms
             this.requestsDataGridView.RowTemplate.Height = 40;
             this.requestsDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.requestsDataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.Light;
+            this.requestsDataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.requestsDataGridView_CellBeginEdit);
             this.requestsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellContentClick);
             this.requestsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.requestsDataGridView_CellFormatting);
             this.requestsDataGridView.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellMouseEnter);
@@ -248,6 +249,7 @@ namespace TDF.Net.Forms
             dataGridViewCellStyle6.Format = "N0";
             dataGridViewCellStyle6.NullValue = "-";
             this.remainingBalance.DefaultCellStyle = dataGridViewCellStyle6;
+            this.remainingBalance.Frozen = true;
             resources.ApplyResources(this.remainingBalance, "remainingBalance");
             this.remainingBalance.Name = "remainingBalance";
             this.remainingBalance.ReadOnly = true;

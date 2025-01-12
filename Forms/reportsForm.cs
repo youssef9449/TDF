@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Windows.Forms;
-using TDF.Classes;
+using TDF.Net.Classes;
 using TDF.Net;
 using static TDF.Net.Forms.addRequestForm;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
+using System.Drawing;
 
 
 namespace TDF.Forms
@@ -28,12 +30,52 @@ namespace TDF.Forms
             usedBalanceLabel.ForeColor = ThemeColor.darkColor;
             availableBalanceLabel.ForeColor = ThemeColor.darkColor;
             fromDatePicker.Value = new DateTime(DateTime.Now.Year, 1, 1);
+            toDatePicker.Value = new DateTime(DateTime.Now.Year, 12, 31);
             filtersGroupBox.Visible = hasManagerRole || hasAdminRole;
             nameORdepDropdown.Visible = hasManagerRole || hasAdminRole;
             filterDropdown.SelectedIndex = hasManagerRole || hasAdminRole ? 0 : 1;
             nameORdepDropdown.SelectedItem = hasManagerRole || hasAdminRole ? "All" : loggedInUser.FullName;
             statusDropdown.SelectedIndex = 0;
             typeDropdown.SelectedIndex = 0;
+            updateReport();
+        }
+        private void reportsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (reportsDataGridView.Columns[e.ColumnIndex].Name == "Status")
+            {
+                if (e.Value != null && e.Value.ToString() == "Approved")
+                {
+                    e.CellStyle.ForeColor = Color.Green;
+                }
+                else if (e.Value != null && e.Value.ToString() == "Rejected")
+                {
+                    e.CellStyle.ForeColor = Color.Red;
+                }
+                else
+                {
+                    e.CellStyle.ForeColor = Color.Blue;
+                }
+            }
+            // Ensure you're handling the correct columns
+            if (reportsDataGridView.Columns[e.ColumnIndex].Name == "Days" || reportsDataGridView.Columns[e.ColumnIndex].Name == "Hours")
+            {
+                // Check if e.Value is not null
+                if (e.Value != null)
+                {
+                    // Handle "Days" column (if it's integer-based)
+                    if (e.Value is int && (int)e.Value == 0)
+                    {
+                        e.Value = "-";
+                        e.FormattingApplied = true;
+                    }
+                    // Handle "Hours" column (if it's a double or float-based value)
+                    else if (e.Value is double && (double)e.Value == 0.00)
+                    {
+                        e.Value = "-";
+                        e.FormattingApplied = true;
+                    }
+                }
+            }
         }
         private void reportForm_Resize(object sender, EventArgs e)
         {
@@ -48,14 +90,22 @@ namespace TDF.Forms
         {
             filterLabel.Text = filterDropdown.Text;
 
+            Func<List<string>> updateMethod;
+
             if (filterDropdown.Text == "Department")
             {
-                updateDropDown(getDepartments);
+                updateMethod = hasAdminRole
+                    ? new Func<List<string>>(getDepartments)
+                    : new Func<List<string>>(getDepartmentsOfManager);
             }
             else
             {
-                updateDropDown(getNames);
+                updateMethod = hasAdminRole
+                    ? new Func<List<string>>(getNames)
+                    : new Func<List<string>>(() => getNamesForManager(getDepartmentsOfManager()));
             }
+
+            updateDropDown(updateMethod);
         }
         private void typeDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -68,6 +118,234 @@ namespace TDF.Forms
         #endregion
 
         #region Methods
+        private void updateReport()
+        {
+            DateTime startDate = fromDatePicker.Value.Date;
+            DateTime endDate = toDatePicker.Value.Date;
+
+            if (startDate > endDate)
+            {
+                MessageBox.Show("Ending date can't be earlier than the beginning date.");
+                return;
+            }
+
+            string baseQuery = @"SELECT RequestUserFullName, RequestType, RequestNumberOfDays, RequestStatus, RequestFromDay, RequestDepartment, RequestBeginningTime, RequestEndingTime
+                         FROM Requests
+                         WHERE CONVERT(date, RequestFromDay, 120) >= @startDate 
+                         AND CONVERT(date, RequestFromDay, 120) <= @endDate";
+
+            // Determine filter condition based on dropdown selections
+            string condition = "";
+
+            if (filterDropdown.Text == "Department" && nameORdepDropdown.Text != "All")
+            {
+                condition = " AND RequestDepartment = @filterValue";
+            }
+            else if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
+            {
+                condition = " AND RequestUserFullName = @filterValue";
+            }
+
+            if (statusDropdown.Text != "All")
+            {
+                condition += " AND RequestStatus = @status";
+            }
+
+            if (typeDropdown.Text != "All")
+            {
+                condition += " AND RequestType = @type";
+            }
+
+            // If the user has a manager role, add condition to filter by manager's departments
+            string departmentsCondition = "";
+            if (hasManagerRole)
+            {
+                List<string> managerDepartments = getDepartmentsOfManager();
+                if (managerDepartments.Count > 0)
+                {
+                    departmentsCondition = " AND RequestDepartment IN (" +
+                        string.Join(", ", managerDepartments.Select((_, i) => $"@department{i}")) + ")";
+                }
+            }
+
+            // Combine all conditions and add ORDER BY
+            string orderByClause = " ORDER BY RequestFromDay ASC";
+
+            using (SqlConnection connection = Database.getConnection())
+            {
+                SqlCommand command = new SqlCommand(baseQuery + condition + departmentsCondition + orderByClause, connection);
+                command.Parameters.AddWithValue("@startDate", startDate);
+                command.Parameters.AddWithValue("@endDate", endDate);
+
+                // Add parameter for filter value if applicable
+                if (!string.IsNullOrEmpty(condition))
+                {
+                    command.Parameters.AddWithValue("@filterValue", nameORdepDropdown.Text);
+                }
+
+                if (statusDropdown.Text != "All")
+                {
+                    command.Parameters.AddWithValue("@status", statusDropdown.Text);
+                }
+
+                if (typeDropdown.Text != "All")
+                {
+                    command.Parameters.AddWithValue("@type", typeDropdown.Text);
+                }
+
+                // Add parameters for manager's departments if the user has a manager role
+                if (hasManagerRole)
+                {
+                    List<string> managerDepartments = getDepartmentsOfManager();
+                    for (int i = 0; i < managerDepartments.Count; i++)
+                    {
+                        command.Parameters.AddWithValue($"@department{i}", managerDepartments[i]);
+                    }
+                }
+
+                try
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+
+                    //  DataGridViewTextBoxColumn hoursColumn = new DataGridViewTextBoxColumn();
+                    //  hoursColumn.Name = "Hours";
+                    //  hoursColumn.HeaderText = "Hours";
+                    //  hoursColumn.ValueType = typeof(double);  // Set type to double
+                    //    reportsDataGridView.Columns.Add(hoursColumn);
+
+                    // Add a new "Hours" column to the DataTable to store the calculated hours
+                     dataTable.Columns.Add("Hours", typeof(double));
+                    // Loop through each row and calculate the difference between EndingTime and BeginningTime
+
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        // Check if both the BeginningTime and EndingTime are not DBNull
+                        if (row["RequestBeginningTime"] != DBNull.Value && row["RequestEndingTime"] != DBNull.Value)
+                        {
+                            // Safely cast to TimeSpan
+                            TimeSpan beginTime = (TimeSpan)row["RequestBeginningTime"];
+                            TimeSpan endTime = (TimeSpan)row["RequestEndingTime"];
+
+                            // Calculate the difference in hours (TotalHours gives the result as a double)
+                            double hoursDifference = endTime.TotalHours - beginTime.TotalHours;
+
+                            // Assign the calculated hours as double to the Hours column
+                            row["Hours"] = hoursDifference;  // Explicitly store as double
+                        }
+                        else
+                        {
+                            // If either time is DBNull, set the Hours column to 0
+                            row["Hours"] = 0;  // Default to 0 hours if either time is null
+                        }
+                    }
+
+                    // Remove the RequestBeginningTime and RequestEndingTime columns from the DataTable
+                    dataTable.Columns.Remove("RequestBeginningTime");
+                    dataTable.Columns.Remove("RequestEndingTime");
+
+                    // Bind the result to the DataGridView
+                    reportsDataGridView.DataSource = dataTable;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error loading the report:\n{ex.Message}\n\nQuery: {command.CommandText}");
+                }
+            }
+        }
+        public static List<string> getDepartmentsOfManager()
+        {
+            List<string> departments = new List<string>();
+
+            try
+            {
+                using (var connection = Database.getConnection())
+                {
+                    connection.Open();
+
+                    string query = "SELECT Department FROM Users Where UserID = @UserID";
+
+                    using (var command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@UserID", loggedInUser.userID);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+
+                            while (reader.Read())
+                            {
+                                if (!reader.IsDBNull(0))
+                                {
+                                    string departmentData = reader.GetString(0);
+                                    string[] splitDepartments = departmentData.Split(new[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
+                                    foreach (var department in splitDepartments)
+                                    {
+                                        if (!departments.Contains(department.Trim()))
+                                        {
+                                            departments.Add(department.Trim());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error fetching departments: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            departments.Sort();
+            return departments;
+        }
+        private List<string> getNamesForManager(List<string> departments)
+        {
+            var users = new List<string>();
+
+            try
+            {
+                using (var connection = Database.getConnection())
+                {
+                    connection.Open();
+
+                    // Build a query with parameters for departments
+                    string query = "SELECT DISTINCT FullName FROM Users WHERE Department IN (@Departments)";
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        // Add parameters for the departments
+                        string departmentParameter = string.Join(",", departments.Select((d, i) => $"@Dept{i}"));
+                        command.CommandText = query.Replace("@Departments", departmentParameter);
+
+                        // Add each department as a parameter
+                        for (int i = 0; i < departments.Count; i++)
+                        {
+                            command.Parameters.AddWithValue($"@Dept{i}", departments[i]);
+                        }
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                if (!reader.IsDBNull(0))
+                                {
+                                    users.Add(reader.GetString(0));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error fetching users: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            users.Sort();
+            return users;
+        }
         private void updateDropDown(Func<List<string>> method)
         {
             nameORdepDropdown.Items.Clear();
@@ -82,80 +360,6 @@ namespace TDF.Forms
             nameORdepDropdown.Items.Insert(0, "All");
 
             nameORdepDropdown.SelectedIndex = 0;
-        }
-        private void updateReport()
-        {
-            DateTime startDate = fromDatePicker.Value.Date;
-            DateTime endDate = toDatePicker.Value.Date;
-
-            if (startDate > endDate)
-            {
-                MessageBox.Show("Ending date can't be earlier than the beginning date.");
-                return;
-            }
-
-            string baseQuery = @"SELECT RequestUserFullName, RequestType, RequestNumberOfDays, RequestStatus, RequestFromDay, RequestDepartment
-                                 FROM Requests
-                                 WHERE CONVERT(date, RequestFromDay, 120) >= @startDate 
-                                 AND CONVERT(date, RequestFromDay, 120) <= @endDate";
-
-            // Determine filter condition based on the dropdown selection
-            string condition = "";
-            if (filterDropdown.Text == "Department" && nameORdepDropdown.Text != "All")
-            {
-                condition = " AND RequestDepartment = @filterValue";
-            }
-            else if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
-            {
-                condition = " AND RequestUserFullName = @filterValue";
-            }
-            if (statusDropdown.Text != "All")
-            {
-                condition += " AND RequestStatus = @status";
-            }
-            if (typeDropdown.Text != "All")
-            {
-                condition += " AND RequestType = @type";
-            }
-
-            // Add the ORDER BY clause to sort by RequestFromDay
-            string orderByClause = " ORDER BY RequestFromDay ASC";
-
-            using (SqlConnection connection = Database.getConnection())
-            {
-                SqlCommand command = new SqlCommand(baseQuery + condition + orderByClause, connection);
-                command.Parameters.AddWithValue("@startDate", startDate);
-                command.Parameters.AddWithValue("@endDate", endDate);
-
-                // Add parameter for filter value if applicable
-                if (!string.IsNullOrEmpty(condition))
-                {
-                    command.Parameters.AddWithValue("@filterValue", nameORdepDropdown.Text);
-                }
-                if (statusDropdown.Text != "All")
-                {
-                    command.Parameters.AddWithValue("@status", statusDropdown.Text);
-                }
-
-                if (typeDropdown.Text != "All")
-                {
-                    command.Parameters.AddWithValue("@type", typeDropdown.Text);
-                }
-
-                try
-                {
-                    SqlDataAdapter adapter = new SqlDataAdapter(command);
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
-
-                    // Bind the result to the DataGridView
-                    reportsDataGridView.DataSource = dataTable;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error loading the report:\n{ex.Message}\n\nQuery: {command.CommandText}");
-                }
-            }
         }
         private List<string> getNames()
         {

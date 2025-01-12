@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TDF.Forms;
 using TDF.Net.Forms;
-using static TDF.Classes.ThemeColor;
+using static TDF.Net.Classes.ThemeColor;
 using static TDF.Net.loginForm;
 using static TDF.Net.Program;
 
@@ -34,7 +34,7 @@ namespace TDF.Net
             this.loginForm = loginForm; // Store a reference to the login form
 
             updateRoleStatus();
-            controlPanelButton.Visible = hasAdminRole;
+            setButtonVisibility();
         }
 
         public static List<string> managerRoles = new List<string> { "Manager", "Team Leader" };
@@ -57,7 +57,12 @@ namespace TDF.Net
 
             hasAdminRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
         }
-        private void initializeCustomColorDropdown()
+        private void setButtonVisibility()
+        {
+            controlPanelButton.Visible = hasAdminRole;
+            teamButton.Visible = hasAdminRole || hasManagerRole;
+        }
+       /* private void initializeCustomColorDropdown()
         {
             // Set ComboBox properties
             colorDropdown.DrawMode = DrawMode.OwnerDrawFixed;
@@ -72,12 +77,12 @@ namespace TDF.Net
 
             // Attach DrawItem event for custom rendering
             colorDropdown.DrawItem += colorDropdown_DrawItem;
-        }
+        }*/
         public void updateUserDataControls()
         {
             circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : circularPictureBox.Image;
 
-            usernameLabel.Text = $"Welcome, {loggedInUser.FullName}!";
+            usernameLabel.Text = $"Welcome, {loggedInUser.FullName.Split(' ')[0]}!";
         }
         private void uploadPictureForLoggedInUser()
         {
@@ -200,7 +205,11 @@ namespace TDF.Net
         private void showFormInPanel(Form form)
         {
             form.TopLevel = false; // Make it a child control rather than a top-level form
+
+            //if (form.GetType() != typeof(requestsForm))
+            // {
             form.Dock = DockStyle.Fill;
+            // }
 
             formPanel.Controls.Clear();
             formPanel.Controls.Add(form);
@@ -420,16 +429,22 @@ namespace TDF.Net
         {
             showFormInPanel(new requestsForm());
         }
-
         private void reportButton_Click(object sender, EventArgs e)
         {
             showFormInPanel(new reportsForm());
+        }
+
+        private void teamButton_Click(object sender, EventArgs e)
+        {
+            showFormInPanel(new balanceForm());
+
         }
 
         private void controlPanelButton_Click(object sender, EventArgs e)
         {
             controlPanelForm controlPanelForm = new controlPanelForm();
             controlPanelForm.userUpdated += updateUserDataControls; // Subscribe to the event
+            controlPanelForm.userUpdated += setButtonVisibility; // Subscribe to the event
 
             showFormInPanel(controlPanelForm);
         }

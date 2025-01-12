@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 
@@ -40,7 +40,7 @@ namespace TDF.Net.Classes
             RequestEndingTime = null;
             RequestDepartment = requestDepartment;
             RequestNumberOfDays = requestNumberOfDays;
-            RequestBeginningTime= requestBeginningTime;
+            RequestBeginningTime = requestBeginningTime;
             RequestEndingTime = requestEndingTime;
         }
 

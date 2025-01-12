@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using TDF.Classes;
 using TDF.Net;
+using TDF.Net.Classes;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -27,7 +28,7 @@ namespace TDF.Forms
         #region Methods
         private void updateDepartments()
         {
-            departments =  getDepartments();
+            departments = getDepartments();
 
             // Update the UI components once the departments are loaded
             depDropdown.DataSource = departments;
@@ -68,7 +69,7 @@ namespace TDF.Forms
             string filter = filterDropdown.Text;
             string searchValue = searchTextBox.Text;
             string query = buildUsersQuery(filter, searchValue);
-            
+
             using (SqlConnection connection = Database.getConnection())
             {
                 SqlCommand command = new SqlCommand(query, connection);
@@ -235,7 +236,14 @@ namespace TDF.Forms
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+
+            // Get the form's scroll position
+            Point scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private async void depDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {

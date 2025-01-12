@@ -2,7 +2,6 @@
 using System;
 using System.Data.SqlClient;
 using System.Windows.Forms;
-using TDF.Classes;
 using TDF.Net.Classes;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
@@ -236,7 +235,7 @@ namespace TDF.Net.Forms
             fromLabel.Visible = isVisible;
             toLabel.Visible = isVisible;
         }
-        private  void setDateControlsVisibility(bool isVisible)
+        private void setDateControlsVisibility(bool isVisible)
         {
             toDateLabel.Visible = isVisible;
             toDayDatePicker.Visible = isVisible;
@@ -420,10 +419,10 @@ namespace TDF.Net.Forms
         {
             if (unpaidRadioButton.Checked)
             {
-                    if (getLeaveDays("AnnualBalance", loggedInUser.userID) + getLeaveDays("CasualBalance", loggedInUser.userID) > 0 && RequestToEdit == null)
-                    {
-                        MessageBox.Show("You have Annual or Emergency balance. You can use it instead.");
-                    }
+                if (getLeaveDays("AnnualBalance", loggedInUser.userID) + getLeaveDays("CasualBalance", loggedInUser.userID) > 0 && RequestToEdit == null)
+                {
+                    MessageBox.Show("You have Annual or Emergency balance. You can use it instead.");
+                }
 
                 updateLeaveBalanceLabel();
             }

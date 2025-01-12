@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TDF.Classes;
 using TDF.Net.Classes;
 using static TDF.Net.Program;
 
@@ -34,11 +33,15 @@ namespace TDF.Net
             if (validateLogin(username, password))
             {
                 loggedInUser = getCurrentUserDetails(username);
-                mainForm mainForm = new mainForm(this);
-                //Owner = mainForm;
-                Hide();
+
+                //mainForm mainForm = new mainForm(this);
+               // mainForm.Show();
+
+                mainFormNewUI mainFormNewUI = new mainFormNewUI(this);
+                mainFormNewUI.Show();
+
                 clearFormFields();
-                mainForm.Show();
+                Hide();
             }
             else
             {
@@ -47,7 +50,7 @@ namespace TDF.Net
         }
         public static List<string> getDepartments()
         {
-           List<string> departments = new List<string>();
+            List<string> departments = new List<string>();
 
             string query = "SELECT DISTINCT Department FROM Departments";
 
@@ -326,7 +329,19 @@ namespace TDF.Net
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+
+            // Get the form's scroll position
+            Point scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            Invalidate();  // Forces the form to repaint when resized
         }
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {

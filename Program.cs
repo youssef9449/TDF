@@ -4,8 +4,7 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
-using TDF.Classes;
-using static TDF.Net.Database;
+using TDF.Net.Classes;
 
 namespace TDF.Net
 {
@@ -17,11 +16,11 @@ namespace TDF.Net
         [STAThread]
         static void Main()
         {
-            CultureInfo english = new CultureInfo("en-GB");
-            CultureInfo.DefaultThreadCurrentUICulture = english;
-            CultureInfo.DefaultThreadCurrentCulture = english;
-            CultureInfo.CurrentCulture = english;
-            CultureInfo.CurrentUICulture = english;
+            CultureInfo English = new CultureInfo("en-GB");
+            CultureInfo.DefaultThreadCurrentUICulture = English;
+            CultureInfo.DefaultThreadCurrentCulture = English;
+            CultureInfo.CurrentCulture = English;
+            CultureInfo.CurrentUICulture = English;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new loginForm());
@@ -40,7 +39,7 @@ namespace TDF.Net
              }*/
         }
 
-        static bool roundCorners = true;
+       // static bool roundCorners = true;
 
         public static void applyTheme(Form form)
         {
@@ -188,7 +187,7 @@ namespace TDF.Net
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
                     btn.Cursor = Cursors.Hand;
-                   // btn.IdleBorderRadius = 12;
+                    // btn.IdleBorderRadius = 12;
 
                     // btn.AutoRoundBorders = true;
                     //btn.AutoGenerateColors = true;

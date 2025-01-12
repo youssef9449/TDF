@@ -8,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using TDF.Classes;
 using TDF.Net.Classes;
 using static TDF.Net.Forms.addRequestForm;
 using static TDF.Net.loginForm;
@@ -25,12 +24,6 @@ namespace TDF.Net.Forms
             InitializeComponent();
 
             Program.applyTheme(this);
-            controlBox.BackColor = Color.White;
-            controlBox.CloseBoxOptions.HoverColor = Color.White;
-            controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.darkColor;
-            controlBox.CloseBoxOptions.IconPressedColor = ThemeColor.primaryColor;
-            controlBox.CloseBoxOptions.PressedColor = Color.White;
-
         }
 
         #region Events
@@ -60,11 +53,6 @@ namespace TDF.Net.Forms
 
             refreshRequestsTable();
         }
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
-        }
         private void requestsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex >= 0 & e.RowIndex >= 0)
@@ -91,40 +79,33 @@ namespace TDF.Net.Forms
                     {
                         if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell imageCell)
                         {
-                            DialogResult confirmResult = MessageBox.Show("Are you sure you want to delete this request?",
-                                                                         "Confirm Delete",
-                                                                          MessageBoxButtons.YesNo);
-
-                            if (confirmResult == DialogResult.Yes)
+                            if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString() == loggedInUser.FullName)
                             {
-                                Request RequestToDelete = new Request
+                                DialogResult confirmResult = MessageBox.Show("Are you sure you want to delete this request?",
+                                                                             "Confirm Delete",
+                                                                              MessageBoxButtons.YesNo);
+
+                                if (confirmResult == DialogResult.Yes)
                                 {
-                                    RequestID = Convert.ToInt32(requestsDataGridView.Rows[e.RowIndex].Cells["RequestID"].Value)
-                                };
+                                    Request RequestToDelete = new Request
+                                    {
+                                        RequestID = Convert.ToInt32(requestsDataGridView.Rows[e.RowIndex].Cells["RequestID"].Value)
+                                    };
 
-                                RequestToDelete.delete();
+                                    RequestToDelete.delete();
 
-                                requestsDataGridView.Rows.RemoveAt(e.RowIndex);
+                                    requestsDataGridView.Rows.RemoveAt(e.RowIndex);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("You are not allowed to remove another user's request.");
                             }
                         }
                     }
                     else
                     {
                         MessageBox.Show("The request is locked. You cannot perform this action.");
-                    }
-                }
-
-                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" || requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject")
-                {
-                    DataGridViewRow currentRow = requestsDataGridView.Rows[e.RowIndex];
-
-                    if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve")
-                    {
-                        currentRow.Cells["Reject"].Value = false;
-                    }
-                    else if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject")
-                    {
-                        currentRow.Cells["Approve"].Value = false;
                     }
                 }
 
@@ -151,11 +132,19 @@ namespace TDF.Net.Forms
 
                     if (status == "Rejected")
                     {
-                        MessageBox.Show("Generating a report for a rejected request is not possible.");
+                        MessageBox.Show("Generating a report for a rejected request is not allowed.");
                         return;
                     }
 
-                    createPDF(requestType, beginningDate, endingDate, numberOfDays, availableBalance, reason, beginningTime, endingTime, status);
+                    if (currentRow.Cells["RequestUserFullName"].Value?.ToString() != loggedInUser.FullName)
+                    {
+                        MessageBox.Show("Generating a report for another user's request is not allowed.");
+                        return;
+                    }
+                    else
+                    {
+                        createPDF(requestType, beginningDate, endingDate, numberOfDays, availableBalance, reason, beginningTime, endingTime, status);
+                    }
                 }
             }
         }
@@ -176,7 +165,7 @@ namespace TDF.Net.Forms
                     e.CellStyle.ForeColor = Color.Blue;
                 }
             }
-            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestBeginningTime" || 
+            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestBeginningTime" ||
                 requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestEndingTime")
             {
                 if (e.Value != DBNull.Value && e.Value != null || !string.IsNullOrEmpty(e.Value.ToString()))
@@ -191,8 +180,8 @@ namespace TDF.Net.Forms
             {
                 if (e.Value == null || string.IsNullOrEmpty(e.Value.ToString()))
                 {
-                    e.Value = "-"; 
-                    e.FormattingApplied = true; 
+                    e.Value = "-";
+                    e.FormattingApplied = true;
                 }
             }
             if (requestsDataGridView.Columns[e.ColumnIndex].Name == "NumberOfDays")
@@ -200,13 +189,54 @@ namespace TDF.Net.Forms
                 if ((int)e.Value == 0 || string.IsNullOrEmpty(e.Value.ToString()))
                 {
                     e.Value = "-";
-                    e.FormattingApplied = true; 
+                    e.FormattingApplied = true;
                 }
             }
         }
         private void pendingRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
             refreshRequestsTable();
+        }
+        private void requestsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            // Ensure the column is either 'Approve' or 'Reject' and the row is valid
+            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" || requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject")
+            {
+                DataGridViewRow currentRow = requestsDataGridView.Rows[e.RowIndex];
+                string requestUserFullName = currentRow.Cells["RequestUserFullName"].Value?.ToString();
+
+                // If the logged-in user tries to approve or reject their own request
+                if (requestUserFullName == loggedInUser.FullName)
+                {
+                    // Cancel the edit action immediately
+                    e.Cancel = true;
+                    MessageBox.Show("You can't approve or reject your own request.");
+                }
+                else
+                {
+                    // If not the logged-in user, handle the logic normally
+                    if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve")
+                    {
+                        currentRow.Cells["Reject"].Value = false;  // Uncheck 'Reject'
+                    }
+                    else if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject")
+                    {
+                        currentRow.Cells["Approve"].Value = false;  // Uncheck 'Approve'
+                    }
+                }
+            }
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            // Get the form's scroll position
+            var scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            var rect = new System.Drawing.Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         #endregion
 
@@ -285,6 +315,7 @@ namespace TDF.Net.Forms
                 string[] departments = loggedInUser.Department.Split(new string[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
                 string departmentCondition = string.Join(" OR ", departments.Select(d => $"r.RequestDepartment LIKE '%{d.Trim()}%'"));
                 condition += $" AND ({departmentCondition})";
+                //condition += $" AND NOT RequestUserFullName = '{loggedInUser.FullName}'";
             }
 
             return baseQuery + condition;
@@ -339,11 +370,11 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["Approve"].Visible = true;
             requestsDataGridView.Columns["Reject"].Visible = true;
             requestsDataGridView.Columns["Edit"].Visible = pendingRadioButton.Checked;
-            requestsDataGridView.Columns["Remove"].Visible = false;
-            if (requestsDataGridView.Columns["Report"] != null)
-            {
-                requestsDataGridView.Columns["Report"].Visible = false;
-            }
+            //  requestsDataGridView.Columns["Remove"].Visible = false;
+            /* if (requestsDataGridView.Columns["Report"] != null)
+             {
+                 requestsDataGridView.Columns["Report"].Visible = false;
+             }*/
             requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = false;
         }
         private void configureDataGridViewForUser()
@@ -427,8 +458,8 @@ namespace TDF.Net.Forms
                         {
                             if (reader.Read()) // Only take the first result
                             {
-                                 managerName = reader["FullName"].ToString();
-                                 managerDepartment = reader["Department"].ToString();
+                                managerName = reader["FullName"].ToString();
+                                managerDepartment = reader["Department"].ToString();
                                 return (managerName, managerDepartment);
                             }
                         }
@@ -521,12 +552,12 @@ namespace TDF.Net.Forms
                 (string managerName, string managerDepartment) = getManagerName();
 
                 // Write the common data for all request types
-                worksheet.Cells[2, 3].Value = DateTime.Now.Date;
+                worksheet.Cells[2, 3].Value = beginningDate;
                 worksheet.Cells[3, 3].Value = loggedInUser.FullName;
                 worksheet.Cells[5, 3].Value = loggedInUser.Department;
                 worksheet.Cells[4, 3].Value = loggedInUser.Title;
-                worksheet.Cells[6, 3].Value = managerName;
-                worksheet.Cells[7, 3].Value = managerDepartment + " Department";
+                worksheet.Cells[6, 3].Value = hasManagerRole || hasAdminRole ? "Hala Ibrahim" : managerName;
+                worksheet.Cells[7, 3].Value = hasManagerRole || hasAdminRole ? "Founder & CEO" : managerDepartment + " Department";
 
                 if (requestType == "Annual" || requestType == "Emergency" || requestType == "Unpaid")
                 {
@@ -611,7 +642,6 @@ namespace TDF.Net.Forms
                 cleanupExcel(excelApp, workbook, worksheet);
             }
         }
-
         private void saveAsPdf(Workbook workbook, string requestType, string status)
         {
             try
@@ -643,7 +673,6 @@ namespace TDF.Net.Forms
                 MessageBox.Show($"Error saving the file as PDF: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void cleanupExcel(Excel.Application excelApp, Workbook workbook, Worksheet worksheet)
         {
             if (workbook != null)
@@ -661,7 +690,6 @@ namespace TDF.Net.Forms
                 Marshal.ReleaseComObject(excelApp);
             }
         }
-
 
         #endregion
 
@@ -812,6 +840,7 @@ namespace TDF.Net.Forms
             }
         }
         #endregion
+
 
     }
 }
