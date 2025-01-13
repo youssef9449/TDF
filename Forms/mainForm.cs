@@ -447,7 +447,7 @@ namespace TDF.Net
 
         private void controlPanelButton_Click(object sender, EventArgs e)
         {
-            controlPanelForm controlPanelForm = new controlPanelForm();
+            controlPanelForm controlPanelForm = new controlPanelForm(false);
             controlPanelForm.userUpdated += updateUserDataControls; // Subscribe to the event
             controlPanelForm.userUpdated += setButtonVisibility; // Subscribe to the event
 

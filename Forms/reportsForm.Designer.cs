@@ -64,17 +64,12 @@
             this.availableBalanceLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.balanceGroupBox = new Bunifu.UI.WinForms.BunifuGroupBox();
             this.filtersGroupBox = new Bunifu.UI.WinForms.BunifuGroupBox();
-            this.panelTitleBar = new System.Windows.Forms.Panel();
-            this.maxImage = new System.Windows.Forms.PictureBox();
-            this.minImg = new System.Windows.Forms.PictureBox();
-            this.closeImg = new System.Windows.Forms.PictureBox();
+            this.panel = new System.Windows.Forms.Panel();
+            this.bunifuFormControlBox1 = new Bunifu.UI.WinForms.BunifuFormControlBox();
             ((System.ComponentModel.ISupportInitialize)(this.reportsDataGridView)).BeginInit();
             this.balanceGroupBox.SuspendLayout();
             this.filtersGroupBox.SuspendLayout();
-            this.panelTitleBar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.closeImg)).BeginInit();
+            this.panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // controlBox
@@ -794,7 +789,7 @@
             this.totalBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.totalBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.totalBalanceLabel.Location = new System.Drawing.Point(178, 16);
-            this.totalBalanceLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.totalBalanceLabel.Margin = new System.Windows.Forms.Padding(4);
             this.totalBalanceLabel.Name = "totalBalanceLabel";
             this.totalBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.totalBalanceLabel.Size = new System.Drawing.Size(42, 25);
@@ -811,7 +806,7 @@
             this.usedBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.usedBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.usedBalanceLabel.Location = new System.Drawing.Point(178, 49);
-            this.usedBalanceLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.usedBalanceLabel.Margin = new System.Windows.Forms.Padding(4);
             this.usedBalanceLabel.Name = "usedBalanceLabel";
             this.usedBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.usedBalanceLabel.Size = new System.Drawing.Size(42, 25);
@@ -828,7 +823,7 @@
             this.availableBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.availableBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
             this.availableBalanceLabel.Location = new System.Drawing.Point(178, 78);
-            this.availableBalanceLabel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.availableBalanceLabel.Margin = new System.Windows.Forms.Padding(4);
             this.availableBalanceLabel.Name = "availableBalanceLabel";
             this.availableBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.availableBalanceLabel.Size = new System.Drawing.Size(42, 25);
@@ -883,55 +878,80 @@
             this.filtersGroupBox.TabStop = false;
             this.filtersGroupBox.Visible = false;
             // 
-            // panelTitleBar
+            // panel
             // 
-            this.panelTitleBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
-            this.panelTitleBar.Controls.Add(this.maxImage);
-            this.panelTitleBar.Controls.Add(this.minImg);
-            this.panelTitleBar.Controls.Add(this.closeImg);
-            this.panelTitleBar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTitleBar.Location = new System.Drawing.Point(0, 0);
-            this.panelTitleBar.Margin = new System.Windows.Forms.Padding(4);
-            this.panelTitleBar.Name = "panelTitleBar";
-            this.panelTitleBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.panelTitleBar.Size = new System.Drawing.Size(1556, 60);
-            this.panelTitleBar.TabIndex = 73;
+            this.panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.panel.Controls.Add(this.bunifuFormControlBox1);
+            this.panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel.Location = new System.Drawing.Point(0, 0);
+            this.panel.Margin = new System.Windows.Forms.Padding(4);
+            this.panel.Name = "panel";
+            this.panel.Size = new System.Drawing.Size(1556, 50);
+            this.panel.TabIndex = 73;
             // 
-            // maxImage
+            // bunifuFormControlBox1
             // 
-            this.maxImage.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.maxImage.Image = ((System.Drawing.Image)(resources.GetObject("maxImage.Image")));
-            this.maxImage.Location = new System.Drawing.Point(1465, 17);
-            this.maxImage.Margin = new System.Windows.Forms.Padding(4);
-            this.maxImage.Name = "maxImage";
-            this.maxImage.Size = new System.Drawing.Size(23, 25);
-            this.maxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.maxImage.TabIndex = 10;
-            this.maxImage.TabStop = false;
-            // 
-            // minImg
-            // 
-            this.minImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.minImg.Image = ((System.Drawing.Image)(resources.GetObject("minImg.Image")));
-            this.minImg.Location = new System.Drawing.Point(1423, 17);
-            this.minImg.Margin = new System.Windows.Forms.Padding(4);
-            this.minImg.Name = "minImg";
-            this.minImg.Size = new System.Drawing.Size(23, 25);
-            this.minImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.minImg.TabIndex = 9;
-            this.minImg.TabStop = false;
-            // 
-            // closeImg
-            // 
-            this.closeImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.closeImg.Image = ((System.Drawing.Image)(resources.GetObject("closeImg.Image")));
-            this.closeImg.Location = new System.Drawing.Point(1507, 17);
-            this.closeImg.Margin = new System.Windows.Forms.Padding(4);
-            this.closeImg.Name = "closeImg";
-            this.closeImg.Size = new System.Drawing.Size(23, 25);
-            this.closeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.closeImg.TabIndex = 1;
-            this.closeImg.TabStop = false;
+            this.bunifuFormControlBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bunifuFormControlBox1.BunifuFormDrag = null;
+            this.bunifuFormControlBox1.CloseBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.CloseBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.CloseBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.CloseBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.CloseBoxOptions.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
+            this.bunifuFormControlBox1.CloseBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.CloseBoxOptions.Icon")));
+            this.bunifuFormControlBox1.CloseBoxOptions.IconAlt = null;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconHoverColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconPressedColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconSize = new System.Drawing.Size(18, 18);
+            this.bunifuFormControlBox1.CloseBoxOptions.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
+            this.bunifuFormControlBox1.ForeColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.HelpBox = false;
+            this.bunifuFormControlBox1.HelpBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.HelpBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.HelpBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.HelpBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.HelpBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.bunifuFormControlBox1.HelpBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.HelpBoxOptions.Icon")));
+            this.bunifuFormControlBox1.HelpBoxOptions.IconAlt = null;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
+            this.bunifuFormControlBox1.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.bunifuFormControlBox1.Location = new System.Drawing.Point(1367, 2);
+            this.bunifuFormControlBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.bunifuFormControlBox1.MaximizeBox = true;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MaximizeBoxOptions.Icon")));
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconAlt = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MaximizeBoxOptions.IconAlt")));
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconSize = new System.Drawing.Size(16, 16);
+            this.bunifuFormControlBox1.MaximizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.bunifuFormControlBox1.MinimizeBox = true;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MinimizeBoxOptions.Icon")));
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconAlt = null;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconSize = new System.Drawing.Size(14, 14);
+            this.bunifuFormControlBox1.MinimizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.bunifuFormControlBox1.Name = "bunifuFormControlBox1";
+            this.bunifuFormControlBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.bunifuFormControlBox1.ShowDesignBorders = false;
+            this.bunifuFormControlBox1.Size = new System.Drawing.Size(187, 46);
+            this.bunifuFormControlBox1.TabIndex = 19;
             // 
             // reportsForm
             // 
@@ -939,7 +959,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1556, 871);
-            this.Controls.Add(this.panelTitleBar);
+            this.Controls.Add(this.panel);
             this.Controls.Add(this.filtersGroupBox);
             this.Controls.Add(this.bunifuLabel5);
             this.Controls.Add(this.typeDropdown);
@@ -954,7 +974,7 @@
             this.Controls.Add(this.controlBox);
             this.Controls.Add(this.balanceGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "reportsForm";
             this.Text = "Reports";
@@ -965,10 +985,7 @@
             this.balanceGroupBox.PerformLayout();
             this.filtersGroupBox.ResumeLayout(false);
             this.filtersGroupBox.PerformLayout();
-            this.panelTitleBar.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.maxImage)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.minImg)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.closeImg)).EndInit();
+            this.panel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1005,9 +1022,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Hours;
         private System.Windows.Forms.DataGridViewTextBoxColumn Status;
         private System.Windows.Forms.DataGridViewTextBoxColumn Department;
-        private System.Windows.Forms.Panel panelTitleBar;
-        private System.Windows.Forms.PictureBox maxImage;
-        private System.Windows.Forms.PictureBox minImg;
-        private System.Windows.Forms.PictureBox closeImg;
+        private System.Windows.Forms.Panel panel;
+        private Bunifu.UI.WinForms.BunifuFormControlBox bunifuFormControlBox1;
     }
 }

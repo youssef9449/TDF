@@ -153,6 +153,7 @@ namespace TDF.Net
             this.panelTitleBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.panelTitleBar.Size = new System.Drawing.Size(1280, 81);
             this.panelTitleBar.TabIndex = 6;
+            this.panelTitleBar.Paint += new System.Windows.Forms.PaintEventHandler(this.panelTitleBar_Paint);
             this.panelTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
             // 
             // maxImage

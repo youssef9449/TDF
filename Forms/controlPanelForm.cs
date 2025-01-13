@@ -15,11 +15,22 @@ namespace TDF.Forms
 {
     public partial class controlPanelForm : Form
     {
-        public controlPanelForm()
+        public controlPanelForm(bool isModern)
         {
             InitializeComponent();
             Program.applyTheme(this);
+            StartPosition = FormStartPosition.CenterScreen;
 
+            if (isModern)
+            {
+                controlBox.Visible = !isModern;
+                panel.MouseDown += new MouseEventHandler(panel_MouseDown);
+                panel.Paint += panel_Paint;
+            }
+            else
+            {
+                panel.Visible = isModern;
+            }
         }
 
         List<string> title = new List<string>();
@@ -216,14 +227,9 @@ namespace TDF.Forms
         {
             if (e.Button == MouseButtons.Left && e.Clicks == 1)
             {
-                mainForm.ReleaseCapture();
-                mainForm.SendMessage(Handle, 0x112, 0xf012, 0);
+                ReleaseCapture();
+                SendMessage(Handle, 0x112, 0xf012, 0);
             }
-        }
-        private void panel_Paint(object sender, PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void controlPanelForm_Resize(object sender, EventArgs e)
         {
@@ -245,12 +251,31 @@ namespace TDF.Forms
 
             ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            Invalidate();  // Forces the form to repaint when resized
+        }
         private async void depDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
             title = await getTitlesAsync(depDropdown.Text);
             titleDropdown.DataSource = title;
             titleDropdown.SelectedIndex = -1;
         }
+        private void panel_Paint(object sender, PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            // Get the form's scroll position
+            Point scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+
+
         #endregion
 
         #region Buttons

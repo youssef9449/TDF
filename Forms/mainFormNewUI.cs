@@ -196,6 +196,18 @@ namespace TDF.Net
                 SendMessage(Handle, 0x112, 0xf012, 0);
             }
         }
+        private void panelTitleBar_Paint(object sender, PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            // Get the form's scroll position
+            var scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
+        }
         private void closeImg_MouseEnter(object sender, EventArgs e)
         {
             closeImg.Image = Properties.Resources.close_hover;
@@ -279,13 +291,14 @@ namespace TDF.Net
         }
         private void controlPanelImageButton_Click(object sender, EventArgs e)
         {
-            controlPanelForm controlPanelForm = new controlPanelForm();
+            controlPanelForm controlPanelForm = new controlPanelForm(true);
 
             controlPanelForm.userUpdated += updateRoleStatus;
             controlPanelForm.userUpdated += setImageButtonVisibility;
             controlPanelForm.userUpdated += adjustShadowPanelAndImageButtons;
 
-            showFormInPanel(controlPanelForm);
+            //showFormInPanel(controlPanelForm);
+            controlPanelForm.ShowDialog();
         }
         private void logoutImageButton_Click(object sender, EventArgs e)
         {
@@ -293,8 +306,8 @@ namespace TDF.Net
             Close();
             loginForm.Show();
         }
-        #endregion
 
+        #endregion
 
     }
 }
