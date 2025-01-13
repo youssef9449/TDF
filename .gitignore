@@ -82,3 +82,5 @@
 /Properties/Resources.resx
 /Properties/Resources.Designer.cs
 /TDF.csproj
+/bin/Debug/config.ini
+/obj/Debug/TDF.Forms.reportsForm.resources
