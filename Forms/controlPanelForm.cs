@@ -31,10 +31,19 @@ namespace TDF.Forms
             {
                 panel.Visible = isModern;
             }
+
+            isMe = loggedInUser.Department == "All";
+            spoofButton.Visible = isMe;
+            passwordLabel.Visible = isMe;
+            passwordTextBox.Visible = isMe;
+            resetPasswordButton.Visible = isMe;
+            importButton.Visible = isMe;
+            deleteButton.Visible = isMe;
         }
 
         List<string> title = new List<string>();
         public event Action userUpdated;
+        bool isMe;
 
         #region Methods
         private void updateDepartments()

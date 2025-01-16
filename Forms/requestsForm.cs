@@ -33,6 +33,7 @@ namespace TDF.Net.Forms
                 controlBox.Visible = !isModern;
                 panel.MouseDown += new MouseEventHandler(panel_MouseDown);
                 panel.Paint += panel_Paint;
+               // Width = requestsDataGridView.Width + requestsDataGridView.Left; // Add padding for form borders
 
             }
             else
@@ -76,6 +77,13 @@ namespace TDF.Net.Forms
                 {
                     if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending")
                     {
+                        if(requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString() != loggedInUser.FullName && hasAdminRole)
+                        {
+                            MessageBox.Show("you are not allowed to edit another user's request.");
+                            return;
+
+                        }
+
                         if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell)
                         {
                             openRequestToEdit(e);
@@ -410,7 +418,10 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["Approve"].Visible = true;
             requestsDataGridView.Columns["Reject"].Visible = true;
             requestsDataGridView.Columns["Edit"].Visible = pendingRadioButton.Checked;
+
+            //requestsDataGridView.Columns["Edit"].Visible = !hasAdminRole && pendingRadioButton.Checked;
             //  requestsDataGridView.Columns["Remove"].Visible = false;
+
             /* if (requestsDataGridView.Columns["Report"] != null)
              {
                  requestsDataGridView.Columns["Report"].Visible = false;
@@ -880,7 +891,6 @@ namespace TDF.Net.Forms
             }
         }
         #endregion
-
 
     }
 }

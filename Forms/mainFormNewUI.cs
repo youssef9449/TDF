@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TDF.Forms;
 using TDF.Net.Forms;
@@ -28,7 +27,6 @@ namespace TDF.Net
             applyTheme(this);
             formPanel.BackColor = Color.White;
             this.loginForm = loginForm; // Store a reference to the login form
-
         }
 
         private loginForm loginForm;
@@ -267,7 +265,18 @@ namespace TDF.Net
             setImageButtonVisibility();
             adjustShadowPanelAndImageButtons();
         }
+        private void formPanel_Paint(object sender, PaintEventArgs e)
+        {
+            base.OnPaint(e);
 
+            // Get the form's scroll position
+            var scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
+        }
         #endregion
 
         #region Buttons
@@ -306,8 +315,8 @@ namespace TDF.Net
             Close();
             loginForm.Show();
         }
-
         #endregion
+
 
     }
 }

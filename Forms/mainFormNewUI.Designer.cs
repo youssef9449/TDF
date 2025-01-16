@@ -222,6 +222,7 @@ namespace TDF.Net
             this.formPanel.Name = "formPanel";
             this.formPanel.Size = new System.Drawing.Size(1280, 707);
             this.formPanel.TabIndex = 11;
+            this.formPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.formPanel_Paint);
             // 
             // teamImageButton
             // 

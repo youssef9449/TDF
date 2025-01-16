@@ -34,11 +34,16 @@ namespace TDF.Net
             {
                 loggedInUser = getCurrentUserDetails(username);
 
-           //     mainForm mainForm = new mainForm(this);
-             //   mainForm.Show();
-
-               mainFormNewUI mainFormNewUI = new mainFormNewUI(this);
-                mainFormNewUI.Show();
+                if(guiDropdown.Text == "Classic")
+                {
+                    mainForm mainForm = new mainForm(this);
+                    mainForm.Show();
+                }
+                else
+                {
+                    mainFormNewUI mainFormNewUI = new mainFormNewUI(this);
+                    mainFormNewUI.Show();
+                }
 
                 clearFormFields();
                 Hide();
@@ -324,6 +329,7 @@ namespace TDF.Net
         private async void loginForm_Shown(object sender, EventArgs e)
         {
             await ensureAdminExistsAsync();
+            guiDropdown.Text = "Classic";
 
         }
         protected override void OnPaint(PaintEventArgs e)
@@ -431,7 +437,8 @@ namespace TDF.Net
                 clearFormFields();
                 departmentDropdown.DataSource = departments;
                 departmentDropdown.SelectedIndex = -1;
-
+                guiDropdown.Visible = false;
+                guiLabel.Visible = false;
                 return;
             }
             if (changingPassword)
@@ -451,6 +458,8 @@ namespace TDF.Net
                 titlesDropdown.Visible = false;
                 nameTextBox.UseSystemPasswordChar = true;
                 // passPictureBox.Visible = false;
+                guiDropdown.Visible = true;
+                guiLabel.Visible = true;
                 clearFormFields();
                 return;
             }
@@ -496,6 +505,8 @@ namespace TDF.Net
             titleLabel.Visible = false;
             titlesDropdown.Visible = false;
             signingup = false;
+            guiLabel.Visible = true;
+            guiDropdown.Visible = true;
             signupButton.Text = "Sign Up";
             updateButton.Text = "Change password";
 
@@ -515,6 +526,8 @@ namespace TDF.Net
                 nameLabel.Visible = true;
                 updateButton.Visible = false;
                 //passPictureBox.Visible = false;
+                guiDropdown.Visible = false;
+                guiLabel.Visible = false;
             }
             else
             {
@@ -527,6 +540,8 @@ namespace TDF.Net
                 signupButton.Text = "Sign Up";
                 titlesDropdown.Visible = false;
                 titleLabel.Visible = false;
+                guiDropdown.Visible = true;
+                guiLabel.Visible = true;
                 //passPictureBox.Visible = false;
             }
 
