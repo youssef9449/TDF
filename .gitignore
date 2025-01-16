@@ -84,3 +84,14 @@
 /TDF.csproj
 /bin/Debug/config.ini
 /obj/Debug/TDF.Forms.reportsForm.resources
+/bin/Release/config.ini
+/obj/Release/TempPE/Properties.Resources.Designer.cs.dll
+/obj/Release/DesignTimeResolveAssemblyReferences.cache
+/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
+/obj/Release/TDF.csproj.CoreCompileInputs.cache
+/obj/Release/TDF.csproj.FileListAbsolute.txt
+/obj/Release/TDF.csproj.ResolveComReference.cache
+*.resources
+/obj/Release/TDF.Properties.Resources.resources
+/obj/Release/TDF.Net.mainForm.resources
+/obj/Release/TDF.Forms.controlPanelForm.resources
