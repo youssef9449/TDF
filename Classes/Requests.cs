@@ -51,11 +51,11 @@ namespace TDF.Net.Classes
             string query = @"
         INSERT INTO Requests (
             RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay,
-            RequestUserID, RequestBeginningTime, RequestEndingTime, RequestDepartment, RequestNumberOfDays
+            RequestUserID, RequestBeginningTime, RequestEndingTime, RequestDepartment, RequestNumberOfDays, RequestHRStatus
         )
         VALUES (
             @RequestUserFullName, @RequestType, @RequestReason, @RequestFromDay, @RequestToDay,
-            @RequestUserID, @RequestBeginningTime, @RequestEndingTime, @RequestDepartment, @RequestNumberOfDays
+            @RequestUserID, @RequestBeginningTime, @RequestEndingTime, @RequestDepartment, @RequestNumberOfDays, @RequestHRStatus
         )";
 
             try
@@ -74,6 +74,7 @@ namespace TDF.Net.Classes
                     cmd.Parameters.AddWithValue("@RequestUserID", RequestUserID);
                     cmd.Parameters.AddWithValue("@RequestDepartment", RequestDepartment);
                     cmd.Parameters.AddWithValue("@RequestNumberOfDays", RequestNumberOfDays);
+                    cmd.Parameters.AddWithValue("@RequestHRStatus", "Pending");
 
                     if (RequestType == "Permission" || RequestType == "External Assignment")
                     {

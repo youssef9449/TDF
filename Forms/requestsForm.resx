@@ -138,7 +138,7 @@
     <value>False</value>
   </data>
   <data name="RequestID.Width" type="System.Int32, mscorlib">
-    <value>139</value>
+    <value>114</value>
   </data>
   <metadata name="RequestUserFullName.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -153,7 +153,7 @@
     <value>False</value>
   </data>
   <data name="RequestUserFullName.Width" type="System.Int32, mscorlib">
-    <value>141</value>
+    <value>114</value>
   </data>
   <metadata name="RequestType.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -165,7 +165,7 @@
     <value>6</value>
   </data>
   <data name="RequestType.Width" type="System.Int32, mscorlib">
-    <value>162</value>
+    <value>133</value>
   </data>
   <metadata name="RequestFromDay.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -177,7 +177,7 @@
     <value>6</value>
   </data>
   <data name="RequestFromDay.Width" type="System.Int32, mscorlib">
-    <value>87</value>
+    <value>72</value>
   </data>
   <metadata name="RequestToDay.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -189,7 +189,7 @@
     <value>6</value>
   </data>
   <data name="RequestToDay.Width" type="System.Int32, mscorlib">
-    <value>61</value>
+    <value>51</value>
   </data>
   <metadata name="NumberOfDays.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -202,7 +202,7 @@
     <value>6</value>
   </data>
   <data name="NumberOfDays.Width" type="System.Int32, mscorlib">
-    <value>148</value>
+    <value>119</value>
   </data>
   <metadata name="remainingBalance.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -214,7 +214,7 @@
     <value>6</value>
   </data>
   <data name="remainingBalance.Width" type="System.Int32, mscorlib">
-    <value>109</value>
+    <value>90</value>
   </data>
   <metadata name="RequestReason.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -235,7 +235,7 @@
     <value>6</value>
   </data>
   <data name="RequestBeginningTime.Width" type="System.Int32, mscorlib">
-    <value>138</value>
+    <value>112</value>
   </data>
   <metadata name="RequestEndingTime.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -247,7 +247,7 @@
     <value>6</value>
   </data>
   <data name="RequestEndingTime.Width" type="System.Int32, mscorlib">
-    <value>112</value>
+    <value>91</value>
   </data>
   <metadata name="RequestRejectReason.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -257,6 +257,18 @@
   </data>
   <data name="RequestRejectReason.MinimumWidth" type="System.Int32, mscorlib">
     <value>100</value>
+  </data>
+  <metadata name="RequestHRStatus.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="RequestHRStatus.HeaderText" xml:space="preserve">
+    <value>HR Status</value>
+  </data>
+  <data name="RequestHRStatus.MinimumWidth" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="RequestHRStatus.Width" type="System.Int32, mscorlib">
+    <value>105</value>
   </data>
   <metadata name="RequestStatus.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -268,7 +280,7 @@
     <value>6</value>
   </data>
   <data name="RequestStatus.Width" type="System.Int32, mscorlib">
-    <value>95</value>
+    <value>79</value>
   </data>
   <metadata name="Edit.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -280,7 +292,7 @@
     <value>20</value>
   </data>
   <data name="Edit.Width" type="System.Int32, mscorlib">
-    <value>74</value>
+    <value>62</value>
   </data>
   <metadata name="Remove.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -292,7 +304,7 @@
     <value>20</value>
   </data>
   <data name="Remove.Width" type="System.Int32, mscorlib">
-    <value>113</value>
+    <value>94</value>
   </data>
   <metadata name="Report.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -304,7 +316,7 @@
     <value>20</value>
   </data>
   <data name="Report.Width" type="System.Int32, mscorlib">
-    <value>78</value>
+    <value>66</value>
   </data>
   <metadata name="Approve.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -315,11 +327,8 @@
   <data name="Approve.MinimumWidth" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
-  <data name="Approve.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="Approve.Width" type="System.Int32, mscorlib">
-    <value>117</value>
+    <value>98</value>
   </data>
   <metadata name="Reject.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -330,24 +339,18 @@
   <data name="Reject.MinimumWidth" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
-  <data name="Reject.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="Reject.Width" type="System.Int32, mscorlib">
-    <value>94</value>
+    <value>80</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="requestsDataGridView.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2, 181</value>
-  </data>
-  <data name="requestsDataGridView.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>4, 157</value>
   </data>
   <data name="requestsDataGridView.RowHeadersWidth" type="System.Int32, mscorlib">
     <value>30</value>
   </data>
   <data name="requestsDataGridView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1536, 567</value>
+    <value>1704, 663</value>
   </data>
   <data name="requestsDataGridView.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -365,13 +368,10 @@
     <value>9</value>
   </data>
   <data name="pendingRadioButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>746, 103</value>
-  </data>
-  <data name="pendingRadioButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>639, 84</value>
   </data>
   <data name="pendingRadioButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>29, 29</value>
+    <value>25, 25</value>
   </data>
   <data name="pendingRadioButton.TabIndex" type="System.Int32, mscorlib">
     <value>17</value>
@@ -392,13 +392,10 @@
     <value>5</value>
   </data>
   <data name="closedRadioButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>843, 103</value>
-  </data>
-  <data name="closedRadioButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>723, 84</value>
   </data>
   <data name="closedRadioButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>29, 29</value>
+    <value>25, 25</value>
   </data>
   <data name="closedRadioButton.TabIndex" type="System.Int32, mscorlib">
     <value>18</value>
@@ -425,16 +422,13 @@
     <value>Segoe UI, 11pt</value>
   </data>
   <data name="pendingLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>727, 66</value>
-  </data>
-  <data name="pendingLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>623, 54</value>
   </data>
   <data name="pendingLabel.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
     <value>No</value>
   </data>
   <data name="pendingLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>65, 25</value>
+    <value>54, 20</value>
   </data>
   <data name="pendingLabel.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
@@ -461,16 +455,13 @@
     <value>Segoe UI, 11pt</value>
   </data>
   <data name="closedLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>833, 66</value>
-  </data>
-  <data name="closedLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>714, 54</value>
   </data>
   <data name="closedLabel.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
     <value>No</value>
   </data>
   <data name="closedLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>54, 25</value>
+    <value>45, 20</value>
   </data>
   <data name="closedLabel.TabIndex" type="System.Int32, mscorlib">
     <value>20</value>
@@ -531,7 +522,7 @@
 </value>
   </data>
   <data name="controlBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1452, 11</value>
+    <value>1641, 9</value>
   </data>
   <data name="controlBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>2, 2, 2, 2</value>
@@ -569,7 +560,7 @@
     <value>Yes</value>
   </data>
   <data name="controlBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>78, 46</value>
+    <value>67, 37</value>
   </data>
   <data name="controlBox.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
@@ -592,17 +583,11 @@
   <data name="dataGridViewImageColumn1.MinimumWidth" type="System.Int32, mscorlib">
     <value>20</value>
   </data>
-  <data name="dataGridViewImageColumn1.Width" type="System.Int32, mscorlib">
-    <value>125</value>
-  </data>
   <data name="dataGridViewImageColumn2.HeaderText" xml:space="preserve">
     <value>Remove</value>
   </data>
   <data name="dataGridViewImageColumn2.MinimumWidth" type="System.Int32, mscorlib">
     <value>20</value>
-  </data>
-  <data name="dataGridViewImageColumn2.Width" type="System.Int32, mscorlib">
-    <value>125</value>
   </data>
   <data name="dataGridViewImageColumn3.HeaderText" xml:space="preserve">
     <value>Report</value>
@@ -610,29 +595,22 @@
   <data name="dataGridViewImageColumn3.MinimumWidth" type="System.Int32, mscorlib">
     <value>20</value>
   </data>
-  <data name="dataGridViewImageColumn3.Width" type="System.Int32, mscorlib">
-    <value>125</value>
-  </data>
   <data name="refreshButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAI0AAAAlCAYAAAB/EWomAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAACHSURBVHhe7dKhEYQwAADBVJKWoT/KwAc8DD9/fsWa0zfm
-        vo65Xxf8Zx3jHeE305CZhsw0ZKYhMw2ZachMQ2YaMtOQmYbMNGSmITMNmWnITENmGjLTkJmGzDRkpiEz
-        DZlpyExDZhoy05CZhsw0ZKYhMw2ZachMQ2YaMtOQmYZszG2dzwiftnXeY5N18XuYTfIAAAAASUVORK5C
-        YII=
+        iVBORw0KGgoAAAANSUhEUgAAAHkAAAAeCAYAAAAIC7GrAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABxSURBVGhD7dExAYAwAMCwKZll8IcM/sEPDtYcefp2zHNd
+        83wedrWu8Y/sxuQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNM
+        DjA5wOQAkwNMDhjzWPc3spFj3S+AuOSulfWbyQAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="refreshButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Segoe UI, 10pt</value>
   </data>
   <data name="refreshButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>177, 129</value>
-  </data>
-  <data name="refreshButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>152, 105</value>
   </data>
   <data name="refreshButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>141, 37</value>
+    <value>121, 30</value>
   </data>
   <data name="refreshButton.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
@@ -651,24 +629,20 @@
   </data>
   <data name="addRequestButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAJYAAAAlCAYAAACgXxA5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAACKSURBVHhe7dKhAYAwAMCwXbKX4T/OwA88SKiLiKnumPs6
-        5n5d8J91jHeE74xFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgk
-        jEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCTG3Nb5jPDJts4bUbzv2qeqE5MAAAAASUVO
-        RK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxFcAgFARBlGAZ/CGD/pN3KRMJTDHN1tv6
+        rNXnOdyqVvtHbmMCTIAJMAFhAkyACTABYQJMgAkwAWECTIAJMAFhAkyACTABYQJMgAkwAWECTIAJeCcY
+        tb+Ri4zaD25HZhvCCrDQAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="addRequestButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Segoe UI, 10pt</value>
   </data>
   <data name="addRequestButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 129</value>
-  </data>
-  <data name="addRequestButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>12, 105</value>
   </data>
   <data name="addRequestButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 37</value>
+    <value>129, 30</value>
   </data>
   <data name="addRequestButton.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
@@ -687,24 +661,20 @@
   </data>
   <data name="applyButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAJYAAAAlCAYAAACgXxA5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAACKSURBVHhe7dKhAYAwAMCwXbKX4T/OwA88SKiLiKnumPs6
-        5n5d8J91jHeE74xFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgk
-        jEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCTG3Nb5jPDJts4bUbzv2qeqE5MAAAAASUVO
-        RK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxFcAgFARBlGAZ/CGD/pN3KRMJTDHN1tv6
+        rNXnOdyqVvtHbmMCTIAJMAFhAkyACTABYQJMgAkwAWECTIAJMAFhAkyACTABYQJMgAkwAWECTIAJeCcY
+        tb+Ri4zaD25HZhvCCrDQAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="applyButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Segoe UI, 10pt</value>
   </data>
   <data name="applyButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>331, 129</value>
-  </data>
-  <data name="applyButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>284, 105</value>
   </data>
   <data name="applyButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 37</value>
+    <value>129, 30</value>
   </data>
   <data name="applyButton.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
@@ -765,7 +735,7 @@
 </value>
   </data>
   <data name="bunifuFormControlBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1353, 2</value>
+    <value>1556, 2</value>
   </data>
   <data name="bunifuFormControlBox1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>2, 2, 2, 2</value>
@@ -803,7 +773,7 @@
     <value>Yes</value>
   </data>
   <data name="bunifuFormControlBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>187, 46</value>
+    <value>160, 37</value>
   </data>
   <data name="bunifuFormControlBox1.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
@@ -826,11 +796,8 @@
   <data name="panel.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="panel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
-  </data>
   <data name="panel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1542, 50</value>
+    <value>1718, 41</value>
   </data>
   <data name="panel.TabIndex" type="System.Int32, mscorlib">
     <value>54</value>
@@ -851,16 +818,13 @@
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>7, 16</value>
+    <value>6, 13</value>
   </data>
   <data name="$this.AutoScroll" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>1542, 750</value>
-  </data>
-  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>1718, 823</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterScreen</value>
@@ -932,6 +896,12 @@
     <value>RequestRejectReason</value>
   </data>
   <data name="&gt;&gt;RequestRejectReason.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;RequestHRStatus.Name" xml:space="preserve">
+    <value>RequestHRStatus</value>
+  </data>
+  <data name="&gt;&gt;RequestHRStatus.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;RequestStatus.Name" xml:space="preserve">

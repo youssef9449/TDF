@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO.Pipes;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDF.Net.Classes;
 using static TDF.Net.Program;
+using TDF.Classes;
+using System.Diagnostics;
 
 namespace TDF.Net
 {
@@ -15,6 +20,8 @@ namespace TDF.Net
         {
             InitializeComponent();
             updateTheme();
+            guiDropdown.Text = "Modern";
+
         }
 
         private bool signingup = false;
@@ -22,6 +29,7 @@ namespace TDF.Net
         public static User loggedInUser;
         public static List<string> departments = new List<string>();
         public static List<string> titles = new List<string>();
+        private static Form oldSessionForm = null;
 
 
         #region Methods
@@ -30,27 +38,36 @@ namespace TDF.Net
             string username = txtUsername.Text;
             string password = txtPassword.Text;
 
-            if (validateLogin(username, password))
+            bool isValidLogin = validateLogin(username, password);
+
+            if (isValidLogin)
             {
+                // Log in the user and track the session
                 loggedInUser = getCurrentUserDetails(username);
 
-                if(guiDropdown.Text == "Classic")
+
+                // Step 2: Open the new session's form (new login)
+                if (guiDropdown.Text == "Classic")
                 {
-                    mainForm mainForm = new mainForm(this);
-                    mainForm.Show();
+                    // Create a new mainForm for Classic UI
+                    oldSessionForm = new mainForm(this);
+                    oldSessionForm.Show();
                 }
                 else
                 {
-                    mainFormNewUI mainFormNewUI = new mainFormNewUI(this);
-                    mainFormNewUI.Show();
+                    // Create a new mainFormNewUI for New UI
+                    oldSessionForm = new mainFormNewUI(this);
+                    oldSessionForm.Show();
                 }
 
+                // Hide the login form and clear fields
                 clearFormFields();
                 Hide();
             }
             else
             {
-                MessageBox.Show("Invalid username or password");
+                // Invalid login attempt
+                MessageBox.Show("Invalid username or password.");
             }
         }
         public static List<string> getDepartments()
@@ -329,8 +346,6 @@ namespace TDF.Net
         private async void loginForm_Shown(object sender, EventArgs e)
         {
             await ensureAdminExistsAsync();
-            guiDropdown.Text = "Classic";
-
         }
         protected override void OnPaint(PaintEventArgs e)
         {

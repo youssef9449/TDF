@@ -203,7 +203,6 @@
             this.reportsDataGridView.EnableHeadersVisualStyles = false;
             this.reportsDataGridView.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
             this.reportsDataGridView.HeaderBackColor = System.Drawing.Color.DodgerBlue;
-            this.reportsDataGridView.HeaderBgColor = System.Drawing.Color.Empty;
             this.reportsDataGridView.HeaderForeColor = System.Drawing.Color.White;
             this.reportsDataGridView.Location = new System.Drawing.Point(2, 235);
             this.reportsDataGridView.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);

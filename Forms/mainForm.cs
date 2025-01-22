@@ -1,11 +1,14 @@
-﻿using System;
+﻿using Bunifu.UI.WinForms;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using TDF.Forms;
 using TDF.Net.Forms;
@@ -38,8 +41,9 @@ namespace TDF.Net
         }
 
         public static List<string> managerRoles = new List<string> { "Manager", "Team Leader" };
+        public static List<string> hrRoles = new List<string> { "HR Manager", "HR" };
 
-        public static bool hasManagerRole, hasAdminRole, updatedUserData;
+        public static bool hasManagerRole, hasAdminRole, updatedUserData, hasHRRole;
         private ContextMenuStrip contextMenu;
         private loginForm loginForm;
 
@@ -56,13 +60,14 @@ namespace TDF.Net
               string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
 
             hasAdminRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+            hasHRRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "HR", StringComparison.OrdinalIgnoreCase);
         }
         private void setButtonVisibility()
         {
-            controlPanelButton.Visible = hasAdminRole;
-            teamButton.Visible = hasAdminRole || hasManagerRole;
+            controlPanelButton.Visible = hasHRRole || hasAdminRole;
+            teamButton.Visible = hasHRRole || hasAdminRole || hasManagerRole;
         }
-       /* private void initializeCustomColorDropdown()
+        /* private void initializeCustomColorDropdown()
         {
             // Set ComboBox properties
             colorDropdown.DrawMode = DrawMode.OwnerDrawFixed;
@@ -216,16 +221,80 @@ namespace TDF.Net
             form.Show();
 
             formPanel.Controls.Add(TDFpictureBox);
+            formPanel.Controls.Add(bunifuLabel);
             TDFpictureBox.Show();
+            bunifuLabel.Show();
+            bunifuLabel.BringToFront();
         }
+        /*  private void startPipeListener()
+         {
+             Thread pipeListenerThread = new Thread(new ThreadStart(listenForMessages));
+             pipeListenerThread.IsBackground = true;
+             pipeListenerThread.Start();
+         }
+        private void listenForMessages()
+         {
+             using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("UserLogoutPipe", PipeDirection.In))
+             {
+                 // Wait for a connection from a client (new session)
+                 pipeServer.WaitForConnection();
+
+                 using (StreamReader reader = new StreamReader(pipeServer))
+                 {
+                     // Read the message from the new session
+                     string message = reader.ReadLine();
+                     if (message == "UserLoggedOut")
+                     {
+                         // Show the message and close the old session
+                         MessageBox.Show("You have been logged out because the user is opened on another PC.");
+                         Invoke((Action)(() => Close())); // Close the old session (form)
+                     }
+                 }
+             }
+         }*/
         #endregion
 
         #region Events
         private void mainForm_Load(object sender, EventArgs e)
         {
+         //   startPipeListener(); // Start listening for messages
             updateUserDataControls();
             //myTeamButton.Visible = !string.Equals(loggedInUser.Role, "User", StringComparison.OrdinalIgnoreCase);
 
+        }
+        private void bunifuLabel_Paint(object sender, PaintEventArgs e)
+        {
+            // Define the parts of the text
+            string beforeHeart = "Made with ";
+            string afterHeart = " for TDF+ by Youssef";
+            string heart = "❤";
+
+            // Set up fonts and brushes
+            Font font = bunifuLabel.Font;
+            Brush textBrush = new SolidBrush(bunifuLabel.ForeColor);
+            Brush heartBrush = new SolidBrush(Color.Red);
+
+            // Measure the size of each text segment
+            SizeF beforeHeartSize = e.Graphics.MeasureString(beforeHeart, font);
+            SizeF heartSize = e.Graphics.MeasureString(heart, font);
+            SizeF afterHeartSize = e.Graphics.MeasureString(afterHeart, font);
+
+            // Calculate total width and height
+            float totalWidth = beforeHeartSize.Width + heartSize.Width + afterHeartSize.Width;
+            float totalHeight = Math.Max(beforeHeartSize.Height, Math.Max(heartSize.Height, afterHeartSize.Height));
+
+            // Resize the label to fit the content
+            bunifuLabel.Width = (int)Math.Ceiling(totalWidth);
+            bunifuLabel.Height = (int)Math.Ceiling(totalHeight);
+
+            // Draw the first part of the text
+            e.Graphics.DrawString(beforeHeart, font, textBrush, new PointF(0, 0));
+
+            // Draw the red heart
+            e.Graphics.DrawString(heart, font, heartBrush, new PointF(beforeHeartSize.Width, 0));
+
+            // Draw the rest of the text
+            e.Graphics.DrawString(afterHeart, font, textBrush, new PointF(beforeHeartSize.Width + heartSize.Width, 0));
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -427,6 +496,7 @@ namespace TDF.Net
 
             }
         }
+
         #endregion
 
         #region Buttons
@@ -438,13 +508,11 @@ namespace TDF.Net
         {
             showFormInPanel(new reportsForm(false));
         }
-
         private void teamButton_Click(object sender, EventArgs e)
         {
             showFormInPanel(new balanceForm(false));
 
         }
-
         private void controlPanelButton_Click(object sender, EventArgs e)
         {
             controlPanelForm controlPanelForm = new controlPanelForm(false);

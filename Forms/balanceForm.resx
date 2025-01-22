@@ -222,11 +222,10 @@
   </metadata>
   <data name="refreshButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAI0AAAAlCAYAAAB/EWomAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAACHSURBVHhe7dKhEYQwAADBVJKWoT/KwAc8DD9/fsWa0zfm
-        vo65Xxf8Zx3jHeE305CZhsw0ZKYhMw2ZachMQ2YaMtOQmYbMNGSmITMNmWnITENmGjLTkJmGzDRkpiEz
-        DZlpyExDZhoy05CZhsw0ZKYhMw2ZachMQ2YaMtOQmYZszG2dzwiftnXeY5N18XuYTfIAAAAASUVORK5C
-        YII=
+        iVBORw0KGgoAAAANSUhEUgAAAHkAAAAeCAYAAAAIC7GrAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABxSURBVGhD7dExAYAwAMCwKZll8IcM/sEPDtYcefp2zHNd
+        83wedrWu8Y/sxuQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNM
+        DjA5wOQAkwNMDhjzWPc3spFj3S+AuOSulfWbyQAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="bunifuFormControlBox1.CloseBoxOptions.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

@@ -41,10 +41,10 @@ namespace TDF.Forms
             availableBalanceLabel.ForeColor = ThemeColor.darkColor;
             fromDatePicker.Value = new DateTime(DateTime.Now.Year, 1, 1);
             toDatePicker.Value = new DateTime(DateTime.Now.Year, 12, 31);
-            filtersGroupBox.Visible = hasManagerRole || hasAdminRole;
-            nameORdepDropdown.Visible = hasManagerRole || hasAdminRole;
-            filterDropdown.SelectedIndex = hasManagerRole || hasAdminRole ? 0 : 1;
-            nameORdepDropdown.SelectedItem = hasManagerRole || hasAdminRole ? "All" : loggedInUser.FullName;
+            filtersGroupBox.Visible = hasManagerRole || hasAdminRole || hasHRRole;
+            nameORdepDropdown.Visible = hasManagerRole || hasAdminRole || hasHRRole;
+            filterDropdown.SelectedIndex = hasManagerRole || hasAdminRole || hasHRRole ? 0 : 1;
+            nameORdepDropdown.SelectedItem = hasManagerRole || hasAdminRole || hasHRRole ? "All" : loggedInUser.FullName;
             statusDropdown.SelectedIndex = 0;
             typeDropdown.SelectedIndex = 0;
             updateReport();

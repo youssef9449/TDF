@@ -43,6 +43,7 @@ namespace TDF.Net
 
         public static void applyTheme(Form form)
         {
+            form.AutoScaleMode = AutoScaleMode.Dpi;
 
             foreach (Control ctrl in form.Controls)
             {
@@ -276,6 +277,9 @@ namespace TDF.Net
 
                     dgv.DefaultCellStyle.SelectionBackColor = ThemeColor.lightColor;
                     dgv.ColumnHeadersDefaultCellStyle.BackColor = ThemeColor.primaryColor;
+                    dgv.Margin = new Padding(0);
+                    dgv.Padding = new Padding(0);
+                    dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
                     //dgv.ForeColor = ThemeColor.SecondaryColor;
                     dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
@@ -358,6 +362,8 @@ namespace TDF.Net
         }
         public static void applyThemeLite(Form form)
         {
+            form.AutoScaleMode = AutoScaleMode.Dpi;
+
             foreach (Control ctrl in form.Controls)
             {
                 if (ctrl is Panel pbl)

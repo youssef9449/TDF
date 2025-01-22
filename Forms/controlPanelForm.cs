@@ -32,18 +32,16 @@ namespace TDF.Forms
                 panel.Visible = isModern;
             }
 
-            isMe = loggedInUser.Department == "All";
-            spoofButton.Visible = isMe;
-            passwordLabel.Visible = isMe;
-            passwordTextBox.Visible = isMe;
-            resetPasswordButton.Visible = isMe;
-            importButton.Visible = isMe;
-            deleteButton.Visible = isMe;
+            spoofButton.Visible = hasAdminRole;
+            passwordLabel.Visible = hasAdminRole;
+            passwordTextBox.Visible = hasAdminRole;
+            resetPasswordButton.Visible = hasAdminRole;
+            importButton.Visible = hasAdminRole;
+            deleteButton.Visible = hasAdminRole;
         }
 
         List<string> title = new List<string>();
         public event Action userUpdated;
-        bool isMe;
 
         #region Methods
         private void updateDepartments()
@@ -221,9 +219,10 @@ namespace TDF.Forms
         #region Events
         private void controlPanelForm_Load(object sender, EventArgs e)
         {
+            filterDropdown.Text = "Name";
+
             updateDepartments();
 
-            filterDropdown.Text = "";
             depDropdown.SelectedIndex = -1;
 
             loadUserNames();
@@ -970,7 +969,6 @@ namespace TDF.Forms
                                 loggedInUser.Title = reader["Title"].ToString();
                                 loggedInUser.Department = reader["Department"].ToString();
                                 loggedInUser.Role = reader["Role"].ToString();
-                                updateRoleStatus();
                                 userUpdated?.Invoke();
                             }
                             else
