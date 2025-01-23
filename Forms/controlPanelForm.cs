@@ -958,7 +958,7 @@ namespace TDF.Forms
                 using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
-                    string query = "SELECT UserID, UserName, FullName, Title, Department, Role FROM Users WHERE FullName = @FullName";
+                    string query = "SELECT UserID, Picture, UserName, FullName, Title, Department, Role FROM Users WHERE FullName = @FullName";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -974,6 +974,21 @@ namespace TDF.Forms
                                 loggedInUser.Title = reader["Title"].ToString();
                                 loggedInUser.Department = reader["Department"].ToString();
                                 loggedInUser.Role = reader["Role"].ToString();
+
+                                // Load the picture from the database
+                                if (reader["Picture"] != DBNull.Value)
+                                {
+                                    byte[] imageBytes = (byte[])reader["Picture"];
+                                    using (MemoryStream ms = new MemoryStream(imageBytes))
+                                    {
+                                        loggedInUser.Picture = Image.FromStream(ms);
+                                    }
+                                }
+                                else
+                                {
+                                    loggedInUser.Picture = null; // Handle cases where no image exists
+                                }
+
                                 userUpdated?.Invoke();
                             }
                             else
