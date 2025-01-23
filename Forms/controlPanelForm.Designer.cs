@@ -111,10 +111,9 @@
             // usersCheckedListBox
             // 
             this.usersCheckedListBox.FormattingEnabled = true;
-            this.usersCheckedListBox.Location = new System.Drawing.Point(11, 141);
-            this.usersCheckedListBox.Margin = new System.Windows.Forms.Padding(4);
+            this.usersCheckedListBox.Location = new System.Drawing.Point(9, 115);
             this.usersCheckedListBox.Name = "usersCheckedListBox";
-            this.usersCheckedListBox.Size = new System.Drawing.Size(562, 137);
+            this.usersCheckedListBox.Size = new System.Drawing.Size(482, 109);
             this.usersCheckedListBox.TabIndex = 1;
             this.usersCheckedListBox.ThreeDCheckBoxes = true;
             // 
@@ -167,8 +166,7 @@
             this.roleButton.IdleIconLeftImage = null;
             this.roleButton.IdleIconRightImage = null;
             this.roleButton.IndicateFocus = false;
-            this.roleButton.Location = new System.Drawing.Point(318, 347);
-            this.roleButton.Margin = new System.Windows.Forms.Padding(4);
+            this.roleButton.Location = new System.Drawing.Point(273, 282);
             this.roleButton.Name = "roleButton";
             this.roleButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.roleButton.OnDisabledState.BorderRadius = 1;
@@ -202,7 +200,7 @@
             this.roleButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.roleButton.OnPressedState.IconLeftImage = null;
             this.roleButton.OnPressedState.IconRightImage = null;
-            this.roleButton.Size = new System.Drawing.Size(190, 36);
+            this.roleButton.Size = new System.Drawing.Size(163, 29);
             this.roleButton.TabIndex = 5;
             this.roleButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.roleButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -217,11 +215,10 @@
             this.usersLabel.AutoEllipsis = false;
             this.usersLabel.CursorType = null;
             this.usersLabel.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.usersLabel.Location = new System.Drawing.Point(11, 59);
-            this.usersLabel.Margin = new System.Windows.Forms.Padding(4);
+            this.usersLabel.Location = new System.Drawing.Point(9, 48);
             this.usersLabel.Name = "usersLabel";
             this.usersLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.usersLabel.Size = new System.Drawing.Size(38, 20);
+            this.usersLabel.Size = new System.Drawing.Size(31, 15);
             this.usersLabel.TabIndex = 6;
             this.usersLabel.Text = "Users:";
             this.usersLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -276,8 +273,7 @@
             this.deleteButton.IdleIconLeftImage = null;
             this.deleteButton.IdleIconRightImage = null;
             this.deleteButton.IndicateFocus = false;
-            this.deleteButton.Location = new System.Drawing.Point(318, 750);
-            this.deleteButton.Margin = new System.Windows.Forms.Padding(4);
+            this.deleteButton.Location = new System.Drawing.Point(273, 609);
             this.deleteButton.Name = "deleteButton";
             this.deleteButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.deleteButton.OnDisabledState.BorderRadius = 1;
@@ -311,7 +307,7 @@
             this.deleteButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.deleteButton.OnPressedState.IconLeftImage = null;
             this.deleteButton.OnPressedState.IconRightImage = null;
-            this.deleteButton.Size = new System.Drawing.Size(190, 36);
+            this.deleteButton.Size = new System.Drawing.Size(163, 29);
             this.deleteButton.TabIndex = 7;
             this.deleteButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.deleteButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -356,10 +352,9 @@
             this.depDropdown.ItemHighLightColor = System.Drawing.Color.DodgerBlue;
             this.depDropdown.ItemHighLightForeColor = System.Drawing.Color.White;
             this.depDropdown.ItemTopMargin = 3;
-            this.depDropdown.Location = new System.Drawing.Point(16, 419);
-            this.depDropdown.Margin = new System.Windows.Forms.Padding(4);
+            this.depDropdown.Location = new System.Drawing.Point(14, 340);
             this.depDropdown.Name = "depDropdown";
-            this.depDropdown.Size = new System.Drawing.Size(238, 32);
+            this.depDropdown.Size = new System.Drawing.Size(205, 32);
             this.depDropdown.TabIndex = 8;
             this.depDropdown.Text = null;
             this.depDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
@@ -415,8 +410,7 @@
             this.depButton.IdleIconLeftImage = null;
             this.depButton.IdleIconRightImage = null;
             this.depButton.IndicateFocus = false;
-            this.depButton.Location = new System.Drawing.Point(318, 415);
-            this.depButton.Margin = new System.Windows.Forms.Padding(4);
+            this.depButton.Location = new System.Drawing.Point(273, 337);
             this.depButton.Name = "depButton";
             this.depButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.depButton.OnDisabledState.BorderRadius = 1;
@@ -450,7 +444,7 @@
             this.depButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.depButton.OnPressedState.IconLeftImage = null;
             this.depButton.OnPressedState.IconRightImage = null;
-            this.depButton.Size = new System.Drawing.Size(190, 36);
+            this.depButton.Size = new System.Drawing.Size(163, 29);
             this.depButton.TabIndex = 9;
             this.depButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.depButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -465,11 +459,10 @@
             this.bunifuLabel2.AutoEllipsis = false;
             this.bunifuLabel2.CursorType = null;
             this.bunifuLabel2.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel2.Location = new System.Drawing.Point(16, 392);
-            this.bunifuLabel2.Margin = new System.Windows.Forms.Padding(4);
+            this.bunifuLabel2.Location = new System.Drawing.Point(14, 318);
             this.bunifuLabel2.Name = "bunifuLabel2";
             this.bunifuLabel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel2.Size = new System.Drawing.Size(99, 25);
+            this.bunifuLabel2.Size = new System.Drawing.Size(83, 20);
             this.bunifuLabel2.TabIndex = 26;
             this.bunifuLabel2.Text = "Department:";
             this.bunifuLabel2.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -481,11 +474,10 @@
             this.bunifuLabel3.AutoEllipsis = false;
             this.bunifuLabel3.CursorType = null;
             this.bunifuLabel3.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel3.Location = new System.Drawing.Point(16, 320);
-            this.bunifuLabel3.Margin = new System.Windows.Forms.Padding(4);
+            this.bunifuLabel3.Location = new System.Drawing.Point(14, 260);
             this.bunifuLabel3.Name = "bunifuLabel3";
             this.bunifuLabel3.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel3.Size = new System.Drawing.Size(39, 25);
+            this.bunifuLabel3.Size = new System.Drawing.Size(33, 20);
             this.bunifuLabel3.TabIndex = 28;
             this.bunifuLabel3.Text = "Role:";
             this.bunifuLabel3.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -530,12 +522,12 @@
             "User",
             "Team Leader",
             "Manager",
-            "HR"});
+            "HR",
+            "HR Director"});
             this.roleDropdown.ItemTopMargin = 3;
-            this.roleDropdown.Location = new System.Drawing.Point(16, 352);
-            this.roleDropdown.Margin = new System.Windows.Forms.Padding(4);
+            this.roleDropdown.Location = new System.Drawing.Point(14, 286);
             this.roleDropdown.Name = "roleDropdown";
-            this.roleDropdown.Size = new System.Drawing.Size(238, 32);
+            this.roleDropdown.Size = new System.Drawing.Size(205, 32);
             this.roleDropdown.TabIndex = 27;
             this.roleDropdown.Text = null;
             this.roleDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
@@ -547,11 +539,10 @@
             this.bunifuLabel4.AutoEllipsis = false;
             this.bunifuLabel4.CursorType = null;
             this.bunifuLabel4.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.bunifuLabel4.Location = new System.Drawing.Point(679, 59);
-            this.bunifuLabel4.Margin = new System.Windows.Forms.Padding(4);
+            this.bunifuLabel4.Location = new System.Drawing.Point(582, 48);
             this.bunifuLabel4.Name = "bunifuLabel4";
             this.bunifuLabel4.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel4.Size = new System.Drawing.Size(89, 20);
+            this.bunifuLabel4.Size = new System.Drawing.Size(71, 15);
             this.bunifuLabel4.TabIndex = 29;
             this.bunifuLabel4.Text = "Departments:";
             this.bunifuLabel4.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -606,8 +597,7 @@
             this.updateDepButton.IdleIconLeftImage = null;
             this.updateDepButton.IdleIconRightImage = null;
             this.updateDepButton.IndicateFocus = false;
-            this.updateDepButton.Location = new System.Drawing.Point(1027, 104);
-            this.updateDepButton.Margin = new System.Windows.Forms.Padding(4);
+            this.updateDepButton.Location = new System.Drawing.Point(880, 84);
             this.updateDepButton.Name = "updateDepButton";
             this.updateDepButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.updateDepButton.OnDisabledState.BorderRadius = 1;
@@ -641,7 +631,7 @@
             this.updateDepButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.updateDepButton.OnPressedState.IconLeftImage = null;
             this.updateDepButton.OnPressedState.IconRightImage = null;
-            this.updateDepButton.Size = new System.Drawing.Size(190, 36);
+            this.updateDepButton.Size = new System.Drawing.Size(163, 29);
             this.updateDepButton.TabIndex = 32;
             this.updateDepButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.updateDepButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -699,8 +689,7 @@
             this.deleteDepButton.IdleIconLeftImage = null;
             this.deleteDepButton.IdleIconRightImage = null;
             this.deleteDepButton.IndicateFocus = false;
-            this.deleteDepButton.Location = new System.Drawing.Point(1027, 166);
-            this.deleteDepButton.Margin = new System.Windows.Forms.Padding(4);
+            this.deleteDepButton.Location = new System.Drawing.Point(880, 135);
             this.deleteDepButton.Name = "deleteDepButton";
             this.deleteDepButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.deleteDepButton.OnDisabledState.BorderRadius = 1;
@@ -734,7 +723,7 @@
             this.deleteDepButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.deleteDepButton.OnPressedState.IconLeftImage = null;
             this.deleteDepButton.OnPressedState.IconRightImage = null;
-            this.deleteDepButton.Size = new System.Drawing.Size(190, 36);
+            this.deleteDepButton.Size = new System.Drawing.Size(163, 29);
             this.deleteDepButton.TabIndex = 33;
             this.deleteDepButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.deleteDepButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -792,8 +781,7 @@
             this.addDepButton.IdleIconLeftImage = null;
             this.addDepButton.IdleIconRightImage = null;
             this.addDepButton.IndicateFocus = false;
-            this.addDepButton.Location = new System.Drawing.Point(1027, 229);
-            this.addDepButton.Margin = new System.Windows.Forms.Padding(4);
+            this.addDepButton.Location = new System.Drawing.Point(880, 186);
             this.addDepButton.Name = "addDepButton";
             this.addDepButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.addDepButton.OnDisabledState.BorderRadius = 1;
@@ -827,7 +815,7 @@
             this.addDepButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.addDepButton.OnPressedState.IconLeftImage = null;
             this.addDepButton.OnPressedState.IconRightImage = null;
-            this.addDepButton.Size = new System.Drawing.Size(190, 36);
+            this.addDepButton.Size = new System.Drawing.Size(163, 29);
             this.addDepButton.TabIndex = 34;
             this.addDepButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.addDepButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -865,8 +853,7 @@
             this.depTextBox.IconRight = null;
             this.depTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.depTextBox.Lines = new string[0];
-            this.depTextBox.Location = new System.Drawing.Point(1027, 352);
-            this.depTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.depTextBox.Location = new System.Drawing.Point(880, 286);
             this.depTextBox.MaxLength = 32767;
             this.depTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.depTextBox.Modified = false;
@@ -892,7 +879,7 @@
             stateProperties4.ForeColor = System.Drawing.Color.Empty;
             stateProperties4.PlaceholderForeColor = System.Drawing.Color.Empty;
             this.depTextBox.OnIdleState = stateProperties4;
-            this.depTextBox.Padding = new System.Windows.Forms.Padding(4);
+            this.depTextBox.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.depTextBox.PasswordChar = '\0';
             this.depTextBox.PlaceholderForeColor = System.Drawing.Color.Silver;
             this.depTextBox.PlaceholderText = "";
@@ -902,7 +889,7 @@
             this.depTextBox.SelectionLength = 0;
             this.depTextBox.SelectionStart = 0;
             this.depTextBox.ShortcutsEnabled = true;
-            this.depTextBox.Size = new System.Drawing.Size(190, 36);
+            this.depTextBox.Size = new System.Drawing.Size(163, 29);
             this.depTextBox.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.depTextBox.TabIndex = 35;
             this.depTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -942,8 +929,7 @@
             this.searchTextBox.IconRight = null;
             this.searchTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.searchTextBox.Lines = new string[0];
-            this.searchTextBox.Location = new System.Drawing.Point(280, 96);
-            this.searchTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.searchTextBox.Location = new System.Drawing.Point(240, 78);
             this.searchTextBox.MaxLength = 32767;
             this.searchTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.searchTextBox.Modified = false;
@@ -969,7 +955,7 @@
             stateProperties8.ForeColor = System.Drawing.Color.Empty;
             stateProperties8.PlaceholderForeColor = System.Drawing.Color.Empty;
             this.searchTextBox.OnIdleState = stateProperties8;
-            this.searchTextBox.Padding = new System.Windows.Forms.Padding(4);
+            this.searchTextBox.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.searchTextBox.PasswordChar = '\0';
             this.searchTextBox.PlaceholderForeColor = System.Drawing.Color.Silver;
             this.searchTextBox.PlaceholderText = "";
@@ -979,7 +965,7 @@
             this.searchTextBox.SelectionLength = 0;
             this.searchTextBox.SelectionStart = 0;
             this.searchTextBox.ShortcutsEnabled = true;
-            this.searchTextBox.Size = new System.Drawing.Size(295, 39);
+            this.searchTextBox.Size = new System.Drawing.Size(253, 32);
             this.searchTextBox.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.searchTextBox.TabIndex = 36;
             this.searchTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -997,11 +983,10 @@
             this.bunifuLabel5.AutoEllipsis = false;
             this.bunifuLabel5.CursorType = null;
             this.bunifuLabel5.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.bunifuLabel5.Location = new System.Drawing.Point(11, 102);
-            this.bunifuLabel5.Margin = new System.Windows.Forms.Padding(4);
+            this.bunifuLabel5.Location = new System.Drawing.Point(9, 83);
             this.bunifuLabel5.Name = "bunifuLabel5";
             this.bunifuLabel5.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel5.Size = new System.Drawing.Size(56, 20);
+            this.bunifuLabel5.Size = new System.Drawing.Size(45, 15);
             this.bunifuLabel5.TabIndex = 37;
             this.bunifuLabel5.Text = "Filter by:";
             this.bunifuLabel5.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -1048,10 +1033,9 @@
             "Role",
             "Title"});
             this.filterDropdown.ItemTopMargin = 3;
-            this.filterDropdown.Location = new System.Drawing.Point(85, 96);
-            this.filterDropdown.Margin = new System.Windows.Forms.Padding(4);
+            this.filterDropdown.Location = new System.Drawing.Point(73, 78);
             this.filterDropdown.Name = "filterDropdown";
-            this.filterDropdown.Size = new System.Drawing.Size(187, 32);
+            this.filterDropdown.Size = new System.Drawing.Size(161, 32);
             this.filterDropdown.TabIndex = 38;
             this.filterDropdown.Text = null;
             this.filterDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
@@ -1064,11 +1048,10 @@
             this.bunifuLabel6.AutoEllipsis = false;
             this.bunifuLabel6.CursorType = null;
             this.bunifuLabel6.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel6.Location = new System.Drawing.Point(738, 357);
-            this.bunifuLabel6.Margin = new System.Windows.Forms.Padding(4);
+            this.bunifuLabel6.Location = new System.Drawing.Point(633, 290);
             this.bunifuLabel6.Name = "bunifuLabel6";
             this.bunifuLabel6.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel6.Size = new System.Drawing.Size(262, 25);
+            this.bunifuLabel6.Size = new System.Drawing.Size(220, 20);
             this.bunifuLabel6.TabIndex = 39;
             this.bunifuLabel6.Text = "New/Updated department name:";
             this.bunifuLabel6.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -1123,8 +1106,7 @@
             this.renameButton.IdleIconLeftImage = null;
             this.renameButton.IdleIconRightImage = null;
             this.renameButton.IndicateFocus = false;
-            this.renameButton.Location = new System.Drawing.Point(318, 553);
-            this.renameButton.Margin = new System.Windows.Forms.Padding(4);
+            this.renameButton.Location = new System.Drawing.Point(273, 449);
             this.renameButton.Name = "renameButton";
             this.renameButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.renameButton.OnDisabledState.BorderRadius = 1;
@@ -1158,7 +1140,7 @@
             this.renameButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.renameButton.OnPressedState.IconLeftImage = null;
             this.renameButton.OnPressedState.IconRightImage = null;
-            this.renameButton.Size = new System.Drawing.Size(190, 36);
+            this.renameButton.Size = new System.Drawing.Size(163, 29);
             this.renameButton.TabIndex = 40;
             this.renameButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.renameButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1173,11 +1155,10 @@
             this.bunifuLabel7.AutoEllipsis = false;
             this.bunifuLabel7.CursorType = null;
             this.bunifuLabel7.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel7.Location = new System.Drawing.Point(16, 528);
-            this.bunifuLabel7.Margin = new System.Windows.Forms.Padding(4);
+            this.bunifuLabel7.Location = new System.Drawing.Point(14, 429);
             this.bunifuLabel7.Name = "bunifuLabel7";
             this.bunifuLabel7.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel7.Size = new System.Drawing.Size(51, 25);
+            this.bunifuLabel7.Size = new System.Drawing.Size(43, 20);
             this.bunifuLabel7.TabIndex = 41;
             this.bunifuLabel7.Text = "Name:";
             this.bunifuLabel7.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -1212,8 +1193,7 @@
             this.nameTextBox.IconRight = null;
             this.nameTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.nameTextBox.Lines = new string[0];
-            this.nameTextBox.Location = new System.Drawing.Point(16, 553);
-            this.nameTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.nameTextBox.Location = new System.Drawing.Point(14, 449);
             this.nameTextBox.MaxLength = 32767;
             this.nameTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.nameTextBox.Modified = false;
@@ -1239,7 +1219,7 @@
             stateProperties12.ForeColor = System.Drawing.Color.Empty;
             stateProperties12.PlaceholderForeColor = System.Drawing.Color.Empty;
             this.nameTextBox.OnIdleState = stateProperties12;
-            this.nameTextBox.Padding = new System.Windows.Forms.Padding(4);
+            this.nameTextBox.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.nameTextBox.PasswordChar = '\0';
             this.nameTextBox.PlaceholderForeColor = System.Drawing.Color.Silver;
             this.nameTextBox.PlaceholderText = "";
@@ -1249,7 +1229,7 @@
             this.nameTextBox.SelectionLength = 0;
             this.nameTextBox.SelectionStart = 0;
             this.nameTextBox.ShortcutsEnabled = true;
-            this.nameTextBox.Size = new System.Drawing.Size(239, 36);
+            this.nameTextBox.Size = new System.Drawing.Size(205, 29);
             this.nameTextBox.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.nameTextBox.TabIndex = 42;
             this.nameTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -1309,8 +1289,7 @@
             this.importButton.IdleIconLeftImage = null;
             this.importButton.IdleIconRightImage = null;
             this.importButton.IndicateFocus = false;
-            this.importButton.Location = new System.Drawing.Point(318, 809);
-            this.importButton.Margin = new System.Windows.Forms.Padding(4);
+            this.importButton.Location = new System.Drawing.Point(273, 657);
             this.importButton.Name = "importButton";
             this.importButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.importButton.OnDisabledState.BorderRadius = 1;
@@ -1344,7 +1323,7 @@
             this.importButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.importButton.OnPressedState.IconLeftImage = null;
             this.importButton.OnPressedState.IconRightImage = null;
-            this.importButton.Size = new System.Drawing.Size(190, 36);
+            this.importButton.Size = new System.Drawing.Size(163, 29);
             this.importButton.TabIndex = 43;
             this.importButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.importButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1402,8 +1381,7 @@
             this.resetPasswordButton.IdleIconLeftImage = null;
             this.resetPasswordButton.IdleIconRightImage = null;
             this.resetPasswordButton.IndicateFocus = false;
-            this.resetPasswordButton.Location = new System.Drawing.Point(318, 621);
-            this.resetPasswordButton.Margin = new System.Windows.Forms.Padding(4);
+            this.resetPasswordButton.Location = new System.Drawing.Point(273, 505);
             this.resetPasswordButton.Name = "resetPasswordButton";
             this.resetPasswordButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.resetPasswordButton.OnDisabledState.BorderRadius = 1;
@@ -1437,7 +1415,7 @@
             this.resetPasswordButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.resetPasswordButton.OnPressedState.IconLeftImage = null;
             this.resetPasswordButton.OnPressedState.IconRightImage = null;
-            this.resetPasswordButton.Size = new System.Drawing.Size(190, 36);
+            this.resetPasswordButton.Size = new System.Drawing.Size(163, 29);
             this.resetPasswordButton.TabIndex = 44;
             this.resetPasswordButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.resetPasswordButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1475,8 +1453,7 @@
             this.annualTextBox.IconRight = null;
             this.annualTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.annualTextBox.Lines = new string[0];
-            this.annualTextBox.Location = new System.Drawing.Point(164, 688);
-            this.annualTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.annualTextBox.Location = new System.Drawing.Point(141, 559);
             this.annualTextBox.MaxLength = 32767;
             this.annualTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.annualTextBox.Modified = false;
@@ -1502,7 +1479,7 @@
             stateProperties16.ForeColor = System.Drawing.Color.Empty;
             stateProperties16.PlaceholderForeColor = System.Drawing.Color.Empty;
             this.annualTextBox.OnIdleState = stateProperties16;
-            this.annualTextBox.Padding = new System.Windows.Forms.Padding(4);
+            this.annualTextBox.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.annualTextBox.PasswordChar = '\0';
             this.annualTextBox.PlaceholderForeColor = System.Drawing.Color.Silver;
             this.annualTextBox.PlaceholderText = "";
@@ -1512,7 +1489,7 @@
             this.annualTextBox.SelectionLength = 0;
             this.annualTextBox.SelectionStart = 0;
             this.annualTextBox.ShortcutsEnabled = true;
-            this.annualTextBox.Size = new System.Drawing.Size(77, 36);
+            this.annualTextBox.Size = new System.Drawing.Size(66, 29);
             this.annualTextBox.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.annualTextBox.TabIndex = 45;
             this.annualTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1572,8 +1549,7 @@
             this.leaveButton.IdleIconLeftImage = null;
             this.leaveButton.IdleIconRightImage = null;
             this.leaveButton.IndicateFocus = false;
-            this.leaveButton.Location = new System.Drawing.Point(318, 688);
-            this.leaveButton.Margin = new System.Windows.Forms.Padding(4);
+            this.leaveButton.Location = new System.Drawing.Point(273, 559);
             this.leaveButton.Name = "leaveButton";
             this.leaveButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.leaveButton.OnDisabledState.BorderRadius = 1;
@@ -1607,7 +1583,7 @@
             this.leaveButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.leaveButton.OnPressedState.IconLeftImage = null;
             this.leaveButton.OnPressedState.IconRightImage = null;
-            this.leaveButton.Size = new System.Drawing.Size(190, 36);
+            this.leaveButton.Size = new System.Drawing.Size(163, 29);
             this.leaveButton.TabIndex = 46;
             this.leaveButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.leaveButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1645,8 +1621,7 @@
             this.casualTextBox.IconRight = null;
             this.casualTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.casualTextBox.Lines = new string[0];
-            this.casualTextBox.Location = new System.Drawing.Point(30, 688);
-            this.casualTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.casualTextBox.Location = new System.Drawing.Point(26, 559);
             this.casualTextBox.MaxLength = 32767;
             this.casualTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.casualTextBox.Modified = false;
@@ -1672,7 +1647,7 @@
             stateProperties20.ForeColor = System.Drawing.Color.Empty;
             stateProperties20.PlaceholderForeColor = System.Drawing.Color.Empty;
             this.casualTextBox.OnIdleState = stateProperties20;
-            this.casualTextBox.Padding = new System.Windows.Forms.Padding(4);
+            this.casualTextBox.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.casualTextBox.PasswordChar = '\0';
             this.casualTextBox.PlaceholderForeColor = System.Drawing.Color.Silver;
             this.casualTextBox.PlaceholderText = "";
@@ -1682,7 +1657,7 @@
             this.casualTextBox.SelectionLength = 0;
             this.casualTextBox.SelectionStart = 0;
             this.casualTextBox.ShortcutsEnabled = true;
-            this.casualTextBox.Size = new System.Drawing.Size(77, 36);
+            this.casualTextBox.Size = new System.Drawing.Size(66, 29);
             this.casualTextBox.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.casualTextBox.TabIndex = 47;
             this.casualTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -1699,11 +1674,10 @@
             this.bunifuLabel8.AutoEllipsis = false;
             this.bunifuLabel8.CursorType = null;
             this.bunifuLabel8.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.bunifuLabel8.Location = new System.Drawing.Point(163, 660);
-            this.bunifuLabel8.Margin = new System.Windows.Forms.Padding(4);
+            this.bunifuLabel8.Location = new System.Drawing.Point(140, 536);
             this.bunifuLabel8.Name = "bunifuLabel8";
             this.bunifuLabel8.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel8.Size = new System.Drawing.Size(88, 20);
+            this.bunifuLabel8.Size = new System.Drawing.Size(71, 15);
             this.bunifuLabel8.TabIndex = 48;
             this.bunifuLabel8.Text = "Annual leave:";
             this.bunifuLabel8.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -1715,11 +1689,10 @@
             this.bunifuLabel9.AutoEllipsis = false;
             this.bunifuLabel9.CursorType = null;
             this.bunifuLabel9.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.bunifuLabel9.Location = new System.Drawing.Point(21, 660);
-            this.bunifuLabel9.Margin = new System.Windows.Forms.Padding(4);
+            this.bunifuLabel9.Location = new System.Drawing.Point(18, 536);
             this.bunifuLabel9.Name = "bunifuLabel9";
             this.bunifuLabel9.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel9.Size = new System.Drawing.Size(115, 20);
+            this.bunifuLabel9.Size = new System.Drawing.Size(92, 15);
             this.bunifuLabel9.TabIndex = 49;
             this.bunifuLabel9.Text = "Emergency leave:";
             this.bunifuLabel9.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -1756,8 +1729,8 @@
             this.controlBox.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
             this.controlBox.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
             this.controlBox.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.controlBox.Location = new System.Drawing.Point(1298, 4);
-            this.controlBox.Margin = new System.Windows.Forms.Padding(4, 2, 4, 2);
+            this.controlBox.Location = new System.Drawing.Point(1113, 3);
+            this.controlBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.controlBox.MaximizeBox = false;
             this.controlBox.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
             this.controlBox.MaximizeBoxOptions.BorderRadius = 0;
@@ -1787,7 +1760,7 @@
             this.controlBox.Name = "controlBox";
             this.controlBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.controlBox.ShowDesignBorders = false;
-            this.controlBox.Size = new System.Drawing.Size(78, 46);
+            this.controlBox.Size = new System.Drawing.Size(67, 37);
             this.controlBox.TabIndex = 50;
             // 
             // passwordTextBox
@@ -1819,8 +1792,7 @@
             this.passwordTextBox.IconRight = null;
             this.passwordTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.passwordTextBox.Lines = new string[0];
-            this.passwordTextBox.Location = new System.Drawing.Point(16, 621);
-            this.passwordTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.passwordTextBox.Location = new System.Drawing.Point(14, 505);
             this.passwordTextBox.MaxLength = 32767;
             this.passwordTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.passwordTextBox.Modified = false;
@@ -1846,7 +1818,7 @@
             stateProperties24.ForeColor = System.Drawing.Color.Empty;
             stateProperties24.PlaceholderForeColor = System.Drawing.Color.Empty;
             this.passwordTextBox.OnIdleState = stateProperties24;
-            this.passwordTextBox.Padding = new System.Windows.Forms.Padding(4);
+            this.passwordTextBox.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.passwordTextBox.PasswordChar = '*';
             this.passwordTextBox.PlaceholderForeColor = System.Drawing.Color.Silver;
             this.passwordTextBox.PlaceholderText = "";
@@ -1856,7 +1828,7 @@
             this.passwordTextBox.SelectionLength = 0;
             this.passwordTextBox.SelectionStart = 0;
             this.passwordTextBox.ShortcutsEnabled = true;
-            this.passwordTextBox.Size = new System.Drawing.Size(239, 36);
+            this.passwordTextBox.Size = new System.Drawing.Size(205, 29);
             this.passwordTextBox.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.passwordTextBox.TabIndex = 51;
             this.passwordTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -1873,11 +1845,10 @@
             this.passwordLabel.AutoEllipsis = false;
             this.passwordLabel.CursorType = null;
             this.passwordLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.passwordLabel.Location = new System.Drawing.Point(16, 596);
-            this.passwordLabel.Margin = new System.Windows.Forms.Padding(4);
+            this.passwordLabel.Location = new System.Drawing.Point(14, 484);
             this.passwordLabel.Name = "passwordLabel";
             this.passwordLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.passwordLabel.Size = new System.Drawing.Size(80, 25);
+            this.passwordLabel.Size = new System.Drawing.Size(65, 20);
             this.passwordLabel.TabIndex = 52;
             this.passwordLabel.Text = "Password:";
             this.passwordLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -1886,10 +1857,9 @@
             // depCheckedListBox
             // 
             this.depCheckedListBox.FormattingEnabled = true;
-            this.depCheckedListBox.Location = new System.Drawing.Point(679, 102);
-            this.depCheckedListBox.Margin = new System.Windows.Forms.Padding(4);
+            this.depCheckedListBox.Location = new System.Drawing.Point(582, 83);
             this.depCheckedListBox.Name = "depCheckedListBox";
-            this.depCheckedListBox.Size = new System.Drawing.Size(322, 175);
+            this.depCheckedListBox.Size = new System.Drawing.Size(277, 139);
             this.depCheckedListBox.TabIndex = 53;
             this.depCheckedListBox.ThreeDCheckBoxes = true;
             // 
@@ -1942,8 +1912,7 @@
             this.userDepButton.IdleIconLeftImage = null;
             this.userDepButton.IdleIconRightImage = null;
             this.userDepButton.IndicateFocus = false;
-            this.userDepButton.Location = new System.Drawing.Point(1027, 293);
-            this.userDepButton.Margin = new System.Windows.Forms.Padding(4);
+            this.userDepButton.Location = new System.Drawing.Point(880, 238);
             this.userDepButton.Name = "userDepButton";
             this.userDepButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.userDepButton.OnDisabledState.BorderRadius = 1;
@@ -1977,7 +1946,7 @@
             this.userDepButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.userDepButton.OnPressedState.IconLeftImage = null;
             this.userDepButton.OnPressedState.IconRightImage = null;
-            this.userDepButton.Size = new System.Drawing.Size(190, 36);
+            this.userDepButton.Size = new System.Drawing.Size(163, 29);
             this.userDepButton.TabIndex = 54;
             this.userDepButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.userDepButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2035,8 +2004,7 @@
             this.titleButton.IdleIconLeftImage = null;
             this.titleButton.IdleIconRightImage = null;
             this.titleButton.IndicateFocus = false;
-            this.titleButton.Location = new System.Drawing.Point(318, 484);
-            this.titleButton.Margin = new System.Windows.Forms.Padding(4);
+            this.titleButton.Location = new System.Drawing.Point(273, 393);
             this.titleButton.Name = "titleButton";
             this.titleButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.titleButton.OnDisabledState.BorderRadius = 1;
@@ -2070,7 +2038,7 @@
             this.titleButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.titleButton.OnPressedState.IconLeftImage = null;
             this.titleButton.OnPressedState.IconRightImage = null;
-            this.titleButton.Size = new System.Drawing.Size(190, 36);
+            this.titleButton.Size = new System.Drawing.Size(163, 29);
             this.titleButton.TabIndex = 55;
             this.titleButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.titleButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2085,11 +2053,10 @@
             this.bunifuLabel11.AutoEllipsis = false;
             this.bunifuLabel11.CursorType = null;
             this.bunifuLabel11.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel11.Location = new System.Drawing.Point(16, 459);
-            this.bunifuLabel11.Margin = new System.Windows.Forms.Padding(4);
+            this.bunifuLabel11.Location = new System.Drawing.Point(14, 373);
             this.bunifuLabel11.Name = "bunifuLabel11";
             this.bunifuLabel11.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel11.Size = new System.Drawing.Size(36, 25);
+            this.bunifuLabel11.Size = new System.Drawing.Size(32, 20);
             this.bunifuLabel11.TabIndex = 56;
             this.bunifuLabel11.Text = "Title:";
             this.bunifuLabel11.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
@@ -2131,10 +2098,9 @@
             this.titleDropdown.ItemHighLightColor = System.Drawing.Color.DodgerBlue;
             this.titleDropdown.ItemHighLightForeColor = System.Drawing.Color.White;
             this.titleDropdown.ItemTopMargin = 3;
-            this.titleDropdown.Location = new System.Drawing.Point(15, 488);
-            this.titleDropdown.Margin = new System.Windows.Forms.Padding(4);
+            this.titleDropdown.Location = new System.Drawing.Point(13, 396);
             this.titleDropdown.Name = "titleDropdown";
-            this.titleDropdown.Size = new System.Drawing.Size(238, 32);
+            this.titleDropdown.Size = new System.Drawing.Size(205, 32);
             this.titleDropdown.TabIndex = 57;
             this.titleDropdown.Text = null;
             this.titleDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Left;
@@ -2189,8 +2155,7 @@
             this.spoofButton.IdleIconLeftImage = null;
             this.spoofButton.IdleIconRightImage = null;
             this.spoofButton.IndicateFocus = false;
-            this.spoofButton.Location = new System.Drawing.Point(30, 750);
-            this.spoofButton.Margin = new System.Windows.Forms.Padding(4);
+            this.spoofButton.Location = new System.Drawing.Point(26, 609);
             this.spoofButton.Name = "spoofButton";
             this.spoofButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.spoofButton.OnDisabledState.BorderRadius = 1;
@@ -2224,7 +2189,7 @@
             this.spoofButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.spoofButton.OnPressedState.IconLeftImage = null;
             this.spoofButton.OnPressedState.IconRightImage = null;
-            this.spoofButton.Size = new System.Drawing.Size(190, 36);
+            this.spoofButton.Size = new System.Drawing.Size(163, 29);
             this.spoofButton.TabIndex = 58;
             this.spoofButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.spoofButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -2239,9 +2204,8 @@
             this.panel.Controls.Add(this.bunifuFormControlBox1);
             this.panel.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel.Location = new System.Drawing.Point(0, 0);
-            this.panel.Margin = new System.Windows.Forms.Padding(4);
             this.panel.Name = "panel";
-            this.panel.Size = new System.Drawing.Size(1386, 50);
+            this.panel.Size = new System.Drawing.Size(1188, 41);
             this.panel.TabIndex = 59;
             // 
             // bunifuFormControlBox1
@@ -2274,8 +2238,8 @@
             this.bunifuFormControlBox1.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
             this.bunifuFormControlBox1.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
             this.bunifuFormControlBox1.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.bunifuFormControlBox1.Location = new System.Drawing.Point(1197, 2);
-            this.bunifuFormControlBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.bunifuFormControlBox1.Location = new System.Drawing.Point(1026, 2);
+            this.bunifuFormControlBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.bunifuFormControlBox1.MaximizeBox = true;
             this.bunifuFormControlBox1.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
             this.bunifuFormControlBox1.MaximizeBoxOptions.BorderRadius = 0;
@@ -2305,16 +2269,16 @@
             this.bunifuFormControlBox1.Name = "bunifuFormControlBox1";
             this.bunifuFormControlBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.bunifuFormControlBox1.ShowDesignBorders = false;
-            this.bunifuFormControlBox1.Size = new System.Drawing.Size(187, 46);
+            this.bunifuFormControlBox1.Size = new System.Drawing.Size(160, 37);
             this.bunifuFormControlBox1.TabIndex = 19;
             // 
             // controlPanelForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1386, 858);
+            this.ClientSize = new System.Drawing.Size(1188, 697);
             this.Controls.Add(this.panel);
             this.Controls.Add(this.spoofButton);
             this.Controls.Add(this.titleDropdown);
@@ -2354,7 +2318,6 @@
             this.Controls.Add(this.roleButton);
             this.Controls.Add(this.usersCheckedListBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "controlPanelForm";
             this.Text = "User Control Panel";

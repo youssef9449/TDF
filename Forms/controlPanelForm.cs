@@ -38,6 +38,11 @@ namespace TDF.Forms
             resetPasswordButton.Visible = hasAdminRole;
             importButton.Visible = hasAdminRole;
             deleteButton.Visible = hasAdminRole;
+
+            if(hasHRRole)
+            {
+                roleDropdown.Items.Remove("HR Director");
+            }
         }
 
         List<string> title = new List<string>();

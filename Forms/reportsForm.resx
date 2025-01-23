@@ -202,13 +202,16 @@
   <metadata name="Status.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <metadata name="HRStatus.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <metadata name="Department.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="fromDatePicker.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAADbSURBVFhH7ZbRCcIwEIYjbmCD4AI++uizAziMG+gEYpst
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADbSURBVFhH7ZbRCcIwEIYjbmCD4AI++uizAziMG+gEYpst
         HEgwpbNUfkFMj4u9pMEg5oNC+O+/hCbXS5Uq/D2XZbehWmrEazSL+5YbS5ma/wSJ0ckJ8guFQuH3Mbpb
         11V7ojo0xKiejF71s1rbA9Up8MBL9UlwExpt92d9W+HBmMa5nGjcNzdVuxtG37gxyW6JcM/10+IvXE+S
         muAKTkqj7ZFq0XDn7IP1XlU/p1oIKDaq+QjxigmZdOAV/zCOwG6rhxDvKNmLMPtnCLI2IsC11a+2YpD1
@@ -224,7 +227,7 @@
   <data name="toDatePicker.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAADbSURBVFhH7ZbRCcIwEIYjbmCD4AI++uizAziMG+gEYpst
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADbSURBVFhH7ZbRCcIwEIYjbmCD4AI++uizAziMG+gEYpst
         HEgwpbNUfkFMj4u9pMEg5oNC+O+/hCbXS5Uq/D2XZbehWmrEazSL+5YbS5ma/wSJ0ckJ8guFQuH3Mbpb
         11V7ojo0xKiejF71s1rbA9Up8MBL9UlwExpt92d9W+HBmMa5nGjcNzdVuxtG37gxyW6JcM/10+IvXE+S
         muAKTkqj7ZFq0XDn7IP1XlU/p1oIKDaq+QjxigmZdOAV/zCOwG6rhxDvKNmLMPtnCLI2IsC11a+2YpD1
@@ -233,11 +236,10 @@
   </data>
   <data name="generateButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAJYAAAAnCAYAAADtl7EyAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAACPSURBVHhe7dKhAYAwAMCwXbKX4T/OwA88SKiLiKnumPs6
-        5n5d8J91jHeE74xFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgk
-        jEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJMbc1vmM8Mm2zhuxfRGmrPlByAAA
-        AABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAgCAYAAAA14BsbAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABnSURBVHhe7dIxEQAhEARBlGAZ/CGD/KA2/ZdAB51MPK3P
+        Wn2ew6tqtX/kNSbABJgAExAmwASYABMQJsAEmAATECbABJgAExAmwASYABMQJsAEmAATECbABJgAExAm
+        4LQ+an8jDxm1L0zHF6BOi4QkAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="filterLabel.BaseStylesheet" xml:space="preserve">

@@ -41,7 +41,7 @@ namespace TDF.Net
         }
 
         public static List<string> managerRoles = new List<string> { "Manager", "Team Leader" };
-        public static List<string> hrRoles = new List<string> { "HR Manager", "HR" };
+        public static List<string> hrRoles = new List<string> { "HR Director", "HR" };
 
         public static bool hasManagerRole, hasAdminRole, updatedUserData, hasHRRole;
         private ContextMenuStrip contextMenu;
@@ -56,11 +56,12 @@ namespace TDF.Net
         #region Methods
         public static void updateRoleStatus()
         {
-            hasManagerRole = loggedInUser.Role != null && managerRoles.Any(role =>
-              string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
+            hasManagerRole = loggedInUser.Role != null && managerRoles.Any(role =>string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
+
+            hasHRRole = loggedInUser.Role != null && hrRoles.Any(role =>string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
 
             hasAdminRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
-            hasHRRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "HR", StringComparison.OrdinalIgnoreCase);
+
         }
         private void setButtonVisibility()
         {

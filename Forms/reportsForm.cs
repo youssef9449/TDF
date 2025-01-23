@@ -51,7 +51,7 @@ namespace TDF.Forms
         }
         private void reportsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (reportsDataGridView.Columns[e.ColumnIndex].Name == "Status")
+            if (reportsDataGridView.Columns[e.ColumnIndex].Name == "Status" || reportsDataGridView.Columns[e.ColumnIndex].Name == "HRStatus")
             {
                 if (e.Value != null && e.Value.ToString() == "Approved")
                 {
@@ -99,13 +99,13 @@ namespace TDF.Forms
 
             if (filterDropdown.Text == "Department")
             {
-                updateMethod = hasAdminRole
+                updateMethod = hasAdminRole || hasHRRole
                     ? new Func<List<string>>(getDepartments)
                     : new Func<List<string>>(getDepartmentsOfManager);
             }
             else
             {
-                updateMethod = hasAdminRole
+                updateMethod = hasAdminRole || hasHRRole
                     ? new Func<List<string>>(getNames)
                     : new Func<List<string>>(() => getNamesForManager(getDepartmentsOfManager()));
             }
@@ -171,7 +171,7 @@ namespace TDF.Forms
                 return;
             }
 
-            string baseQuery = @"SELECT RequestUserFullName, RequestType, RequestNumberOfDays, RequestStatus, RequestFromDay, RequestDepartment, RequestBeginningTime, RequestEndingTime
+            string baseQuery = @"SELECT RequestUserFullName, RequestType, RequestNumberOfDays, RequestStatus, RequestFromDay, RequestDepartment, RequestBeginningTime, RequestEndingTime, RequestHRStatus
                          FROM Requests
                          WHERE CONVERT(date, RequestFromDay, 120) >= @startDate 
                          AND CONVERT(date, RequestFromDay, 120) <= @endDate";
@@ -290,6 +290,8 @@ namespace TDF.Forms
 
                     // Bind the result to the DataGridView
                     reportsDataGridView.DataSource = dataTable;
+                    reportsDataGridView.Columns["HRStatus"].DisplayIndex = reportsDataGridView.Columns.Count - 2;
+
                 }
                 catch (Exception ex)
                 {

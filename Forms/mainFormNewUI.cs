@@ -45,7 +45,7 @@ namespace TDF.Net
               string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
 
             hasAdminRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
-            hasHRRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "HR", StringComparison.OrdinalIgnoreCase);
+            hasHRRole = loggedInUser.Role != null && hrRoles.Any(role => string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
         }
         public void updateUserDataControls()
         {
