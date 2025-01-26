@@ -347,7 +347,6 @@ namespace TDF.Net
             adjustShadowPanelAndImageButtons();
             updateUserDataControls();
         }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -564,7 +563,6 @@ namespace TDF.Net
             Close();
             loginForm.Show();
         }
-
         #endregion
 
         private void circularPictureBox_Click(object sender, EventArgs e)
