@@ -81,7 +81,6 @@
 /obj/Debug/TDF.Net.mainFormNewUI.resources
 /Properties/Resources.resx
 /Properties/Resources.Designer.cs
-/TDF.csproj
 /bin/Debug/config.ini
 /obj/Debug/TDF.Forms.reportsForm.resources
 /bin/Release/config.ini
@@ -115,3 +114,7 @@
 /bin/Debug/TDF - Copy.exe
 /bin/Release/Confused/TDF.exe
 /bin/Release/Confused/TDF.pdb
+/packages/Bunifu.Licensing.6.0.4/.signature.p7s
+/packages
+/bin/Debug/Forms/~$Leave Request form.xlsx
+/Resources/TDF_Logo.png
