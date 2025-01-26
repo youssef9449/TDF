@@ -1,6 +1,7 @@
 ﻿using Bunifu.UI.WinForms;
 using Bunifu.UI.WinForms.BunifuButton;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
@@ -16,11 +17,22 @@ namespace TDF.Net
         [STAThread]
         static void Main()
         {
+            // Check if the application is already running
+            string appName = Process.GetCurrentProcess().ProcessName;
+            if (Process.GetProcessesByName(appName).Length > 1)
+            {
+                MessageBox.Show("Another instance of the TDF app is already running.","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Set culture settings
             CultureInfo English = new CultureInfo("en-GB");
             CultureInfo.DefaultThreadCurrentUICulture = English;
             CultureInfo.DefaultThreadCurrentCulture = English;
             CultureInfo.CurrentCulture = English;
             CultureInfo.CurrentUICulture = English;
+
+            // Start the application
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new loginForm());

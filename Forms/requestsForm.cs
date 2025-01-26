@@ -367,7 +367,7 @@ namespace TDF.Net.Forms
             if (hasAdminRole)
             {
                 condition = pendingRadioButton.Checked
-                   ? "WHERE r.RequestStatus = 'Pending'"
+                   ? "WHERE r.RequestStatus = 'Pending' OR r.RequestHRStatus = 'Pending'"
                    : "WHERE NOT r.RequestStatus = 'Pending' And NOT r.RequestHRStatus = 'Pending'";
             }
             if (!hasAdminRole && !hasHRRole)

@@ -11,6 +11,7 @@ using TDF.Net.Classes;
 using static TDF.Net.Program;
 using TDF.Classes;
 using System.Diagnostics;
+using TDF.Forms;
 
 namespace TDF.Net
 {
@@ -44,7 +45,7 @@ namespace TDF.Net
             {
                 // Log in the user and track the session
                 loggedInUser = getCurrentUserDetails(username);
-
+                makeUserConnected();
 
                 // Step 2: Open the new session's form (new login)
                 if (guiDropdown.Text == "Classic")
@@ -70,6 +71,55 @@ namespace TDF.Net
                 MessageBox.Show("Invalid username or password.");
             }
         }
+        public static List<string> getConnectedUsers()
+        {
+            using (SqlConnection connection = Database.getConnection())
+            {
+                connection.Open();
+                string query = "SELECT FullName FROM Users WHERE IsConnected = 1";
+
+                List<string> connectedUsers = new List<string>();
+
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        connectedUsers.Add(reader["FullName"].ToString());
+                    }
+                }
+                connectedUsers.Sort();
+                return connectedUsers;
+            }
+        }
+        private void makeUserConnected()
+        {
+            using (SqlConnection connection = Database.getConnection())
+            {
+                connection.Open();
+
+                string query = "UPDATE Users SET IsConnected = 1 WHERE UserName = @userName";
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@userName", loggedInUser.UserName);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        private void makeUserDisconnected()
+        {
+            using (SqlConnection connection = Database.getConnection())
+            {
+                connection.Open();
+                string query = "UPDATE Users SET IsConnected = 0 WHERE UserName = @userName";
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@userName", loggedInUser.UserName);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         public static List<string> getDepartments()
         {
             List<string> departments = new List<string>();

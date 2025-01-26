@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Threading;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Forms;
+using TDF.Net.Classes;
 using TDF.Net.Forms;
 using static TDF.Net.Classes.ThemeColor;
 using static TDF.Net.loginForm;
@@ -37,7 +39,6 @@ namespace TDF.Net
         private ContextMenuStrip contextMenu;
 
         private loginForm loginForm;
-
         #region Methods
         public static void updateRoleStatus()
         {
@@ -301,6 +302,74 @@ namespace TDF.Net
                 MessageBox.Show("An error occurred while saving the image: " + ex.Message);
             }
         }
+        public static List<User> GetConnectedUsers()
+        {
+            List<User> connectedUsers = new List<User>();
+
+            using (SqlConnection connection = Database.getConnection())
+            {
+                connection.Open();
+                string query = "SELECT FullName, Department, Picture FROM Users WHERE IsConnected = 1";
+
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        var user = new User
+                        {
+                            FullName = reader["FullName"].ToString(),
+                            Department = reader["Department"].ToString(),
+                            Picture = reader["Picture"] != DBNull.Value
+                                ? Image.FromStream(new MemoryStream((byte[])reader["Picture"]))
+                                : null // Default to null if no image
+                        };
+
+                        connectedUsers.Add(user);
+                    }
+                }
+            }
+
+            return connectedUsers;
+        }
+        private void DisplayConnectedUsers()
+        {
+            List<User> connectedUsers = GetConnectedUsers();
+
+            // Clear the panel before adding new items
+            usersShadowPanel.Controls.Clear();
+
+            int yOffset = 10; // Vertical spacing
+
+            foreach (User user in connectedUsers)
+            {
+                // Create PictureBox for the user's image
+                PictureBox pictureBox = new PictureBox
+                {
+                    Image = user.Picture ?? Properties.Resources.pngegg, // Fallback image
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    Size = new Size(50, 50), // Set size
+                    Location = new Point(10, yOffset) // Position
+                };
+
+                // Create Label for the user's name
+                Label nameLabel = new Label
+                {
+                    Text = $"{user.FullName.Split(' ')[0]} - {user.Department}", // "Name - Department"
+                    Location = new Point(70, yOffset + 15), // Position next to PictureBox
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 10, FontStyle.Regular)
+                };
+
+                // Add controls to the panel
+                usersShadowPanel.Controls.Add(pictureBox);
+                usersShadowPanel.Controls.Add(nameLabel);
+
+                // Update vertical offset for the next user
+                yOffset += 60; // Adjust based on control heights and spacing
+            }
+        }
+
         /* private void startPipeListener()
          {
              Thread pipeListenerThread = new Thread(new ThreadStart(ListenForMessages));
@@ -346,8 +415,8 @@ namespace TDF.Net
             setImageButtonVisibility();
             adjustShadowPanelAndImageButtons();
             updateUserDataControls();
+            DisplayConnectedUsers();
         }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -564,7 +633,6 @@ namespace TDF.Net
             Close();
             loginForm.Show();
         }
-
         #endregion
 
         private void circularPictureBox_Click(object sender, EventArgs e)
