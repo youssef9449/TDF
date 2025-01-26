@@ -1,15 +1,18 @@
-﻿using System;
+﻿using Bunifu.UI.WinForms;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using TDF.Forms;
 using TDF.Net.Forms;
-using static TDF.Classes.ThemeColor;
+using static TDF.Net.Classes.ThemeColor;
 using static TDF.Net.loginForm;
 using static TDF.Net.Program;
 
@@ -34,12 +37,13 @@ namespace TDF.Net
             this.loginForm = loginForm; // Store a reference to the login form
 
             updateRoleStatus();
-            controlPanelButton.Visible = hasAdminRole;
+            setButtonVisibility();
         }
 
         public static List<string> managerRoles = new List<string> { "Manager", "Team Leader" };
+        public static List<string> hrRoles = new List<string> { "HR Director", "HR" };
 
-        public static bool hasManagerRole, hasAdminRole, updatedUserData;
+        public static bool hasManagerRole, hasAdminRole, updatedUserData, hasHRRole;
         private ContextMenuStrip contextMenu;
         private loginForm loginForm;
 
@@ -52,12 +56,19 @@ namespace TDF.Net
         #region Methods
         public static void updateRoleStatus()
         {
-            hasManagerRole = loggedInUser.Role != null && managerRoles.Any(role =>
-              string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
+            hasManagerRole = loggedInUser.Role != null && managerRoles.Any(role =>string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
+
+            hasHRRole = loggedInUser.Role != null && hrRoles.Any(role =>string.Equals(loggedInUser.Role, role, StringComparison.OrdinalIgnoreCase));
 
             hasAdminRole = loggedInUser.Role != null && string.Equals(loggedInUser.Role, "Admin", StringComparison.OrdinalIgnoreCase);
+
         }
-        private void initializeCustomColorDropdown()
+        private void setButtonVisibility()
+        {
+            controlPanelButton.Visible = hasHRRole || hasAdminRole;
+            teamButton.Visible = hasHRRole || hasAdminRole || hasManagerRole;
+        }
+        /* private void initializeCustomColorDropdown()
         {
             // Set ComboBox properties
             colorDropdown.DrawMode = DrawMode.OwnerDrawFixed;
@@ -72,12 +83,12 @@ namespace TDF.Net
 
             // Attach DrawItem event for custom rendering
             colorDropdown.DrawItem += colorDropdown_DrawItem;
-        }
+        }*/
         public void updateUserDataControls()
         {
             circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : circularPictureBox.Image;
 
-            usernameLabel.Text = $"Welcome, {loggedInUser.FullName}!";
+            usernameLabel.Text = $"Welcome, {loggedInUser.FullName.Split(' ')[0]}!";
         }
         private void uploadPictureForLoggedInUser()
         {
@@ -200,23 +211,91 @@ namespace TDF.Net
         private void showFormInPanel(Form form)
         {
             form.TopLevel = false; // Make it a child control rather than a top-level form
+
+            //if (form.GetType() != typeof(requestsForm))
+            // {
             form.Dock = DockStyle.Fill;
+            // }
 
             formPanel.Controls.Clear();
             formPanel.Controls.Add(form);
             form.Show();
 
             formPanel.Controls.Add(TDFpictureBox);
+            formPanel.Controls.Add(bunifuLabel);
             TDFpictureBox.Show();
+            bunifuLabel.Show();
+            bunifuLabel.BringToFront();
         }
+        /*  private void startPipeListener()
+         {
+             Thread pipeListenerThread = new Thread(new ThreadStart(listenForMessages));
+             pipeListenerThread.IsBackground = true;
+             pipeListenerThread.Start();
+         }
+        private void listenForMessages()
+         {
+             using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("UserLogoutPipe", PipeDirection.In))
+             {
+                 // Wait for a connection from a client (new session)
+                 pipeServer.WaitForConnection();
+
+                 using (StreamReader reader = new StreamReader(pipeServer))
+                 {
+                     // Read the message from the new session
+                     string message = reader.ReadLine();
+                     if (message == "UserLoggedOut")
+                     {
+                         // Show the message and close the old session
+                         MessageBox.Show("You have been logged out because the user is opened on another PC.");
+                         Invoke((Action)(() => Close())); // Close the old session (form)
+                     }
+                 }
+             }
+         }*/
         #endregion
 
         #region Events
         private void mainForm_Load(object sender, EventArgs e)
         {
+         //   startPipeListener(); // Start listening for messages
             updateUserDataControls();
             //myTeamButton.Visible = !string.Equals(loggedInUser.Role, "User", StringComparison.OrdinalIgnoreCase);
 
+        }
+        private void bunifuLabel_Paint(object sender, PaintEventArgs e)
+        {
+            // Define the parts of the text
+            string beforeHeart = "Made with ";
+            string afterHeart = " for TDF+ by Youssef";
+            string heart = "❤";
+
+            // Set up fonts and brushes
+            Font font = bunifuLabel.Font;
+            Brush textBrush = new SolidBrush(bunifuLabel.ForeColor);
+            Brush heartBrush = new SolidBrush(Color.Red);
+
+            // Measure the size of each text segment
+            SizeF beforeHeartSize = e.Graphics.MeasureString(beforeHeart, font);
+            SizeF heartSize = e.Graphics.MeasureString(heart, font);
+            SizeF afterHeartSize = e.Graphics.MeasureString(afterHeart, font);
+
+            // Calculate total width and height
+            float totalWidth = beforeHeartSize.Width + heartSize.Width + afterHeartSize.Width;
+            float totalHeight = Math.Max(beforeHeartSize.Height, Math.Max(heartSize.Height, afterHeartSize.Height));
+
+            // Resize the label to fit the content
+            bunifuLabel.Width = (int)Math.Ceiling(totalWidth);
+            bunifuLabel.Height = (int)Math.Ceiling(totalHeight);
+
+            // Draw the first part of the text
+            e.Graphics.DrawString(beforeHeart, font, textBrush, new PointF(0, 0));
+
+            // Draw the red heart
+            e.Graphics.DrawString(heart, font, heartBrush, new PointF(beforeHeartSize.Width, 0));
+
+            // Draw the rest of the text
+            e.Graphics.DrawString(afterHeart, font, textBrush, new PointF(beforeHeartSize.Width + heartSize.Width, 0));
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -243,6 +322,11 @@ namespace TDF.Net
         private void closeImg_MouseLeave(object sender, EventArgs e)
         {
             closeImg.Image = Properties.Resources.close_nofocus;
+        }
+        private void closeImg_MouseDown(object sender, MouseEventArgs e)
+        {
+            closeImg.Image = Properties.Resources.close_press;
+
         }
         private void maxImage_MouseEnter(object sender, EventArgs e)
         {
@@ -413,23 +497,28 @@ namespace TDF.Net
 
             }
         }
+
         #endregion
 
         #region Buttons
         private void requestsButton_Click(object sender, EventArgs e)
         {
-            showFormInPanel(new requestsForm());
+            showFormInPanel(new requestsForm(false));
         }
-
         private void reportButton_Click(object sender, EventArgs e)
         {
-            showFormInPanel(new reportsForm());
+            showFormInPanel(new reportsForm(false));
         }
+        private void teamButton_Click(object sender, EventArgs e)
+        {
+            showFormInPanel(new balanceForm(false));
 
+        }
         private void controlPanelButton_Click(object sender, EventArgs e)
         {
-            controlPanelForm controlPanelForm = new controlPanelForm();
+            controlPanelForm controlPanelForm = new controlPanelForm(false);
             controlPanelForm.userUpdated += updateUserDataControls; // Subscribe to the event
+            controlPanelForm.userUpdated += setButtonVisibility; // Subscribe to the event
 
             showFormInPanel(controlPanelForm);
         }

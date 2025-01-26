@@ -8,29 +8,37 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using TDF.Classes;
 using TDF.Net.Classes;
 using static TDF.Net.Forms.addRequestForm;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using DataTable = System.Data.DataTable;
 using Excel = Microsoft.Office.Interop.Excel;
+using Point = System.Drawing.Point;
+using Rectangle = System.Drawing.Rectangle;
 
 namespace TDF.Net.Forms
 {
     public partial class requestsForm : Form
     {
-        public requestsForm()
+        public requestsForm(bool isModern)
         {
             InitializeComponent();
 
             Program.applyTheme(this);
-            controlBox.BackColor = Color.White;
-            controlBox.CloseBoxOptions.HoverColor = Color.White;
-            controlBox.CloseBoxOptions.IconHoverColor = ThemeColor.darkColor;
-            controlBox.CloseBoxOptions.IconPressedColor = ThemeColor.primaryColor;
-            controlBox.CloseBoxOptions.PressedColor = Color.White;
+            StartPosition = FormStartPosition.CenterScreen;
 
+            if (isModern)
+            {
+                controlBox.Visible = !isModern;
+                panel.MouseDown += new MouseEventHandler(panel_MouseDown);
+                panel.Paint += panel_Paint;
+                //Width += 500;
+            }
+            else
+            {
+                panel.Visible = isModern;
+            }
         }
 
         #region Events
@@ -56,32 +64,29 @@ namespace TDF.Net.Forms
         }
         private void Requests_Load(object sender, EventArgs e)
         {
-            applyButton.Visible = hasManagerRole || hasAdminRole;
+            applyButton.Visible = hasManagerRole || hasAdminRole || hasHRRole;
 
             refreshRequestsTable();
-        }
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void requestsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex >= 0 & e.RowIndex >= 0)
             {
-                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit" && (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending" || hasAdminRole || hasManagerRole))
+                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit" &&
+                    (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending"
+                    || hasAdminRole || hasManagerRole || hasHRRole))
                 {
-                    if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending")
-                    {
-                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell)
-                        {
-                            openRequestToEdit(e);
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("The request is locked. You cannot perform this action.");
 
+                    if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString() != loggedInUser.FullName && hasHRRole)
+                    {
+                        MessageBox.Show("you are not allowed to edit another user's request.");
+                        return;
+
+                    }
+
+                    if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell)
+                    {
+                        openRequestToEdit(e);
                     }
                 }
 
@@ -91,40 +96,33 @@ namespace TDF.Net.Forms
                     {
                         if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell imageCell)
                         {
-                            DialogResult confirmResult = MessageBox.Show("Are you sure you want to delete this request?",
-                                                                         "Confirm Delete",
-                                                                          MessageBoxButtons.YesNo);
-
-                            if (confirmResult == DialogResult.Yes)
+                            if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString() == loggedInUser.FullName)
                             {
-                                Request RequestToDelete = new Request
+                                DialogResult confirmResult = MessageBox.Show("Are you sure you want to delete this request?",
+                                                                             "Confirm Delete",
+                                                                              MessageBoxButtons.YesNo);
+
+                                if (confirmResult == DialogResult.Yes)
                                 {
-                                    RequestID = Convert.ToInt32(requestsDataGridView.Rows[e.RowIndex].Cells["RequestID"].Value)
-                                };
+                                    Request RequestToDelete = new Request
+                                    {
+                                        RequestID = Convert.ToInt32(requestsDataGridView.Rows[e.RowIndex].Cells["RequestID"].Value)
+                                    };
 
-                                RequestToDelete.delete();
+                                    RequestToDelete.delete();
 
-                                requestsDataGridView.Rows.RemoveAt(e.RowIndex);
+                                    requestsDataGridView.Rows.RemoveAt(e.RowIndex);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("You are not allowed to remove another user's request.");
                             }
                         }
                     }
                     else
                     {
                         MessageBox.Show("The request is locked. You cannot perform this action.");
-                    }
-                }
-
-                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" || requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject")
-                {
-                    DataGridViewRow currentRow = requestsDataGridView.Rows[e.RowIndex];
-
-                    if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve")
-                    {
-                        currentRow.Cells["Reject"].Value = false;
-                    }
-                    else if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject")
-                    {
-                        currentRow.Cells["Approve"].Value = false;
                     }
                 }
 
@@ -147,21 +145,31 @@ namespace TDF.Net.Forms
                     string reason = currentRow.Cells["RequestReason"].Value?.ToString() ?? string.Empty;
                     string beginningTime = currentRow.Cells["RequestBeginningTime"].Value?.ToString() ?? string.Empty;
                     string endingTime = currentRow.Cells["RequestEndingTime"].Value?.ToString() ?? string.Empty;
-                    string status = currentRow.Cells["RequestStatus"].Value?.ToString() ?? string.Empty;
+                    string managerApprovalStatus = currentRow.Cells["RequestStatus"].Value?.ToString() ?? string.Empty;
+                    string hrApprovalStatus = currentRow.Cells["RequestHRStatus"].Value?.ToString() ?? string.Empty;
 
-                    if (status == "Rejected")
+                    if (managerApprovalStatus == "Rejected")
                     {
-                        MessageBox.Show("Generating a report for a rejected request is not possible.");
+                        MessageBox.Show("Generating a report for a rejected request is not allowed.");
                         return;
                     }
 
-                    createPDF(requestType, beginningDate, endingDate, numberOfDays, availableBalance, reason, beginningTime, endingTime, status);
+                    if (currentRow.Cells["RequestUserFullName"].Value?.ToString() != loggedInUser.FullName)
+                    {
+                        MessageBox.Show("Generating a report for another user's request is not allowed.");
+                        return;
+                    }
+                    else
+                    {
+                        createPDF(requestType, beginningDate, endingDate, numberOfDays, availableBalance, reason, beginningTime, endingTime, managerApprovalStatus, hrApprovalStatus);
+                    }
                 }
             }
         }
         private void requestsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestStatus")
+            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestStatus" || 
+                requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestHRStatus")
             {
                 if (e.Value != null && e.Value.ToString() == "Approved")
                 {
@@ -176,7 +184,7 @@ namespace TDF.Net.Forms
                     e.CellStyle.ForeColor = Color.Blue;
                 }
             }
-            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestBeginningTime" || 
+            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestBeginningTime" ||
                 requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestEndingTime")
             {
                 if (e.Value != DBNull.Value && e.Value != null || !string.IsNullOrEmpty(e.Value.ToString()))
@@ -191,8 +199,8 @@ namespace TDF.Net.Forms
             {
                 if (e.Value == null || string.IsNullOrEmpty(e.Value.ToString()))
                 {
-                    e.Value = "-"; 
-                    e.FormattingApplied = true; 
+                    e.Value = "-";
+                    e.FormattingApplied = true;
                 }
             }
             if (requestsDataGridView.Columns[e.ColumnIndex].Name == "NumberOfDays")
@@ -200,13 +208,79 @@ namespace TDF.Net.Forms
                 if ((int)e.Value == 0 || string.IsNullOrEmpty(e.Value.ToString()))
                 {
                     e.Value = "-";
-                    e.FormattingApplied = true; 
+                    e.FormattingApplied = true;
                 }
             }
         }
         private void pendingRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
         {
             refreshRequestsTable();
+        }
+        private void requestsDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            // Ensure the column is either 'Approve' or 'Reject' and the row is valid
+            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve" || requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject")
+            {
+                DataGridViewRow currentRow = requestsDataGridView.Rows[e.RowIndex];
+                string requestUserFullName = currentRow.Cells["RequestUserFullName"].Value?.ToString();
+
+                // If the logged-in user tries to approve or reject their own request
+                if (requestUserFullName == loggedInUser.FullName)
+                {
+                    // Cancel the edit action immediately
+                    e.Cancel = true;
+                    MessageBox.Show("You can't approve or reject your own request.");
+                }
+                else
+                {
+                    // If not the logged-in user, handle the logic normally
+                    if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Approve")
+                    {
+                        currentRow.Cells["Reject"].Value = false;  // Uncheck 'Reject'
+                    }
+                    else if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Reject")
+                    {
+                        currentRow.Cells["Approve"].Value = false;  // Uncheck 'Approve'
+                    }
+                }
+            }
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            // Get the form's scroll position
+           Point scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        private void panel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && e.Clicks == 1)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, 0x112, 0xf012, 0);
+            }
+        }
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            Invalidate();  // Forces the form to repaint when resized
+        }
+        private void panel_Paint(object sender, PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            // Get the form's scroll position
+            Point scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         #endregion
 
@@ -217,10 +291,10 @@ namespace TDF.Net.Forms
 
             try
             {
-                if (hasManagerRole || hasAdminRole)
+                if (hasManagerRole || hasAdminRole || hasHRRole)
                 {
-                    loadRequestsForManagerOrAdmin(requestsTable);
-                    configureDataGridViewForManagerOrAdmin();
+                    loadRequestsForManagerOrAdminOrHR(requestsTable);
+                    configureDataGridViewForManagerOrAdminOrHR();
                 }
                 else
                 {
@@ -236,9 +310,9 @@ namespace TDF.Net.Forms
                 MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void loadRequestsForManagerOrAdmin(DataTable requestsTable)
+        private void loadRequestsForManagerOrAdminOrHR(DataTable requestsTable)
         {
-            string query = buildQueryForManagerOrAdmin();
+            string query = buildQueryForManagerOrAdminORHR();
             executeQuery(query, requestsTable);
         }
         private void loadRequestsForUser(DataTable requestsTable)
@@ -249,7 +323,7 @@ namespace TDF.Net.Forms
                 cmd.Parameters.AddWithValue("@UserID", loggedInUser.userID);
             });
         }
-        private string buildQueryForManagerOrAdmin()
+        private string buildQueryForManagerOrAdminORHR()
         {
             string baseQuery = @"
         SELECT 
@@ -264,6 +338,7 @@ namespace TDF.Net.Forms
             r.RequestStatus, 
             r.RequestRejectReason, 
             r.RequestNumberOfDays,
+            r.RequestHRStatus,
             CASE 
                 WHEN r.RequestType = 'Annual' THEN al.AnnualBalance
                 WHEN r.RequestType = 'Emergency' THEN al.CasualBalance
@@ -275,16 +350,33 @@ namespace TDF.Net.Forms
         LEFT JOIN 
             AnnualLeave al ON r.RequestUserID = al.UserID ";
 
-            string condition = pendingRadioButton.Checked
-                ? "WHERE r.RequestStatus = 'Pending'"
-                : "WHERE NOT r.RequestStatus = 'Pending'";
+            string condition="";
 
-            if (!hasAdminRole)
+            if (hasHRRole)
+            {
+                 condition = pendingRadioButton.Checked
+                    ? "WHERE r.RequestHRStatus = 'Pending'"
+                    : "WHERE NOT r.RequestHRStatus = 'Pending'";
+            }
+            if (hasManagerRole)
+            {
+                 condition = pendingRadioButton.Checked
+                    ? "WHERE r.RequestStatus = 'Pending'"
+                    : "WHERE NOT r.RequestStatus = 'Pending'";
+            }
+            if (hasAdminRole)
+            {
+                condition = pendingRadioButton.Checked
+                   ? "WHERE r.RequestStatus = 'Pending' OR r.RequestHRStatus = 'Pending'"
+                   : "WHERE NOT r.RequestStatus = 'Pending' And NOT r.RequestHRStatus = 'Pending'";
+            }
+            if (!hasAdminRole && !hasHRRole)
             {
                 // Split the manager's departments and build conditions dynamically
                 string[] departments = loggedInUser.Department.Split(new string[] { " - " }, StringSplitOptions.RemoveEmptyEntries);
                 string departmentCondition = string.Join(" OR ", departments.Select(d => $"r.RequestDepartment LIKE '%{d.Trim()}%'"));
                 condition += $" AND ({departmentCondition})";
+                //condition += $" AND NOT RequestUserFullName = '{loggedInUser.FullName}'";
             }
 
             return baseQuery + condition;
@@ -304,6 +396,7 @@ namespace TDF.Net.Forms
             r.RequestStatus, 
             r.RequestRejectReason, 
             r.RequestNumberOfDays,
+            r.RequestHRStatus,
             CASE 
                 WHEN r.RequestType = 'Annual' THEN al.AnnualBalance
                 WHEN r.RequestType = 'Emergency' THEN al.CasualBalance
@@ -316,7 +409,7 @@ namespace TDF.Net.Forms
             AnnualLeave al ON r.RequestUserID = al.UserID
         WHERE 
             r.RequestUserID = @UserID AND 
-            " + (pendingRadioButton.Checked ? "r.RequestStatus = 'Pending'" : "NOT r.RequestStatus = 'Pending'");
+            " + (pendingRadioButton.Checked ? " r.RequestStatus = 'Pending' AND r.RequestHRStatus = 'Pending'" : " NOT (r.RequestStatus = 'Pending' AND r.RequestHRStatus = 'Pending')");
         }
         private void executeQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
         {
@@ -333,27 +426,33 @@ namespace TDF.Net.Forms
                 }
             }
         }
-        private void configureDataGridViewForManagerOrAdmin()
+        private void configureDataGridViewForManagerOrAdminOrHR()
         {
             requestsDataGridView.Columns["RequestUserFullName"].Visible = true;
-            requestsDataGridView.Columns["Approve"].Visible = true;
-            requestsDataGridView.Columns["Reject"].Visible = true;
+
             requestsDataGridView.Columns["Edit"].Visible = pendingRadioButton.Checked;
-            requestsDataGridView.Columns["Remove"].Visible = false;
-            if (requestsDataGridView.Columns["Report"] != null)
-            {
-                requestsDataGridView.Columns["Report"].Visible = false;
-            }
+            //requestsDataGridView.Columns["RequestUserFullName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
+          //  requestsDataGridView.Columns["RequestUserFullName"].MinimumWidth += 25;
+           // requestsDataGridView.Columns["RequestUserFullName"].Width += 25;
+
+            /*requestsDataGridView.Columns["Edit"].Visible = !hasAdminRole && pendingRadioButton.Checked;
+              requestsDataGridView.Columns["Remove"].Visible = false;
+
+             if (requestsDataGridView.Columns["Report"] != null)
+             {
+                 requestsDataGridView.Columns["Report"].Visible = false;
+             }*/
             requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = false;
         }
         private void configureDataGridViewForUser()
         {
             bool isPending = pendingRadioButton.Checked;
+            requestsDataGridView.Columns["Approve"].Visible = false;
+            requestsDataGridView.Columns["Reject"].Visible = false;
             requestsDataGridView.Columns["Edit"].Visible = isPending;
             requestsDataGridView.Columns["Remove"].Visible = isPending;
             requestsDataGridView.Columns["RequestRejectReason"].Visible = !isPending;
             requestsDataGridView.Columns["RequestRejectReason"].ReadOnly = true;
-
         }
         private void openRequestToEdit(DataGridViewCellEventArgs e)
         {
@@ -394,6 +493,7 @@ namespace TDF.Net.Forms
         }
         private void reorderDataGridViewColumns()
         {
+            requestsDataGridView.Columns["RequestHRStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Edit"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Remove"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             if (requestsDataGridView.Columns["Report"] != null)
@@ -402,8 +502,8 @@ namespace TDF.Net.Forms
             }
             requestsDataGridView.Columns["RequestStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
             requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
-            requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Approve"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
+            requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
         }
         private (string managerName, string managerDepartment) getManagerName()
         {
@@ -427,8 +527,8 @@ namespace TDF.Net.Forms
                         {
                             if (reader.Read()) // Only take the first result
                             {
-                                 managerName = reader["FullName"].ToString();
-                                 managerDepartment = reader["Department"].ToString();
+                                managerName = reader["FullName"].ToString();
+                                managerDepartment = reader["Department"].ToString();
                                 return (managerName, managerDepartment);
                             }
                         }
@@ -441,6 +541,40 @@ namespace TDF.Net.Forms
             }
 
             return (managerName, managerDepartment);
+        }
+        private string getHRDirectorName()
+        {
+            string hrDirectorName = string.Empty;
+
+            string query = "SELECT TOP 1 FullName FROM Users WHERE Title = @Title";
+
+            try
+            {
+                using (SqlConnection connection = Database.getConnection())
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Title", "HR Director");
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.Read()) // Only take the first result
+                            {
+                                hrDirectorName = reader["FullName"].ToString();
+                                return hrDirectorName;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message);
+            }
+
+            return hrDirectorName;
         }
         public (int Annual, int Casual, int AnnualUsed, int CasualUsed) getLeaveBalances()
         {
@@ -486,7 +620,7 @@ namespace TDF.Net.Forms
                 return (int?)cmd.ExecuteScalar() ?? 0;
             }
         }
-        private void createPDF(string requestType, DateTime? beginningDate, DateTime? endingDate, int numberOfDays, int availableBalance, string reason, string beginningTime, string endingTime, string status)
+        private void createPDF(string requestType, DateTime? beginningDate, DateTime? endingDate, int numberOfDays, int availableBalance, string reason, string beginningTime, string endingTime, string status, string hrStatus)
         {
             string filePath = string.Empty;
 
@@ -519,14 +653,15 @@ namespace TDF.Net.Forms
                 worksheet = workbook.Worksheets[1]; // Assuming data will be written to the first worksheet
 
                 (string managerName, string managerDepartment) = getManagerName();
+                string hrDirectorName = getHRDirectorName();
 
                 // Write the common data for all request types
-                worksheet.Cells[2, 3].Value = DateTime.Now.Date;
+                worksheet.Cells[2, 3].Value = beginningDate;
                 worksheet.Cells[3, 3].Value = loggedInUser.FullName;
                 worksheet.Cells[5, 3].Value = loggedInUser.Department;
                 worksheet.Cells[4, 3].Value = loggedInUser.Title;
-                worksheet.Cells[6, 3].Value = managerName;
-                worksheet.Cells[7, 3].Value = managerDepartment + " Department";
+                worksheet.Cells[6, 3].Value = hasManagerRole || hasAdminRole ? "Hala Ibrahim" : managerName;
+                worksheet.Cells[7, 3].Value = hasManagerRole || hasAdminRole ? "Founder & CEO" : managerDepartment + " Department";
 
                 if (requestType == "Annual" || requestType == "Emergency" || requestType == "Unpaid")
                 {
@@ -565,6 +700,8 @@ namespace TDF.Net.Forms
 
                     worksheet.Cells[8, 10].Value = numberOfDays;
                     worksheet.Cells[26, 4].Value = status == "Approved" ? worksheet.Cells[6, 3].Value : "";
+                    worksheet.Cells[27, 4].Value = hrStatus == "Approved" ? hrDirectorName : "";
+
                 }
                 else if (requestType == "Permission")
                 {
@@ -576,6 +713,8 @@ namespace TDF.Net.Forms
                     worksheet.Cells[19, 9].Value = getPermissionUsed();
 
                     worksheet.Cells[22, 4].Value = status == "Approved" ? worksheet.Cells[6, 3].Value : "";
+                    worksheet.Cells[23, 4].Value = hrStatus == "Approved" ? hrDirectorName : "";
+
                 }
                 else if (requestType == "Work From Home" || requestType == "External Assignment") // "Work From Home_Business Trip"
                 {
@@ -597,6 +736,7 @@ namespace TDF.Net.Forms
                     }
 
                     worksheet.Cells[23, 4].Value = status == "Approved" ? worksheet.Cells[6, 3].Value : "";
+                    worksheet.Cells[24, 4].Value = hrStatus == "Approved" ? hrDirectorName : "";
                 }
 
                 saveAsPdf(workbook, requestType, status);
@@ -611,7 +751,6 @@ namespace TDF.Net.Forms
                 cleanupExcel(excelApp, workbook, worksheet);
             }
         }
-
         private void saveAsPdf(Workbook workbook, string requestType, string status)
         {
             try
@@ -643,7 +782,6 @@ namespace TDF.Net.Forms
                 MessageBox.Show($"Error saving the file as PDF: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void cleanupExcel(Excel.Application excelApp, Workbook workbook, Worksheet worksheet)
         {
             if (workbook != null)
@@ -661,8 +799,6 @@ namespace TDF.Net.Forms
                 Marshal.ReleaseComObject(excelApp);
             }
         }
-
-
         #endregion
 
         #region Buttons
@@ -682,135 +818,201 @@ namespace TDF.Net.Forms
         }
         private void applyButton_Click(object sender, EventArgs e)
         {
-            using (SqlConnection conn = Database.getConnection())
+            if (hasHRRole || hasManagerRole)
             {
-                conn.Open();
-
-                foreach (DataGridViewRow row in requestsDataGridView.Rows)
+                using (SqlConnection conn = Database.getConnection())
                 {
-                    if (row.IsNewRow) continue;
+                    conn.Open();
 
-                    bool isApproved = Convert.ToBoolean(row.Cells["Approve"].Value);
-                    bool isRejected = Convert.ToBoolean(row.Cells["Reject"].Value);
-                    string rejectReason = row.Cells["RequestRejectReason"].Value?.ToString() ?? string.Empty;
-
-                    string newStatus = null;
-                    if (isApproved)
+                    foreach (DataGridViewRow row in requestsDataGridView.Rows)
                     {
-                        newStatus = "Approved";
-                    }
-                    else if (isRejected)
-                    {
-                        newStatus = "Rejected";
-                    }
+                        if (row.IsNewRow) continue;
 
-                    if (newStatus != null)
-                    {
-                        int requestId = Convert.ToInt32(row.Cells["RequestID"].Value);
-                        string requestType = row.Cells["RequestType"].Value?.ToString();
-                        int numberOfDays = Convert.ToInt32(row.Cells["NumberOfDays"].Value);
-                        string userFullName = row.Cells["RequestUserFullName"].Value?.ToString();
-                        string currentStatus = row.Cells["RequestStatus"].Value?.ToString();
+                        bool isApproved = Convert.ToBoolean(row.Cells["Approve"].Value);
+                        bool isRejected = Convert.ToBoolean(row.Cells["Reject"].Value);
+                        string rejectReason = row.Cells["RequestRejectReason"].Value?.ToString() ?? string.Empty;
 
-                        // Update request status and rejection reason
-                        string query = @"UPDATE Requests 
+                        string newStatus = null;
+                        if (isApproved)
+                        {
+                            newStatus = "Approved";
+                        }
+                        else if (isRejected)
+                        {
+                            newStatus = "Rejected";
+                        }
+
+                        if (newStatus != null)
+                        {
+                            int requestId = Convert.ToInt32(row.Cells["RequestID"].Value);
+                            string requestType = row.Cells["RequestType"].Value?.ToString();
+                            int numberOfDays = Convert.ToInt32(row.Cells["NumberOfDays"].Value);
+                            string userFullName = row.Cells["RequestUserFullName"].Value?.ToString();
+                            string currentHRStatus = row.Cells["RequestHRStatus"].Value?.ToString();
+                            string currentManagerStatus = row.Cells["RequestStatus"].Value?.ToString();
+
+                            // Check if the user is "HR Director" and the request user is in the "HR" department
+                            bool isHRDirector = loggedInUser.Role == "HR Director";
+                            bool isHRRequestUser = IsHRDepartmentUser(conn, userFullName);
+
+                            // Construct update query
+                            string query = null;
+                            if (hasHRRole)
+                            {
+                                query = isHRDirector && isHRRequestUser
+                                    ? @"UPDATE Requests 
+                                 SET RequestHRStatus = @RequestStatus, 
+                                     RequestStatus = @RequestStatus, 
+                                     RequestRejectReason = @RequestRejectReason, 
+                                     RequestHRCloser = @RequestCloser, 
+                                     RequestCloser = @RequestCloser 
+                                 WHERE RequestID = @RequestID"
+                                    : @"UPDATE Requests 
+                                 SET RequestHRStatus = @RequestStatus, 
+                                     RequestRejectReason = @RequestRejectReason, 
+                                     RequestHRCloser = @RequestCloser 
+                                 WHERE RequestID = @RequestID";
+                            }
+                            else if (hasManagerRole)
+                            {
+                                query = @"UPDATE Requests 
                                  SET RequestStatus = @RequestStatus, 
                                      RequestRejectReason = @RequestRejectReason, 
                                      RequestCloser = @RequestCloser 
                                  WHERE RequestID = @RequestID";
-
-                        using (SqlCommand cmd = new SqlCommand(query, conn))
-                        {
-                            cmd.Parameters.AddWithValue("@RequestStatus", newStatus);
-                            cmd.Parameters.AddWithValue("@RequestRejectReason", rejectReason);
-                            cmd.Parameters.AddWithValue("@RequestCloser", loggedInUser.FullName);
-                            cmd.Parameters.AddWithValue("@RequestID", requestId);
-
-                            cmd.ExecuteNonQuery();
-                        }
-
-                        // Handle balance adjustment if the status is changing between "Approved" and "Rejected"
-                        if (newStatus == "Approved" && currentStatus != "Approved" && (requestType == "Annual" || requestType == "Emergency" || requestType == "Unpaid" || requestType == "Permission"))
-                        {
-                            string updateLeaveQuery = "";
-
-                            if (requestType == "Annual")
-                            {
-                                updateLeaveQuery = @"UPDATE AnnualLeave
-                                             SET AnnualUsed = AnnualUsed + @NumberOfDays
-                                             WHERE FullName = @FullName";
-                            }
-                            else if (requestType == "Emergency")
-                            {
-                                updateLeaveQuery = @"UPDATE AnnualLeave
-                                             SET CasualUsed = CasualUsed + @NumberOfDays
-                                             WHERE FullName = @FullName";
-                            }
-                            else if (requestType == "Unpaid")
-                            {
-                                updateLeaveQuery = @"UPDATE AnnualLeave
-                                             SET UnpaidUsed = UnpaidUsed + @NumberOfDays
-                                             WHERE FullName = @FullName";
-                            }
-                            else
-                            {
-                                updateLeaveQuery = @"UPDATE AnnualLeave
-                                             SET PermissionsUsed = PermissionsUsed + 1
-                                             WHERE FullName = @FullName";
                             }
 
-                            using (SqlCommand cmd = new SqlCommand(updateLeaveQuery, conn))
+                            // Execute update query
+                            if (!string.IsNullOrEmpty(query))
                             {
-                                cmd.Parameters.AddWithValue("@NumberOfDays", numberOfDays);
-                                cmd.Parameters.AddWithValue("@FullName", userFullName);
+                                using (SqlCommand cmd = new SqlCommand(query, conn))
+                                {
+                                    cmd.Parameters.AddWithValue("@RequestStatus", newStatus);
+                                    cmd.Parameters.AddWithValue("@RequestRejectReason", rejectReason);
+                                    cmd.Parameters.AddWithValue("@RequestCloser", loggedInUser.FullName);
+                                    cmd.Parameters.AddWithValue("@RequestID", requestId);
 
-                                cmd.ExecuteNonQuery();
-                            }
-                        }
-                        else if (newStatus == "Rejected" && currentStatus == "Approved" && (requestType == "Annual" || requestType == "Emergency" || requestType == "Unpaid" || requestType == "Permission"))
-                        {
-                            string updateLeaveQuery = "";
-
-                            if (requestType == "Annual")
-                            {
-                                updateLeaveQuery = @"UPDATE AnnualLeave
-                                             SET AnnualUsed = AnnualUsed - @NumberOfDays
-                                             WHERE FullName = @FullName";
-                            }
-                            else if (requestType == "Emergency")
-                            {
-                                updateLeaveQuery = @"UPDATE AnnualLeave
-                                             SET CasualUsed = CasualUsed - @NumberOfDays
-                                             WHERE FullName = @FullName";
-                            }
-                            else if (requestType == "Unpaid")
-                            {
-                                updateLeaveQuery = @"UPDATE AnnualLeave
-                                             SET UnpaidUsed = UnpaidUsed - @NumberOfDays
-                                             WHERE FullName = @FullName";
-                            }
-                            else
-                            {
-                                updateLeaveQuery = @"UPDATE AnnualLeave
-                                             SET PermissionsUsed = PermissionsUsed - 1
-                                             WHERE FullName = @FullName";
+                                    cmd.ExecuteNonQuery();
+                                }
                             }
 
-                            using (SqlCommand cmd = new SqlCommand(updateLeaveQuery, conn))
-                            {
-                                cmd.Parameters.AddWithValue("@NumberOfDays", numberOfDays);
-                                cmd.Parameters.AddWithValue("@FullName", userFullName);
-
-                                cmd.ExecuteNonQuery();
-                            }
+                            // Call HandleBalanceUpdate only once per request
+                            string effectiveRole = isHRDirector ? "HR Director" : hasHRRole ? "HR" : "Manager";
+                            HandleBalanceUpdate(conn, currentHRStatus, currentManagerStatus, newStatus, effectiveRole, requestType, numberOfDays, userFullName);
                         }
                     }
-                }
 
-                MessageBox.Show("Requests updated successfully.");
-                refreshRequestsTable();
+                    MessageBox.Show("Requests updated successfully.");
+                    refreshRequestsTable();
+                }
             }
         }
+        private bool IsHRDepartmentUser(SqlConnection conn, string userFullName)
+        {
+            string query = "SELECT Department FROM Users WHERE FullName = @FullName";
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@FullName", userFullName);
+                object result = cmd.ExecuteScalar();
+                return result?.ToString() == "Human Resources";
+            }
+        }
+        private void HandleBalanceUpdate(SqlConnection conn, string currentHRStatus, string currentManagerStatus, string newStatus, string role, string requestType, int numberOfDays, string userFullName)
+        {
+            bool isHRRequestUser = IsHRDepartmentUser(conn, userFullName);
+
+            if (newStatus == "Approved")
+            {
+                if (isHRRequestUser)
+                {
+                    // For HR department users, HR Director directly updates the balance
+                    if (role == "HR Director" && currentHRStatus != "Approved")
+                    {
+                        AdjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: true);
+                    }
+                }
+                else
+                {
+                    // For normal users, balance is updated only when both Manager and HR have approved
+                    if (role == "Manager" && currentHRStatus == "Approved" && currentManagerStatus != "Approved")
+                    {
+                        // HR approved first, and now Manager approves
+                        AdjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: true);
+                    }
+                    else if ((role == "HR" || role == "HR Director") && currentManagerStatus == "Approved" && currentHRStatus != "Approved")
+                    {
+                        // Manager approved first, and now HR (or HR Director) approves
+                        AdjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: true);
+                    }
+                }
+            }
+            else if (newStatus == "Rejected")
+            {
+                // Revert balances only if the request was fully approved before rejection
+                if (isHRRequestUser)
+                {
+                    if (role == "HR Director" && currentHRStatus == "Approved")
+                    {
+                        AdjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: false);
+                    }
+                }
+                else
+                {
+                    if (currentHRStatus == "Approved" && currentManagerStatus == "Approved")
+                    {
+                        AdjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: false);
+                    }
+                }
+            }
+        }
+        private void AdjustLeaveBalance(SqlConnection conn, string requestType, int numberOfDays, string userFullName, bool isAdding)
+        {
+            string updateLeaveQuery = "";
+
+            if (requestType == "Annual")
+            {
+                updateLeaveQuery = @"UPDATE AnnualLeave
+                     SET AnnualUsed = AnnualUsed + @NumberOfDays
+                     WHERE FullName = @FullName";
+            }
+            else if (requestType == "Emergency")
+            {
+                updateLeaveQuery = @"UPDATE AnnualLeave
+                     SET CasualUsed = CasualUsed + @NumberOfDays
+                     WHERE FullName = @FullName";
+            }
+            else if (requestType == "Unpaid")
+            {
+                updateLeaveQuery = @"UPDATE AnnualLeave
+                     SET UnpaidUsed = UnpaidUsed + @NumberOfDays
+                     WHERE FullName = @FullName";
+            }
+            else if (requestType == "Permission")
+            {
+                updateLeaveQuery = @"UPDATE AnnualLeave
+                     SET PermissionsUsed = PermissionsUsed + 1
+                     WHERE FullName = @FullName";
+            }
+
+            if (!isAdding)
+            {
+                updateLeaveQuery = updateLeaveQuery.Replace("+", "-");
+            }
+
+
+            // Only execute the query if it's not empty
+            if (!string.IsNullOrEmpty(updateLeaveQuery))
+            {
+                using (SqlCommand cmd = new SqlCommand(updateLeaveQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@NumberOfDays", numberOfDays);
+                    cmd.Parameters.AddWithValue("@FullName", userFullName);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         #endregion
 
     }

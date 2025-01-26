@@ -138,7 +138,7 @@
     <value>False</value>
   </data>
   <data name="RequestID.Width" type="System.Int32, mscorlib">
-    <value>139</value>
+    <value>114</value>
   </data>
   <metadata name="RequestUserFullName.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -147,13 +147,13 @@
     <value>User Name</value>
   </data>
   <data name="RequestUserFullName.MinimumWidth" type="System.Int32, mscorlib">
-    <value>6</value>
+    <value>114</value>
   </data>
   <data name="RequestUserFullName.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
   <data name="RequestUserFullName.Width" type="System.Int32, mscorlib">
-    <value>141</value>
+    <value>145</value>
   </data>
   <metadata name="RequestType.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -165,7 +165,7 @@
     <value>6</value>
   </data>
   <data name="RequestType.Width" type="System.Int32, mscorlib">
-    <value>162</value>
+    <value>133</value>
   </data>
   <metadata name="RequestFromDay.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -177,7 +177,7 @@
     <value>6</value>
   </data>
   <data name="RequestFromDay.Width" type="System.Int32, mscorlib">
-    <value>87</value>
+    <value>72</value>
   </data>
   <metadata name="RequestToDay.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -189,7 +189,7 @@
     <value>6</value>
   </data>
   <data name="RequestToDay.Width" type="System.Int32, mscorlib">
-    <value>61</value>
+    <value>51</value>
   </data>
   <metadata name="NumberOfDays.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -202,7 +202,7 @@
     <value>6</value>
   </data>
   <data name="NumberOfDays.Width" type="System.Int32, mscorlib">
-    <value>148</value>
+    <value>119</value>
   </data>
   <metadata name="remainingBalance.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -214,7 +214,7 @@
     <value>6</value>
   </data>
   <data name="remainingBalance.Width" type="System.Int32, mscorlib">
-    <value>109</value>
+    <value>90</value>
   </data>
   <metadata name="RequestReason.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -235,7 +235,7 @@
     <value>6</value>
   </data>
   <data name="RequestBeginningTime.Width" type="System.Int32, mscorlib">
-    <value>138</value>
+    <value>112</value>
   </data>
   <metadata name="RequestEndingTime.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -247,7 +247,7 @@
     <value>6</value>
   </data>
   <data name="RequestEndingTime.Width" type="System.Int32, mscorlib">
-    <value>112</value>
+    <value>91</value>
   </data>
   <metadata name="RequestRejectReason.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -257,6 +257,18 @@
   </data>
   <data name="RequestRejectReason.MinimumWidth" type="System.Int32, mscorlib">
     <value>100</value>
+  </data>
+  <metadata name="RequestHRStatus.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <data name="RequestHRStatus.HeaderText" xml:space="preserve">
+    <value>HR Status</value>
+  </data>
+  <data name="RequestHRStatus.MinimumWidth" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="RequestHRStatus.Width" type="System.Int32, mscorlib">
+    <value>105</value>
   </data>
   <metadata name="RequestStatus.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -268,7 +280,7 @@
     <value>6</value>
   </data>
   <data name="RequestStatus.Width" type="System.Int32, mscorlib">
-    <value>95</value>
+    <value>79</value>
   </data>
   <metadata name="Edit.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -280,7 +292,7 @@
     <value>20</value>
   </data>
   <data name="Edit.Width" type="System.Int32, mscorlib">
-    <value>74</value>
+    <value>62</value>
   </data>
   <metadata name="Remove.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -292,7 +304,7 @@
     <value>20</value>
   </data>
   <data name="Remove.Width" type="System.Int32, mscorlib">
-    <value>113</value>
+    <value>94</value>
   </data>
   <metadata name="Report.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -304,7 +316,7 @@
     <value>20</value>
   </data>
   <data name="Report.Width" type="System.Int32, mscorlib">
-    <value>78</value>
+    <value>66</value>
   </data>
   <metadata name="Approve.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -315,11 +327,8 @@
   <data name="Approve.MinimumWidth" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
-  <data name="Approve.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="Approve.Width" type="System.Int32, mscorlib">
-    <value>117</value>
+    <value>98</value>
   </data>
   <metadata name="Reject.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -330,24 +339,18 @@
   <data name="Reject.MinimumWidth" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
-  <data name="Reject.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="Reject.Width" type="System.Int32, mscorlib">
-    <value>94</value>
+    <value>80</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="requestsDataGridView.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 233</value>
-  </data>
-  <data name="requestsDataGridView.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>4, 157</value>
   </data>
   <data name="requestsDataGridView.RowHeadersWidth" type="System.Int32, mscorlib">
     <value>30</value>
   </data>
   <data name="requestsDataGridView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>1450, 737</value>
+    <value>1704, 663</value>
   </data>
   <data name="requestsDataGridView.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -362,16 +365,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;requestsDataGridView.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="pendingRadioButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>89, 98</value>
-  </data>
-  <data name="pendingRadioButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>639, 84</value>
   </data>
   <data name="pendingRadioButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>29, 29</value>
+    <value>25, 25</value>
   </data>
   <data name="pendingRadioButton.TabIndex" type="System.Int32, mscorlib">
     <value>17</value>
@@ -389,16 +389,13 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;pendingRadioButton.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="closedRadioButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>206, 98</value>
-  </data>
-  <data name="closedRadioButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>723, 84</value>
   </data>
   <data name="closedRadioButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>29, 29</value>
+    <value>25, 25</value>
   </data>
   <data name="closedRadioButton.TabIndex" type="System.Int32, mscorlib">
     <value>18</value>
@@ -416,7 +413,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;closedRadioButton.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="pendingLabel.BaseStylesheet" xml:space="preserve">
     <value>#bunifu-label { padding: 0px; font-family: 'Segoe UI'; font-size: 11pt; width: 100%; height: 100%; font-style: normal; font-weight: normal; text-decoration: none; color: rgb(0, 0, 0); text-align: left; }</value>
@@ -425,16 +422,13 @@
     <value>Segoe UI, 11pt</value>
   </data>
   <data name="pendingLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>18, 101</value>
-  </data>
-  <data name="pendingLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>623, 54</value>
   </data>
   <data name="pendingLabel.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
     <value>No</value>
   </data>
   <data name="pendingLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>65, 25</value>
+    <value>54, 20</value>
   </data>
   <data name="pendingLabel.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
@@ -452,7 +446,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;pendingLabel.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="closedLabel.BaseStylesheet" xml:space="preserve">
     <value>#bunifu-label { padding: 0px; font-family: 'Segoe UI'; font-size: 11pt; width: 100%; height: 100%; font-style: normal; font-weight: normal; text-decoration: none; color: rgb(0, 0, 0); text-align: left; }</value>
@@ -461,16 +455,13 @@
     <value>Segoe UI, 11pt</value>
   </data>
   <data name="closedLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>145, 101</value>
-  </data>
-  <data name="closedLabel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>714, 54</value>
   </data>
   <data name="closedLabel.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
     <value>No</value>
   </data>
   <data name="closedLabel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>54, 25</value>
+    <value>45, 20</value>
   </data>
   <data name="closedLabel.TabIndex" type="System.Int32, mscorlib">
     <value>20</value>
@@ -488,7 +479,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;closedLabel.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="controlBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Right</value>
@@ -531,7 +522,7 @@
 </value>
   </data>
   <data name="controlBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1351, 11</value>
+    <value>1641, 9</value>
   </data>
   <data name="controlBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>2, 2, 2, 2</value>
@@ -569,7 +560,7 @@
     <value>Yes</value>
   </data>
   <data name="controlBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>78, 46</value>
+    <value>67, 37</value>
   </data>
   <data name="controlBox.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
@@ -584,7 +575,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;controlBox.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="dataGridViewImageColumn1.HeaderText" xml:space="preserve">
     <value>Edit</value>
@@ -592,17 +583,11 @@
   <data name="dataGridViewImageColumn1.MinimumWidth" type="System.Int32, mscorlib">
     <value>20</value>
   </data>
-  <data name="dataGridViewImageColumn1.Width" type="System.Int32, mscorlib">
-    <value>125</value>
-  </data>
   <data name="dataGridViewImageColumn2.HeaderText" xml:space="preserve">
     <value>Remove</value>
   </data>
   <data name="dataGridViewImageColumn2.MinimumWidth" type="System.Int32, mscorlib">
     <value>20</value>
-  </data>
-  <data name="dataGridViewImageColumn2.Width" type="System.Int32, mscorlib">
-    <value>125</value>
   </data>
   <data name="dataGridViewImageColumn3.HeaderText" xml:space="preserve">
     <value>Report</value>
@@ -610,29 +595,22 @@
   <data name="dataGridViewImageColumn3.MinimumWidth" type="System.Int32, mscorlib">
     <value>20</value>
   </data>
-  <data name="dataGridViewImageColumn3.Width" type="System.Int32, mscorlib">
-    <value>125</value>
-  </data>
   <data name="refreshButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAI0AAAAlCAYAAAB/EWomAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAACHSURBVHhe7dKhEYQwAADBVJKWoT/KwAc8DD9/fsWa0zfm
-        vo65Xxf8Zx3jHeE305CZhsw0ZKYhMw2ZachMQ2YaMtOQmYbMNGSmITMNmWnITENmGjLTkJmGzDRkpiEz
-        DZlpyExDZhoy05CZhsw0ZKYhMw2ZachMQ2YaMtOQmYZszG2dzwiftnXeY5N18XuYTfIAAAAASUVORK5C
-        YII=
+        iVBORw0KGgoAAAANSUhEUgAAAHkAAAAeCAYAAAAIC7GrAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABxSURBVGhD7dExAYAwAMCwKZll8IcM/sEPDtYcefp2zHNd
+        83wedrWu8Y/sxuQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNMDjA5wOQAkwNM
+        DjA5wOQAkwNMDhjzWPc3spFj3S+AuOSulfWbyQAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="refreshButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Segoe UI, 10pt</value>
   </data>
   <data name="refreshButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>167, 171</value>
-  </data>
-  <data name="refreshButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>152, 105</value>
   </data>
   <data name="refreshButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>141, 37</value>
+    <value>121, 30</value>
   </data>
   <data name="refreshButton.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
@@ -647,28 +625,24 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;refreshButton.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="addRequestButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAJYAAAAlCAYAAACgXxA5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAACKSURBVHhe7dKhAYAwAMCwXbKX4T/OwA88SKiLiKnumPs6
-        5n5d8J91jHeE74xFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgk
-        jEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCTG3Nb5jPDJts4bUbzv2qeqE5MAAAAASUVO
-        RK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxFcAgFARBlGAZ/CGD/pN3KRMJTDHN1tv6
+        rNXnOdyqVvtHbmMCTIAJMAFhAkyACTABYQJMgAkwAWECTIAJMAFhAkyACTABYQJMgAkwAWECTIAJeCcY
+        tb+Ri4zaD25HZhvCCrDQAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="addRequestButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Segoe UI, 10pt</value>
   </data>
   <data name="addRequestButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 171</value>
-  </data>
-  <data name="addRequestButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>12, 105</value>
   </data>
   <data name="addRequestButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 37</value>
+    <value>129, 30</value>
   </data>
   <data name="addRequestButton.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
@@ -683,28 +657,24 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;addRequestButton.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="applyButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAJYAAAAlCAYAAACgXxA5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAACKSURBVHhe7dKhAYAwAMCwXbKX4T/OwA88SKiLiKnumPs6
-        5n5d8J91jHeE74xFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgk
-        jEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCTG3Nb5jPDJts4bUbzv2qeqE5MAAAAASUVO
-        RK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxFcAgFARBlGAZ/CGD/pN3KRMJTDHN1tv6
+        rNXnOdyqVvtHbmMCTIAJMAFhAkyACTABYQJMgAkwAWECTIAJMAFhAkyACTABYQJMgAkwAWECTIAJeCcY
+        tb+Ri4zaD25HZhvCCrDQAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="applyButton.Font" type="System.Drawing.Font, System.Drawing">
     <value>Segoe UI, 10pt</value>
   </data>
   <data name="applyButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>321, 171</value>
-  </data>
-  <data name="applyButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>284, 105</value>
   </data>
   <data name="applyButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>150, 37</value>
+    <value>129, 30</value>
   </data>
   <data name="applyButton.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
@@ -722,25 +692,163 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;applyButton.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
+  </data>
+  <data name="bunifuFormControlBox1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="bunifuFormControlBox1.CloseBoxOptions.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAV9JREFUeF7t
+        mltKxEAQRe+CBBczn7oBP9VtqAsWGaVgLkjRCZOZdFd15R7oj0kCqXPy+BgCCCGEEEIIITby6DcEMnyW
+        LwBnAC9+RwA2g83y6Xf04gPA72VFR6A857HZuvIA4OffCW3Z7yd/4ACeF2axGbtyAvDtTjz6TvBX3pbN
+        ZLMNITJCuDyJiJBGnoyMkE6ejIiQVp70jJBenvSIMI082TPCdPJkjwjTypN7IkwvT26JUEaebIlQTp5c
+        E6GsPFmLUF6eLEU4hDxpRTiMPDFB/0eGLdtWXt5oPfO2/IuxJEvyh4jQkrfb3j8OJSO05PnCa70YS0VY
+        kydlI1wjT8pF2CJPykS4RZ5MH+EeeTJthD3kyXQR9pQn00ToIU/SR+gpT9JGGCFP0kUYKU/SRIiQJ+ER
+        IuVJWAR9IgPgLfDKe/yd8OoP6MV7AnnCCDbTUIZ/nLhCplmEEEIIIYSYgT/uW6BKJvM8NgAAAABJRU5E
+        rkJggg==
+</value>
+  </data>
+  <data name="bunifuFormControlBox1.HelpBoxOptions.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAABKFJREFUeF7t
+        msuLHFUUxgffbxEfKCoiDIKOjHbqft/p7hmxwQcoaggy+B+Iz2DMQpeulICggpgo+FgIQsCVKGblI7oI
+        BEQnMaOCuFKIIhpdRJOZyJmuYaq+qZ5+TN/pLqkfHGi6vnvq3lNV5566tyYmKioqKioqKipKQgjhZgAv
+        kThE4tfU5s3woh9T/f+GVqt1Dsk9JBZJnOpgi2Z4u9FonKvtS006+P0FA+5kn09OTp6tfkqLGd4oGGQX
+        4x71U0r8uS647efr9fBAkiSXuZmFrSS+E80iyVvUX+kA8LIMbCFJkotV5/9pEMzwiupKhxmO5AcVtqpm
+        BZLbJFiHVVM6SP6VHdTMzMyFqlkhvQuyAfhTNaVDBnRKj2eZnZ29RPS/q6Z09BMAAPdntWY4oJpNIUmS
+        qwA8RoZ9ZPh2tWJb/v0xgEddo+02Qnr1D+cDFnarLiqNxpZJEnsLpq0ic81eb6N++gUASHwv/k+SvEG1
+        0TALD5L4u2CgXcyTHLepv15oV4hhF4kT6hfAq6qPBsmnSSxpJ/qwJbPwlPpdjyRJzgPwSYEvf/Y/arVa
+        Z2ibKKRVWNEtf4gMOwBMrVRs7aou7Fj7rC6bV273qf9OkHyuwIdf+denpqbOUn0UGo3G1SSOSSf+IcMT
+        c3Nzp6t+BT9G8kkS/0rbP3pNjmlCzbZdAHC76qIC4C0dvFm4S3WdMLO72wFb9eEvPqorQs67boEUhWaz
+        dl070+Y6/7DquuFTogzmJIBrVadoAPR4dABsz3YAwDcTExOnqa4b7cchnxPMwuOqGzu8oJEAbFdNr6SJ
+        MXNF+aFqxg4tPOr1+o2q6RWfKfJ3AI6oZuzQt7RWa+oC1fSKJ7D8HYBjqsmSJMmZZniB5E9u/tv/U11U
+        tOqbnp4+XzW90m8A2oPP6f0RfF51URnmI2BmN8mAFlSThcTPGgD/T3VRGWYS9DI4P5j1kyCJX0YegGFN
+        g16za1XXbRoci0dgiIXQThlM10JoNQniqNtIkqBTUAofB3Cn6joRQrhHX2V7LYXHglG+DI0N3V6HPcP7
+        woVbO9svV32+san6RV/TU/+lIM3iG1oQ8cCo39KQvtC8UzCwnsxzySAzyFgA4A4vXHRQA9iCWbhX/Y8t
+        vgfvy84bvPULLOzetPW8QanVapeTOLi288vmAfmU5DP1emiZ2TW+Zu/tzOwikrcBeJbEZ52DF/YVbYCO
+        Bb64qQsYqfk6/Jv9rPO71r/oKJ5FwtceMG0zUtpTGQ6s7SzmAdyq+l6p15MtJH8o8PvBWCVHEq8VdXIY
+        3+SQvLR4nT/sUu1ISLN9rnO+ATHMGtzX89v5I3eeJTOrq3ZT8XleP1TwN7iNLIJ0Is0xP+bPxf2q21QA
+        PCRX5UQIoaa6YQGguXaGGGz/cCiQ+FKufvRtZzO8nz2nGb5QzaaQbnlnr8ZSP1PdoPgSm56X5PWqi46v
+        zmSvhGdq1cTCP3iUx+AR1UQHwHsSgJ2qiYVXk/kA4F3VRIfEV9lOhBBmVBMLL5slAAdVEx0Sv2U70Ww2
+        r1BNLABcKQE4qpro6Pb1MAufbqSFUTYAx1VTUVFRUVFRUTEo/wHnYwUO3Ha0OgAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="bunifuFormControlBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>1556, 2</value>
+  </data>
+  <data name="bunifuFormControlBox1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 2, 2, 2</value>
+  </data>
+  <data name="bunifuFormControlBox1.MaximizeBoxOptions.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAO5JREFUeF7t
+        zjFKAFAUA0EPZuH9L6W1r7BZBr6QgdTZj4+ZmZmZmT99fX5+/6fd/uwevL7bn92D13f7s3vw+m5/xg8i
+        3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i
+        3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i3scPIt7HDyLexw8i
+        3scPIt7HDyLexw8i3scPIt7HDyLedw9e3+3P7sHru/3ZPXh9tz+7B6/v9s/MzMzM/PYDtiJJvWGis6gA
+        AAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="bunifuFormControlBox1.MaximizeBoxOptions.IconAlt" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        vAAADrwBlbxySQAAAVFJREFUeF7t0DEKw0AQQ9EczEXuf6mkcmEtAjGsVi70YJsw+It8PlVVVVVVW3yv
+        6/eGh7uOwSGph7uOwSGph7uOwSGph7uOSQ1JdRepIanuIjUk1V2khqS6r9E/wP0HYCD1cNdNvRvDQOrh
+        rpt6N4aB1MNdN/VuDAOph7tu6t2YPUCoXfVuzB4g1K56N2YPEGpXvRuzBwi1q96N2QOE2lXvxuwBQu2q
+        d2P2AKF21bsxe4BQu+rdmD1AqF31bsweINSuejdmDxBqV70bswcItavejdkDhNpV78bsAULtqndj9gCh
+        dtW7MXuAULvq3Zg9QLAu/o7v+ZUN7AGCdfF3fM+vbGAPEKyLv+N7fmUDe4BgXfwd3/MrG9gDRKq7SA1J
+        dRepIanuIjUk1V2khqS6i9SQVHeBQ1IPdx2DQ1IPdx2DQ1IPdx2DQ1IPd1VVVVVVzfwBoQolTLYK4HsA
+        AAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="bunifuFormControlBox1.MinimizeBoxOptions.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABGdBTUEAALGPC/xhBQAAAD9JREFUaEPt
+        zqENADAMA8EOFtD9l2q5SWAC7qSnls8BAAAAWOVWvU3lv1YOTJf/WjkwXf5r5cB0+Q8AAABg1gePVPbx
+        KHRxOwAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="bunifuFormControlBox1.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>Yes</value>
+  </data>
+  <data name="bunifuFormControlBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>160, 37</value>
+  </data>
+  <data name="bunifuFormControlBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="&gt;&gt;bunifuFormControlBox1.Name" xml:space="preserve">
+    <value>bunifuFormControlBox1</value>
+  </data>
+  <data name="&gt;&gt;bunifuFormControlBox1.Type" xml:space="preserve">
+    <value>Bunifu.UI.WinForms.BunifuFormControlBox, Bunifu.UI.WinForms, Version=0.0.0.0, Culture=neutral, PublicKeyToken=e8e24ccd28363fe9</value>
+  </data>
+  <data name="&gt;&gt;bunifuFormControlBox1.Parent" xml:space="preserve">
+    <value>panel</value>
+  </data>
+  <data name="&gt;&gt;bunifuFormControlBox1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="panel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="panel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="panel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>1718, 41</value>
+  </data>
+  <data name="panel.TabIndex" type="System.Int32, mscorlib">
+    <value>54</value>
+  </data>
+  <data name="&gt;&gt;panel.Name" xml:space="preserve">
+    <value>panel</value>
+  </data>
+  <data name="&gt;&gt;panel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;panel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;panel.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>7, 16</value>
+    <value>6, 13</value>
+  </data>
+  <data name="$this.AutoScroll" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>1451, 970</value>
-  </data>
-  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 4, 4, 4</value>
+    <value>1718, 823</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterScreen</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Requests</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn1.Name" xml:space="preserve">
+    <value>dataGridViewImageColumn1</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn2.Name" xml:space="preserve">
+    <value>dataGridViewImageColumn2</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn3.Name" xml:space="preserve">
+    <value>dataGridViewImageColumn3</value>
+  </data>
+  <data name="&gt;&gt;dataGridViewImageColumn3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;RequestID.Name" xml:space="preserve">
     <value>RequestID</value>
@@ -808,6 +916,12 @@
   <data name="&gt;&gt;RequestRejectReason.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;RequestHRStatus.Name" xml:space="preserve">
+    <value>RequestHRStatus</value>
+  </data>
+  <data name="&gt;&gt;RequestHRStatus.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;RequestStatus.Name" xml:space="preserve">
     <value>RequestStatus</value>
   </data>
@@ -843,24 +957,6 @@
   </data>
   <data name="&gt;&gt;Reject.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridViewCheckBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;dataGridViewImageColumn1.Name" xml:space="preserve">
-    <value>dataGridViewImageColumn1</value>
-  </data>
-  <data name="&gt;&gt;dataGridViewImageColumn1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;dataGridViewImageColumn2.Name" xml:space="preserve">
-    <value>dataGridViewImageColumn2</value>
-  </data>
-  <data name="&gt;&gt;dataGridViewImageColumn2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;dataGridViewImageColumn3.Name" xml:space="preserve">
-    <value>dataGridViewImageColumn3</value>
-  </data>
-  <data name="&gt;&gt;dataGridViewImageColumn3.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewImageColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>requestsForm</value>

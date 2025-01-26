@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO.Pipes;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TDF.Classes;
 using TDF.Net.Classes;
 using static TDF.Net.Program;
+using TDF.Classes;
+using System.Diagnostics;
+using TDF.Forms;
 
 namespace TDF.Net
 {
@@ -16,6 +21,8 @@ namespace TDF.Net
         {
             InitializeComponent();
             updateTheme();
+            guiDropdown.Text = "Modern";
+
         }
 
         private bool signingup = false;
@@ -23,6 +30,7 @@ namespace TDF.Net
         public static User loggedInUser;
         public static List<string> departments = new List<string>();
         public static List<string> titles = new List<string>();
+        private static Form oldSessionForm = null;
 
 
         #region Methods
@@ -31,23 +39,90 @@ namespace TDF.Net
             string username = txtUsername.Text;
             string password = txtPassword.Text;
 
-            if (validateLogin(username, password))
+            bool isValidLogin = validateLogin(username, password);
+
+            if (isValidLogin)
             {
+                // Log in the user and track the session
                 loggedInUser = getCurrentUserDetails(username);
-                mainForm mainForm = new mainForm(this);
-                //Owner = mainForm;
-                Hide();
+                makeUserConnected();
+
+                // Step 2: Open the new session's form (new login)
+                if (guiDropdown.Text == "Classic")
+                {
+                    // Create a new mainForm for Classic UI
+                    oldSessionForm = new mainForm(this);
+                    oldSessionForm.Show();
+                }
+                else
+                {
+                    // Create a new mainFormNewUI for New UI
+                    oldSessionForm = new mainFormNewUI(this);
+                    oldSessionForm.Show();
+                }
+
+                // Hide the login form and clear fields
                 clearFormFields();
-                mainForm.Show();
+                Hide();
             }
             else
             {
-                MessageBox.Show("Invalid username or password");
+                // Invalid login attempt
+                MessageBox.Show("Invalid username or password.");
             }
         }
+        public static List<string> getConnectedUsers()
+        {
+            using (SqlConnection connection = Database.getConnection())
+            {
+                connection.Open();
+                string query = "SELECT FullName FROM Users WHERE IsConnected = 1";
+
+                List<string> connectedUsers = new List<string>();
+
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        connectedUsers.Add(reader["FullName"].ToString());
+                    }
+                }
+                connectedUsers.Sort();
+                return connectedUsers;
+            }
+        }
+        private void makeUserConnected()
+        {
+            using (SqlConnection connection = Database.getConnection())
+            {
+                connection.Open();
+
+                string query = "UPDATE Users SET IsConnected = 1 WHERE UserName = @userName";
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@userName", loggedInUser.UserName);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        private void makeUserDisconnected()
+        {
+            using (SqlConnection connection = Database.getConnection())
+            {
+                connection.Open();
+                string query = "UPDATE Users SET IsConnected = 0 WHERE UserName = @userName";
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    cmd.Parameters.AddWithValue("@userName", loggedInUser.UserName);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         public static List<string> getDepartments()
         {
-           List<string> departments = new List<string>();
+            List<string> departments = new List<string>();
 
             string query = "SELECT DISTINCT Department FROM Departments";
 
@@ -321,12 +396,23 @@ namespace TDF.Net
         private async void loginForm_Shown(object sender, EventArgs e)
         {
             await ensureAdminExistsAsync();
-
         }
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+
+            // Get the form's scroll position
+            Point scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            Invalidate();  // Forces the form to repaint when resized
         }
         private void panel_MouseDown(object sender, MouseEventArgs e)
         {
@@ -416,7 +502,8 @@ namespace TDF.Net
                 clearFormFields();
                 departmentDropdown.DataSource = departments;
                 departmentDropdown.SelectedIndex = -1;
-
+                guiDropdown.Visible = false;
+                guiLabel.Visible = false;
                 return;
             }
             if (changingPassword)
@@ -436,6 +523,8 @@ namespace TDF.Net
                 titlesDropdown.Visible = false;
                 nameTextBox.UseSystemPasswordChar = true;
                 // passPictureBox.Visible = false;
+                guiDropdown.Visible = true;
+                guiLabel.Visible = true;
                 clearFormFields();
                 return;
             }
@@ -481,6 +570,8 @@ namespace TDF.Net
             titleLabel.Visible = false;
             titlesDropdown.Visible = false;
             signingup = false;
+            guiLabel.Visible = true;
+            guiDropdown.Visible = true;
             signupButton.Text = "Sign Up";
             updateButton.Text = "Change password";
 
@@ -500,6 +591,8 @@ namespace TDF.Net
                 nameLabel.Visible = true;
                 updateButton.Visible = false;
                 //passPictureBox.Visible = false;
+                guiDropdown.Visible = false;
+                guiLabel.Visible = false;
             }
             else
             {
@@ -512,6 +605,8 @@ namespace TDF.Net
                 signupButton.Text = "Sign Up";
                 titlesDropdown.Visible = false;
                 titleLabel.Visible = false;
+                guiDropdown.Visible = true;
+                guiLabel.Visible = true;
                 //passPictureBox.Visible = false;
             }
 

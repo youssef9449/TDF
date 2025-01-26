@@ -2,7 +2,7 @@
 using System.Data.SqlClient;
 using System.IO;
 using System.Windows.Forms;
-using TDF.Classes;
+using TDF.Net.Classes;
 
 namespace TDF.Net
 {
@@ -116,7 +116,7 @@ namespace TDF.Net
                 using (StreamWriter writer = new StreamWriter(configFilePath))
                 {
                     writer.WriteLine("[Database]");
-                    writer.WriteLine("ServerIP=" + NetworkUtils.findSqlServerIp(startIP,endIP, Port)); // Use the found IP address
+                    writer.WriteLine("ServerIP=" + NetworkUtils.findSqlServerIp(startIP, endIP, Port)); // Use the found IP address
                     writer.WriteLine("Database=Users");
                     writer.WriteLine("Trusted Connection=true");
                     writer.WriteLine("ConnectionMethod=namedpipes"); // Options: NamedPipes, TCP

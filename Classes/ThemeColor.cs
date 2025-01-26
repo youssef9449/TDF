@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace TDF.Classes
+namespace TDF.Net.Classes
 {
     public static class ThemeColor
     {

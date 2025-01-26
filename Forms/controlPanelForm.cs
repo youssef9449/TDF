@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using TDF.Classes;
 using TDF.Net;
+using TDF.Net.Classes;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -14,11 +15,34 @@ namespace TDF.Forms
 {
     public partial class controlPanelForm : Form
     {
-        public controlPanelForm()
+        public controlPanelForm(bool isModern)
         {
             InitializeComponent();
             Program.applyTheme(this);
+            StartPosition = FormStartPosition.CenterScreen;
 
+            if (isModern)
+            {
+                controlBox.Visible = !isModern;
+                panel.MouseDown += new MouseEventHandler(panel_MouseDown);
+                panel.Paint += panel_Paint;
+            }
+            else
+            {
+                panel.Visible = isModern;
+            }
+
+            spoofButton.Visible = hasAdminRole;
+            passwordLabel.Visible = hasAdminRole;
+            passwordTextBox.Visible = hasAdminRole;
+            resetPasswordButton.Visible = hasAdminRole;
+            importButton.Visible = hasAdminRole;
+            deleteButton.Visible = hasAdminRole;
+
+            if(hasHRRole)
+            {
+                roleDropdown.Items.Remove("HR Director");
+            }
         }
 
         List<string> title = new List<string>();
@@ -27,7 +51,7 @@ namespace TDF.Forms
         #region Methods
         private void updateDepartments()
         {
-            departments =  getDepartments();
+            departments = getDepartments();
 
             // Update the UI components once the departments are loaded
             depDropdown.DataSource = departments;
@@ -68,7 +92,7 @@ namespace TDF.Forms
             string filter = filterDropdown.Text;
             string searchValue = searchTextBox.Text;
             string query = buildUsersQuery(filter, searchValue);
-            
+
             using (SqlConnection connection = Database.getConnection())
             {
                 SqlCommand command = new SqlCommand(query, connection);
@@ -200,9 +224,10 @@ namespace TDF.Forms
         #region Events
         private void controlPanelForm_Load(object sender, EventArgs e)
         {
+            filterDropdown.Text = "Name";
+
             updateDepartments();
 
-            filterDropdown.Text = "";
             depDropdown.SelectedIndex = -1;
 
             loadUserNames();
@@ -215,14 +240,9 @@ namespace TDF.Forms
         {
             if (e.Button == MouseButtons.Left && e.Clicks == 1)
             {
-                mainForm.ReleaseCapture();
-                mainForm.SendMessage(Handle, 0x112, 0xf012, 0);
+                ReleaseCapture();
+                SendMessage(Handle, 0x112, 0xf012, 0);
             }
-        }
-        private void panel_Paint(object sender, PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
         private void controlPanelForm_Resize(object sender, EventArgs e)
         {
@@ -235,7 +255,19 @@ namespace TDF.Forms
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+
+            // Get the form's scroll position
+            Point scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            Invalidate();  // Forces the form to repaint when resized
         }
         private async void depDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -243,6 +275,20 @@ namespace TDF.Forms
             titleDropdown.DataSource = title;
             titleDropdown.SelectedIndex = -1;
         }
+        private void panel_Paint(object sender, PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            // Get the form's scroll position
+            Point scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+
+
         #endregion
 
         #region Buttons
@@ -912,7 +958,7 @@ namespace TDF.Forms
                 using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
-                    string query = "SELECT UserID, UserName, FullName, Title, Department, Role FROM Users WHERE FullName = @FullName";
+                    string query = "SELECT UserID, Picture, UserName, FullName, Title, Department, Role FROM Users WHERE FullName = @FullName";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -928,7 +974,21 @@ namespace TDF.Forms
                                 loggedInUser.Title = reader["Title"].ToString();
                                 loggedInUser.Department = reader["Department"].ToString();
                                 loggedInUser.Role = reader["Role"].ToString();
-                                updateRoleStatus();
+
+                                // Load the picture from the database
+                                if (reader["Picture"] != DBNull.Value)
+                                {
+                                    byte[] imageBytes = (byte[])reader["Picture"];
+                                    using (MemoryStream ms = new MemoryStream(imageBytes))
+                                    {
+                                        loggedInUser.Picture = Image.FromStream(ms);
+                                    }
+                                }
+                                else
+                                {
+                                    loggedInUser.Picture = null; // Handle cases where no image exists
+                                }
+
                                 userUpdated?.Invoke();
                             }
                             else

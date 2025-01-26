@@ -1,11 +1,11 @@
 ﻿using Bunifu.UI.WinForms;
 using Bunifu.UI.WinForms.BunifuButton;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
-using TDF.Classes;
-using static TDF.Net.Database;
+using TDF.Net.Classes;
 
 namespace TDF.Net
 {
@@ -17,11 +17,22 @@ namespace TDF.Net
         [STAThread]
         static void Main()
         {
-            CultureInfo english = new CultureInfo("en-GB");
-            CultureInfo.DefaultThreadCurrentUICulture = english;
-            CultureInfo.DefaultThreadCurrentCulture = english;
-            CultureInfo.CurrentCulture = english;
-            CultureInfo.CurrentUICulture = english;
+            // Check if the application is already running
+            string appName = Process.GetCurrentProcess().ProcessName;
+            if (Process.GetProcessesByName(appName).Length > 1)
+            {
+                MessageBox.Show("Another instance of the TDF app is already running.","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Set culture settings
+            CultureInfo English = new CultureInfo("en-GB");
+            CultureInfo.DefaultThreadCurrentUICulture = English;
+            CultureInfo.DefaultThreadCurrentCulture = English;
+            CultureInfo.CurrentCulture = English;
+            CultureInfo.CurrentUICulture = English;
+
+            // Start the application
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new loginForm());
@@ -40,10 +51,11 @@ namespace TDF.Net
              }*/
         }
 
-        static bool roundCorners = true;
+        // static bool roundCorners = true;
 
         public static void applyTheme(Form form)
         {
+            form.AutoScaleMode = AutoScaleMode.Dpi;
 
             foreach (Control ctrl in form.Controls)
             {
@@ -188,7 +200,7 @@ namespace TDF.Net
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
                     btn.Cursor = Cursors.Hand;
-                   // btn.IdleBorderRadius = 12;
+                    // btn.IdleBorderRadius = 12;
 
                     // btn.AutoRoundBorders = true;
                     //btn.AutoGenerateColors = true;
@@ -277,6 +289,9 @@ namespace TDF.Net
 
                     dgv.DefaultCellStyle.SelectionBackColor = ThemeColor.lightColor;
                     dgv.ColumnHeadersDefaultCellStyle.BackColor = ThemeColor.primaryColor;
+                    dgv.Margin = new Padding(0);
+                    dgv.Padding = new Padding(0);
+                    dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
                     //dgv.ForeColor = ThemeColor.SecondaryColor;
                     dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
@@ -359,6 +374,8 @@ namespace TDF.Net
         }
         public static void applyThemeLite(Form form)
         {
+            form.AutoScaleMode = AutoScaleMode.Dpi;
+
             foreach (Control ctrl in form.Controls)
             {
                 if (ctrl is Panel pbl)

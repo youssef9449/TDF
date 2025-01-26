@@ -71,3 +71,50 @@
 /.vs/TDF/FileContentIndex/79308daa-9bb7-42b8-88c7-e1cf5cf6adef.vsidx
 /bin/Debug/TDF.exe.config
 /bin/Release/Bunifu.UI.WinForms.xml
+/obj/Debug/TempPE/Properties.Resources.Designer.cs.dll
+/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+/obj/Debug/TDF.csproj.CopyComplete
+/obj/Debug/TDF.csproj.ResolveComReference.cache
+/obj/Debug/TDF.Forms.balanceForm.resources
+/obj/Debug/TDF.Net.mainForm.resources
+/obj/Debug/TDF.Net.loginForm.resources
+/obj/Debug/TDF.Net.mainFormNewUI.resources
+/Properties/Resources.resx
+/Properties/Resources.Designer.cs
+/bin/Debug/config.ini
+/obj/Debug/TDF.Forms.reportsForm.resources
+/bin/Release/config.ini
+/obj/Release/TempPE/Properties.Resources.Designer.cs.dll
+/obj/Release/DesignTimeResolveAssemblyReferences.cache
+/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
+/obj/Release/TDF.csproj.CoreCompileInputs.cache
+/obj/Release/TDF.csproj.FileListAbsolute.txt
+/obj/Release/TDF.csproj.ResolveComReference.cache
+*.resources
+/obj/Release/TDF.Properties.Resources.resources
+/obj/Release/TDF.Net.mainForm.resources
+/obj/Release/TDF.Forms.controlPanelForm.resources
+/obj/Release
+/bin/Release/Microsoft.Bcl.AsyncInterfaces.dll
+/bin/Release/RestSharp.dll
+/bin/Release/RestSharp.xml
+/bin/Release/System.Buffers.dll
+/bin/Release/System.Data.SqlClient.dll
+*.xml
+*.dll
+/bin/Release/System.CodeDom.dll
+/bin/Release/System.Numerics.Vectors.dll
+/bin/Release/System.Memory.dll
+/bin/Release/System.Text.Encodings.Web.dll
+/bin/Release/System.Runtime.CompilerServices.Unsafe.dll
+/bin/Release/System.Text.Json.dll
+/bin/Release/System.Threading.Tasks.Extensions.dll
+/bin/Debug/TDF - Copy.exe
+/bin/Debug/TDF - Copy.exe
+/bin/Debug/TDF - Copy.exe
+/bin/Release/Confused/TDF.exe
+/bin/Release/Confused/TDF.pdb
+/packages/Bunifu.Licensing.6.0.4/.signature.p7s
+/packages
+/bin/Debug/Forms/~$Leave Request form.xlsx
+/Resources/TDF_Logo.png

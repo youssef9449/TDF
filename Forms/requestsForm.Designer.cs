@@ -33,9 +33,12 @@ namespace TDF.Net.Forms
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(requestsForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges3 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -45,27 +48,8 @@ namespace TDF.Net.Forms
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges3 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.requestsDataGridView = new Bunifu.UI.WinForms.BunifuDataGridView();
-            this.RequestID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RequestUserFullName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RequestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RequestFromDay = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RequestToDay = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.NumberOfDays = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.remainingBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RequestReason = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RequestBeginningTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RequestEndingTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RequestRejectReason = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RequestStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Edit = new System.Windows.Forms.DataGridViewImageColumn();
-            this.Remove = new System.Windows.Forms.DataGridViewImageColumn();
-            this.Report = new System.Windows.Forms.DataGridViewImageColumn();
-            this.Approve = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.Reject = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.pendingRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.closedRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.pendingLabel = new Bunifu.UI.WinForms.BunifuLabel();
@@ -77,7 +61,28 @@ namespace TDF.Net.Forms
             this.refreshButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.addRequestButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.applyButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
+            this.panel = new System.Windows.Forms.Panel();
+            this.bunifuFormControlBox1 = new Bunifu.UI.WinForms.BunifuFormControlBox();
+            this.RequestID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RequestUserFullName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RequestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RequestFromDay = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RequestToDay = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.NumberOfDays = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.remainingBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RequestReason = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RequestBeginningTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RequestEndingTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RequestRejectReason = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RequestHRStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.RequestStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Edit = new System.Windows.Forms.DataGridViewImageColumn();
+            this.Remove = new System.Windows.Forms.DataGridViewImageColumn();
+            this.Report = new System.Windows.Forms.DataGridViewImageColumn();
+            this.Approve = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Reject = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.requestsDataGridView)).BeginInit();
+            this.panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // requestsDataGridView
@@ -118,6 +123,7 @@ namespace TDF.Net.Forms
             this.RequestBeginningTime,
             this.RequestEndingTime,
             this.RequestRejectReason,
+            this.RequestHRStatus,
             this.RequestStatus,
             this.Edit,
             this.Remove,
@@ -142,212 +148,41 @@ namespace TDF.Net.Forms
             this.requestsDataGridView.CurrentTheme.RowsStyle.ForeColor = System.Drawing.Color.Black;
             this.requestsDataGridView.CurrentTheme.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
             this.requestsDataGridView.CurrentTheme.RowsStyle.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle12.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
-            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.requestsDataGridView.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle13.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle13.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle13.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(210)))), ((int)(((byte)(232)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.requestsDataGridView.DefaultCellStyle = dataGridViewCellStyle13;
             this.requestsDataGridView.EnableHeadersVisualStyles = false;
             this.requestsDataGridView.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(238)))), ((int)(((byte)(255)))));
             this.requestsDataGridView.HeaderBackColor = System.Drawing.Color.DodgerBlue;
             this.requestsDataGridView.HeaderBgColor = System.Drawing.Color.Empty;
             this.requestsDataGridView.HeaderForeColor = System.Drawing.Color.White;
             this.requestsDataGridView.Name = "requestsDataGridView";
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("Tahoma", 5F);
-            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.requestsDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle13;
-            this.requestsDataGridView.RowHeadersVisible = false;
             dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle14.BackColor = System.Drawing.Color.White;
-            this.requestsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("Tahoma", 5F);
+            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.requestsDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle14;
+            this.requestsDataGridView.RowHeadersVisible = false;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle15.BackColor = System.Drawing.Color.White;
+            this.requestsDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle15;
             this.requestsDataGridView.RowTemplate.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
             this.requestsDataGridView.RowTemplate.Height = 40;
             this.requestsDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.requestsDataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.Light;
+            this.requestsDataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.requestsDataGridView_CellBeginEdit);
             this.requestsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellContentClick);
             this.requestsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.requestsDataGridView_CellFormatting);
             this.requestsDataGridView.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellMouseEnter);
             this.requestsDataGridView.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellMouseLeave);
-            // 
-            // RequestID
-            // 
-            this.RequestID.DataPropertyName = "RequestID";
-            this.RequestID.Frozen = true;
-            resources.ApplyResources(this.RequestID, "RequestID");
-            this.RequestID.Name = "RequestID";
-            this.RequestID.ReadOnly = true;
-            // 
-            // RequestUserFullName
-            // 
-            this.RequestUserFullName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.RequestUserFullName.DataPropertyName = "RequestUserFullName";
-            this.RequestUserFullName.Frozen = true;
-            resources.ApplyResources(this.RequestUserFullName, "RequestUserFullName");
-            this.RequestUserFullName.Name = "RequestUserFullName";
-            this.RequestUserFullName.ReadOnly = true;
-            // 
-            // RequestType
-            // 
-            this.RequestType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.RequestType.DataPropertyName = "RequestType";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.RequestType.DefaultCellStyle = dataGridViewCellStyle3;
-            this.RequestType.Frozen = true;
-            resources.ApplyResources(this.RequestType, "RequestType");
-            this.RequestType.Name = "RequestType";
-            this.RequestType.ReadOnly = true;
-            // 
-            // RequestFromDay
-            // 
-            this.RequestFromDay.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.RequestFromDay.DataPropertyName = "RequestFromDay";
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.Format = "dd/MM/yyyy";
-            dataGridViewCellStyle4.NullValue = null;
-            this.RequestFromDay.DefaultCellStyle = dataGridViewCellStyle4;
-            this.RequestFromDay.Frozen = true;
-            resources.ApplyResources(this.RequestFromDay, "RequestFromDay");
-            this.RequestFromDay.Name = "RequestFromDay";
-            this.RequestFromDay.ReadOnly = true;
-            // 
-            // RequestToDay
-            // 
-            this.RequestToDay.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.RequestToDay.DataPropertyName = "RequestToDay";
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.Format = "dd/MM/yyyy";
-            dataGridViewCellStyle5.NullValue = "-";
-            this.RequestToDay.DefaultCellStyle = dataGridViewCellStyle5;
-            this.RequestToDay.Frozen = true;
-            resources.ApplyResources(this.RequestToDay, "RequestToDay");
-            this.RequestToDay.Name = "RequestToDay";
-            this.RequestToDay.ReadOnly = true;
-            // 
-            // NumberOfDays
-            // 
-            this.NumberOfDays.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.NumberOfDays.DataPropertyName = "RequestNumberOfDays";
-            this.NumberOfDays.Frozen = true;
-            resources.ApplyResources(this.NumberOfDays, "NumberOfDays");
-            this.NumberOfDays.Name = "NumberOfDays";
-            this.NumberOfDays.ReadOnly = true;
-            // 
-            // remainingBalance
-            // 
-            this.remainingBalance.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.remainingBalance.DataPropertyName = "remainingBalance";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.Format = "N0";
-            dataGridViewCellStyle6.NullValue = "-";
-            this.remainingBalance.DefaultCellStyle = dataGridViewCellStyle6;
-            resources.ApplyResources(this.remainingBalance, "remainingBalance");
-            this.remainingBalance.Name = "remainingBalance";
-            this.remainingBalance.ReadOnly = true;
-            this.remainingBalance.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
-            // RequestReason
-            // 
-            this.RequestReason.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.RequestReason.DataPropertyName = "RequestReason";
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.NullValue = "-";
-            this.RequestReason.DefaultCellStyle = dataGridViewCellStyle7;
-            resources.ApplyResources(this.RequestReason, "RequestReason");
-            this.RequestReason.Name = "RequestReason";
-            this.RequestReason.ReadOnly = true;
-            // 
-            // RequestBeginningTime
-            // 
-            this.RequestBeginningTime.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.RequestBeginningTime.DataPropertyName = "RequestBeginningTime";
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle8.Format = "t";
-            dataGridViewCellStyle8.NullValue = "-";
-            this.RequestBeginningTime.DefaultCellStyle = dataGridViewCellStyle8;
-            resources.ApplyResources(this.RequestBeginningTime, "RequestBeginningTime");
-            this.RequestBeginningTime.Name = "RequestBeginningTime";
-            this.RequestBeginningTime.ReadOnly = true;
-            // 
-            // RequestEndingTime
-            // 
-            this.RequestEndingTime.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.RequestEndingTime.DataPropertyName = "RequestEndingTime";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle9.Format = "t";
-            dataGridViewCellStyle9.NullValue = "-";
-            this.RequestEndingTime.DefaultCellStyle = dataGridViewCellStyle9;
-            resources.ApplyResources(this.RequestEndingTime, "RequestEndingTime");
-            this.RequestEndingTime.Name = "RequestEndingTime";
-            this.RequestEndingTime.ReadOnly = true;
-            // 
-            // RequestRejectReason
-            // 
-            this.RequestRejectReason.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.RequestRejectReason.DataPropertyName = "RequestRejectReason";
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle10.NullValue = "-";
-            this.RequestRejectReason.DefaultCellStyle = dataGridViewCellStyle10;
-            resources.ApplyResources(this.RequestRejectReason, "RequestRejectReason");
-            this.RequestRejectReason.Name = "RequestRejectReason";
-            // 
-            // RequestStatus
-            // 
-            this.RequestStatus.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.RequestStatus.DataPropertyName = "RequestStatus";
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            this.RequestStatus.DefaultCellStyle = dataGridViewCellStyle11;
-            resources.ApplyResources(this.RequestStatus, "RequestStatus");
-            this.RequestStatus.Name = "RequestStatus";
-            this.RequestStatus.ReadOnly = true;
-            // 
-            // Edit
-            // 
-            this.Edit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            resources.ApplyResources(this.Edit, "Edit");
-            this.Edit.Image = global::TDF.Properties.Resources.edit;
-            this.Edit.Name = "Edit";
-            this.Edit.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Edit.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // Remove
-            // 
-            this.Remove.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            resources.ApplyResources(this.Remove, "Remove");
-            this.Remove.Image = global::TDF.Properties.Resources.delete;
-            this.Remove.Name = "Remove";
-            this.Remove.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Remove.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // Report
-            // 
-            this.Report.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            resources.ApplyResources(this.Report, "Report");
-            this.Report.Image = global::TDF.Properties.Resources.pdf;
-            this.Report.Name = "Report";
-            // 
-            // Approve
-            // 
-            this.Approve.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            resources.ApplyResources(this.Approve, "Approve");
-            this.Approve.Name = "Approve";
-            this.Approve.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Approve.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // Reject
-            // 
-            this.Reject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            resources.ApplyResources(this.Reject, "Reject");
-            this.Reject.Name = "Reject";
-            this.Reject.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Reject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // pendingRadioButton
             // 
@@ -749,11 +584,261 @@ namespace TDF.Net.Forms
             this.applyButton.UseDefaultRadiusAndThickness = true;
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
+            // panel
+            // 
+            this.panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.panel.Controls.Add(this.bunifuFormControlBox1);
+            resources.ApplyResources(this.panel, "panel");
+            this.panel.Name = "panel";
+            // 
+            // bunifuFormControlBox1
+            // 
+            resources.ApplyResources(this.bunifuFormControlBox1, "bunifuFormControlBox1");
+            this.bunifuFormControlBox1.BunifuFormDrag = null;
+            this.bunifuFormControlBox1.CloseBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.CloseBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.CloseBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.CloseBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.CloseBoxOptions.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
+            this.bunifuFormControlBox1.CloseBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.CloseBoxOptions.Icon")));
+            this.bunifuFormControlBox1.CloseBoxOptions.IconAlt = null;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconHoverColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconPressedColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconSize = new System.Drawing.Size(18, 18);
+            this.bunifuFormControlBox1.CloseBoxOptions.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
+            this.bunifuFormControlBox1.ForeColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.HelpBox = false;
+            this.bunifuFormControlBox1.HelpBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.HelpBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.HelpBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.HelpBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.HelpBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.bunifuFormControlBox1.HelpBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.HelpBoxOptions.Icon")));
+            this.bunifuFormControlBox1.HelpBoxOptions.IconAlt = null;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
+            this.bunifuFormControlBox1.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.bunifuFormControlBox1.MaximizeBox = true;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MaximizeBoxOptions.Icon")));
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconAlt = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MaximizeBoxOptions.IconAlt")));
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconSize = new System.Drawing.Size(16, 16);
+            this.bunifuFormControlBox1.MaximizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.bunifuFormControlBox1.MinimizeBox = true;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MinimizeBoxOptions.Icon")));
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconAlt = null;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconSize = new System.Drawing.Size(14, 14);
+            this.bunifuFormControlBox1.MinimizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.bunifuFormControlBox1.Name = "bunifuFormControlBox1";
+            this.bunifuFormControlBox1.ShowDesignBorders = false;
+            // 
+            // RequestID
+            // 
+            this.RequestID.DataPropertyName = "RequestID";
+            this.RequestID.Frozen = true;
+            resources.ApplyResources(this.RequestID, "RequestID");
+            this.RequestID.Name = "RequestID";
+            this.RequestID.ReadOnly = true;
+            // 
+            // RequestUserFullName
+            // 
+            this.RequestUserFullName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.RequestUserFullName.DataPropertyName = "RequestUserFullName";
+            this.RequestUserFullName.Frozen = true;
+            resources.ApplyResources(this.RequestUserFullName, "RequestUserFullName");
+            this.RequestUserFullName.Name = "RequestUserFullName";
+            this.RequestUserFullName.ReadOnly = true;
+            // 
+            // RequestType
+            // 
+            this.RequestType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.RequestType.DataPropertyName = "RequestType";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.RequestType.DefaultCellStyle = dataGridViewCellStyle3;
+            this.RequestType.Frozen = true;
+            resources.ApplyResources(this.RequestType, "RequestType");
+            this.RequestType.Name = "RequestType";
+            this.RequestType.ReadOnly = true;
+            // 
+            // RequestFromDay
+            // 
+            this.RequestFromDay.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.RequestFromDay.DataPropertyName = "RequestFromDay";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.Format = "dd/MM/yyyy";
+            dataGridViewCellStyle4.NullValue = null;
+            this.RequestFromDay.DefaultCellStyle = dataGridViewCellStyle4;
+            this.RequestFromDay.Frozen = true;
+            resources.ApplyResources(this.RequestFromDay, "RequestFromDay");
+            this.RequestFromDay.Name = "RequestFromDay";
+            this.RequestFromDay.ReadOnly = true;
+            // 
+            // RequestToDay
+            // 
+            this.RequestToDay.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.RequestToDay.DataPropertyName = "RequestToDay";
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.Format = "dd/MM/yyyy";
+            dataGridViewCellStyle5.NullValue = "-";
+            this.RequestToDay.DefaultCellStyle = dataGridViewCellStyle5;
+            this.RequestToDay.Frozen = true;
+            resources.ApplyResources(this.RequestToDay, "RequestToDay");
+            this.RequestToDay.Name = "RequestToDay";
+            this.RequestToDay.ReadOnly = true;
+            // 
+            // NumberOfDays
+            // 
+            this.NumberOfDays.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.NumberOfDays.DataPropertyName = "RequestNumberOfDays";
+            this.NumberOfDays.Frozen = true;
+            resources.ApplyResources(this.NumberOfDays, "NumberOfDays");
+            this.NumberOfDays.Name = "NumberOfDays";
+            this.NumberOfDays.ReadOnly = true;
+            // 
+            // remainingBalance
+            // 
+            this.remainingBalance.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.remainingBalance.DataPropertyName = "remainingBalance";
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle6.Format = "N0";
+            dataGridViewCellStyle6.NullValue = "-";
+            this.remainingBalance.DefaultCellStyle = dataGridViewCellStyle6;
+            this.remainingBalance.Frozen = true;
+            resources.ApplyResources(this.remainingBalance, "remainingBalance");
+            this.remainingBalance.Name = "remainingBalance";
+            this.remainingBalance.ReadOnly = true;
+            this.remainingBalance.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // RequestReason
+            // 
+            this.RequestReason.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.RequestReason.DataPropertyName = "RequestReason";
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.NullValue = "-";
+            this.RequestReason.DefaultCellStyle = dataGridViewCellStyle7;
+            resources.ApplyResources(this.RequestReason, "RequestReason");
+            this.RequestReason.Name = "RequestReason";
+            this.RequestReason.ReadOnly = true;
+            // 
+            // RequestBeginningTime
+            // 
+            this.RequestBeginningTime.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RequestBeginningTime.DataPropertyName = "RequestBeginningTime";
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle8.Format = "t";
+            dataGridViewCellStyle8.NullValue = "-";
+            this.RequestBeginningTime.DefaultCellStyle = dataGridViewCellStyle8;
+            resources.ApplyResources(this.RequestBeginningTime, "RequestBeginningTime");
+            this.RequestBeginningTime.Name = "RequestBeginningTime";
+            this.RequestBeginningTime.ReadOnly = true;
+            // 
+            // RequestEndingTime
+            // 
+            this.RequestEndingTime.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RequestEndingTime.DataPropertyName = "RequestEndingTime";
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle9.Format = "t";
+            dataGridViewCellStyle9.NullValue = "-";
+            this.RequestEndingTime.DefaultCellStyle = dataGridViewCellStyle9;
+            resources.ApplyResources(this.RequestEndingTime, "RequestEndingTime");
+            this.RequestEndingTime.Name = "RequestEndingTime";
+            this.RequestEndingTime.ReadOnly = true;
+            // 
+            // RequestRejectReason
+            // 
+            this.RequestRejectReason.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RequestRejectReason.DataPropertyName = "RequestRejectReason";
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle10.NullValue = "-";
+            this.RequestRejectReason.DefaultCellStyle = dataGridViewCellStyle10;
+            resources.ApplyResources(this.RequestRejectReason, "RequestRejectReason");
+            this.RequestRejectReason.Name = "RequestRejectReason";
+            // 
+            // RequestHRStatus
+            // 
+            this.RequestHRStatus.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RequestHRStatus.DataPropertyName = "RequestHRStatus";
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.RequestHRStatus.DefaultCellStyle = dataGridViewCellStyle11;
+            resources.ApplyResources(this.RequestHRStatus, "RequestHRStatus");
+            this.RequestHRStatus.Name = "RequestHRStatus";
+            this.RequestHRStatus.ReadOnly = true;
+            // 
+            // RequestStatus
+            // 
+            this.RequestStatus.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.RequestStatus.DataPropertyName = "RequestStatus";
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.RequestStatus.DefaultCellStyle = dataGridViewCellStyle12;
+            resources.ApplyResources(this.RequestStatus, "RequestStatus");
+            this.RequestStatus.Name = "RequestStatus";
+            this.RequestStatus.ReadOnly = true;
+            // 
+            // Edit
+            // 
+            this.Edit.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            resources.ApplyResources(this.Edit, "Edit");
+            this.Edit.Image = global::TDF.Properties.Resources.edit;
+            this.Edit.Name = "Edit";
+            this.Edit.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Edit.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // Remove
+            // 
+            this.Remove.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            resources.ApplyResources(this.Remove, "Remove");
+            this.Remove.Image = global::TDF.Properties.Resources.delete;
+            this.Remove.Name = "Remove";
+            this.Remove.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Remove.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // Report
+            // 
+            this.Report.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            resources.ApplyResources(this.Report, "Report");
+            this.Report.Image = global::TDF.Properties.Resources.pdf;
+            this.Report.Name = "Report";
+            // 
+            // Approve
+            // 
+            this.Approve.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            resources.ApplyResources(this.Approve, "Approve");
+            this.Approve.Name = "Approve";
+            this.Approve.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Approve.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // Reject
+            // 
+            this.Reject.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            resources.ApplyResources(this.Reject, "Reject");
+            this.Reject.Name = "Reject";
+            this.Reject.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Reject.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
             // requestsForm
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
+            this.Controls.Add(this.panel);
             this.Controls.Add(this.controlBox);
             this.Controls.Add(this.closedLabel);
             this.Controls.Add(this.pendingLabel);
@@ -768,6 +853,7 @@ namespace TDF.Net.Forms
             this.Load += new System.EventHandler(this.Requests_Load);
             this.Resize += new System.EventHandler(this.requestsForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.requestsDataGridView)).EndInit();
+            this.panel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -787,6 +873,8 @@ namespace TDF.Net.Forms
         private System.Windows.Forms.DataGridViewImageColumn dataGridViewImageColumn1;
         private DataGridViewImageColumn dataGridViewImageColumn2;
         private DataGridViewImageColumn dataGridViewImageColumn3;
+        private Panel panel;
+        private Bunifu.UI.WinForms.BunifuFormControlBox bunifuFormControlBox1;
         private DataGridViewTextBoxColumn RequestID;
         private DataGridViewTextBoxColumn RequestUserFullName;
         private DataGridViewTextBoxColumn RequestType;
@@ -798,6 +886,7 @@ namespace TDF.Net.Forms
         private DataGridViewTextBoxColumn RequestBeginningTime;
         private DataGridViewTextBoxColumn RequestEndingTime;
         private DataGridViewTextBoxColumn RequestRejectReason;
+        private DataGridViewTextBoxColumn RequestHRStatus;
         private DataGridViewTextBoxColumn RequestStatus;
         private DataGridViewImageColumn Edit;
         private DataGridViewImageColumn Remove;
