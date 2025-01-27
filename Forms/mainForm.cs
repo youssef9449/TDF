@@ -86,7 +86,7 @@ namespace TDF.Net
         }*/
         public void updateUserDataControls()
         {
-            circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : circularPictureBox.Image;
+            circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : Properties.Resources.pngegg;
 
             usernameLabel.Text = $"Welcome, {loggedInUser.FullName.Split(' ')[0]}!";
         }
@@ -509,6 +509,12 @@ namespace TDF.Net
         {
             showFormInPanel(new reportsForm(false));
         }
+
+        private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            makeUserDisconnected();
+        }
+
         private void teamButton_Click(object sender, EventArgs e)
         {
             showFormInPanel(new balanceForm(false));
@@ -524,6 +530,7 @@ namespace TDF.Net
         }
         private void logoutButton_Click(object sender, EventArgs e)
         {
+            makeUserDisconnected();
             loggedInUser = null;
             Close();
             loginForm.Show();

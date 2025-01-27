@@ -106,16 +106,19 @@ namespace TDF.Net
                 }
             }
         }
-        private void makeUserDisconnected()
+        public static void makeUserDisconnected()
         {
-            using (SqlConnection connection = Database.getConnection())
+            if (loggedInUser != null)
             {
-                connection.Open();
-                string query = "UPDATE Users SET IsConnected = 0 WHERE UserName = @userName";
-                using (SqlCommand cmd = new SqlCommand(query, connection))
+                using (SqlConnection connection = Database.getConnection())
                 {
-                    cmd.Parameters.AddWithValue("@userName", loggedInUser.UserName);
-                    cmd.ExecuteNonQuery();
+                    connection.Open();
+                    string query = "UPDATE Users SET IsConnected = 0 WHERE UserName = @userName";
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@userName", loggedInUser.UserName);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
         }

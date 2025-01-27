@@ -127,7 +127,7 @@
   <data name="fromDayDatePicker.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAFvSURBVFhHtZbRTcNADIaD2KA9IXUBHvvIMwMwDBuQCRBt
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFvSURBVFhHtZbRTcNADIaD2KA9IXUBHvvIMwMwDBuQCRBt
         tmAgJFJ1liBHsnH/nHPn+vJJltLfv+1r75K064C+7ycK1GuJ1ocbROvDDaL14Qbu+q+n61EX5a5rw6qn
         GTD2H93gvPt9yV3Xxlo9zhVyTbDYE1Y9zhXQuFXgXAGNWwXOFdC4VeBcoWgIUuxfNAQp9keD9dN5dcyj
         LqDBaujVMY+6gAaroVevBguthl69mrsLDYZ0fT7tLz0ujDTKob/ZAqZuejil8R0HY5CHvFKIC8CCkk5Q
@@ -141,12 +141,12 @@
   </data>
   <data name="reasonTextBox.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAApcAAAAnCAYAAABaOWPNAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAD2SURBVHhe7daxCcQwAARB91+VhMr4MlyAjRLDp2LDGbjk
-        KtjrAgCA0lrrN8Z4zMzMzMxOtnvyi8t9AADAqd2T4hIAgIS4BAAgIy4BAMiISwAAMuISAICMuAQAICMu
-        AQDIiEsAADLiEgCAjLgEACAjLgEAyIhLAAAy4hIAgIy4BAAgIy4BAMiISwAAMuISAICMuAQAICMuAQDI
-        iEsAADLiEgCAjLgEACAjLgEAyIhLAAAy4hIAgIy4BAAgIy4BAMiISwAAMuISAICMuAQAICMuAQDIiEsA
-        ADLiEgCAjLgEACDzF5dzznsfZmZmZmYn2z35xSUAABRegoy37TnFDcMAAAAASUVORK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAAjgAAAAgCAYAAAAfbwIpAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADISURBVHhe7dZBCcQwAAXR+leVEBkrowJacimshAzvwb98
+        BXNdAABFa63fGOMxMzMzO3m7ab7A2QcAwOl20wgcACBF4AAAOQIHAMgROABAjsABAHIEDgCQI3AAgByB
+        AwDkCBwAIEfgAAA5AgcAyBE4AECOwAEAcgQOAJAjcACAHIEDAOQIHAAgR+AAADkCBwDIETgAQI7AAQBy
+        BA4AkCNwAIAcgQMA5AgcACBH4AAAOQIHAMj5C5w5570PMzMzs5O3m+YLHACAkhdDleiRA5HBWQAAAABJ
+        RU5ErkJggg==
 </value>
   </data>
   <data name="reasonLabel.BaseStylesheet" xml:space="preserve">
@@ -160,11 +160,10 @@
   </data>
   <data name="submitButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAJYAAAAlCAYAAACgXxA5AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAACKSURBVHhe7dKhAYAwAMCwXbKX4T/OwA88SKiLiKnumPs6
-        5n5d8J91jHeE74xFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgk
-        jEXCWCSMRcJYJIxFwlgkjEXCWCSMRcJYJIxFwlgkjEXCWCTG3Nb5jPDJts4bUbzv2qeqE5MAAAAASUVO
-        RK5CYII=
+        iVBORw0KGgoAAAANSUhEUgAAAIEAAAAeCAYAAAALkH3GAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABkSURBVGhD7dIxFcAgFARBlGAZ/CGD/pN3KRMJTDHN1tv6
+        rNXnOdyqVvtHbmMCTIAJMAFhAkyACTABYQJMgAkwAWECTIAJMAFhAkyACTABYQJMgAkwAWECTIAJeCcY
+        tb+Ri4zaD25HZhvCCrDQAAAAAElFTkSuQmCC
 </value>
   </data>
   <data name="toDateLabel.BaseStylesheet" xml:space="preserve">
@@ -272,7 +271,7 @@
   <data name="toDayDatePicker.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAFvSURBVFhHtZbRTcNADIaD2KA9IXUBHvvIMwMwDBuQCRBt
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFvSURBVFhHtZbRTcNADIaD2KA9IXUBHvvIMwMwDBuQCRBt
         tmAgJFJ1liBHsnH/nHPn+vJJltLfv+1r75K064C+7ycK1GuJ1ocbROvDDaL14Qbu+q+n61EX5a5rw6qn
         GTD2H93gvPt9yV3Xxlo9zhVyTbDYE1Y9zhXQuFXgXAGNWwXOFdC4VeBcoWgIUuxfNAQp9keD9dN5dcyj
         LqDBaujVMY+6gAaroVevBguthl69mrsLDYZ0fT7tLz0ujDTKob/ZAqZuejil8R0HY5CHvFKIC8CCkk5Q

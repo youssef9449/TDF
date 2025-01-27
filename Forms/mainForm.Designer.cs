@@ -325,7 +325,7 @@ namespace TDF.Net
             this.teamButton.IdleIconRightImage = null;
             this.teamButton.IndicateFocus = false;
             this.teamButton.Location = new System.Drawing.Point(3, 407);
-            this.teamButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.teamButton.Margin = new System.Windows.Forms.Padding(4);
             this.teamButton.Name = "teamButton";
             this.teamButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.teamButton.OnDisabledState.BorderRadius = 1;
@@ -417,7 +417,7 @@ namespace TDF.Net
             this.reportButton.IdleIconRightImage = null;
             this.reportButton.IndicateFocus = false;
             this.reportButton.Location = new System.Drawing.Point(3, 313);
-            this.reportButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.reportButton.Margin = new System.Windows.Forms.Padding(4);
             this.reportButton.Name = "reportButton";
             this.reportButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.reportButton.OnDisabledState.BorderRadius = 1;
@@ -546,7 +546,7 @@ namespace TDF.Net
             this.logoutButton.IdleIconRightImage = null;
             this.logoutButton.IndicateFocus = false;
             this.logoutButton.Location = new System.Drawing.Point(3, 360);
-            this.logoutButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.logoutButton.Margin = new System.Windows.Forms.Padding(4);
             this.logoutButton.Name = "logoutButton";
             this.logoutButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.logoutButton.OnDisabledState.BorderRadius = 1;
@@ -595,7 +595,7 @@ namespace TDF.Net
             this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
             this.circularPictureBox.Location = new System.Drawing.Point(6, 73);
-            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
             this.circularPictureBox.Name = "circularPictureBox";
             this.circularPictureBox.Size = new System.Drawing.Size(140, 134);
             this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -820,6 +820,7 @@ namespace TDF.Net
             this.ShowIcon = false;
             this.Text = "TDF";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.mainForm_FormClosing);
             this.Load += new System.EventHandler(this.mainForm_Load);
             this.Resize += new System.EventHandler(this.mainForm_Resize);
             this.panelTitleBar.ResumeLayout(false);

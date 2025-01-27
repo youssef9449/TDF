@@ -33,6 +33,8 @@ namespace TDF.Net.Forms
 
         int numberOfDaysRequested, availableBalance = 0;
         public static bool requestAddedOrUpdated;
+        public event Action requestAddedOrUpdatedEvent;
+
 
         #region Methods
         private void populateFieldsWithRequestData()
@@ -173,6 +175,39 @@ namespace TDF.Net.Forms
 
             return days;
         }
+        public static int getPermissionBalance()
+        {
+            try
+            {
+                using (SqlConnection conn = Database.getConnection())
+                {
+                    conn.Open();
+
+                    string query = "SELECT PermissionsBalance FROM AnnualLeave WHERE UserID = @UserID";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserID", loggedInUser.userID);
+
+                        object result = cmd.ExecuteScalar();
+
+                        // Directly return the result if it's not null, otherwise return 0.
+                        return result != null ? Convert.ToInt32(result) : 0;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("A database error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return 0; // Default return if an exception occurs.
+        }
+
 
         private void updateBalanceLabels(string leaveType, int userId, int daysRequested)
         {
@@ -227,7 +262,6 @@ namespace TDF.Net.Forms
                 }
             }
         }
-
         private void setTimeControlsVisibility(bool isVisible)
         {
             fromTimeTextBox.Visible = isVisible;
@@ -453,6 +487,7 @@ namespace TDF.Net.Forms
                     MessageBox.Show("Ending time can't be earlier than or equal to the beginning time.");
                     return;
                 }
+
             }
 
             // Validate inputs for day-based requests
@@ -484,7 +519,32 @@ namespace TDF.Net.Forms
                     return;
                 }
             }
+            if (exitRadioButton.Checked)
+            {
+                if(getPermissionBalance() == 0)
+                {
+                    MessageBox.Show("You don't have Permission balance.");
+                    return;
+                }
 
+                // Parse the input times
+                if (DateTime.TryParse(fromTimeTextBox.Text, out DateTime fromTime) &&
+                    DateTime.TryParse(toTimeTextBox.Text, out DateTime toTime))
+                {
+                    // Check if the time difference exceeds 2 hours
+                    if (toTime - fromTime > TimeSpan.FromHours(2))
+                    {
+                        MessageBox.Show("You can't apply for more than 2 hours.");
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please enter valid time values in both fields.");
+                    return;
+                }
+
+            }
 
 
             // Determine request type
@@ -505,6 +565,7 @@ namespace TDF.Net.Forms
             {
                 updateExistingRequest(requestType);
             }
+            requestAddedOrUpdatedEvent?.Invoke();
         }
         #endregion
     }
