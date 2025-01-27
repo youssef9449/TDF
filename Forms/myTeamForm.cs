@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using TDF.Net;
@@ -12,9 +13,9 @@ using static TDF.Net.mainForm;
 
 namespace TDF.Forms
 {
-    public partial class balanceForm : Form
+    public partial class myTeamForm : Form
     {
-        public balanceForm(bool isModern)
+        public myTeamForm(bool isModern)
         {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
@@ -100,8 +101,8 @@ namespace TDF.Forms
 
             // Base query for all users
             string query = @"SELECT AL.UserID, AL.FullName, AL.Annual, AL.CasualLeave, AL.AnnualUsed, AL.CasualUsed, 
-                            AL.AnnualBalance, AL.CasualBalance, AL.Permissions, AL.PermissionsUsed, 
-                            AL.PermissionsBalance, AL.UnpaidUsed
+                     AL.AnnualBalance, AL.CasualBalance, AL.Permissions, AL.PermissionsUsed, 
+                     AL.PermissionsBalance, AL.UnpaidUsed, U.Picture
                      FROM AnnualLeave AL
                      INNER JOIN Users U ON AL.UserID = U.UserID";
 
@@ -110,6 +111,7 @@ namespace TDF.Forms
             {
                 query += $" WHERE U.Department IN ({string.Join(", ", departments.Select((_, i) => $"@Dept{i}"))})";
             }
+
             try
             {
                 using (SqlConnection connection = Database.getConnection())
@@ -118,7 +120,7 @@ namespace TDF.Forms
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        // Add department parameters only if the user is a manager and has departments
+                        // Add department parameters if the user is a manager
                         if (hasManagerRole && departments.Count > 0)
                         {
                             for (int i = 0; i < departments.Count; i++)
@@ -133,8 +135,24 @@ namespace TDF.Forms
                             DataTable dataTable = new DataTable();
                             adapter.Fill(dataTable);
 
-                            // Bind the DataTable to the DataGridView
+                            // Replace NULL values in the Picture column with a default image
+                            foreach (DataRow row in dataTable.Rows)
+                            {
+                                if (row["Picture"] == DBNull.Value)
+                                {
+                                    row["Picture"] = ImageToByteArray(Properties.Resources.pngegg);
+                                }
+                            }
+
+                            // Bind the updated DataTable to the DataGridView
                             balanceDataGridView.DataSource = dataTable;
+
+                            // Set Picture column to display images
+                            DataGridViewImageColumn imgCol = balanceDataGridView.Columns["Picture"] as DataGridViewImageColumn;
+                            if (imgCol != null)
+                            {
+                                imgCol.ImageLayout = DataGridViewImageCellLayout.Zoom;
+                            }
                         }
                     }
                 }
@@ -143,6 +161,15 @@ namespace TDF.Forms
             {
                 // Handle any errors
                 MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private byte[] ImageToByteArray(Image image)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                return ms.ToArray();
             }
         }
         #endregion

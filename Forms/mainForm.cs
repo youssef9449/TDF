@@ -8,7 +8,6 @@ using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows.Forms;
 using TDF.Forms;
 using TDF.Net.Forms;
@@ -263,6 +262,11 @@ namespace TDF.Net
             //myTeamButton.Visible = !string.Equals(loggedInUser.Role, "User", StringComparison.OrdinalIgnoreCase);
 
         }
+        private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            makeUserDisconnected();
+
+        }
         private void bunifuLabel_Paint(object sender, PaintEventArgs e)
         {
             // Define the parts of the text
@@ -509,15 +513,9 @@ namespace TDF.Net
         {
             showFormInPanel(new reportsForm(false));
         }
-
-        private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            makeUserDisconnected();
-        }
-
         private void teamButton_Click(object sender, EventArgs e)
         {
-            showFormInPanel(new balanceForm(false));
+            showFormInPanel(new myTeamForm(false));
 
         }
         private void controlPanelButton_Click(object sender, EventArgs e)

@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Forms;
@@ -39,6 +38,9 @@ namespace TDF.Net
         private ContextMenuStrip contextMenu;
 
         private loginForm loginForm;
+
+        private Timer connectedUsersTimer;
+
 
         #region Methods
         public static void updateRoleStatus()
@@ -442,12 +444,20 @@ namespace TDF.Net
             usersShadowPanel.Visible = true;
             displayConnectedUsers();
 
-           /* if (hasAdminRole)
-            {
-                usersShadowPanel.Visible = hasAdminRole;
-                displayConnectedUsers();
+            connectedUsersTimer = new Timer();
+            connectedUsersTimer.Interval = 5000; // 5 seconds
+            connectedUsersTimer.Tick += ConnectedUsersTimer_Tick;
+            connectedUsersTimer.Start();
+            /* if (hasAdminRole)
+             {
+                 usersShadowPanel.Visible = hasAdminRole;
+                 displayConnectedUsers();
 
-            }*/
+             }*/
+        }
+        private void ConnectedUsersTimer_Tick(object sender, EventArgs e)
+        {
+            displayConnectedUsers();
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -629,6 +639,8 @@ namespace TDF.Net
         private void mainFormNewUI_FormClosing(object sender, FormClosingEventArgs e)
         {
             makeUserDisconnected();
+            connectedUsersTimer.Stop();
+            connectedUsersTimer.Dispose();
         }
         private void circularPictureBox_Click(object sender, EventArgs e)
         {
@@ -636,7 +648,7 @@ namespace TDF.Net
             contextMenu = new ContextMenuStrip();
 
             // Add "Update" menu item
-            ToolStripMenuItem updateMenuItem = new ToolStripMenuItem("Update");
+            ToolStripMenuItem updateMenuItem = new ToolStripMenuItem("Update Profile Picture");
             updateMenuItem.Click += updateMenuItem_Click;
 
             // Add items to the ContextMenuStrip
@@ -674,7 +686,7 @@ namespace TDF.Net
         }
         private void teamImageButton_Click(object sender, EventArgs e)
         {
-            balanceForm balanceForm = new balanceForm(true);
+            myTeamForm balanceForm = new myTeamForm(true);
             balanceForm.Show();
             //showFormInPanel(new balanceForm(false));
         }

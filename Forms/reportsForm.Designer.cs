@@ -32,10 +32,18 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
             this.reportsDataGridView = new Bunifu.UI.WinForms.BunifuDataGridView();
+            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.userName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.requestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Days = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Hours = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.HRStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fromDatePicker = new Bunifu.UI.WinForms.BunifuDatePicker();
             this.bunifuLabel1 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel2 = new Bunifu.UI.WinForms.BunifuLabel();
@@ -59,14 +67,6 @@
             this.filtersGroupBox = new Bunifu.UI.WinForms.BunifuGroupBox();
             this.panel = new System.Windows.Forms.Panel();
             this.bunifuFormControlBox1 = new Bunifu.UI.WinForms.BunifuFormControlBox();
-            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.userName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.requestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Days = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Hours = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.HRStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.reportsDataGridView)).BeginInit();
             this.balanceGroupBox.SuspendLayout();
             this.filtersGroupBox.SuspendLayout();
@@ -104,7 +104,7 @@
             this.controlBox.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
             this.controlBox.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
             this.controlBox.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.controlBox.Location = new System.Drawing.Point(1257, 9);
+            this.controlBox.Location = new System.Drawing.Point(1203, 9);
             this.controlBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.controlBox.MaximizeBox = false;
             this.controlBox.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
@@ -214,10 +214,81 @@
             this.reportsDataGridView.RowHeadersWidth = 51;
             this.reportsDataGridView.RowTemplate.Height = 40;
             this.reportsDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.reportsDataGridView.Size = new System.Drawing.Size(1330, 514);
+            this.reportsDataGridView.Size = new System.Drawing.Size(1276, 526);
             this.reportsDataGridView.TabIndex = 51;
             this.reportsDataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.Light;
             this.reportsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.reportsDataGridView_CellFormatting);
+            // 
+            // Date
+            // 
+            this.Date.DataPropertyName = "RequestFromDay";
+            this.Date.HeaderText = "Date";
+            this.Date.MinimumWidth = 6;
+            this.Date.Name = "Date";
+            this.Date.ReadOnly = true;
+            // 
+            // userName
+            // 
+            this.userName.DataPropertyName = "RequestUserFullName";
+            this.userName.HeaderText = "Name";
+            this.userName.MinimumWidth = 6;
+            this.userName.Name = "userName";
+            this.userName.ReadOnly = true;
+            // 
+            // requestType
+            // 
+            this.requestType.DataPropertyName = "RequestType";
+            this.requestType.HeaderText = "Request";
+            this.requestType.MinimumWidth = 6;
+            this.requestType.Name = "requestType";
+            this.requestType.ReadOnly = true;
+            // 
+            // Days
+            // 
+            this.Days.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Days.DataPropertyName = "RequestNumberOfDays";
+            this.Days.HeaderText = "No. of Days";
+            this.Days.MinimumWidth = 6;
+            this.Days.Name = "Days";
+            this.Days.ReadOnly = true;
+            this.Days.Width = 117;
+            // 
+            // Hours
+            // 
+            this.Hours.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Hours.DataPropertyName = "Hours";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.Format = "N2";
+            dataGridViewCellStyle3.NullValue = null;
+            this.Hours.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Hours.HeaderText = "Hours";
+            this.Hours.MinimumWidth = 6;
+            this.Hours.Name = "Hours";
+            this.Hours.ReadOnly = true;
+            this.Hours.Width = 77;
+            // 
+            // Status
+            // 
+            this.Status.DataPropertyName = "RequestStatus";
+            this.Status.HeaderText = "Status";
+            this.Status.MinimumWidth = 6;
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
+            // 
+            // HRStatus
+            // 
+            this.HRStatus.DataPropertyName = "RequestHRStatus";
+            this.HRStatus.HeaderText = "HR Status";
+            this.HRStatus.Name = "HRStatus";
+            this.HRStatus.ReadOnly = true;
+            // 
+            // Department
+            // 
+            this.Department.DataPropertyName = "RequestDepartment";
+            this.Department.HeaderText = "Department";
+            this.Department.MinimumWidth = 6;
+            this.Department.Name = "Department";
+            this.Department.ReadOnly = true;
             // 
             // fromDatePicker
             // 
@@ -820,7 +891,7 @@
             this.panel.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel.Location = new System.Drawing.Point(0, 0);
             this.panel.Name = "panel";
-            this.panel.Size = new System.Drawing.Size(1334, 41);
+            this.panel.Size = new System.Drawing.Size(1280, 41);
             this.panel.TabIndex = 73;
             // 
             // bunifuFormControlBox1
@@ -853,7 +924,7 @@
             this.bunifuFormControlBox1.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
             this.bunifuFormControlBox1.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
             this.bunifuFormControlBox1.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.bunifuFormControlBox1.Location = new System.Drawing.Point(1172, 2);
+            this.bunifuFormControlBox1.Location = new System.Drawing.Point(1118, 2);
             this.bunifuFormControlBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.bunifuFormControlBox1.MaximizeBox = true;
             this.bunifuFormControlBox1.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
@@ -887,83 +958,12 @@
             this.bunifuFormControlBox1.Size = new System.Drawing.Size(160, 37);
             this.bunifuFormControlBox1.TabIndex = 19;
             // 
-            // Date
-            // 
-            this.Date.DataPropertyName = "RequestFromDay";
-            this.Date.HeaderText = "Date";
-            this.Date.MinimumWidth = 6;
-            this.Date.Name = "Date";
-            this.Date.ReadOnly = true;
-            // 
-            // userName
-            // 
-            this.userName.DataPropertyName = "RequestUserFullName";
-            this.userName.HeaderText = "Name";
-            this.userName.MinimumWidth = 6;
-            this.userName.Name = "userName";
-            this.userName.ReadOnly = true;
-            // 
-            // requestType
-            // 
-            this.requestType.DataPropertyName = "RequestType";
-            this.requestType.HeaderText = "Request";
-            this.requestType.MinimumWidth = 6;
-            this.requestType.Name = "requestType";
-            this.requestType.ReadOnly = true;
-            // 
-            // Days
-            // 
-            this.Days.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Days.DataPropertyName = "RequestNumberOfDays";
-            this.Days.HeaderText = "No. of Days";
-            this.Days.MinimumWidth = 6;
-            this.Days.Name = "Days";
-            this.Days.ReadOnly = true;
-            this.Days.Width = 117;
-            // 
-            // Hours
-            // 
-            this.Hours.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Hours.DataPropertyName = "Hours";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.Format = "N2";
-            dataGridViewCellStyle3.NullValue = null;
-            this.Hours.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Hours.HeaderText = "Hours";
-            this.Hours.MinimumWidth = 6;
-            this.Hours.Name = "Hours";
-            this.Hours.ReadOnly = true;
-            this.Hours.Width = 77;
-            // 
-            // Status
-            // 
-            this.Status.DataPropertyName = "RequestStatus";
-            this.Status.HeaderText = "Status";
-            this.Status.MinimumWidth = 6;
-            this.Status.Name = "Status";
-            this.Status.ReadOnly = true;
-            // 
-            // HRStatus
-            // 
-            this.HRStatus.DataPropertyName = "RequestHRStatus";
-            this.HRStatus.HeaderText = "HR Status";
-            this.HRStatus.Name = "HRStatus";
-            this.HRStatus.ReadOnly = true;
-            // 
-            // Department
-            // 
-            this.Department.DataPropertyName = "RequestDepartment";
-            this.Department.HeaderText = "Department";
-            this.Department.MinimumWidth = 6;
-            this.Department.Name = "Department";
-            this.Department.ReadOnly = true;
-            // 
             // reportsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1334, 708);
+            this.ClientSize = new System.Drawing.Size(1280, 720);
             this.Controls.Add(this.panel);
             this.Controls.Add(this.filtersGroupBox);
             this.Controls.Add(this.bunifuLabel5);

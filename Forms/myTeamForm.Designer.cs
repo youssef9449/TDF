@@ -1,6 +1,6 @@
 ﻿namespace TDF.Forms
 {
-    partial class balanceForm
+    partial class myTeamForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,19 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(balanceForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(myTeamForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
             this.balanceDataGridView = new Bunifu.UI.WinForms.BunifuDataGridView();
+            this.refreshButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
+            this.panel = new System.Windows.Forms.Panel();
+            this.bunifuFormControlBox1 = new Bunifu.UI.WinForms.BunifuFormControlBox();
+            this.Picture = new System.Windows.Forms.DataGridViewImageColumn();
             this.UserID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FullName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Annual = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -53,9 +57,6 @@
             this.Permissions = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PermissionsUsed = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PermissionsBalance = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.refreshButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
-            this.panel = new System.Windows.Forms.Panel();
-            this.bunifuFormControlBox1 = new Bunifu.UI.WinForms.BunifuFormControlBox();
             ((System.ComponentModel.ISupportInitialize)(this.balanceDataGridView)).BeginInit();
             this.panel.SuspendLayout();
             this.SuspendLayout();
@@ -91,7 +92,7 @@
             this.controlBox.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
             this.controlBox.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
             this.controlBox.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.controlBox.Location = new System.Drawing.Point(1439, 11);
+            this.controlBox.Location = new System.Drawing.Point(1201, 11);
             this.controlBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.controlBox.MaximizeBox = false;
             this.controlBox.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
@@ -156,6 +157,7 @@
             this.balanceDataGridView.ColumnHeadersHeight = 40;
             this.balanceDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.balanceDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Picture,
             this.UserID,
             this.FullName,
             this.Annual,
@@ -216,10 +218,186 @@
             this.balanceDataGridView.RowsDefaultCellStyle = dataGridViewCellStyle9;
             this.balanceDataGridView.RowTemplate.Height = 40;
             this.balanceDataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.balanceDataGridView.Size = new System.Drawing.Size(1505, 720);
+            this.balanceDataGridView.Size = new System.Drawing.Size(1267, 581);
             this.balanceDataGridView.TabIndex = 51;
             this.balanceDataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.Light;
             this.balanceDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.reportsDataGridView_CellFormatting);
+            // 
+            // refreshButton
+            // 
+            this.refreshButton.AllowAnimations = true;
+            this.refreshButton.AllowMouseEffects = true;
+            this.refreshButton.AllowToggling = false;
+            this.refreshButton.AnimationSpeed = 200;
+            this.refreshButton.AutoGenerateColors = false;
+            this.refreshButton.AutoRoundBorders = false;
+            this.refreshButton.AutoSizeLeftIcon = true;
+            this.refreshButton.AutoSizeRightIcon = true;
+            this.refreshButton.BackColor = System.Drawing.Color.Transparent;
+            this.refreshButton.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(122)))), ((int)(((byte)(183)))));
+            this.refreshButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("refreshButton.BackgroundImage")));
+            this.refreshButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.refreshButton.ButtonText = "Refresh";
+            this.refreshButton.ButtonTextMarginLeft = 0;
+            this.refreshButton.ColorContrastOnClick = 45;
+            this.refreshButton.ColorContrastOnHover = 45;
+            this.refreshButton.Cursor = System.Windows.Forms.Cursors.Default;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.refreshButton.CustomizableEdges = borderEdges1;
+            this.refreshButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.refreshButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.refreshButton.DisabledFillColor = System.Drawing.Color.Empty;
+            this.refreshButton.DisabledForecolor = System.Drawing.Color.Empty;
+            this.refreshButton.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton.ButtonStates.Pressed;
+            this.refreshButton.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.refreshButton.ForeColor = System.Drawing.Color.White;
+            this.refreshButton.IconLeft = null;
+            this.refreshButton.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.refreshButton.IconLeftCursor = System.Windows.Forms.Cursors.Default;
+            this.refreshButton.IconLeftPadding = new System.Windows.Forms.Padding(11, 3, 3, 3);
+            this.refreshButton.IconMarginLeft = 11;
+            this.refreshButton.IconPadding = 10;
+            this.refreshButton.IconRight = null;
+            this.refreshButton.IconRightAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.refreshButton.IconRightCursor = System.Windows.Forms.Cursors.Default;
+            this.refreshButton.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
+            this.refreshButton.IconSize = 25;
+            this.refreshButton.IdleBorderColor = System.Drawing.Color.Empty;
+            this.refreshButton.IdleBorderRadius = 0;
+            this.refreshButton.IdleBorderThickness = 0;
+            this.refreshButton.IdleFillColor = System.Drawing.Color.Empty;
+            this.refreshButton.IdleIconLeftImage = null;
+            this.refreshButton.IdleIconRightImage = null;
+            this.refreshButton.IndicateFocus = false;
+            this.refreshButton.Location = new System.Drawing.Point(12, 85);
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
+            this.refreshButton.OnDisabledState.BorderRadius = 1;
+            this.refreshButton.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.refreshButton.OnDisabledState.BorderThickness = 1;
+            this.refreshButton.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.refreshButton.OnDisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
+            this.refreshButton.OnDisabledState.IconLeftImage = null;
+            this.refreshButton.OnDisabledState.IconRightImage = null;
+            this.refreshButton.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
+            this.refreshButton.onHoverState.BorderRadius = 1;
+            this.refreshButton.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.refreshButton.onHoverState.BorderThickness = 1;
+            this.refreshButton.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
+            this.refreshButton.onHoverState.ForeColor = System.Drawing.Color.White;
+            this.refreshButton.onHoverState.IconLeftImage = null;
+            this.refreshButton.onHoverState.IconRightImage = null;
+            this.refreshButton.OnIdleState.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.refreshButton.OnIdleState.BorderRadius = 1;
+            this.refreshButton.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.refreshButton.OnIdleState.BorderThickness = 1;
+            this.refreshButton.OnIdleState.FillColor = System.Drawing.Color.DodgerBlue;
+            this.refreshButton.OnIdleState.ForeColor = System.Drawing.Color.White;
+            this.refreshButton.OnIdleState.IconLeftImage = null;
+            this.refreshButton.OnIdleState.IconRightImage = null;
+            this.refreshButton.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.refreshButton.OnPressedState.BorderRadius = 1;
+            this.refreshButton.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
+            this.refreshButton.OnPressedState.BorderThickness = 1;
+            this.refreshButton.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
+            this.refreshButton.OnPressedState.ForeColor = System.Drawing.Color.White;
+            this.refreshButton.OnPressedState.IconLeftImage = null;
+            this.refreshButton.OnPressedState.IconRightImage = null;
+            this.refreshButton.Size = new System.Drawing.Size(121, 30);
+            this.refreshButton.TabIndex = 52;
+            this.refreshButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.refreshButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
+            this.refreshButton.TextMarginLeft = 0;
+            this.refreshButton.TextPadding = new System.Windows.Forms.Padding(0);
+            this.refreshButton.UseDefaultRadiusAndThickness = true;
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            // 
+            // panel
+            // 
+            this.panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.panel.Controls.Add(this.bunifuFormControlBox1);
+            this.panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel.Location = new System.Drawing.Point(0, 0);
+            this.panel.Name = "panel";
+            this.panel.Size = new System.Drawing.Size(1280, 41);
+            this.panel.TabIndex = 53;
+            this.panel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel_Paint);
+            // 
+            // bunifuFormControlBox1
+            // 
+            this.bunifuFormControlBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bunifuFormControlBox1.BunifuFormDrag = null;
+            this.bunifuFormControlBox1.CloseBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.CloseBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.CloseBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.CloseBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.CloseBoxOptions.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
+            this.bunifuFormControlBox1.CloseBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.CloseBoxOptions.Icon")));
+            this.bunifuFormControlBox1.CloseBoxOptions.IconAlt = null;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconHoverColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconPressedColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.CloseBoxOptions.IconSize = new System.Drawing.Size(18, 18);
+            this.bunifuFormControlBox1.CloseBoxOptions.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
+            this.bunifuFormControlBox1.ForeColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.HelpBox = false;
+            this.bunifuFormControlBox1.HelpBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.HelpBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.HelpBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.HelpBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.HelpBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.bunifuFormControlBox1.HelpBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.HelpBoxOptions.Icon")));
+            this.bunifuFormControlBox1.HelpBoxOptions.IconAlt = null;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
+            this.bunifuFormControlBox1.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.bunifuFormControlBox1.Location = new System.Drawing.Point(1118, 2);
+            this.bunifuFormControlBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bunifuFormControlBox1.MaximizeBox = true;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MaximizeBoxOptions.Icon")));
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconAlt = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MaximizeBoxOptions.IconAlt")));
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MaximizeBoxOptions.IconSize = new System.Drawing.Size(16, 16);
+            this.bunifuFormControlBox1.MaximizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.bunifuFormControlBox1.MinimizeBox = true;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.BorderRadius = 0;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.Enabled = true;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.EnableDefaultAction = true;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MinimizeBoxOptions.Icon")));
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconAlt = null;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconColor = System.Drawing.Color.White;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.bunifuFormControlBox1.MinimizeBoxOptions.IconSize = new System.Drawing.Size(14, 14);
+            this.bunifuFormControlBox1.MinimizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.bunifuFormControlBox1.Name = "bunifuFormControlBox1";
+            this.bunifuFormControlBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.bunifuFormControlBox1.ShowDesignBorders = false;
+            this.bunifuFormControlBox1.Size = new System.Drawing.Size(160, 37);
+            this.bunifuFormControlBox1.TabIndex = 19;
+            // 
+            // Picture
+            // 
+            this.Picture.DataPropertyName = "Picture";
+            this.Picture.HeaderText = "";
+            this.Picture.MinimumWidth = 70;
+            this.Picture.Name = "Picture";
+            this.Picture.ReadOnly = true;
+            this.Picture.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             // 
             // UserID
             // 
@@ -349,186 +527,19 @@
             this.PermissionsBalance.ReadOnly = true;
             this.PermissionsBalance.Width = 104;
             // 
-            // refreshButton
-            // 
-            this.refreshButton.AllowAnimations = true;
-            this.refreshButton.AllowMouseEffects = true;
-            this.refreshButton.AllowToggling = false;
-            this.refreshButton.AnimationSpeed = 200;
-            this.refreshButton.AutoGenerateColors = false;
-            this.refreshButton.AutoRoundBorders = false;
-            this.refreshButton.AutoSizeLeftIcon = true;
-            this.refreshButton.AutoSizeRightIcon = true;
-            this.refreshButton.BackColor = System.Drawing.Color.Transparent;
-            this.refreshButton.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(122)))), ((int)(((byte)(183)))));
-            this.refreshButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("refreshButton.BackgroundImage")));
-            this.refreshButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.refreshButton.ButtonText = "Refresh";
-            this.refreshButton.ButtonTextMarginLeft = 0;
-            this.refreshButton.ColorContrastOnClick = 45;
-            this.refreshButton.ColorContrastOnHover = 45;
-            this.refreshButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.refreshButton.CustomizableEdges = borderEdges1;
-            this.refreshButton.DialogResult = System.Windows.Forms.DialogResult.None;
-            this.refreshButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
-            this.refreshButton.DisabledFillColor = System.Drawing.Color.Empty;
-            this.refreshButton.DisabledForecolor = System.Drawing.Color.Empty;
-            this.refreshButton.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton.ButtonStates.Pressed;
-            this.refreshButton.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.refreshButton.ForeColor = System.Drawing.Color.White;
-            this.refreshButton.IconLeft = null;
-            this.refreshButton.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.refreshButton.IconLeftCursor = System.Windows.Forms.Cursors.Default;
-            this.refreshButton.IconLeftPadding = new System.Windows.Forms.Padding(11, 3, 3, 3);
-            this.refreshButton.IconMarginLeft = 11;
-            this.refreshButton.IconPadding = 10;
-            this.refreshButton.IconRight = null;
-            this.refreshButton.IconRightAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.refreshButton.IconRightCursor = System.Windows.Forms.Cursors.Default;
-            this.refreshButton.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
-            this.refreshButton.IconSize = 25;
-            this.refreshButton.IdleBorderColor = System.Drawing.Color.Empty;
-            this.refreshButton.IdleBorderRadius = 0;
-            this.refreshButton.IdleBorderThickness = 0;
-            this.refreshButton.IdleFillColor = System.Drawing.Color.Empty;
-            this.refreshButton.IdleIconLeftImage = null;
-            this.refreshButton.IdleIconRightImage = null;
-            this.refreshButton.IndicateFocus = false;
-            this.refreshButton.Location = new System.Drawing.Point(12, 85);
-            this.refreshButton.Name = "refreshButton";
-            this.refreshButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
-            this.refreshButton.OnDisabledState.BorderRadius = 1;
-            this.refreshButton.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.refreshButton.OnDisabledState.BorderThickness = 1;
-            this.refreshButton.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.refreshButton.OnDisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
-            this.refreshButton.OnDisabledState.IconLeftImage = null;
-            this.refreshButton.OnDisabledState.IconRightImage = null;
-            this.refreshButton.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
-            this.refreshButton.onHoverState.BorderRadius = 1;
-            this.refreshButton.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.refreshButton.onHoverState.BorderThickness = 1;
-            this.refreshButton.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
-            this.refreshButton.onHoverState.ForeColor = System.Drawing.Color.White;
-            this.refreshButton.onHoverState.IconLeftImage = null;
-            this.refreshButton.onHoverState.IconRightImage = null;
-            this.refreshButton.OnIdleState.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.refreshButton.OnIdleState.BorderRadius = 1;
-            this.refreshButton.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.refreshButton.OnIdleState.BorderThickness = 1;
-            this.refreshButton.OnIdleState.FillColor = System.Drawing.Color.DodgerBlue;
-            this.refreshButton.OnIdleState.ForeColor = System.Drawing.Color.White;
-            this.refreshButton.OnIdleState.IconLeftImage = null;
-            this.refreshButton.OnIdleState.IconRightImage = null;
-            this.refreshButton.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            this.refreshButton.OnPressedState.BorderRadius = 1;
-            this.refreshButton.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.refreshButton.OnPressedState.BorderThickness = 1;
-            this.refreshButton.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            this.refreshButton.OnPressedState.ForeColor = System.Drawing.Color.White;
-            this.refreshButton.OnPressedState.IconLeftImage = null;
-            this.refreshButton.OnPressedState.IconRightImage = null;
-            this.refreshButton.Size = new System.Drawing.Size(121, 30);
-            this.refreshButton.TabIndex = 52;
-            this.refreshButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.refreshButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            this.refreshButton.TextMarginLeft = 0;
-            this.refreshButton.TextPadding = new System.Windows.Forms.Padding(0);
-            this.refreshButton.UseDefaultRadiusAndThickness = true;
-            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
-            // 
-            // panel
-            // 
-            this.panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
-            this.panel.Controls.Add(this.bunifuFormControlBox1);
-            this.panel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel.Location = new System.Drawing.Point(0, 0);
-            this.panel.Name = "panel";
-            this.panel.Size = new System.Drawing.Size(1518, 41);
-            this.panel.TabIndex = 53;
-            this.panel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel_Paint);
-            // 
-            // bunifuFormControlBox1
-            // 
-            this.bunifuFormControlBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bunifuFormControlBox1.BunifuFormDrag = null;
-            this.bunifuFormControlBox1.CloseBoxOptions.BackColor = System.Drawing.Color.Transparent;
-            this.bunifuFormControlBox1.CloseBoxOptions.BorderRadius = 0;
-            this.bunifuFormControlBox1.CloseBoxOptions.Enabled = true;
-            this.bunifuFormControlBox1.CloseBoxOptions.EnableDefaultAction = true;
-            this.bunifuFormControlBox1.CloseBoxOptions.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
-            this.bunifuFormControlBox1.CloseBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.CloseBoxOptions.Icon")));
-            this.bunifuFormControlBox1.CloseBoxOptions.IconAlt = null;
-            this.bunifuFormControlBox1.CloseBoxOptions.IconColor = System.Drawing.Color.White;
-            this.bunifuFormControlBox1.CloseBoxOptions.IconHoverColor = System.Drawing.Color.White;
-            this.bunifuFormControlBox1.CloseBoxOptions.IconPressedColor = System.Drawing.Color.White;
-            this.bunifuFormControlBox1.CloseBoxOptions.IconSize = new System.Drawing.Size(18, 18);
-            this.bunifuFormControlBox1.CloseBoxOptions.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
-            this.bunifuFormControlBox1.ForeColor = System.Drawing.Color.White;
-            this.bunifuFormControlBox1.HelpBox = false;
-            this.bunifuFormControlBox1.HelpBoxOptions.BackColor = System.Drawing.Color.Transparent;
-            this.bunifuFormControlBox1.HelpBoxOptions.BorderRadius = 0;
-            this.bunifuFormControlBox1.HelpBoxOptions.Enabled = true;
-            this.bunifuFormControlBox1.HelpBoxOptions.EnableDefaultAction = true;
-            this.bunifuFormControlBox1.HelpBoxOptions.HoverColor = System.Drawing.Color.LightGray;
-            this.bunifuFormControlBox1.HelpBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.HelpBoxOptions.Icon")));
-            this.bunifuFormControlBox1.HelpBoxOptions.IconAlt = null;
-            this.bunifuFormControlBox1.HelpBoxOptions.IconColor = System.Drawing.Color.Black;
-            this.bunifuFormControlBox1.HelpBoxOptions.IconHoverColor = System.Drawing.Color.Black;
-            this.bunifuFormControlBox1.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
-            this.bunifuFormControlBox1.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
-            this.bunifuFormControlBox1.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.bunifuFormControlBox1.Location = new System.Drawing.Point(1356, 2);
-            this.bunifuFormControlBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.bunifuFormControlBox1.MaximizeBox = true;
-            this.bunifuFormControlBox1.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
-            this.bunifuFormControlBox1.MaximizeBoxOptions.BorderRadius = 0;
-            this.bunifuFormControlBox1.MaximizeBoxOptions.Enabled = true;
-            this.bunifuFormControlBox1.MaximizeBoxOptions.EnableDefaultAction = true;
-            this.bunifuFormControlBox1.MaximizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
-            this.bunifuFormControlBox1.MaximizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MaximizeBoxOptions.Icon")));
-            this.bunifuFormControlBox1.MaximizeBoxOptions.IconAlt = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MaximizeBoxOptions.IconAlt")));
-            this.bunifuFormControlBox1.MaximizeBoxOptions.IconColor = System.Drawing.Color.White;
-            this.bunifuFormControlBox1.MaximizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
-            this.bunifuFormControlBox1.MaximizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
-            this.bunifuFormControlBox1.MaximizeBoxOptions.IconSize = new System.Drawing.Size(16, 16);
-            this.bunifuFormControlBox1.MaximizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.bunifuFormControlBox1.MinimizeBox = true;
-            this.bunifuFormControlBox1.MinimizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
-            this.bunifuFormControlBox1.MinimizeBoxOptions.BorderRadius = 0;
-            this.bunifuFormControlBox1.MinimizeBoxOptions.Enabled = true;
-            this.bunifuFormControlBox1.MinimizeBoxOptions.EnableDefaultAction = true;
-            this.bunifuFormControlBox1.MinimizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
-            this.bunifuFormControlBox1.MinimizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("bunifuFormControlBox1.MinimizeBoxOptions.Icon")));
-            this.bunifuFormControlBox1.MinimizeBoxOptions.IconAlt = null;
-            this.bunifuFormControlBox1.MinimizeBoxOptions.IconColor = System.Drawing.Color.White;
-            this.bunifuFormControlBox1.MinimizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
-            this.bunifuFormControlBox1.MinimizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
-            this.bunifuFormControlBox1.MinimizeBoxOptions.IconSize = new System.Drawing.Size(14, 14);
-            this.bunifuFormControlBox1.MinimizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.bunifuFormControlBox1.Name = "bunifuFormControlBox1";
-            this.bunifuFormControlBox1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.bunifuFormControlBox1.ShowDesignBorders = false;
-            this.bunifuFormControlBox1.Size = new System.Drawing.Size(160, 37);
-            this.bunifuFormControlBox1.TabIndex = 19;
-            // 
-            // balanceForm
+            // myTeamForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1518, 859);
+            this.ClientSize = new System.Drawing.Size(1280, 720);
             this.Controls.Add(this.panel);
             this.Controls.Add(this.refreshButton);
             this.Controls.Add(this.balanceDataGridView);
             this.Controls.Add(this.controlBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
-            this.Name = "balanceForm";
+            this.Name = "myTeamForm";
             this.Text = "Reports";
             this.Load += new System.EventHandler(this.balanceForm_Load);
             this.Resize += new System.EventHandler(this.balanceForm_Resize);
@@ -541,6 +552,10 @@
         #endregion
         private Bunifu.UI.WinForms.BunifuFormControlBox controlBox;
         private Bunifu.UI.WinForms.BunifuDataGridView balanceDataGridView;
+        private Bunifu.UI.WinForms.BunifuButton.BunifuButton refreshButton;
+        private System.Windows.Forms.Panel panel;
+        private Bunifu.UI.WinForms.BunifuFormControlBox bunifuFormControlBox1;
+        private System.Windows.Forms.DataGridViewImageColumn Picture;
         private System.Windows.Forms.DataGridViewTextBoxColumn UserID;
         private System.Windows.Forms.DataGridViewTextBoxColumn FullName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Annual;
@@ -553,8 +568,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Permissions;
         private System.Windows.Forms.DataGridViewTextBoxColumn PermissionsUsed;
         private System.Windows.Forms.DataGridViewTextBoxColumn PermissionsBalance;
-        private Bunifu.UI.WinForms.BunifuButton.BunifuButton refreshButton;
-        private System.Windows.Forms.Panel panel;
-        private Bunifu.UI.WinForms.BunifuFormControlBox bunifuFormControlBox1;
     }
 }

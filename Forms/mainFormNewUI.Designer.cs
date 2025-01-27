@@ -155,7 +155,7 @@ namespace TDF.Net
             this.panelTitleBar.Location = new System.Drawing.Point(0, 0);
             this.panelTitleBar.Name = "panelTitleBar";
             this.panelTitleBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.panelTitleBar.Size = new System.Drawing.Size(1097, 66);
+            this.panelTitleBar.Size = new System.Drawing.Size(1280, 66);
             this.panelTitleBar.TabIndex = 6;
             this.panelTitleBar.Paint += new System.Windows.Forms.PaintEventHandler(this.panelTitleBar_Paint);
             this.panelTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
@@ -164,7 +164,7 @@ namespace TDF.Net
             // 
             this.maxImage.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.maxImage.Image = ((System.Drawing.Image)(resources.GetObject("maxImage.Image")));
-            this.maxImage.Location = new System.Drawing.Point(1019, 22);
+            this.maxImage.Location = new System.Drawing.Point(1202, 22);
             this.maxImage.Name = "maxImage";
             this.maxImage.Size = new System.Drawing.Size(20, 20);
             this.maxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -179,7 +179,7 @@ namespace TDF.Net
             // 
             this.minImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.minImg.Image = ((System.Drawing.Image)(resources.GetObject("minImg.Image")));
-            this.minImg.Location = new System.Drawing.Point(983, 22);
+            this.minImg.Location = new System.Drawing.Point(1166, 22);
             this.minImg.Name = "minImg";
             this.minImg.Size = new System.Drawing.Size(20, 20);
             this.minImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -194,7 +194,7 @@ namespace TDF.Net
             // 
             this.closeImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.closeImg.Image = ((System.Drawing.Image)(resources.GetObject("closeImg.Image")));
-            this.closeImg.Location = new System.Drawing.Point(1055, 22);
+            this.closeImg.Location = new System.Drawing.Point(1238, 22);
             this.closeImg.Name = "closeImg";
             this.closeImg.Size = new System.Drawing.Size(20, 20);
             this.closeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -224,7 +224,7 @@ namespace TDF.Net
             this.formPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.formPanel.Location = new System.Drawing.Point(0, 66);
             this.formPanel.Name = "formPanel";
-            this.formPanel.Size = new System.Drawing.Size(1097, 574);
+            this.formPanel.Size = new System.Drawing.Size(1280, 654);
             this.formPanel.TabIndex = 11;
             this.formPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.formPanel_Paint);
             // 
@@ -248,7 +248,7 @@ namespace TDF.Net
             this.usersShadowPanel.ShadowDepth = 5;
             this.usersShadowPanel.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.usersShadowPanel.ShadowTopLeftVisible = false;
-            this.usersShadowPanel.Size = new System.Drawing.Size(163, 221);
+            this.usersShadowPanel.Size = new System.Drawing.Size(163, 301);
             this.usersShadowPanel.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.usersShadowPanel.TabIndex = 15;
             this.usersShadowPanel.Visible = false;
@@ -295,7 +295,7 @@ namespace TDF.Net
             this.bunifuLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.bunifuLabel.Font = new System.Drawing.Font("Segoe UI Emoji", 9F);
-            this.bunifuLabel.Location = new System.Drawing.Point(3, 548);
+            this.bunifuLabel.Location = new System.Drawing.Point(3, 628);
             this.bunifuLabel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.bunifuLabel.Name = "bunifuLabel";
             this.bunifuLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -327,7 +327,7 @@ namespace TDF.Net
             this.teamImageButton.ImageSize = new System.Drawing.Size(68, 73);
             this.teamImageButton.ImageZoomSize = new System.Drawing.Size(78, 83);
             this.teamImageButton.InitialImage = ((System.Drawing.Image)(resources.GetObject("teamImageButton.InitialImage")));
-            this.teamImageButton.Location = new System.Drawing.Point(684, 448);
+            this.teamImageButton.Location = new System.Drawing.Point(776, 528);
             this.teamImageButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.teamImageButton.Name = "teamImageButton";
             this.teamImageButton.Rotation = 0;
@@ -365,7 +365,7 @@ namespace TDF.Net
             this.requestsImageButton.ImageSize = new System.Drawing.Size(68, 73);
             this.requestsImageButton.ImageZoomSize = new System.Drawing.Size(78, 83);
             this.requestsImageButton.InitialImage = ((System.Drawing.Image)(resources.GetObject("requestsImageButton.InitialImage")));
-            this.requestsImageButton.Location = new System.Drawing.Point(159, 448);
+            this.requestsImageButton.Location = new System.Drawing.Point(251, 528);
             this.requestsImageButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.requestsImageButton.Name = "requestsImageButton";
             this.requestsImageButton.Rotation = 0;
@@ -403,7 +403,7 @@ namespace TDF.Net
             this.reportsImageButton.ImageSize = new System.Drawing.Size(68, 73);
             this.reportsImageButton.ImageZoomSize = new System.Drawing.Size(78, 83);
             this.reportsImageButton.InitialImage = ((System.Drawing.Image)(resources.GetObject("reportsImageButton.InitialImage")));
-            this.reportsImageButton.Location = new System.Drawing.Point(334, 448);
+            this.reportsImageButton.Location = new System.Drawing.Point(426, 528);
             this.reportsImageButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.reportsImageButton.Name = "reportsImageButton";
             this.reportsImageButton.Rotation = 0;
@@ -441,7 +441,7 @@ namespace TDF.Net
             this.logoutImageButton.ImageSize = new System.Drawing.Size(68, 73);
             this.logoutImageButton.ImageZoomSize = new System.Drawing.Size(78, 83);
             this.logoutImageButton.InitialImage = ((System.Drawing.Image)(resources.GetObject("logoutImageButton.InitialImage")));
-            this.logoutImageButton.Location = new System.Drawing.Point(509, 449);
+            this.logoutImageButton.Location = new System.Drawing.Point(601, 529);
             this.logoutImageButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.logoutImageButton.Name = "logoutImageButton";
             this.logoutImageButton.Rotation = 0;
@@ -479,7 +479,7 @@ namespace TDF.Net
             this.controlPanelImageButton.ImageSize = new System.Drawing.Size(68, 73);
             this.controlPanelImageButton.ImageZoomSize = new System.Drawing.Size(78, 83);
             this.controlPanelImageButton.InitialImage = ((System.Drawing.Image)(resources.GetObject("controlPanelImageButton.InitialImage")));
-            this.controlPanelImageButton.Location = new System.Drawing.Point(859, 448);
+            this.controlPanelImageButton.Location = new System.Drawing.Point(951, 528);
             this.controlPanelImageButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.controlPanelImageButton.Name = "controlPanelImageButton";
             this.controlPanelImageButton.Rotation = 0;
@@ -509,7 +509,7 @@ namespace TDF.Net
             this.shadowPanel.Controls.Add(this.bunifuLabel5);
             this.shadowPanel.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
             this.shadowPanel.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
-            this.shadowPanel.Location = new System.Drawing.Point(112, 499);
+            this.shadowPanel.Location = new System.Drawing.Point(204, 579);
             this.shadowPanel.Name = "shadowPanel";
             this.shadowPanel.PanelColor = System.Drawing.Color.White;
             this.shadowPanel.PanelColor2 = System.Drawing.Color.White;
@@ -619,7 +619,7 @@ namespace TDF.Net
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.Color.White;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.ClientSize = new System.Drawing.Size(1097, 640);
+            this.ClientSize = new System.Drawing.Size(1280, 720);
             this.ControlBox = false;
             this.Controls.Add(this.formPanel);
             this.Controls.Add(this.panelTitleBar);
