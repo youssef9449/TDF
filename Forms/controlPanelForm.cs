@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TDF.Net;
 using TDF.Net.Classes;
+using Bunifu.UI.WinForms;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -231,6 +232,8 @@ namespace TDF.Forms
             depDropdown.SelectedIndex = -1;
 
             loadUserNames();
+
+            removeBalanceDropdown.Text = "Annual";
         }
         private void searchTextBox_TextChange(object sender, EventArgs e)
         {
@@ -286,6 +289,17 @@ namespace TDF.Forms
             Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
 
             ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        private void usersCheckBox_CheckedChanged(object sender, BunifuCheckBox.CheckedChangedEventArgs e)
+        {
+            // Get the check state of the "Select All" checkbox
+            bool isChecked = usersCheckBox.Checked;
+
+            // Loop through all items in the CheckedListBox
+            for (int i = 0; i < usersCheckedListBox.Items.Count; i++)
+            {
+                usersCheckedListBox.SetItemChecked(i, isChecked);
+            }
         }
 
 
@@ -758,7 +772,7 @@ namespace TDF.Forms
                         }
                     }
 
-                    MessageBox.Show($"Password changed to '{passwordTextBox.Text}' for selected users.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Password changed for the selected users.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             else
@@ -1000,6 +1014,130 @@ namespace TDF.Forms
                 }
             }
         }
+        private void removeDaysButton_Click(object sender, EventArgs e)
+        {
+            if (!userSelected())
+            {
+                return;
+            }
+
+            // Validate removedAmountTextBox
+            if (!decimal.TryParse(removedAmountTextBox.Text, out decimal removedAmount) || removedAmount <= 0)
+            {
+                MessageBox.Show("Please enter a valid positive number in the removed amount field.");
+                removedAmountTextBox.Focus();
+                return;
+            }
+
+            // Validate reasonTextBox
+            if (string.IsNullOrWhiteSpace(reasonTextBox.Text))
+            {
+                MessageBox.Show("Please provide a reason.");
+                reasonTextBox.Focus();
+                return;
+            }
+
+            string requestReason = reasonTextBox.Text.Trim();
+            string requestType = removeBalanceDropdown.Text;
+            string loggedInUserFullName = loggedInUser.FullName;
+            DateTime currentDate = DateTime.Now;
+
+            // Determine the column to update
+            string columnToUpdate;
+            if (removeBalanceDropdown.Text == "Annual")
+            {
+                columnToUpdate = "AnnualUsed";
+            }
+            else if (removeBalanceDropdown.Text == "Emergency")
+            {
+                columnToUpdate = "CasualUsed";
+            }
+            else
+            {
+                MessageBox.Show("Please select a valid leave type (Annual or Emergency).");
+                return;
+            }
+
+            using (SqlConnection connection = Database.getConnection())
+            {
+                connection.Open();
+
+                foreach (var selectedUser in usersCheckedListBox.CheckedItems)
+                {
+                    // Extract user details from the selected item
+                    string[] userParts = selectedUser.ToString().Split('-');
+                    string fullName = userParts[0].Trim();
+                    string departmentName = userParts[1].Trim();
+
+                    // Fetch UserID from AnnualLeave table
+                    string getUserIdQuery = "SELECT UserID FROM AnnualLeave WHERE FullName = @FullName";
+                    int userId;
+                    using (SqlCommand getUserIdCommand = new SqlCommand(getUserIdQuery, connection))
+                    {
+                        getUserIdCommand.Parameters.AddWithValue("@FullName", fullName);
+                        object result = getUserIdCommand.ExecuteScalar();
+                        if (result == null)
+                        {
+                            MessageBox.Show($"UserID not found for user: {fullName}");
+                            continue;
+                        }
+                        userId = Convert.ToInt32(result);
+                    }
+
+                    // Update the leave balance in AnnualLeave
+                    string updateQuery = $@"
+                UPDATE AnnualLeave
+                SET {columnToUpdate} = {columnToUpdate} + @RemovedAmount
+                WHERE FullName = @FullName";
+
+                    using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@RemovedAmount", removedAmount);
+                        updateCommand.Parameters.AddWithValue("@FullName", fullName);
+                        updateCommand.ExecuteNonQuery();
+                    }
+
+                    // Insert a row into the Requests table
+                    string insertQuery = @"
+                INSERT INTO Requests 
+                (
+                    RequestUserID, RequestUserFullName, RequestFromDay, RequestToDay, 
+                    RequestBeginningTime, RequestEndingTime, RequestReason, RequestStatus, 
+                    RequestType, RequestRejectReason, RequestCloser, RequestDepartment, 
+                    RequestNumberOfDays, RequestHRStatus, RequestHRCloser
+                )
+                VALUES
+                (
+                    @RequestUserID, @RequestUserFullName, @RequestFromDay, @RequestToDay, 
+                    NULL, NULL, @RequestReason, @RequestStatus, 
+                    @RequestType, NULL, @RequestCloser, @RequestDepartment, 
+                    @RequestNumberOfDays, @RequestHRStatus, @RequestHRCloser
+                )";
+
+                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                    {
+                        insertCommand.Parameters.AddWithValue("@RequestUserID", userId);
+                        insertCommand.Parameters.AddWithValue("@RequestUserFullName", fullName);
+                        insertCommand.Parameters.AddWithValue("@RequestFromDay", currentDate);
+                        insertCommand.Parameters.AddWithValue("@RequestToDay", currentDate);
+                        insertCommand.Parameters.AddWithValue("@RequestReason", requestReason);
+                        insertCommand.Parameters.AddWithValue("@RequestStatus", "Approved");
+                        insertCommand.Parameters.AddWithValue("@RequestType", requestType);
+                        insertCommand.Parameters.AddWithValue("@RequestCloser", loggedInUserFullName);
+                        insertCommand.Parameters.AddWithValue("@RequestDepartment", departmentName);
+                        insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", removedAmount);
+                        insertCommand.Parameters.AddWithValue("@RequestHRStatus", "Approved");
+                        insertCommand.Parameters.AddWithValue("@RequestHRCloser", loggedInUserFullName);
+                        insertCommand.ExecuteNonQuery();
+                    }
+                }
+
+                connection.Close();
+            }
+
+            MessageBox.Show("Leave balances updated successfully.");
+        }
+
         #endregion
 
     }

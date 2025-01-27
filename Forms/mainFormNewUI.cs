@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Forms;
@@ -39,6 +38,10 @@ namespace TDF.Net
         private ContextMenuStrip contextMenu;
 
         private loginForm loginForm;
+
+        private Timer connectedUsersTimer;
+
+
         #region Methods
         public static void updateRoleStatus()
         {
@@ -50,7 +53,7 @@ namespace TDF.Net
         }
         public void updateUserDataControls()
         {
-            circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : circularPictureBox.Image;
+            circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : Properties.Resources.pngegg;
 
             usernameLabel.Text = $"Welcome, {loggedInUser.FullName.Split(' ')[0]}!";
         }
@@ -302,14 +305,15 @@ namespace TDF.Net
                 MessageBox.Show("An error occurred while saving the image: " + ex.Message);
             }
         }
-        public static List<User> GetConnectedUsers()
+        public static List<User> getConnectedUsers()
         {
             List<User> connectedUsers = new List<User>();
 
             using (SqlConnection connection = Database.getConnection())
             {
                 connection.Open();
-                string query = "SELECT FullName, Department, Picture FROM Users WHERE IsConnected = 1";
+               // string query = $"SELECT FullName, Department, Picture FROM Users WHERE IsConnected = 1 AND NOT Role = 'Admin' AND NOT UserName = '{loggedInUser.UserName}';";
+                string query = $"SELECT FullName, Department, Picture FROM Users WHERE IsConnected = 1 AND NOT UserName = '{loggedInUser.UserName}';";
 
                 using (SqlCommand cmd = new SqlCommand(query, connection))
                 {
@@ -332,41 +336,62 @@ namespace TDF.Net
 
             return connectedUsers;
         }
-        private void DisplayConnectedUsers()
+        private void displayConnectedUsers()
         {
-            List<User> connectedUsers = GetConnectedUsers();
+            List<User> connectedUsers = getConnectedUsers();
 
             // Clear the panel before adding new items
             usersShadowPanel.Controls.Clear();
 
             int yOffset = 10; // Vertical spacing
 
+            // Add a label at the top
+            Label headerLabel = new Label
+            {
+                Text = "Online Users :-",
+                Location = new Point(10, yOffset), // At the top
+                AutoSize = true,
+                Font = new Font("Segoe UI", 12, FontStyle.Bold)
+            };
+
+            usersShadowPanel.Controls.Add(headerLabel);
+            yOffset += headerLabel.Height + 10; // Add space for the header label
+
             foreach (User user in connectedUsers)
             {
                 // Create PictureBox for the user's image
-                PictureBox pictureBox = new PictureBox
+                CircularPictureBox pictureBox = new CircularPictureBox
                 {
                     Image = user.Picture ?? Properties.Resources.pngegg, // Fallback image
-                    SizeMode = PictureBoxSizeMode.Zoom,
-                    Size = new Size(50, 50), // Set size
+                    SizeMode = PictureBoxSizeMode.StretchImage,
+                    Size = new Size(100, 100), // Set size
                     Location = new Point(10, yOffset) // Position
                 };
 
-                // Create Label for the user's name
+                // Create Label for the user's name (below the picture)
                 Label nameLabel = new Label
                 {
                     Text = $"{user.FullName.Split(' ')[0]} - {user.Department}", // "Name - Department"
-                    Location = new Point(70, yOffset + 15), // Position next to PictureBox
+                    Location = new Point(10, yOffset + pictureBox.Height + 5), // Positioned 5px below the PictureBox
                     AutoSize = true,
-                    Font = new Font("Segoe UI", 10, FontStyle.Regular)
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    ForeColor = darkColor,
+                    MaximumSize = new Size(usersShadowPanel.Width - 20, 0) // Wrap text within the panel width
                 };
+
+                // Dynamically resize the panel height if needed
+                /*int requiredHeight = nameLabel.Location.Y + nameLabel.Height + 10;
+                if (usersShadowPanel.Height < requiredHeight)
+                {
+                    usersShadowPanel.Height = requiredHeight;
+                }*/
 
                 // Add controls to the panel
                 usersShadowPanel.Controls.Add(pictureBox);
                 usersShadowPanel.Controls.Add(nameLabel);
 
                 // Update vertical offset for the next user
-                yOffset += 60; // Adjust based on control heights and spacing
+                yOffset += pictureBox.Height + nameLabel.Height + 20; // Add space between users
             }
         }
 
@@ -415,7 +440,24 @@ namespace TDF.Net
             setImageButtonVisibility();
             adjustShadowPanelAndImageButtons();
             updateUserDataControls();
-            DisplayConnectedUsers();
+
+            usersShadowPanel.Visible = true;
+            displayConnectedUsers();
+
+            connectedUsersTimer = new Timer();
+            connectedUsersTimer.Interval = 5000; // 5 seconds
+            connectedUsersTimer.Tick += ConnectedUsersTimer_Tick;
+            connectedUsersTimer.Start();
+            /* if (hasAdminRole)
+             {
+                 usersShadowPanel.Visible = hasAdminRole;
+                 displayConnectedUsers();
+
+             }*/
+        }
+        private void ConnectedUsersTimer_Tick(object sender, EventArgs e)
+        {
+            displayConnectedUsers();
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -594,6 +636,39 @@ namespace TDF.Net
                 return;
             }
         }
+        private void mainFormNewUI_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            makeUserDisconnected();
+            connectedUsersTimer.Stop();
+            connectedUsersTimer.Dispose();
+        }
+        private void circularPictureBox_Click(object sender, EventArgs e)
+        {
+            // Initialize the ContextMenuStrip
+            contextMenu = new ContextMenuStrip();
+
+            // Add "Update" menu item
+            ToolStripMenuItem updateMenuItem = new ToolStripMenuItem("Update Profile Picture");
+            updateMenuItem.Click += updateMenuItem_Click;
+
+            // Add items to the ContextMenuStrip
+            contextMenu.Items.Add(updateMenuItem);
+
+            if (loggedInUser.Picture != null)
+            {
+                // Add "Remove" menu item
+                ToolStripMenuItem removeMenuItem = new ToolStripMenuItem("Remove");
+                removeMenuItem.Click += removeMenuItem_Click;
+                contextMenu.Items.Add(removeMenuItem);
+            }
+
+            contextMenu.Show(Cursor.Position);
+        }
+        private void usersShadowPanel_Scroll(object sender, ScrollEventArgs e)
+        {
+            usersShadowPanel.Invalidate();
+
+        }
         #endregion
 
         #region Buttons
@@ -611,7 +686,7 @@ namespace TDF.Net
         }
         private void teamImageButton_Click(object sender, EventArgs e)
         {
-            balanceForm balanceForm = new balanceForm(true);
+            myTeamForm balanceForm = new myTeamForm(true);
             balanceForm.Show();
             //showFormInPanel(new balanceForm(false));
         }
@@ -629,33 +704,14 @@ namespace TDF.Net
         }
         private void logoutImageButton_Click(object sender, EventArgs e)
         {
+
+            makeUserDisconnected();
             loggedInUser = null;
             Close();
             loginForm.Show();
         }
         #endregion
 
-        private void circularPictureBox_Click(object sender, EventArgs e)
-        {
-            // Initialize the ContextMenuStrip
-            contextMenu = new ContextMenuStrip();
 
-            // Add "Update" menu item
-            ToolStripMenuItem updateMenuItem = new ToolStripMenuItem("Update");
-            updateMenuItem.Click += updateMenuItem_Click;
-
-            // Add items to the ContextMenuStrip
-            contextMenu.Items.Add(updateMenuItem);
-
-            if (loggedInUser.Picture != null)
-            {
-                // Add "Remove" menu item
-                ToolStripMenuItem removeMenuItem = new ToolStripMenuItem("Remove");
-                removeMenuItem.Click += removeMenuItem_Click;
-                contextMenu.Items.Add(removeMenuItem);
-            }
-
-            contextMenu.Show(Cursor.Position);
-        }
     }
 }

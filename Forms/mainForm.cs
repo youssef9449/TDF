@@ -8,7 +8,6 @@ using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows.Forms;
 using TDF.Forms;
 using TDF.Net.Forms;
@@ -86,7 +85,7 @@ namespace TDF.Net
         }*/
         public void updateUserDataControls()
         {
-            circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : circularPictureBox.Image;
+            circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : Properties.Resources.pngegg;
 
             usernameLabel.Text = $"Welcome, {loggedInUser.FullName.Split(' ')[0]}!";
         }
@@ -261,6 +260,11 @@ namespace TDF.Net
          //   startPipeListener(); // Start listening for messages
             updateUserDataControls();
             //myTeamButton.Visible = !string.Equals(loggedInUser.Role, "User", StringComparison.OrdinalIgnoreCase);
+
+        }
+        private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            makeUserDisconnected();
 
         }
         private void bunifuLabel_Paint(object sender, PaintEventArgs e)
@@ -511,7 +515,7 @@ namespace TDF.Net
         }
         private void teamButton_Click(object sender, EventArgs e)
         {
-            showFormInPanel(new balanceForm(false));
+            showFormInPanel(new myTeamForm(false));
 
         }
         private void controlPanelButton_Click(object sender, EventArgs e)
@@ -524,6 +528,7 @@ namespace TDF.Net
         }
         private void logoutButton_Click(object sender, EventArgs e)
         {
+            makeUserDisconnected();
             loggedInUser = null;
             Close();
             loginForm.Show();

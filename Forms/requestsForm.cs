@@ -416,7 +416,9 @@ namespace TDF.Net.Forms
             using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                string orderByClause = " ORDER BY RequestUserFullName ASC, RequestFromDay ASC";
+
+                using (SqlCommand cmd = new SqlCommand(query + orderByClause, conn))
                 {
                     parameterizeCommand?.Invoke(cmd);
                     using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
@@ -805,12 +807,14 @@ namespace TDF.Net.Forms
         private void addRequestButton_Click(object sender, EventArgs e)
         {
             addRequestForm addRequestForm = new addRequestForm();
+            addRequestForm.requestAddedOrUpdatedEvent += refreshRequestsTable;
             addRequestForm.ShowDialog();
 
             if (requestAddedOrUpdated)
             {
                 refreshRequestsTable();
             }
+
         }
         private void refreshButton_Click(object sender, EventArgs e)
         {
