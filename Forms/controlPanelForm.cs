@@ -77,17 +77,18 @@ namespace TDF.Forms
             switch (filter)
             {
                 case "Name":
-                    return $"{baseQuery} AND FullName LIKE @searchValue";
+                    return $"{baseQuery} AND FullName LIKE @searchValue ORDER BY FullName";
                 case "Department":
-                    return $"{baseQuery} AND Department LIKE @searchValue";
+                    return $"{baseQuery} AND Department LIKE @searchValue ORDER BY Department, FullName";
                 case "Role":
-                    return $"{baseQuery} AND Role LIKE @searchValue";
+                    return $"{baseQuery} AND Role LIKE @searchValue ORDER BY Role, FullName";
                 case "Title":
-                    return $"{baseQuery} AND Title LIKE @searchValue";
+                    return $"{baseQuery} AND Title LIKE @searchValue ORDER BY Title, FullName";
                 default:
-                    return $"{baseQuery} AND (FullName LIKE @searchValue OR Department LIKE @searchValue OR Role LIKE @searchValue OR Title LIKE @searchValue)";
+                    return $"{baseQuery} AND (FullName LIKE @searchValue OR Department LIKE @searchValue OR Role LIKE @searchValue OR Title LIKE @searchValue) ORDER BY FullName";
             }
         }
+
         private void loadUserNames()
         {
             string filter = filterDropdown.Text;
