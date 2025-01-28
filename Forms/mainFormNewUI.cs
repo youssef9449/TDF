@@ -10,6 +10,7 @@ using TDF.Classes;
 using TDF.Forms;
 using TDF.Net.Classes;
 using TDF.Net.Forms;
+using TDF.Properties;
 using static TDF.Net.Classes.ThemeColor;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
@@ -40,7 +41,9 @@ namespace TDF.Net
         private loginForm loginForm;
 
         private Timer connectedUsersTimer;
-
+        private bool isPanelExpanded = false;
+        private int expandedHeight; // Stores the full height of the panel when expanded
+        private int contractedHeight = 50; // Height of the panel to show only the header
 
         #region Methods
         public static void updateRoleStatus()
@@ -343,48 +346,54 @@ namespace TDF.Net
             // Clear the panel before adding new items
             usersShadowPanel.Controls.Clear();
 
-            int yOffset = 10; // Vertical spacing
+            // Add the icon button back to the panel
+            usersShadowPanel.Controls.Add(usersIconButton);
 
-            // Add a label at the top
+            int yOffset = 10; // Initial vertical spacing
+
+            // Add a label at the top with the number of online users
             Label headerLabel = new Label
             {
-                Text = "Online Users :-",
-                Location = new Point(10, yOffset), // At the top
+                Text = $"Online Users ({connectedUsers.Count})", // Display the count of online users
+                Location = new Point(10, yOffset + 3), // At the top
+              //  Location = new Point((usersShadowPanel.Width - TextRenderer.MeasureText($"Online Users ({connectedUsers.Count})", new Font("Segoe UI", 12, FontStyle.Bold)).Width) / 2, yOffset), // Center the header horizontally
                 AutoSize = true,
                 Font = new Font("Segoe UI", 12, FontStyle.Bold)
             };
 
             usersShadowPanel.Controls.Add(headerLabel);
-            yOffset += headerLabel.Height + 10; // Add space for the header label
+            yOffset += headerLabel.Height + 20; // Add space for the header label
 
             foreach (User user in connectedUsers)
             {
+                // Calculate the X position to center the PictureBox in the panel
+                int pictureBoxX = (usersShadowPanel.Width - 75) / 2; // Center the 75px image
+
                 // Create PictureBox for the user's image
                 CircularPictureBox pictureBox = new CircularPictureBox
                 {
-                    Image = user.Picture ?? Properties.Resources.pngegg, // Fallback image
+                    Image = user.Picture ?? Resources.pngegg, // Fallback image
                     SizeMode = PictureBoxSizeMode.StretchImage,
-                    Size = new Size(100, 100), // Set size
-                    Location = new Point(10, yOffset) // Position
+                    Size = new Size(75, 75), // Set size
+                    Location = new Point(pictureBoxX, yOffset) // Center horizontally and adjust vertically
                 };
+
+                // Set the label width within panel constraints
+                int nameLabelWidth = usersShadowPanel.Width - 20;
+                int nameLabelX = (usersShadowPanel.Width - nameLabelWidth) / 2;
 
                 // Create Label for the user's name (below the picture)
                 Label nameLabel = new Label
                 {
                     Text = $"{user.FullName.Split(' ')[0]} - {user.Department}", // "Name - Department"
-                    Location = new Point(10, yOffset + pictureBox.Height + 5), // Positioned 5px below the PictureBox
-                    AutoSize = true,
+                    Location = new Point(nameLabelX, yOffset + pictureBox.Height + 5), // Position below picture
+                    AutoSize = true, // Allow dynamic height
                     Font = new Font("Segoe UI", 10, FontStyle.Bold),
                     ForeColor = darkColor,
-                    MaximumSize = new Size(usersShadowPanel.Width - 20, 0) // Wrap text within the panel width
+                    MaximumSize = new Size(nameLabelWidth, 0), // Wrap text within the panel width
+                    TextAlign = ContentAlignment.MiddleCenter // Ensure proper text alignment
                 };
 
-                // Dynamically resize the panel height if needed
-                /*int requiredHeight = nameLabel.Location.Y + nameLabel.Height + 10;
-                if (usersShadowPanel.Height < requiredHeight)
-                {
-                    usersShadowPanel.Height = requiredHeight;
-                }*/
 
                 // Add controls to the panel
                 usersShadowPanel.Controls.Add(pictureBox);
@@ -435,6 +444,12 @@ namespace TDF.Net
         #region Events
         private void mainFormNewUI_Load(object sender, EventArgs e)
         {
+            usersIconButton.BackgroundColor = primaryColor;
+            usersIconButton.BorderColor = darkColor;
+            expandedHeight = usersShadowPanel.Height; // Store the original height when expanded
+            usersShadowPanel.Height = contractedHeight; // Set the initial height to contracted
+            usersShadowPanel.AutoScroll = false; // Disable auto-scroll for contracted state
+
             //startPipeListener(); // Start listening for messages
             updateRoleStatus();
             setImageButtonVisibility();
@@ -669,6 +684,26 @@ namespace TDF.Net
             usersShadowPanel.Invalidate();
 
         }
+        private void usersIconButton_Click(object sender, EventArgs e)
+        {
+            if (isPanelExpanded)
+            {
+                // Contract the panel
+                usersShadowPanel.Height = contractedHeight; // Set the height to contracted
+                usersShadowPanel.AutoScroll = false; // Disable auto-scroll
+                usersIconButton.Image = Resources.down; // Change the icon to "down"
+                isPanelExpanded = false; // Update the state
+            }
+            else
+            {
+                // Expand the panel
+                usersShadowPanel.Height = expandedHeight; // Set the height to expanded
+                usersShadowPanel.AutoScroll = true; // Enable auto-scroll
+                usersIconButton.Image = Resources.up; // Change the icon to "up"
+                displayConnectedUsers(); // Populate the panel with connected users
+                isPanelExpanded = true; // Update the state
+            }
+        }
         #endregion
 
         #region Buttons
@@ -710,6 +745,7 @@ namespace TDF.Net
             Close();
             loginForm.Show();
         }
+
         #endregion
 
 

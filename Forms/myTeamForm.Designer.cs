@@ -222,6 +222,7 @@
             this.balanceDataGridView.TabIndex = 51;
             this.balanceDataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.Light;
             this.balanceDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.reportsDataGridView_CellFormatting);
+            this.balanceDataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.balanceDataGridView_CellPainting);
             // 
             // refreshButton
             // 
@@ -392,12 +393,14 @@
             // 
             // Picture
             // 
+            this.Picture.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
             this.Picture.DataPropertyName = "Picture";
             this.Picture.HeaderText = "";
             this.Picture.MinimumWidth = 70;
             this.Picture.Name = "Picture";
             this.Picture.ReadOnly = true;
             this.Picture.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Picture.Width = 70;
             // 
             // UserID
             // 

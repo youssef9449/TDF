@@ -258,6 +258,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\up.png" />
+    <None Include="Resources\down.png" />
     <None Include="Resources\myteam.png" />
     <None Include="Resources\logout.png" />
     <None Include="Resources\control panel.png" />

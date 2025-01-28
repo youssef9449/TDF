@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -91,7 +92,40 @@ namespace TDF.Forms
             base.OnResize(e);
             Invalidate();  // Forces the form to repaint when resized
         }
+        private void balanceDataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            // Ensure the cell is from the "Picture" column
+            /*  if (e.RowIndex >= 0 && e.ColumnIndex == balanceDataGridView.Columns["Picture"].Index)
+              {
+                  // Get the cell bounds
+                  var cellBounds = e.CellBounds;
 
+                  // Ensure the bounds are square (use the smaller dimension for both width and height)
+                  int size = Math.Min(cellBounds.Width, cellBounds.Height);
+                  Rectangle squareBounds = new Rectangle(cellBounds.X, cellBounds.Y, size, size);
+
+                  // Check if the cell contains an image
+                  if (e.Value is Image img)
+                  {
+                      // Create a circular clipping region
+                      using (GraphicsPath path = new GraphicsPath())
+                      {
+                          // Add a circle that fits within the square bounds
+                          path.AddEllipse(squareBounds);
+                          e.Graphics.SetClip(path); // Apply the circular clipping region
+
+                          // Draw the image, scaling it to fit inside the circle
+                          e.Graphics.DrawImage(img, squareBounds);
+
+                          // Reset the clipping region
+                          e.Graphics.ResetClip();
+                      }
+
+                      // Mark the event as handled to prevent the default cell painting
+                      e.Handled = true;
+                  }
+              }*/
+        }
         #endregion
 
         #region Methods
@@ -163,7 +197,6 @@ namespace TDF.Forms
                 MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private byte[] ImageToByteArray(Image image)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -179,8 +212,8 @@ namespace TDF.Forms
         {
             getBalanceTable();
         }
-        #endregion
 
+        #endregion
 
     }
 }

@@ -301,8 +301,6 @@ namespace TDF.Forms
                 usersCheckedListBox.SetItemChecked(i, isChecked);
             }
         }
-
-
         #endregion
 
         #region Buttons
@@ -967,6 +965,7 @@ namespace TDF.Forms
 
             if (result == DialogResult.Yes)
             {
+                makeUserDisconnected();
                 string userFullName = usersCheckedListBox.CheckedItems[0].ToString().Split('-')[0].Trim();
 
                 using (SqlConnection conn = Database.getConnection())
@@ -1002,7 +1001,6 @@ namespace TDF.Forms
                                 {
                                     loggedInUser.Picture = null; // Handle cases where no image exists
                                 }
-
                                 userUpdated?.Invoke();
                             }
                             else
@@ -1022,12 +1020,12 @@ namespace TDF.Forms
             }
 
             // Validate removedAmountTextBox
-            if (!decimal.TryParse(removedAmountTextBox.Text, out decimal removedAmount) || removedAmount <= 0)
+           /* if (!decimal.TryParse(removedAmountTextBox.Text, out decimal removedAmount) || removedAmount <= 0)
             {
                 MessageBox.Show("Please enter a valid positive number in the removed amount field.");
                 removedAmountTextBox.Focus();
                 return;
-            }
+            }*/
 
             // Validate reasonTextBox
             if (string.IsNullOrWhiteSpace(reasonTextBox.Text))
@@ -1040,7 +1038,8 @@ namespace TDF.Forms
             string requestReason = reasonTextBox.Text.Trim();
             string requestType = removeBalanceDropdown.Text;
             string loggedInUserFullName = loggedInUser.FullName;
-            DateTime currentDate = DateTime.Now;
+
+            DateTime fromdate = Convert.ToDateTime(fromDayDatePicker.Text);
 
             // Determine the column to update
             string columnToUpdate;
@@ -1092,7 +1091,7 @@ namespace TDF.Forms
 
                     using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                     {
-                        updateCommand.Parameters.AddWithValue("@RemovedAmount", removedAmount);
+                        updateCommand.Parameters.AddWithValue("@RemovedAmount", 1);
                         updateCommand.Parameters.AddWithValue("@FullName", fullName);
                         updateCommand.ExecuteNonQuery();
                     }
@@ -1118,14 +1117,14 @@ namespace TDF.Forms
                     {
                         insertCommand.Parameters.AddWithValue("@RequestUserID", userId);
                         insertCommand.Parameters.AddWithValue("@RequestUserFullName", fullName);
-                        insertCommand.Parameters.AddWithValue("@RequestFromDay", currentDate);
-                        insertCommand.Parameters.AddWithValue("@RequestToDay", currentDate);
+                        insertCommand.Parameters.AddWithValue("@RequestFromDay", fromdate);
+                        insertCommand.Parameters.AddWithValue("@RequestToDay", fromdate);
                         insertCommand.Parameters.AddWithValue("@RequestReason", requestReason);
                         insertCommand.Parameters.AddWithValue("@RequestStatus", "Approved");
                         insertCommand.Parameters.AddWithValue("@RequestType", requestType);
                         insertCommand.Parameters.AddWithValue("@RequestCloser", loggedInUserFullName);
                         insertCommand.Parameters.AddWithValue("@RequestDepartment", departmentName);
-                        insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", removedAmount);
+                        insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", 1);
                         insertCommand.Parameters.AddWithValue("@RequestHRStatus", "Approved");
                         insertCommand.Parameters.AddWithValue("@RequestHRCloser", loggedInUserFullName);
                         insertCommand.ExecuteNonQuery();
@@ -1137,8 +1136,97 @@ namespace TDF.Forms
 
             MessageBox.Show("Leave balances updated successfully.");
         }
-
         #endregion
 
+        private void bunifuButton1_Click(object sender, EventArgs e)
+        {
+            if (!userSelected())
+            {
+                return;
+            }
+
+            // Validate reasonTextBox
+            if (string.IsNullOrWhiteSpace(reasonTextBox.Text))
+            {
+                MessageBox.Show("Please provide a reason.");
+                reasonTextBox.Focus();
+                return;
+            }
+
+            string requestReason = reasonTextBox.Text.Trim();
+            string requestType = removeBalanceDropdown.Text;
+            string loggedInUserFullName = loggedInUser.FullName;
+
+            DateTime fromdate = Convert.ToDateTime(fromDayDatePicker.Text);
+            DateTime todate = Convert.ToDateTime(toDayDatePicker.Text);
+
+            int numberOfDays = (todate - fromdate).Days +1;
+
+            using (SqlConnection connection = Database.getConnection())
+            {
+                connection.Open();
+
+                foreach (var selectedUser in usersCheckedListBox.CheckedItems)
+                {
+                    // Extract user details from the selected item
+                    string[] userParts = selectedUser.ToString().Split('-');
+                    string fullName = userParts[0].Trim();
+                    string departmentName = userParts[1].Trim();
+
+                    // Fetch UserID from AnnualLeave table
+                    string getUserIdQuery = "SELECT UserID FROM AnnualLeave WHERE FullName = @FullName";
+                    int userId;
+                    using (SqlCommand getUserIdCommand = new SqlCommand(getUserIdQuery, connection))
+                    {
+                        getUserIdCommand.Parameters.AddWithValue("@FullName", fullName);
+                        object result = getUserIdCommand.ExecuteScalar();
+                        if (result == null)
+                        {
+                            MessageBox.Show($"UserID not found for user: {fullName}");
+                            continue;
+                        }
+                        userId = Convert.ToInt32(result);
+                    }
+
+                    // Insert a row into the Requests table
+                    string insertQuery = @"
+                INSERT INTO Requests 
+                (
+                    RequestUserID, RequestUserFullName, RequestFromDay, RequestToDay, 
+                    RequestBeginningTime, RequestEndingTime, RequestReason, RequestStatus, 
+                    RequestType, RequestRejectReason, RequestCloser, RequestDepartment, 
+                    RequestNumberOfDays, RequestHRStatus, RequestHRCloser
+                )
+                VALUES
+                (
+                    @RequestUserID, @RequestUserFullName, @RequestFromDay, @RequestToDay, 
+                    NULL, NULL, @RequestReason, @RequestStatus, 
+                    @RequestType, NULL, @RequestCloser, @RequestDepartment, 
+                    @RequestNumberOfDays, @RequestHRStatus, @RequestHRCloser
+                )";
+
+                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                    {
+                        insertCommand.Parameters.AddWithValue("@RequestUserID", userId);
+                        insertCommand.Parameters.AddWithValue("@RequestUserFullName", fullName);
+                        insertCommand.Parameters.AddWithValue("@RequestFromDay", fromdate);
+                        insertCommand.Parameters.AddWithValue("@RequestToDay", todate);
+                        insertCommand.Parameters.AddWithValue("@RequestReason", requestReason);
+                        insertCommand.Parameters.AddWithValue("@RequestStatus", "Approved");
+                        insertCommand.Parameters.AddWithValue("@RequestType", requestType);
+                        insertCommand.Parameters.AddWithValue("@RequestCloser", "Nourhan Niazy");
+                        insertCommand.Parameters.AddWithValue("@RequestDepartment", departmentName);
+                        insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", numberOfDays);
+                        insertCommand.Parameters.AddWithValue("@RequestHRStatus", "Approved");
+                        insertCommand.Parameters.AddWithValue("@RequestHRCloser", "Nourhan Niazy");
+                        insertCommand.ExecuteNonQuery();
+                    }
+                }
+
+                connection.Close();
+            }
+
+            MessageBox.Show("Requests added successfully.");
+        }
     }
 }
