@@ -72,21 +72,27 @@ namespace TDF.Net.Forms
         {
             if (e.ColumnIndex >= 0 & e.RowIndex >= 0)
             {
-                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit" &&
-                    (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending"
-                    || hasAdminRole || hasManagerRole || hasHRRole))
+                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit")
                 {
+                    string requestStatus = requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString();
+                    string requestUserFullName = requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString();
+                    bool isRequestOwner = requestUserFullName == loggedInUser.FullName;
 
-                    if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString() != loggedInUser.FullName && hasHRRole)
+                    // Allow editing if the request is "Pending" or the user has an elevated role
+                    if (requestStatus == "Pending" || hasAdminRole || hasManagerRole || hasHRRole)
                     {
-                        MessageBox.Show("you are not allowed to edit another user's request.");
-                        return;
+                        // Prevent HR users from editing another user's request unless they have Admin/Manager roles
+                        if (!isRequestOwner && hasHRRole && !hasAdminRole && !hasManagerRole)
+                        {
+                            MessageBox.Show("You are not allowed to edit another user's request.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
 
-                    }
-
-                    if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell)
-                    {
-                        openRequestToEdit(e);
+                        // Check if the clicked cell is an image button before opening the edit form
+                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell)
+                        {
+                            openRequestToEdit(e);
+                        }
                     }
                 }
 
@@ -411,7 +417,6 @@ namespace TDF.Net.Forms
             r.RequestUserID = @UserID 
             AND (" + (pendingRadioButton.Checked ? " (r.RequestStatus = 'Pending' OR r.RequestHRStatus = 'Pending'))" : " NOT (r.RequestStatus = 'Pending' OR r.RequestHRStatus = 'Pending'))");
         }
-
         private void executeQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
         {
             using (SqlConnection conn = Database.getConnection())

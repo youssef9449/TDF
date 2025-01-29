@@ -34,6 +34,24 @@ namespace TDF.Net
             string username = txtUsername.Text;
             string password = txtPassword.Text;
 
+            // Check for an outdated version
+            string appVersion = Application.ProductVersion;
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+                string versionQuery = "SELECT LatestVersion FROM AppVersion";
+                using (SqlCommand versionCmd = new SqlCommand(versionQuery, conn))
+                {
+                    string latestVersion = versionCmd.ExecuteScalar()?.ToString();
+                    if (latestVersion != null && latestVersion != appVersion)
+                    {
+                        MessageBox.Show("You are using an old version. Please use the latest version from the Taxi Partition to continue.", "Update Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return; // Stop execution here
+                    }
+                }
+            }
+
+            // Proceed with login validation
             bool isValidLogin = validateLogin(username, password);
 
             if (isValidLogin)
@@ -42,19 +60,17 @@ namespace TDF.Net
                 loggedInUser = getCurrentUserDetails(username);
                 makeUserConnected();
 
-                // Step 2: Open the new session's form (new login)
+                // Open the appropriate UI
                 if (guiDropdown.Text == "Classic")
                 {
-                    // Create a new mainForm for Classic UI
                     oldSessionForm = new mainForm(this);
-                    oldSessionForm.Show();
                 }
                 else
                 {
-                    // Create a new mainFormNewUI for New UI
                     oldSessionForm = new mainFormNewUI(this);
-                    oldSessionForm.Show();
                 }
+
+                oldSessionForm.Show();
 
                 // Hide the login form and clear fields
                 clearFormFields();
@@ -62,8 +78,7 @@ namespace TDF.Net
             }
             else
             {
-                // Invalid login attempt
-                MessageBox.Show("Invalid username or password.");
+                MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         public static List<string> getConnectedUsers()
@@ -117,7 +132,6 @@ namespace TDF.Net
                 }
             }
         }
-
         public static List<string> getDepartments()
         {
             List<string> departments = new List<string>();
@@ -207,6 +221,8 @@ namespace TDF.Net
             using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
+
+                // Proceed with login validation
                 string query = "SELECT PasswordHash, Salt FROM Users WHERE UserName = @UserName";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -219,12 +235,13 @@ namespace TDF.Net
                             string salt = reader["Salt"].ToString();
                             string hash = Security.hashPassword(password, salt);
 
-                            return hash == storedHash;
+                            return hash == storedHash; // Return true if password is correct
                         }
                     }
                 }
             }
-            return false;
+
+            return false; // Return false if username is not found or password is incorrect
         }
         private bool isUsernameTaken(string username)
         {
