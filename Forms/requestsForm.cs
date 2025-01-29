@@ -408,9 +408,10 @@ namespace TDF.Net.Forms
         LEFT JOIN 
             AnnualLeave al ON r.RequestUserID = al.UserID
         WHERE 
-            r.RequestUserID = @UserID AND 
-            " + (pendingRadioButton.Checked ? " r.RequestStatus = 'Pending' AND r.RequestHRStatus = 'Pending'" : " NOT (r.RequestStatus = 'Pending' AND r.RequestHRStatus = 'Pending')");
+            r.RequestUserID = @UserID 
+            AND (" + (pendingRadioButton.Checked ? " (r.RequestStatus = 'Pending' OR r.RequestHRStatus = 'Pending'))" : " NOT (r.RequestStatus = 'Pending' OR r.RequestHRStatus = 'Pending'))");
         }
+
         private void executeQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
         {
             using (SqlConnection conn = Database.getConnection())
