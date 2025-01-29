@@ -499,12 +499,12 @@ namespace TDF.Forms
         {
             if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
             {
-               // bool isAnnualOrEmergencyOrPermission = typeDropdown.Text == "Annual" || typeDropdown.Text == "Emergency" || typeDropdown.Text == "Permission";
+                bool isAnnualOrEmergencyOrPermission = typeDropdown.Text == "Annual" || typeDropdown.Text == "Emergency" || typeDropdown.Text == "Permission";
 
-                //balanceGroupBox.Visible = isAnnualOrEmergencyOrPermission;
+                balanceGroupBox.Visible = isAnnualOrEmergencyOrPermission;
 
-               // if (isAnnualOrEmergencyOrPermission)
-             //   {
+                if (isAnnualOrEmergencyOrPermission)
+                {
                     string leaveType = typeDropdown.Text == "Annual" ? "Annual" : typeDropdown.Text == "Emergency" ? "CasualLeave" : "Permissions";
                     string usedLeaveType = typeDropdown.Text == "Annual" ? "AnnualUsed" : typeDropdown.Text == "Emergency" ? "CasualUsed" : "PermissionsUsed";
 
@@ -515,7 +515,7 @@ namespace TDF.Forms
                     int usedBalance = int.Parse(usedBalanceLabel.Text);
 
                     availableBalanceLabel.Text = (totalBalance - usedBalance).ToString();
-                //}
+                }
             }
         }
         #endregion
