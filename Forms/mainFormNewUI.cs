@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
@@ -373,7 +374,7 @@ namespace TDF.Net
                 CircularPictureBox pictureBox = new CircularPictureBox
                 {
                     Image = user.Picture ?? Resources.pngegg, // Fallback image
-                    SizeMode = PictureBoxSizeMode.StretchImage,
+                    SizeMode = PictureBoxSizeMode.Zoom,
                     Size = new Size(75, 75), // Set size
                     Location = new Point(pictureBoxX, yOffset) // Center horizontally and adjust vertically
                 };
@@ -460,7 +461,7 @@ namespace TDF.Net
             displayConnectedUsers();
 
             connectedUsersTimer = new Timer();
-            connectedUsersTimer.Interval = 5000; // 5 seconds
+            connectedUsersTimer.Interval = 10000; // 10 seconds
             connectedUsersTimer.Tick += ConnectedUsersTimer_Tick;
             connectedUsersTimer.Start();
             /* if (hasAdminRole)
@@ -482,7 +483,7 @@ namespace TDF.Net
             var scrollPos = AutoScrollPosition;
 
             // Adjust for scroll position when drawing the border
-            var rect = new System.Drawing.Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+            var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
 
             ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
         }
@@ -747,7 +748,6 @@ namespace TDF.Net
         }
 
         #endregion
-
 
     }
 }

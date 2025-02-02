@@ -32,18 +32,10 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
             this.reportsDataGridView = new Bunifu.UI.WinForms.BunifuDataGridView();
-            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.userName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.requestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Days = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Hours = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.HRStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.fromDatePicker = new Bunifu.UI.WinForms.BunifuDatePicker();
             this.bunifuLabel1 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel2 = new Bunifu.UI.WinForms.BunifuLabel();
@@ -67,6 +59,15 @@
             this.filtersGroupBox = new Bunifu.UI.WinForms.BunifuGroupBox();
             this.panel = new System.Windows.Forms.Panel();
             this.bunifuFormControlBox1 = new Bunifu.UI.WinForms.BunifuFormControlBox();
+            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ToDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.userName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.requestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Days = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Hours = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.HRStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Department = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.reportsDataGridView)).BeginInit();
             this.balanceGroupBox.SuspendLayout();
             this.filtersGroupBox.SuspendLayout();
@@ -169,6 +170,7 @@
             this.reportsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.reportsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Date,
+            this.ToDate,
             this.userName,
             this.requestType,
             this.Days,
@@ -218,77 +220,6 @@
             this.reportsDataGridView.TabIndex = 51;
             this.reportsDataGridView.Theme = Bunifu.UI.WinForms.BunifuDataGridView.PresetThemes.Light;
             this.reportsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.reportsDataGridView_CellFormatting);
-            // 
-            // Date
-            // 
-            this.Date.DataPropertyName = "RequestFromDay";
-            this.Date.HeaderText = "Date";
-            this.Date.MinimumWidth = 6;
-            this.Date.Name = "Date";
-            this.Date.ReadOnly = true;
-            // 
-            // userName
-            // 
-            this.userName.DataPropertyName = "RequestUserFullName";
-            this.userName.HeaderText = "Name";
-            this.userName.MinimumWidth = 6;
-            this.userName.Name = "userName";
-            this.userName.ReadOnly = true;
-            // 
-            // requestType
-            // 
-            this.requestType.DataPropertyName = "RequestType";
-            this.requestType.HeaderText = "Request";
-            this.requestType.MinimumWidth = 6;
-            this.requestType.Name = "requestType";
-            this.requestType.ReadOnly = true;
-            // 
-            // Days
-            // 
-            this.Days.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Days.DataPropertyName = "RequestNumberOfDays";
-            this.Days.HeaderText = "No. of Days";
-            this.Days.MinimumWidth = 6;
-            this.Days.Name = "Days";
-            this.Days.ReadOnly = true;
-            this.Days.Width = 117;
-            // 
-            // Hours
-            // 
-            this.Hours.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-            this.Hours.DataPropertyName = "Hours";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle3.Format = "N2";
-            dataGridViewCellStyle3.NullValue = null;
-            this.Hours.DefaultCellStyle = dataGridViewCellStyle3;
-            this.Hours.HeaderText = "Hours";
-            this.Hours.MinimumWidth = 6;
-            this.Hours.Name = "Hours";
-            this.Hours.ReadOnly = true;
-            this.Hours.Width = 77;
-            // 
-            // Status
-            // 
-            this.Status.DataPropertyName = "RequestStatus";
-            this.Status.HeaderText = "Status";
-            this.Status.MinimumWidth = 6;
-            this.Status.Name = "Status";
-            this.Status.ReadOnly = true;
-            // 
-            // HRStatus
-            // 
-            this.HRStatus.DataPropertyName = "RequestHRStatus";
-            this.HRStatus.HeaderText = "HR Status";
-            this.HRStatus.Name = "HRStatus";
-            this.HRStatus.ReadOnly = true;
-            // 
-            // Department
-            // 
-            this.Department.DataPropertyName = "RequestDepartment";
-            this.Department.HeaderText = "Department";
-            this.Department.MinimumWidth = 6;
-            this.Department.Name = "Department";
-            this.Department.ReadOnly = true;
             // 
             // fromDatePicker
             // 
@@ -958,6 +889,84 @@
             this.bunifuFormControlBox1.Size = new System.Drawing.Size(160, 37);
             this.bunifuFormControlBox1.TabIndex = 19;
             // 
+            // Date
+            // 
+            this.Date.DataPropertyName = "RequestFromDay";
+            this.Date.HeaderText = "From";
+            this.Date.MinimumWidth = 6;
+            this.Date.Name = "Date";
+            this.Date.ReadOnly = true;
+            // 
+            // ToDate
+            // 
+            this.ToDate.DataPropertyName = "RequestToDay";
+            this.ToDate.HeaderText = "To";
+            this.ToDate.Name = "ToDate";
+            this.ToDate.ReadOnly = true;
+            // 
+            // userName
+            // 
+            this.userName.DataPropertyName = "RequestUserFullName";
+            this.userName.HeaderText = "Name";
+            this.userName.MinimumWidth = 6;
+            this.userName.Name = "userName";
+            this.userName.ReadOnly = true;
+            // 
+            // requestType
+            // 
+            this.requestType.DataPropertyName = "RequestType";
+            this.requestType.HeaderText = "Request";
+            this.requestType.MinimumWidth = 6;
+            this.requestType.Name = "requestType";
+            this.requestType.ReadOnly = true;
+            // 
+            // Days
+            // 
+            this.Days.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Days.DataPropertyName = "RequestNumberOfDays";
+            this.Days.HeaderText = "No. of Days";
+            this.Days.MinimumWidth = 6;
+            this.Days.Name = "Days";
+            this.Days.ReadOnly = true;
+            this.Days.Width = 117;
+            // 
+            // Hours
+            // 
+            this.Hours.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+            this.Hours.DataPropertyName = "Hours";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.Format = "N2";
+            dataGridViewCellStyle3.NullValue = null;
+            this.Hours.DefaultCellStyle = dataGridViewCellStyle3;
+            this.Hours.HeaderText = "Hours";
+            this.Hours.MinimumWidth = 6;
+            this.Hours.Name = "Hours";
+            this.Hours.ReadOnly = true;
+            this.Hours.Width = 77;
+            // 
+            // Status
+            // 
+            this.Status.DataPropertyName = "RequestStatus";
+            this.Status.HeaderText = "Status";
+            this.Status.MinimumWidth = 6;
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
+            // 
+            // HRStatus
+            // 
+            this.HRStatus.DataPropertyName = "RequestHRStatus";
+            this.HRStatus.HeaderText = "HR Status";
+            this.HRStatus.Name = "HRStatus";
+            this.HRStatus.ReadOnly = true;
+            // 
+            // Department
+            // 
+            this.Department.DataPropertyName = "RequestDepartment";
+            this.Department.HeaderText = "Department";
+            this.Department.MinimumWidth = 6;
+            this.Department.Name = "Department";
+            this.Department.ReadOnly = true;
+            // 
             // reportsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1022,6 +1031,7 @@
         private System.Windows.Forms.Panel panel;
         private Bunifu.UI.WinForms.BunifuFormControlBox bunifuFormControlBox1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Date;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ToDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn userName;
         private System.Windows.Forms.DataGridViewTextBoxColumn requestType;
         private System.Windows.Forms.DataGridViewTextBoxColumn Days;

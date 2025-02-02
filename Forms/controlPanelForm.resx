@@ -438,14 +438,6 @@
         KHRxOwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="removedAmountTextBox.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAEIAAAAdCAYAAAAejLrKAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABpSURBVFhH7dDBCcAwDMVQ7z+Vg8foGB2gwSASOoMl8MW3
-        /yLsVlVPZn4Tr7cfiH5MrbcLIcRNCBKChCAhSAgSgoQgIUgIEoKEICFICBKChCAhSAgSgoQgIUgIEoJ+
-        EGuttx8Tr7cfCIvYslFi1eyDoIQAAAAASUVORK5CYII=
-</value>
-  </data>
   <data name="removeDaysButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAKMAAAAdCAYAAADGrNyFAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -486,32 +478,6 @@
   <data name="bunifuLabel13.BaseStylesheet" xml:space="preserve">
     <value>#bunifu-label { padding: 0px; font-family: 'Segoe UI'; font-size: 11pt; width: 100%; height: 100%; font-style: normal; font-weight: normal; text-decoration: none; color: rgb(0, 0, 0); text-align: left; }</value>
   </data>
-  <data name="bunifuButton1.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAAKMAAAAdCAYAAADGrNyFAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAB6SURBVHhe7dKhAYAwAMCwXbKX4T/OwA88eKiIiKnumPs6
-        5n5d8K91jHeEf5iRDDOSYUYyzEiGGckwIxlmJMOMZJiRDDOSYUYyzEiGGckwIxlmJMOMZJiRDDOSYUYy
-        zEiGGckwIxlmJMOMZJiRDDOSMea2zmeEz23rvAFQTVhuWr2wtQAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="toDayDatePicker.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAFvSURBVFhHtZbRTcNADIaD2KA9IXUBHvvIMwMwDBuQCRBt
-        tmAgJFJ1liBHsnH/nHPn+vJJltLfv+1r75K064C+7ycK1GuJ1ocbROvDDaL14Qbu+q+n61EX5a5rw6qn
-        GTD2H93gvPt9yV3Xxlo9zhVyTbDYE1Y9zhXQuFXgXAGNWwXOFdC4VeBcoWgIUuxfNAQp9keD9dN5dcyj
-        LqDBaujVMY+6gAaroVevBguthl69mrsLDYZ0fT7tLz0ujDTKob/ZAqZuejil8R0HY5CHvFKIC8CCkk5Q
-        Q8wPaXz7TD8HCrrGvCwCG6KxpBP6mw/7y6vOaSjHPqqZRWxoDbJ02tfccPQxehHzmUCjNcjS9YFjTfu1
-        xnDunMaPVWMNXE/7nNO1xugzIcbvbnpEYw1cT4ctp2uNIe9iAd7gZvzZWgDGYgH6T6kncJC1BRiUu9mC
-        KNYhXIP98yGMYt2GFovbsAWhB1ELQo/iVtz9MmqN93X8B4g2YzNy6qhUAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <data name="toDateLabel.BaseStylesheet" xml:space="preserve">
-    <value>#bunifu-label { padding: 0px; font-family: 'Segoe UI'; font-size: 11pt; width: 100%; height: 100%; font-style: normal; font-weight: normal; text-decoration: none; color: rgb(0, 0, 0); text-align: left; }</value>
-  </data>
-  <data name="fromDateLabel.BaseStylesheet" xml:space="preserve">
-    <value>#bunifu-label { padding: 0px; font-family: 'Segoe UI'; font-size: 11pt; width: 100%; height: 100%; font-style: normal; font-weight: normal; text-decoration: none; color: rgb(0, 0, 0); text-align: left; }</value>
-  </data>
   <data name="fromDayDatePicker.Icon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
@@ -522,6 +488,25 @@
         Q8wPaXz7TD8HCrrGvCwCG6KxpBP6mw/7y6vOaSjHPqqZRWxoDbJ02tfccPQxehHzmUCjNcjS9YFjTfu1
         xnDunMaPVWMNXE/7nNO1xugzIcbvbnpEYw1cT4ctp2uNIe9iAd7gZvzZWgDGYgH6T6kncJC1BRiUu9mC
         KNYhXIP98yGMYt2GFovbsAWhB1ELQo/iVtz9MmqN93X8B4g2YzNy6qhUAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="titleTextBox.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAKMAAAAdCAYAAADGrNyFAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACFSURBVHhe7dKxCcQwAARB91+VhMr4MlyAjRLDV6ANZuCS
+        i/e6oGSt9RtjPGYntvv7YtwHnLL7EyMJYiRDjGSIkQwxkiFGMsRIhhjJECMZYiRDjGSIkQwxkiFGMsRI
+        hhjJECMZYiRDjGSIkQwxkiFGMsRIhhjJ+Itxznnvw+zEdn9fjFDwAilSmQfjjbNZAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="titleLabel.BaseStylesheet" xml:space="preserve">
+    <value>#bunifu-label { padding: 0px; font-family: 'Segoe UI'; font-size: 11pt; width: 100%; height: 100%; font-style: normal; font-weight: normal; text-decoration: none; color: rgb(0, 0, 0); text-align: left; }</value>
+  </data>
+  <data name="addTitleButton.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAKMAAAAdCAYAAADGrNyFAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAB6SURBVHhe7dKhAYAwAMCwXbKX4T/OwA88eKiIiKnumPs6
+        5n5d8K91jHeEf5iRDDOSYUYyzEiGGckwIxlmJMOMZJiRDDOSYUYyzEiGGckwIxlmJMOMZJiRDDOSYUYy
+        zEiGGckwIxlmJMOMZJiRDDOSMea2zmeEz23rvAFQTVhuWr2wtQAAAABJRU5ErkJggg==
 </value>
   </data>
 </root>

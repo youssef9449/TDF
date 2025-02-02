@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TDF.Net.Classes;
 
@@ -24,6 +25,7 @@ namespace TDF.Net
                 MessageBox.Show("Another instance of the TDF app is already running.","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            //setProcessDpiAwareness(); // Enable DPI scaling
 
             // Set culture settings
             CultureInfo English = new CultureInfo("en-GB");
@@ -483,6 +485,31 @@ namespace TDF.Net
                     controlBox.MinimizeBoxOptions.PressedColor = ThemeColor.darkColor;
                 }
             }
+        }
+        private static void setProcessDpiAwareness()
+        {
+            try
+            {
+                if (Environment.OSVersion.Version.Major >= 6) // Windows Vista and later
+                {
+                    SetProcessDPIAware(); // Older method
+                    SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
+                }
+            }
+            catch { /* Ignore exceptions */ }
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool SetProcessDPIAware();
+
+        [DllImport("shcore.dll")]
+        private static extern int SetProcessDpiAwareness(PROCESS_DPI_AWARENESS value);
+
+        private enum PROCESS_DPI_AWARENESS
+        {
+            PROCESS_DPI_UNAWARE = 0,
+            PROCESS_SYSTEM_DPI_AWARE = 1,
+            PROCESS_PER_MONITOR_DPI_AWARE = 2
         }
     }
 }

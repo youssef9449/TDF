@@ -34,13 +34,12 @@ namespace TDF.Forms
             }
 
             spoofButton.Visible = hasAdminRole;
-            passwordLabel.Visible = hasAdminRole;
-            passwordTextBox.Visible = hasAdminRole;
-            resetPasswordButton.Visible = hasAdminRole;
             importButton.Visible = hasAdminRole;
             deleteButton.Visible = hasAdminRole;
-
-            if(hasHRRole)
+            //passwordLabel.Visible = hasAdminRole;
+            //passwordTextBox.Visible = hasAdminRole;
+            //resetPasswordButton.Visible = hasAdminRole;
+            if (hasHRRole)
             {
                 roleDropdown.Items.Remove("HR Director");
             }
@@ -79,16 +78,15 @@ namespace TDF.Forms
                 case "Name":
                     return $"{baseQuery} AND FullName LIKE @searchValue ORDER BY FullName";
                 case "Department":
-                    return $"{baseQuery} AND Department LIKE @searchValue ORDER BY Department, FullName";
+                    return $"{baseQuery} AND Department LIKE @searchValue ORDER BY FullName";
                 case "Role":
-                    return $"{baseQuery} AND Role LIKE @searchValue ORDER BY Role, FullName";
+                    return $"{baseQuery} AND Role LIKE @searchValue ORDER BY FullName";
                 case "Title":
-                    return $"{baseQuery} AND Title LIKE @searchValue ORDER BY Title, FullName";
+                    return $"{baseQuery} AND Title LIKE @searchValue ORDER BY FullName";
                 default:
                     return $"{baseQuery} AND (FullName LIKE @searchValue OR Department LIKE @searchValue OR Role LIKE @searchValue OR Title LIKE @searchValue) ORDER BY FullName";
             }
         }
-
         private void loadUserNames()
         {
             string filter = filterDropdown.Text;
@@ -918,11 +916,19 @@ namespace TDF.Forms
             }
 
             string title = titleDropdown.Text;
+            string department = depDropdown.Text;
+
 
             if (string.IsNullOrEmpty(title))
             {
                 MessageBox.Show("Please select a title from the dropdown menu.");
                 titleDropdown.Focus();
+                return;
+            }
+            if (string.IsNullOrEmpty(department))
+            {
+                MessageBox.Show("Please select a department from the dropdown menu.");
+                depDropdown.Focus();
                 return;
             }
 
@@ -935,17 +941,18 @@ namespace TDF.Forms
                     // Split the selected item to get the FullName (format: "FullName - Department")
                     string userFullName = selectedItem.ToString().Split('-')[0].Trim();
 
-                    string query = "UPDATE Users SET Title = @Title WHERE FullName = @FullName";
+                    string query = "UPDATE Users SET Title = @Title, Department = @Department WHERE FullName = @FullName";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@Title", title);
+                        cmd.Parameters.AddWithValue("@Department", department);
                         cmd.Parameters.AddWithValue("@FullName", userFullName);
 
                         cmd.ExecuteNonQuery();
                     }
                 }
 
-                MessageBox.Show($"Selected users have been granted {title} title.");
+                    MessageBox.Show($"Selected users have been granted {title} title of the {department} department.");
             }
 
             loadUserNames();
@@ -1137,97 +1144,149 @@ namespace TDF.Forms
 
             MessageBox.Show("Leave balances updated successfully.");
         }
-        #endregion
 
-        private void bunifuButton1_Click(object sender, EventArgs e)
+        private void addTitleButton_Click(object sender, EventArgs e)
         {
-            if (!userSelected())
+            if (depCheckedListBox.CheckedItems.Count != 1)
             {
+                MessageBox.Show("Please select one department from the department check list.");
                 return;
             }
 
-            // Validate reasonTextBox
-            if (string.IsNullOrWhiteSpace(reasonTextBox.Text))
+            string newTitleName = titleTextBox.Text.Trim();
+
+            if (string.IsNullOrEmpty(newTitleName))
             {
-                MessageBox.Show("Please provide a reason.");
-                reasonTextBox.Focus();
+                MessageBox.Show("Please type the new title name in the box.");
+                titleTextBox.Focus();
                 return;
             }
 
-            string requestReason = reasonTextBox.Text.Trim();
-            string requestType = removeBalanceDropdown.Text;
-            string loggedInUserFullName = loggedInUser.FullName;
+            string selectedDepartment = depCheckedListBox.CheckedItems[0].ToString();
 
-            DateTime fromdate = Convert.ToDateTime(fromDayDatePicker.Text);
-            DateTime todate = Convert.ToDateTime(toDayDatePicker.Text);
-
-            int numberOfDays = (todate - fromdate).Days +1;
-
-            using (SqlConnection connection = Database.getConnection())
+            using (SqlConnection conn = Database.getConnection())
             {
-                connection.Open();
+                conn.Open();
 
-                foreach (var selectedUser in usersCheckedListBox.CheckedItems)
+                // Check if the title already exists
+                string checkQuery = "SELECT COUNT(1) FROM Departments WHERE Title = @TitleName AND Department = @DepartmentName";
+                using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
                 {
-                    // Extract user details from the selected item
-                    string[] userParts = selectedUser.ToString().Split('-');
-                    string fullName = userParts[0].Trim();
-                    string departmentName = userParts[1].Trim();
+                    checkCmd.Parameters.AddWithValue("@TitleName", newTitleName);
+                    checkCmd.Parameters.AddWithValue("@DepartmentName", selectedDepartment);
+                    int exists = (int)checkCmd.ExecuteScalar(); // Returns 1 if exists, 0 otherwise
 
-                    // Fetch UserID from AnnualLeave table
-                    string getUserIdQuery = "SELECT UserID FROM AnnualLeave WHERE FullName = @FullName";
-                    int userId;
-                    using (SqlCommand getUserIdCommand = new SqlCommand(getUserIdQuery, connection))
+                    if (exists > 0)
                     {
-                        getUserIdCommand.Parameters.AddWithValue("@FullName", fullName);
-                        object result = getUserIdCommand.ExecuteScalar();
-                        if (result == null)
-                        {
-                            MessageBox.Show($"UserID not found for user: {fullName}");
-                            continue;
-                        }
-                        userId = Convert.ToInt32(result);
-                    }
-
-                    // Insert a row into the Requests table
-                    string insertQuery = @"
-                INSERT INTO Requests 
-                (
-                    RequestUserID, RequestUserFullName, RequestFromDay, RequestToDay, 
-                    RequestBeginningTime, RequestEndingTime, RequestReason, RequestStatus, 
-                    RequestType, RequestRejectReason, RequestCloser, RequestDepartment, 
-                    RequestNumberOfDays, RequestHRStatus, RequestHRCloser
-                )
-                VALUES
-                (
-                    @RequestUserID, @RequestUserFullName, @RequestFromDay, @RequestToDay, 
-                    NULL, NULL, @RequestReason, @RequestStatus, 
-                    @RequestType, NULL, @RequestCloser, @RequestDepartment, 
-                    @RequestNumberOfDays, @RequestHRStatus, @RequestHRCloser
-                )";
-
-                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
-                    {
-                        insertCommand.Parameters.AddWithValue("@RequestUserID", userId);
-                        insertCommand.Parameters.AddWithValue("@RequestUserFullName", fullName);
-                        insertCommand.Parameters.AddWithValue("@RequestFromDay", fromdate);
-                        insertCommand.Parameters.AddWithValue("@RequestToDay", todate);
-                        insertCommand.Parameters.AddWithValue("@RequestReason", requestReason);
-                        insertCommand.Parameters.AddWithValue("@RequestStatus", "Approved");
-                        insertCommand.Parameters.AddWithValue("@RequestType", requestType);
-                        insertCommand.Parameters.AddWithValue("@RequestCloser", "Nourhan Niazy");
-                        insertCommand.Parameters.AddWithValue("@RequestDepartment", departmentName);
-                        insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", numberOfDays);
-                        insertCommand.Parameters.AddWithValue("@RequestHRStatus", "Approved");
-                        insertCommand.Parameters.AddWithValue("@RequestHRCloser", "Nourhan Niazy");
-                        insertCommand.ExecuteNonQuery();
+                        MessageBox.Show($"The title '{newTitleName}' already exists in the {depCheckedListBox.CheckedItems.ToString()} department.");
+                        return;
                     }
                 }
 
-                connection.Close();
-            }
+                // Add the new Title
+                string insertQuery = "INSERT INTO Departments (Department, Title) VALUES (@DepartmentName, @TitleName)";
+                using (SqlCommand insertCmd = new SqlCommand(insertQuery, conn))
+                {
+                    insertCmd.Parameters.AddWithValue("@DepartmentName", selectedDepartment);
+                    insertCmd.Parameters.AddWithValue("@TitleName", newTitleName);
+                    insertCmd.ExecuteNonQuery();
+                }
 
-            MessageBox.Show("Requests added successfully.");
+                MessageBox.Show($"The title '{newTitleName}' has been added successfully to the {selectedDepartment} department.");
+            }
         }
+
+        #endregion
+
+        /* private void bunifuButton1_Click(object sender, EventArgs e)
+          {
+              if (!userSelected())
+              {
+                  return;
+              }
+
+              // Validate reasonTextBox
+              if (string.IsNullOrWhiteSpace(reasonTextBox.Text))
+              {
+                  MessageBox.Show("Please provide a reason.");
+                  reasonTextBox.Focus();
+                  return;
+              }
+
+              string requestReason = reasonTextBox.Text.Trim();
+              string requestType = removeBalanceDropdown.Text;
+              string loggedInUserFullName = loggedInUser.FullName;
+
+              DateTime fromdate = Convert.ToDateTime(fromDayDatePicker.Text);
+              DateTime todate = Convert.ToDateTime(toDayDatePicker.Text);
+
+              int numberOfDays = (todate - fromdate).Days +1;
+
+              using (SqlConnection connection = Database.getConnection())
+              {
+                  connection.Open();
+
+                  foreach (var selectedUser in usersCheckedListBox.CheckedItems)
+                  {
+                      // Extract user details from the selected item
+                      string[] userParts = selectedUser.ToString().Split('-');
+                      string fullName = userParts[0].Trim();
+                      string departmentName = userParts[1].Trim();
+
+                      // Fetch UserID from AnnualLeave table
+                      string getUserIdQuery = "SELECT UserID FROM AnnualLeave WHERE FullName = @FullName";
+                      int userId;
+                      using (SqlCommand getUserIdCommand = new SqlCommand(getUserIdQuery, connection))
+                      {
+                          getUserIdCommand.Parameters.AddWithValue("@FullName", fullName);
+                          object result = getUserIdCommand.ExecuteScalar();
+                          if (result == null)
+                          {
+                              MessageBox.Show($"UserID not found for user: {fullName}");
+                              continue;
+                          }
+                          userId = Convert.ToInt32(result);
+                      }
+
+                      // Insert a row into the Requests table
+                      string insertQuery = @"
+                  INSERT INTO Requests 
+                  (
+                      RequestUserID, RequestUserFullName, RequestFromDay, RequestToDay, 
+                      RequestBeginningTime, RequestEndingTime, RequestReason, RequestStatus, 
+                      RequestType, RequestRejectReason, RequestCloser, RequestDepartment, 
+                      RequestNumberOfDays, RequestHRStatus, RequestHRCloser
+                  )
+                  VALUES
+                  (
+                      @RequestUserID, @RequestUserFullName, @RequestFromDay, @RequestToDay, 
+                      NULL, NULL, @RequestReason, @RequestStatus, 
+                      @RequestType, NULL, @RequestCloser, @RequestDepartment, 
+                      @RequestNumberOfDays, @RequestHRStatus, @RequestHRCloser
+                  )";
+
+                      using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                      {
+                          insertCommand.Parameters.AddWithValue("@RequestUserID", userId);
+                          insertCommand.Parameters.AddWithValue("@RequestUserFullName", fullName);
+                          insertCommand.Parameters.AddWithValue("@RequestFromDay", fromdate);
+                          insertCommand.Parameters.AddWithValue("@RequestToDay", todate);
+                          insertCommand.Parameters.AddWithValue("@RequestReason", requestReason);
+                          insertCommand.Parameters.AddWithValue("@RequestStatus", "Approved");
+                          insertCommand.Parameters.AddWithValue("@RequestType", requestType);
+                          insertCommand.Parameters.AddWithValue("@RequestCloser", "Nourhan Niazy");
+                          insertCommand.Parameters.AddWithValue("@RequestDepartment", departmentName);
+                          insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", numberOfDays);
+                          insertCommand.Parameters.AddWithValue("@RequestHRStatus", "Approved");
+                          insertCommand.Parameters.AddWithValue("@RequestHRCloser", "Nourhan Niazy");
+                          insertCommand.ExecuteNonQuery();
+                      }
+                  }
+
+                  connection.Close();
+              }
+
+              MessageBox.Show("Requests added successfully.");
+          }*/
     }
 }

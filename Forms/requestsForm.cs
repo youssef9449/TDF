@@ -41,6 +41,8 @@ namespace TDF.Net.Forms
             }
         }
 
+        private Timer requestsRefreshTimer;
+
         #region Events
         private void requestsDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
@@ -67,6 +69,14 @@ namespace TDF.Net.Forms
             applyButton.Visible = hasManagerRole || hasAdminRole || hasHRRole;
 
             refreshRequestsTable();
+
+           /* if (hasAdminRole || hasManagerRole || hasHRRole)
+            {
+                requestsRefreshTimer = new Timer();
+                requestsRefreshTimer.Interval = 10000; // 10 seconds
+                requestsRefreshTimer.Tick += requestsRefreshTimer_Tick;
+                requestsRefreshTimer.Start();
+            }*/
         }
         private void requestsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -287,6 +297,18 @@ namespace TDF.Net.Forms
             Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
 
             ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        private void requestsRefreshTimer_Tick(object sender, EventArgs e)
+        {
+            refreshRequestsTable();
+        }
+        private void requestsForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+           /* if (requestsRefreshTimer != null)
+            {
+                requestsRefreshTimer.Stop();
+                requestsRefreshTimer.Dispose();
+            }*/
         }
         #endregion
 
@@ -512,6 +534,7 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
             requestsDataGridView.Columns["Approve"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
+            requestsDataGridView.Columns["RequestReason"].DisplayIndex = 7;
         }
         private (string managerName, string managerDepartment) getManagerName()
         {
@@ -1024,6 +1047,7 @@ namespace TDF.Net.Forms
         }
 
         #endregion
+
 
     }
 }

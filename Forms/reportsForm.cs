@@ -86,6 +86,14 @@ namespace TDF.Forms
                     }
                 }
             }
+            if (reportsDataGridView.Columns[e.ColumnIndex].Name == "ToDate")
+            {
+                if (e.Value == null || string.IsNullOrEmpty(e.Value.ToString()))
+                {
+                    e.Value = "-";
+                    e.FormattingApplied = true;
+                }
+            }
         }
         private void reportForm_Resize(object sender, EventArgs e)
         {
@@ -171,7 +179,7 @@ namespace TDF.Forms
                 return;
             }
 
-            string baseQuery = @"SELECT RequestUserFullName, RequestType, RequestNumberOfDays, RequestStatus, RequestFromDay, RequestDepartment, RequestBeginningTime, RequestEndingTime, RequestHRStatus
+            string baseQuery = @"SELECT RequestUserFullName, RequestType, RequestNumberOfDays, RequestStatus, RequestFromDay, RequestToDay, RequestDepartment, RequestBeginningTime, RequestEndingTime, RequestHRStatus
                          FROM Requests
                          WHERE CONVERT(date, RequestFromDay, 120) >= @startDate 
                          AND CONVERT(date, RequestFromDay, 120) <= @endDate";

@@ -37,10 +37,14 @@ namespace TDF.Net
             this.bunifuLabel1 = new Bunifu.UI.WinForms.BunifuLabel();
             this.requestsLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.panelTitleBar = new System.Windows.Forms.Panel();
+            this.maxImage = new System.Windows.Forms.PictureBox();
+            this.minImg = new System.Windows.Forms.PictureBox();
+            this.closeImg = new System.Windows.Forms.PictureBox();
             this.formPanel = new System.Windows.Forms.Panel();
             this.usersShadowPanel = new Bunifu.UI.WinForms.BunifuShadowPanel();
             this.usersIconButton = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton();
             this.usernameLabel = new Bunifu.UI.WinForms.BunifuLabel();
+            this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.bunifuLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.teamImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
             this.requestsImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
@@ -53,18 +57,14 @@ namespace TDF.Net
             this.bunifuLabel7 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel6 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel5 = new Bunifu.UI.WinForms.BunifuLabel();
-            this.maxImage = new System.Windows.Forms.PictureBox();
-            this.minImg = new System.Windows.Forms.PictureBox();
-            this.closeImg = new System.Windows.Forms.PictureBox();
-            this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.panelTitleBar.SuspendLayout();
-            this.formPanel.SuspendLayout();
-            this.usersShadowPanel.SuspendLayout();
-            this.shadowPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeImg)).BeginInit();
+            this.formPanel.SuspendLayout();
+            this.usersShadowPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).BeginInit();
+            this.shadowPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // bunifuLabel4
@@ -163,6 +163,51 @@ namespace TDF.Net
             this.panelTitleBar.Paint += new System.Windows.Forms.PaintEventHandler(this.panelTitleBar_Paint);
             this.panelTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
             // 
+            // maxImage
+            // 
+            this.maxImage.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.maxImage.Image = ((System.Drawing.Image)(resources.GetObject("maxImage.Image")));
+            this.maxImage.Location = new System.Drawing.Point(1202, 22);
+            this.maxImage.Name = "maxImage";
+            this.maxImage.Size = new System.Drawing.Size(20, 20);
+            this.maxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.maxImage.TabIndex = 10;
+            this.maxImage.TabStop = false;
+            this.maxImage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.maxImage_MouseClick);
+            this.maxImage.MouseDown += new System.Windows.Forms.MouseEventHandler(this.maxImage_MouseDown);
+            this.maxImage.MouseEnter += new System.EventHandler(this.maxImage_MouseEnter);
+            this.maxImage.MouseLeave += new System.EventHandler(this.maxImage_MouseLeave);
+            // 
+            // minImg
+            // 
+            this.minImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.minImg.Image = ((System.Drawing.Image)(resources.GetObject("minImg.Image")));
+            this.minImg.Location = new System.Drawing.Point(1166, 22);
+            this.minImg.Name = "minImg";
+            this.minImg.Size = new System.Drawing.Size(20, 20);
+            this.minImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.minImg.TabIndex = 9;
+            this.minImg.TabStop = false;
+            this.minImg.MouseClick += new System.Windows.Forms.MouseEventHandler(this.minImg_MouseClick);
+            this.minImg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.minImg_MouseDown);
+            this.minImg.MouseEnter += new System.EventHandler(this.minImg_MouseEnter);
+            this.minImg.MouseLeave += new System.EventHandler(this.minImg_MouseLeave);
+            // 
+            // closeImg
+            // 
+            this.closeImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.closeImg.Image = ((System.Drawing.Image)(resources.GetObject("closeImg.Image")));
+            this.closeImg.Location = new System.Drawing.Point(1238, 22);
+            this.closeImg.Name = "closeImg";
+            this.closeImg.Size = new System.Drawing.Size(20, 20);
+            this.closeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.closeImg.TabIndex = 1;
+            this.closeImg.TabStop = false;
+            this.closeImg.MouseClick += new System.Windows.Forms.MouseEventHandler(this.closeImg_MouseClick);
+            this.closeImg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.closeImg_MouseDown);
+            this.closeImg.MouseEnter += new System.EventHandler(this.closeImg_MouseEnter);
+            this.closeImg.MouseLeave += new System.EventHandler(this.closeImg_MouseLeave);
+            // 
             // formPanel
             // 
             this.formPanel.AutoScroll = true;
@@ -207,7 +252,7 @@ namespace TDF.Net
             this.usersShadowPanel.ShadowDepth = 5;
             this.usersShadowPanel.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.usersShadowPanel.ShadowTopLeftVisible = false;
-            this.usersShadowPanel.Size = new System.Drawing.Size(181, 301);
+            this.usersShadowPanel.Size = new System.Drawing.Size(190, 301);
             this.usersShadowPanel.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.usersShadowPanel.TabIndex = 15;
             this.usersShadowPanel.Visible = false;
@@ -237,7 +282,7 @@ namespace TDF.Net
             this.usersIconButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.usersIconButton.Image = global::TDF.Properties.Resources.down;
             this.usersIconButton.ImageMargin = new System.Windows.Forms.Padding(0);
-            this.usersIconButton.Location = new System.Drawing.Point(136, 9);
+            this.usersIconButton.Location = new System.Drawing.Point(145, 9);
             this.usersIconButton.Name = "usersIconButton";
             this.usersIconButton.RoundBorders = true;
             this.usersIconButton.ShowBorders = true;
@@ -263,6 +308,20 @@ namespace TDF.Net
             this.usernameLabel.Text = "Welcome, User!";
             this.usernameLabel.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             this.usernameLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // circularPictureBox
+            // 
+            this.circularPictureBox.BackColor = System.Drawing.Color.White;
+            this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
+            this.circularPictureBox.Location = new System.Drawing.Point(38, 4);
+            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
+            this.circularPictureBox.Name = "circularPictureBox";
+            this.circularPictureBox.Size = new System.Drawing.Size(140, 134);
+            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.circularPictureBox.TabIndex = 13;
+            this.circularPictureBox.TabStop = false;
+            this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);
             // 
             // bunifuLabel
             // 
@@ -590,65 +649,6 @@ namespace TDF.Net
             this.bunifuLabel5.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
             this.bunifuLabel5.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
-            // maxImage
-            // 
-            this.maxImage.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.maxImage.Image = ((System.Drawing.Image)(resources.GetObject("maxImage.Image")));
-            this.maxImage.Location = new System.Drawing.Point(1202, 22);
-            this.maxImage.Name = "maxImage";
-            this.maxImage.Size = new System.Drawing.Size(20, 20);
-            this.maxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.maxImage.TabIndex = 10;
-            this.maxImage.TabStop = false;
-            this.maxImage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.maxImage_MouseClick);
-            this.maxImage.MouseDown += new System.Windows.Forms.MouseEventHandler(this.maxImage_MouseDown);
-            this.maxImage.MouseEnter += new System.EventHandler(this.maxImage_MouseEnter);
-            this.maxImage.MouseLeave += new System.EventHandler(this.maxImage_MouseLeave);
-            // 
-            // minImg
-            // 
-            this.minImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.minImg.Image = ((System.Drawing.Image)(resources.GetObject("minImg.Image")));
-            this.minImg.Location = new System.Drawing.Point(1166, 22);
-            this.minImg.Name = "minImg";
-            this.minImg.Size = new System.Drawing.Size(20, 20);
-            this.minImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.minImg.TabIndex = 9;
-            this.minImg.TabStop = false;
-            this.minImg.MouseClick += new System.Windows.Forms.MouseEventHandler(this.minImg_MouseClick);
-            this.minImg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.minImg_MouseDown);
-            this.minImg.MouseEnter += new System.EventHandler(this.minImg_MouseEnter);
-            this.minImg.MouseLeave += new System.EventHandler(this.minImg_MouseLeave);
-            // 
-            // closeImg
-            // 
-            this.closeImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.closeImg.Image = ((System.Drawing.Image)(resources.GetObject("closeImg.Image")));
-            this.closeImg.Location = new System.Drawing.Point(1238, 22);
-            this.closeImg.Name = "closeImg";
-            this.closeImg.Size = new System.Drawing.Size(20, 20);
-            this.closeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.closeImg.TabIndex = 1;
-            this.closeImg.TabStop = false;
-            this.closeImg.MouseClick += new System.Windows.Forms.MouseEventHandler(this.closeImg_MouseClick);
-            this.closeImg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.closeImg_MouseDown);
-            this.closeImg.MouseEnter += new System.EventHandler(this.closeImg_MouseEnter);
-            this.closeImg.MouseLeave += new System.EventHandler(this.closeImg_MouseLeave);
-            // 
-            // circularPictureBox
-            // 
-            this.circularPictureBox.BackColor = System.Drawing.Color.White;
-            this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
-            this.circularPictureBox.Location = new System.Drawing.Point(38, 4);
-            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
-            this.circularPictureBox.Name = "circularPictureBox";
-            this.circularPictureBox.Size = new System.Drawing.Size(140, 134);
-            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.circularPictureBox.TabIndex = 13;
-            this.circularPictureBox.TabStop = false;
-            this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);
-            // 
             // mainFormNewUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -672,14 +672,14 @@ namespace TDF.Net
             this.Load += new System.EventHandler(this.mainFormNewUI_Load);
             this.Resize += new System.EventHandler(this.mainFormNewUI_Resize);
             this.panelTitleBar.ResumeLayout(false);
-            this.formPanel.ResumeLayout(false);
-            this.usersShadowPanel.ResumeLayout(false);
-            this.shadowPanel.ResumeLayout(false);
-            this.shadowPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeImg)).EndInit();
+            this.formPanel.ResumeLayout(false);
+            this.usersShadowPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).EndInit();
+            this.shadowPanel.ResumeLayout(false);
+            this.shadowPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }

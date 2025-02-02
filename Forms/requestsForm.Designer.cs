@@ -850,6 +850,7 @@ namespace TDF.Net.Forms
             this.Controls.Add(this.requestsDataGridView);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "requestsForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.requestsForm_FormClosing);
             this.Load += new System.EventHandler(this.Requests_Load);
             this.Resize += new System.EventHandler(this.requestsForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.requestsDataGridView)).EndInit();
