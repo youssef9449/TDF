@@ -30,7 +30,7 @@ namespace TDF.Net
         public mainFormNewUI(loginForm loginForm)
         {
             InitializeComponent();
-            MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
+
 
             applyTheme(this);
             formPanel.BackColor = Color.White;
@@ -445,6 +445,8 @@ namespace TDF.Net
         #region Events
         private void mainFormNewUI_Load(object sender, EventArgs e)
         {
+            MaximizedBounds = Screen.FromControl(this).WorkingArea;
+
             usersIconButton.BackgroundColor = primaryColor;
             usersIconButton.BorderColor = darkColor;
             expandedHeight = usersShadowPanel.Height; // Store the original height when expanded
@@ -470,6 +472,11 @@ namespace TDF.Net
                  displayConnectedUsers();
 
              }*/
+        }
+        protected override void OnMove(EventArgs e)
+        {
+            base.OnMove(e);
+            MaximizedBounds = Screen.FromControl(this).WorkingArea;
         }
         private void ConnectedUsersTimer_Tick(object sender, EventArgs e)
         {
