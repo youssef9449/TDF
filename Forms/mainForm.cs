@@ -22,13 +22,12 @@ namespace TDF.Net
         public mainForm()
         {
             InitializeComponent();
-            MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
+            MaximizedBounds = Screen.FromControl(this).WorkingArea;
         }
 
         public mainForm(loginForm loginForm)
         {
             InitializeComponent();
-            MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
             //initializeCustomColorDropdown();
 
             applyTheme(this);
@@ -257,10 +256,16 @@ namespace TDF.Net
         #region Events
         private void mainForm_Load(object sender, EventArgs e)
         {
-         //   startPipeListener(); // Start listening for messages
+            MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
+            //   startPipeListener(); // Start listening for messages
             updateUserDataControls();
             //myTeamButton.Visible = !string.Equals(loggedInUser.Role, "User", StringComparison.OrdinalIgnoreCase);
 
+        }
+        protected override void OnMove(EventArgs e)
+        {
+            base.OnMove(e);
+            MaximizedBounds = Screen.FromControl(this).WorkingArea;
         }
         private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
