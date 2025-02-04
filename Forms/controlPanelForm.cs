@@ -640,11 +640,11 @@ namespace TDF.Forms
 
             if (usersCheckedListBox.CheckedItems.Count > 1)
             {
-                MessageBox.Show("you can't rename more than one user at the same time, please select only one.");
+                MessageBox.Show("You can't rename more than one user at the same time. Please select only one.");
                 return;
             }
 
-            string newName = nameTextBox.Text;
+            string newName = nameTextBox.Text.Trim();
 
             if (string.IsNullOrEmpty(newName))
             {
@@ -653,45 +653,65 @@ namespace TDF.Forms
                 return;
             }
 
-            string oldName = usersCheckedListBox.SelectedItem.ToString().Split('-')[0].Trim();
-
-            using (SqlConnection conn = Database.getConnection())
+            if (usersCheckedListBox.SelectedItem == null)
             {
-                conn.Open();
-
-                string query = "UPDATE Users SET FullName = @newName WHERE FullName = @oldName";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@newName", newName);
-                    cmd.Parameters.AddWithValue("@oldName", oldName);
-
-                    cmd.ExecuteNonQuery();
-                }
-
-                string updateRequests = "UPDATE Requests SET RequestUserFullName = @newName WHERE RequestUserFullName = @oldName";
-
-                using (SqlCommand cmd = new SqlCommand(updateRequests, conn))
-                {
-                    cmd.Parameters.AddWithValue("@newName", newName);
-                    cmd.Parameters.AddWithValue("@oldName", oldName);
-
-                    cmd.ExecuteNonQuery();
-                }
-                string updateLeaves = "UPDATE AnnualLeave SET FullName = @newName WHERE FullName = @oldName";
-
-                using (SqlCommand cmd = new SqlCommand(updateLeaves, conn))
-                {
-                    cmd.Parameters.AddWithValue("@newName", newName);
-                    cmd.Parameters.AddWithValue("@oldName", oldName);
-
-                    cmd.ExecuteNonQuery();
-                }
-
-                MessageBox.Show($"Selected user has been renamed.");
+                MessageBox.Show("No user selected.");
+                return;
             }
 
-            loadUserNames();
+            string oldName = usersCheckedListBox.SelectedItem.ToString().Split('-')[0].Trim();
+
+            if (oldName.Equals(newName, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("The new name is the same as the old name.");
+                return;
+            }
+
+            if (updateUserName(oldName, newName))
+            {
+                MessageBox.Show("Selected user has been renamed successfully.");
+                loadUserNames();
+            }
+            else
+            {
+                MessageBox.Show("An error occurred while renaming the user.");
+            }
+        }
+        private bool updateUserName(string oldName, string newName)
+        {
+            string[] updateQueries =
+            {
+        "UPDATE Users SET FullName = @newName WHERE FullName = @oldName",
+        "UPDATE Requests SET RequestUserFullName = @newName WHERE RequestUserFullName = @oldName",
+        "UPDATE Requests SET RequestCloser = @newName WHERE RequestCloser = @oldName",
+        "UPDATE Requests SET RequestHRCloser = @newName WHERE RequestHRCloser = @oldName",
+        "UPDATE AnnualLeave SET FullName = @newName WHERE FullName = @oldName"
+            };
+
+            try
+            {
+                using (SqlConnection conn = Database.getConnection())
+                {
+                    conn.Open();
+
+                    foreach (string query in updateQueries)
+                    {
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@newName", newName);
+                            cmd.Parameters.AddWithValue("@oldName", oldName);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+                return false;
+            }
         }
         private void importButton_Click(object sender, EventArgs e)
         {
@@ -1149,7 +1169,6 @@ namespace TDF.Forms
 
             MessageBox.Show("Leave balances updated successfully.");
         }
-
         private void addTitleButton_Click(object sender, EventArgs e)
         {
             if (depCheckedListBox.CheckedItems.Count != 1)
@@ -1200,7 +1219,6 @@ namespace TDF.Forms
                 MessageBox.Show($"The title '{newTitleName}' has been added successfully to the {selectedDepartment} department.");
             }
         }
-
         private void killButton_Click(object sender, EventArgs e)
         {
             if (!userSelected())
@@ -1234,7 +1252,6 @@ namespace TDF.Forms
                 MessageBox.Show("Selected users have been disconnected.");
             }
         }
-
         private static void SendKillSignal(string targetPC)
         {
             try
@@ -1254,9 +1271,6 @@ namespace TDF.Forms
                 MessageBox.Show($"Error sending kill signal to {targetPC}: {ex.Message}");
             }
         }
-
-
-
         #endregion
 
         /* private void bunifuButton1_Click(object sender, EventArgs e)

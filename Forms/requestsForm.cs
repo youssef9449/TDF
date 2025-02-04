@@ -51,10 +51,9 @@ namespace TDF.Net.Forms
             refreshRequestsTable();
 
             requestsRefreshTimer = new Timer();
-            requestsRefreshTimer.Interval = 15000; // 10 seconds
+            requestsRefreshTimer.Interval = 15000; // 15 seconds
             requestsRefreshTimer.Tick += requestsRefreshTimer_Tick;
             requestsRefreshTimer.Start();
-
         }
 
         private void requestsDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
