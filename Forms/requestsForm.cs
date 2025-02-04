@@ -44,6 +44,19 @@ namespace TDF.Net.Forms
         private Timer requestsRefreshTimer;
 
         #region Events
+        private void Requests_Load(object sender, EventArgs e)
+        {
+            applyButton.Visible = hasManagerRole || hasAdminRole || hasHRRole;
+
+            refreshRequestsTable();
+
+            requestsRefreshTimer = new Timer();
+            requestsRefreshTimer.Interval = 15000; // 10 seconds
+            requestsRefreshTimer.Tick += requestsRefreshTimer_Tick;
+            requestsRefreshTimer.Start();
+
+        }
+
         private void requestsDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -63,20 +76,6 @@ namespace TDF.Net.Forms
         private void requestsForm_Resize(object sender, EventArgs e)
         {
             Invalidate();
-        }
-        private void Requests_Load(object sender, EventArgs e)
-        {
-            applyButton.Visible = hasManagerRole || hasAdminRole || hasHRRole;
-
-            refreshRequestsTable();
-
-           /* if (hasAdminRole || hasManagerRole || hasHRRole)
-            {
-                requestsRefreshTimer = new Timer();
-                requestsRefreshTimer.Interval = 10000; // 10 seconds
-                requestsRefreshTimer.Tick += requestsRefreshTimer_Tick;
-                requestsRefreshTimer.Start();
-            }*/
         }
         private void requestsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -300,15 +299,39 @@ namespace TDF.Net.Forms
         }
         private void requestsRefreshTimer_Tick(object sender, EventArgs e)
         {
-            refreshRequestsTable();
+            // Assume your DataGridView is named requestsDataGridView.
+            bool anyChecked = false;
+
+            foreach (DataGridViewRow row in requestsDataGridView.Rows)
+            {
+                // Check for the "Approve" checkbox.
+                if (row.Cells["Approve"].Value is bool approveValue && approveValue)
+                {
+                    anyChecked = true;
+                    break;
+                }
+
+                // Check for the "Reject" checkbox.
+                if (row.Cells["Reject"].Value is bool rejectValue && rejectValue)
+                {
+                    anyChecked = true;
+                    break;
+                }
+            }
+
+            // Only refresh if no checkboxes are checked.
+            if (!anyChecked)
+            {
+                refreshRequestsTable();
+            }
         }
         private void requestsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-           /* if (requestsRefreshTimer != null)
+            if (requestsRefreshTimer != null)
             {
                 requestsRefreshTimer.Stop();
                 requestsRefreshTimer.Dispose();
-            }*/
+            }
         }
         #endregion
 
@@ -1047,7 +1070,6 @@ namespace TDF.Net.Forms
         }
 
         #endregion
-
 
     }
 }
