@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Forms;
@@ -16,6 +18,7 @@ using static TDF.Net.Classes.ThemeColor;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Program;
+using Timer = System.Windows.Forms.Timer;
 
 namespace TDF.Net
 {
@@ -24,7 +27,6 @@ namespace TDF.Net
         public mainFormNewUI()
         {
             InitializeComponent();
-            MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
         }
 
         public mainFormNewUI(loginForm loginForm)
@@ -45,6 +47,8 @@ namespace TDF.Net
         private bool isPanelExpanded = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
         private int contractedHeight = 50; // Height of the panel to show only the header
+        private CancellationTokenSource _pipeCts = new CancellationTokenSource();
+
 
         #region Methods
         public static void updateRoleStatus()
@@ -466,6 +470,8 @@ namespace TDF.Net
             connectedUsersTimer.Interval = 10000; // 10 seconds
             connectedUsersTimer.Tick += ConnectedUsersTimer_Tick;
             connectedUsersTimer.Start();
+            _ = StartListeningAsync(_pipeCts.Token);
+
             /* if (hasAdminRole)
              {
                  usersShadowPanel.Visible = hasAdminRole;
@@ -536,7 +542,7 @@ namespace TDF.Net
         }
         private void maxImage_MouseDown(object sender, MouseEventArgs e)
         {
-            maxImage.Image = Properties.Resources.max_press;
+            maxImage.Image = Resources.max_press;
         }
         private void minImg_MouseEnter(object sender, EventArgs e)
         {
@@ -564,8 +570,12 @@ namespace TDF.Net
         }
         private void mainFormNewUI_Resize(object sender, EventArgs e)
         {
-            Invalidate();
             shadowPanel.Left = (ClientSize.Width - shadowPanel.Width) / 2;
+
+            if (WindowState == FormWindowState.Normal)
+            {
+                usersShadowPanel.MinimumSize = new Size(usersShadowPanel.Width, 50);
+            }
         }
         private void formPanel_Paint(object sender, PaintEventArgs e)
         {
@@ -664,6 +674,11 @@ namespace TDF.Net
             makeUserDisconnected();
             connectedUsersTimer.Stop();
             connectedUsersTimer.Dispose();
+
+            _pipeCts.Cancel();
+            closePipeConnection(); 
+
+            loggedInUser = null;
         }
         private void circularPictureBox_Click(object sender, EventArgs e)
         {
@@ -690,7 +705,6 @@ namespace TDF.Net
         private void usersShadowPanel_Scroll(object sender, ScrollEventArgs e)
         {
             usersShadowPanel.Invalidate();
-
         }
         private void usersIconButton_Click(object sender, EventArgs e)
         {
@@ -747,14 +761,16 @@ namespace TDF.Net
         }
         private void logoutImageButton_Click(object sender, EventArgs e)
         {
-
             makeUserDisconnected();
+
+            _pipeCts.Cancel();
+            closePipeConnection(); 
+
             loggedInUser = null;
             Close();
             loginForm.Show();
         }
 
         #endregion
-
     }
 }

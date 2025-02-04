@@ -7,6 +7,9 @@ using System.Windows.Forms;
 using TDF.Net.Classes;
 using static TDF.Net.Program;
 using TDF.Forms;
+using System.IO.Pipes;
+using System.Threading;
+using System.IO;
 
 namespace TDF.Net
 {
@@ -26,11 +29,14 @@ namespace TDF.Net
         public static List<string> departments = new List<string>();
         public static List<string> titles = new List<string>();
         private static Form oldSessionForm = null;
+        public static NamedPipeClientStream namedPipeClientStream;
 
 
         #region Methods
         private void startLoggingIn()
         {
+            closePipeConnection();
+
             string username = txtUsername.Text;
             string password = txtPassword.Text;
 
@@ -59,6 +65,7 @@ namespace TDF.Net
                 // Log in the user and track the session
                 loggedInUser = getCurrentUserDetails(username);
                 makeUserConnected();
+                updateMachineName();
 
                 // Open the appropriate UI
                 if (guiDropdown.Text == "Classic")
@@ -405,6 +412,79 @@ namespace TDF.Net
                 }
             }
         }
+        public static void updateMachineName()
+        {
+            string machineName = Environment.MachineName; // Get the PC name
+
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+                string query = "UPDATE Users SET MachineName = @MachineName WHERE FullName = @FullName";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MachineName", machineName);
+                    cmd.Parameters.AddWithValue("@FullName", loggedInUser.FullName);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public static void closePipeConnection()
+        {
+            try
+            {
+                // If you have a named pipe client, close it
+                if (namedPipeClientStream != null)
+                {
+                    namedPipeClientStream.Close();
+                    namedPipeClientStream.Dispose();
+                    namedPipeClientStream = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error closing pipe: " + ex.Message, "Pipe Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+        public static async Task StartListeningAsync(CancellationToken cancellationToken = default)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    // Create a new NamedPipeServerStream for each connection.
+                    using (var serverPipe = new NamedPipeServerStream("KillPipe", PipeDirection.In, 1,
+                               PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
+                    {
+                        // Asynchronously wait for a connection.
+                        await serverPipe.WaitForConnectionAsync(cancellationToken);
+
+                        // Read the command asynchronously.
+                        using (var reader = new StreamReader(serverPipe))
+                        {
+                            string command = await reader.ReadLineAsync();
+                            if (command == "KILL")
+                            {
+                                // Kill signal received – exit the application.
+                                Application.Exit();
+                            }
+                        }
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // The operation was canceled—exit gracefully.
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    // Optionally log the error. You might want to use a logging framework
+                    // instead of MessageBox in production.
+                    MessageBox.Show($"Pipe Error: {ex.Message}");
+                    // Continue listening even if an error occurs.
+                }
+            }
+        }
         #endregion
 
         #region Events
@@ -517,8 +597,8 @@ namespace TDF.Net
                 clearFormFields();
                 departmentDropdown.DataSource = departments;
                 departmentDropdown.SelectedIndex = -1;
-                guiDropdown.Visible = false;
-                guiLabel.Visible = false;
+                //guiDropdown.Visible = false;
+              //  guiLabel.Visible = false;
                 return;
             }
             if (changingPassword)
@@ -538,8 +618,8 @@ namespace TDF.Net
                 titlesDropdown.Visible = false;
                 nameTextBox.UseSystemPasswordChar = true;
                 // passPictureBox.Visible = false;
-                guiDropdown.Visible = true;
-                guiLabel.Visible = true;
+              //  guiDropdown.Visible = true;
+              //  guiLabel.Visible = true;
                 clearFormFields();
                 return;
             }
@@ -585,8 +665,8 @@ namespace TDF.Net
             titleLabel.Visible = false;
             titlesDropdown.Visible = false;
             signingup = false;
-            guiLabel.Visible = true;
-            guiDropdown.Visible = true;
+          //  guiLabel.Visible = true;
+           // guiDropdown.Visible = true;
             signupButton.Text = "Sign Up";
             updateButton.Text = "Change password";
 
@@ -606,8 +686,8 @@ namespace TDF.Net
                 nameLabel.Visible = true;
                 updateButton.Visible = false;
                 //passPictureBox.Visible = false;
-                guiDropdown.Visible = false;
-                guiLabel.Visible = false;
+               //guiDropdown.Visible = false;
+                //guiLabel.Visible = false;
             }
             else
             {
@@ -620,8 +700,8 @@ namespace TDF.Net
                 signupButton.Text = "Sign Up";
                 titlesDropdown.Visible = false;
                 titleLabel.Visible = false;
-                guiDropdown.Visible = true;
-                guiLabel.Visible = true;
+              //  guiDropdown.Visible = true;
+             //   guiLabel.Visible = true;
                 //passPictureBox.Visible = false;
             }
 
