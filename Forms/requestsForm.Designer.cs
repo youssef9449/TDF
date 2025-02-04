@@ -183,6 +183,7 @@ namespace TDF.Net.Forms
             this.requestsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.requestsDataGridView_CellFormatting);
             this.requestsDataGridView.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellMouseEnter);
             this.requestsDataGridView.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellMouseLeave);
+            this.requestsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellValueChanged);
             // 
             // RequestID
             // 

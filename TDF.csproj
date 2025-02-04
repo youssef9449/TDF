@@ -114,6 +114,7 @@
     <Compile Include="Classes\CircularPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Classes\CrashLogger.cs" />
     <Compile Include="Classes\IniFile.cs" />
     <Compile Include="Classes\NetworkUtils.cs" />
     <Compile Include="Classes\Requests.cs" />

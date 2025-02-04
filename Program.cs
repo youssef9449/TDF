@@ -5,13 +5,17 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
+using TDF.Classes;
 using TDF.Net.Classes;
+using static TDF.Net.loginForm;
 
 namespace TDF.Net
 {
     internal static class Program
     {
+        // Assume you set CrashLogger.LoggedInUserFullName when the user logs in.
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -25,7 +29,11 @@ namespace TDF.Net
                 MessageBox.Show("Another instance of the TDF app is already running.","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             //setProcessDpiAwareness(); // Enable DPI scaling
+
+            Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
             // Set culture settings
             CultureInfo English = new CultureInfo("en-GB");
@@ -51,6 +59,52 @@ namespace TDF.Net
              {
                  MessageBox.Show($"Connection failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
              }*/
+        }
+
+        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            try
+            {
+                // Log the exception
+                CrashLogger.LogException(e.Exception);
+
+                // Call your method to update the user's status to "disconnected"
+                makeUserDisconnected(); // Ensure this method is accessible in this context
+            }
+            catch (Exception ex2)
+            {
+                // If disconnecting also fails, you might log or ignore this secondary error.
+                CrashLogger.LogException(ex2);
+            }
+
+            //  MessageBox.Show("An unexpected error occurred. Please check the log file for details.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Application.Exit();
+
+        }
+
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            try
+            {
+                Exception ex = e.ExceptionObject as Exception;
+                if (ex != null)
+                {
+                    CrashLogger.LogException(ex);
+                }
+                else
+                {
+                    CrashLogger.LogException(new Exception("An unhandled non-exception error occurred."));
+                }
+
+                // Call your disconnect method here as well
+                makeUserDisconnected();
+            }
+            catch (Exception ex2)
+            {
+                CrashLogger.LogException(ex2);
+            }
+
+            Environment.Exit(1);
         }
 
         // static bool roundCorners = true;

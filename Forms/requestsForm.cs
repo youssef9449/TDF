@@ -42,6 +42,7 @@ namespace TDF.Net.Forms
         }
 
         private Timer requestsRefreshTimer;
+        private bool requestNoteEdited = false;
 
         #region Events
         private void Requests_Load(object sender, EventArgs e)
@@ -298,19 +299,19 @@ namespace TDF.Net.Forms
         }
         private void requestsRefreshTimer_Tick(object sender, EventArgs e)
         {
-            // Assume your DataGridView is named requestsDataGridView.
             bool anyChecked = false;
 
+            // Loop through each row to see if any "Approve" or "Reject" checkbox is checked.
             foreach (DataGridViewRow row in requestsDataGridView.Rows)
             {
-                // Check for the "Approve" checkbox.
+                // Check the "Approve" checkbox.
                 if (row.Cells["Approve"].Value is bool approveValue && approveValue)
                 {
                     anyChecked = true;
                     break;
                 }
 
-                // Check for the "Reject" checkbox.
+                // Check the "Reject" checkbox.
                 if (row.Cells["Reject"].Value is bool rejectValue && rejectValue)
                 {
                     anyChecked = true;
@@ -318,8 +319,20 @@ namespace TDF.Net.Forms
                 }
             }
 
-            // Only refresh if no checkboxes are checked.
-            if (!anyChecked)
+            // Check if the current cell is in edit mode in the "RequestRejectReason" column.
+            bool editingRejectReason = false;
+            if (requestsDataGridView.IsCurrentCellInEditMode &&
+                requestsDataGridView.CurrentCell != null &&
+                requestsDataGridView.CurrentCell.OwningColumn.Name == "RequestRejectReason")
+            {
+                editingRejectReason = true;
+            }
+
+            // Only refresh if:
+            // 1. No "Approve" or "Reject" checkboxes are checked.
+            // 2. The user is not currently editing the "RequestRejectReason" column.
+            // 3. No "RequestRejectReason" cell has been edited (and remains unsaved) as per our flag.
+            if (!anyChecked && !editingRejectReason && !requestNoteEdited)
             {
                 refreshRequestsTable();
             }
@@ -956,7 +969,7 @@ namespace TDF.Net.Forms
                             HandleBalanceUpdate(conn, currentHRStatus, currentManagerStatus, newStatus, effectiveRole, requestType, numberOfDays, userFullName);
                         }
                     }
-
+                    requestNoteEdited = false;
                     MessageBox.Show("Requests updated successfully.");
                     refreshRequestsTable();
                 }
@@ -1070,5 +1083,13 @@ namespace TDF.Net.Forms
 
         #endregion
 
+        private void requestsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // Check if the changed cell is in the "RequestRejectReason" column.
+            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestRejectReason")
+            {
+                requestNoteEdited = true;
+            }
+        }
     }
 }
