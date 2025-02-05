@@ -852,7 +852,7 @@ namespace TDF.Net.Forms
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "requestsForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.requestsForm_FormClosing);
-            this.Load += new System.EventHandler(this.Requests_Load);
+            this.Load += new System.EventHandler(this.requestsForm_Load);
             this.Resize += new System.EventHandler(this.requestsForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.requestsDataGridView)).EndInit();
             this.panel.ResumeLayout(false);
