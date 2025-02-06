@@ -50,6 +50,7 @@
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="Bunifu.Licensing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=f89b4760ba7dcb6b, processorArchitecture=MSIL">
       <HintPath>packages\Bunifu.Licensing.6.0.4\lib\net48\Bunifu.Licensing.dll</HintPath>
@@ -113,6 +114,7 @@
     <Compile Include="Classes\CircularPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Classes\CrashLogger.cs" />
     <Compile Include="Classes\IniFile.cs" />
     <Compile Include="Classes\NetworkUtils.cs" />
     <Compile Include="Classes\Requests.cs" />
@@ -258,6 +260,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\up.png" />
+    <None Include="Resources\down.png" />
     <None Include="Resources\myteam.png" />
     <None Include="Resources\logout.png" />
     <None Include="Resources\control panel.png" />

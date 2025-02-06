@@ -183,6 +183,7 @@ namespace TDF.Net.Forms
             this.requestsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.requestsDataGridView_CellFormatting);
             this.requestsDataGridView.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellMouseEnter);
             this.requestsDataGridView.CellMouseLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellMouseLeave);
+            this.requestsDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.requestsDataGridView_CellValueChanged);
             // 
             // RequestID
             // 
@@ -850,7 +851,8 @@ namespace TDF.Net.Forms
             this.Controls.Add(this.requestsDataGridView);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "requestsForm";
-            this.Load += new System.EventHandler(this.Requests_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.requestsForm_FormClosing);
+            this.Load += new System.EventHandler(this.requestsForm_Load);
             this.Resize += new System.EventHandler(this.requestsForm_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.requestsDataGridView)).EndInit();
             this.panel.ResumeLayout(false);

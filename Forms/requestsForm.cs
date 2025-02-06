@@ -1,6 +1,7 @@
 ﻿using Bunifu.UI.WinForms;
 using Microsoft.Office.Interop.Excel;
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -41,7 +42,21 @@ namespace TDF.Net.Forms
             }
         }
 
+        private Timer requestsRefreshTimer;
+        private bool requestNoteEdited = false;
+
         #region Events
+        private void requestsForm_Load(object sender, EventArgs e)
+        {
+            applyButton.Visible = hasManagerRole || hasAdminRole || hasHRRole;
+
+            refreshRequestsTable();
+
+            requestsRefreshTimer = new Timer();
+            requestsRefreshTimer.Interval = 15000; // 15 seconds
+            requestsRefreshTimer.Tick += requestsRefreshTimer_Tick;
+            requestsRefreshTimer.Start();
+        }
         private void requestsDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
@@ -62,31 +77,31 @@ namespace TDF.Net.Forms
         {
             Invalidate();
         }
-        private void Requests_Load(object sender, EventArgs e)
-        {
-            applyButton.Visible = hasManagerRole || hasAdminRole || hasHRRole;
-
-            refreshRequestsTable();
-        }
         private void requestsDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex >= 0 & e.RowIndex >= 0)
             {
-                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit" &&
-                    (requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString() == "Pending"
-                    || hasAdminRole || hasManagerRole || hasHRRole))
+                if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit")
                 {
+                    string requestStatus = requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString();
+                    string requestUserFullName = requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString();
+                    bool isRequestOwner = requestUserFullName == loggedInUser.FullName;
 
-                    if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString() != loggedInUser.FullName && hasHRRole)
+                    // Allow editing if the request is "Pending" or the user has an elevated role
+                    if (requestStatus == "Pending" || hasAdminRole || hasManagerRole || hasHRRole)
                     {
-                        MessageBox.Show("you are not allowed to edit another user's request.");
-                        return;
+                        // Prevent HR users from editing another user's request unless they have Admin/Manager roles
+                        if (!isRequestOwner && hasHRRole && !hasAdminRole && !hasManagerRole)
+                        {
+                            MessageBox.Show("You are not allowed to edit another user's request.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
 
-                    }
-
-                    if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell)
-                    {
-                        openRequestToEdit(e);
+                        // Check if the clicked cell is an image button before opening the edit form
+                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell)
+                        {
+                            openRequestToEdit(e);
+                        }
                     }
                 }
 
@@ -282,6 +297,62 @@ namespace TDF.Net.Forms
 
             ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
+        private void requestsRefreshTimer_Tick(object sender, EventArgs e)
+        {
+            bool anyChecked = false;
+
+            // Loop through each row to see if any "Approve" or "Reject" checkbox is checked.
+            foreach (DataGridViewRow row in requestsDataGridView.Rows)
+            {
+                // Check the "Approve" checkbox.
+                if (row.Cells["Approve"].Value is bool approveValue && approveValue)
+                {
+                    anyChecked = true;
+                    break;
+                }
+
+                // Check the "Reject" checkbox.
+                if (row.Cells["Reject"].Value is bool rejectValue && rejectValue)
+                {
+                    anyChecked = true;
+                    break;
+                }
+            }
+
+            // Check if the current cell is in edit mode in the "RequestRejectReason" column.
+            bool editingNotes = false;
+            if (requestsDataGridView.IsCurrentCellInEditMode &&
+                requestsDataGridView.CurrentCell != null &&
+                requestsDataGridView.CurrentCell.OwningColumn.Name == "RequestRejectReason")
+            {
+                editingNotes = true;
+            }
+
+            // Only refresh if:
+            // 1. No "Approve" or "Reject" checkboxes are checked.
+            // 2. The user is not currently editing the "RequestRejectReason" column.
+            // 3. No "RequestRejectReason" cell has been edited (and remains unsaved) as per our flag.
+            if (!anyChecked && !editingNotes && !requestNoteEdited)
+            {
+                refreshRequestsTablePreserveState();
+            }
+        }
+        private void requestsForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (requestsRefreshTimer != null)
+            {
+                requestsRefreshTimer.Stop();
+                requestsRefreshTimer.Dispose();
+            }
+        }
+        private void requestsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // Check if the changed cell is in the "RequestRejectReason" column.
+            if (requestsDataGridView.Columns[e.ColumnIndex].Name == "RequestRejectReason")
+            {
+                requestNoteEdited = true;
+            }
+        }
         #endregion
 
         #region Methods
@@ -408,8 +479,8 @@ namespace TDF.Net.Forms
         LEFT JOIN 
             AnnualLeave al ON r.RequestUserID = al.UserID
         WHERE 
-            r.RequestUserID = @UserID AND 
-            " + (pendingRadioButton.Checked ? " r.RequestStatus = 'Pending' AND r.RequestHRStatus = 'Pending'" : " NOT (r.RequestStatus = 'Pending' AND r.RequestHRStatus = 'Pending')");
+            r.RequestUserID = @UserID 
+            AND (" + (pendingRadioButton.Checked ? " (r.RequestStatus = 'Pending' OR r.RequestHRStatus = 'Pending'))" : " NOT (r.RequestStatus = 'Pending' OR r.RequestHRStatus = 'Pending'))");
         }
         private void executeQuery(string query, DataTable requestsTable, Action<SqlCommand> parameterizeCommand = null)
         {
@@ -506,6 +577,7 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
             requestsDataGridView.Columns["Approve"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
+            requestsDataGridView.Columns["RequestReason"].DisplayIndex = 7;
         }
         private (string managerName, string managerDepartment) getManagerName()
         {
@@ -801,6 +873,106 @@ namespace TDF.Net.Forms
                 Marshal.ReleaseComObject(excelApp);
             }
         }
+        private void refreshRequestsTablePreserveState()
+        {
+            // 1. Save the current scroll position.
+            int firstDisplayedIndex = requestsDataGridView.FirstDisplayedScrollingRowIndex;
+
+            // 2. Save sorting information.
+            DataGridViewColumn sortedColumn = requestsDataGridView.SortedColumn;
+            System.ComponentModel.ListSortDirection sortDirection = System.ComponentModel.ListSortDirection.Ascending;
+            string sortColumnName = string.Empty;
+            if (sortedColumn != null)
+            {
+                sortDirection = (requestsDataGridView.SortOrder == System.Windows.Forms.SortOrder.Ascending)
+                                    ? System.ComponentModel.ListSortDirection.Ascending
+                                    : System.ComponentModel.ListSortDirection.Descending;
+                // Save the column's Name.
+                sortColumnName = sortedColumn.Name;
+            }
+
+            // If using a BindingSource, prepare the sort string.
+            BindingSource bs = requestsDataGridView.DataSource as BindingSource;
+            string sortString = string.Empty;
+            if (bs != null && !string.IsNullOrEmpty(sortColumnName))
+            {
+                // Assuming column Name equals its DataPropertyName.
+                sortString = $"{sortColumnName} {(sortDirection == System.ComponentModel.ListSortDirection.Ascending ? "ASC" : "DESC")}";
+            }
+
+            // 3. Save the currently selected row index.
+            int selectedRowIndex = -1;
+            if (requestsDataGridView.CurrentRow != null)
+            {
+                selectedRowIndex = requestsDataGridView.CurrentRow.Index;
+            }
+
+            // 4. Refresh the grid's data.
+            refreshRequestsTable();
+
+            // 5. Reapply the sort order.
+            if (!string.IsNullOrEmpty(sortColumnName))
+            {
+                // Retrieve the updated column by its name.
+                DataGridViewColumn newSortedColumn = requestsDataGridView.Columns[sortColumnName];
+                if (newSortedColumn != null)
+                {
+                    if (bs != null)
+                    {
+                        bs.Sort = sortString;
+                    }
+                    else
+                    {
+                        requestsDataGridView.Sort(newSortedColumn, sortDirection);
+                    }
+                }
+            }
+
+            // 6. Restore the scroll position if it's still valid.
+            if (firstDisplayedIndex >= 0 && firstDisplayedIndex < requestsDataGridView.Rows.Count)
+            {
+                requestsDataGridView.FirstDisplayedScrollingRowIndex = firstDisplayedIndex;
+            }
+
+            // 7. Restore the selected row.
+            if (selectedRowIndex >= 0 && selectedRowIndex < requestsDataGridView.Rows.Count)
+            {
+                // Find a visible row starting from the saved index.
+                int newIndex = selectedRowIndex;
+                while (newIndex < requestsDataGridView.Rows.Count && !requestsDataGridView.Rows[newIndex].Visible)
+                {
+                    newIndex++;
+                }
+                if (newIndex < requestsDataGridView.Rows.Count)
+                {
+                    DataGridViewRow row = requestsDataGridView.Rows[newIndex];
+                    DataGridViewCell cellToSelect = null;
+                    // Look for the first visible cell in that row.
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        if (requestsDataGridView.Columns[cell.ColumnIndex].Visible)
+                        {
+                            cellToSelect = cell;
+                            break;
+                        }
+                    }
+                    if (cellToSelect != null)
+                    {
+                        try
+                        {
+                            requestsDataGridView.CurrentCell = cellToSelect;
+                            row.Selected = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log or handle this error as needed.
+                            MessageBox.Show("Error restoring selected cell: " + ex.Message);
+                        }
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Buttons
@@ -905,7 +1077,7 @@ namespace TDF.Net.Forms
                             HandleBalanceUpdate(conn, currentHRStatus, currentManagerStatus, newStatus, effectiveRole, requestType, numberOfDays, userFullName);
                         }
                     }
-
+                    requestNoteEdited = false;
                     MessageBox.Show("Requests updated successfully.");
                     refreshRequestsTable();
                 }

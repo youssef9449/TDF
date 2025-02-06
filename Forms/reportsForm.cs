@@ -86,6 +86,14 @@ namespace TDF.Forms
                     }
                 }
             }
+            if (reportsDataGridView.Columns[e.ColumnIndex].Name == "ToDate")
+            {
+                if (e.Value == null || string.IsNullOrEmpty(e.Value.ToString()))
+                {
+                    e.Value = "-";
+                    e.FormattingApplied = true;
+                }
+            }
         }
         private void reportForm_Resize(object sender, EventArgs e)
         {
@@ -171,7 +179,7 @@ namespace TDF.Forms
                 return;
             }
 
-            string baseQuery = @"SELECT RequestUserFullName, RequestType, RequestNumberOfDays, RequestStatus, RequestFromDay, RequestDepartment, RequestBeginningTime, RequestEndingTime, RequestHRStatus
+            string baseQuery = @"SELECT RequestUserFullName, RequestType, RequestNumberOfDays, RequestStatus, RequestFromDay, RequestToDay, RequestDepartment, RequestBeginningTime, RequestEndingTime, RequestHRStatus
                          FROM Requests
                          WHERE CONVERT(date, RequestFromDay, 120) >= @startDate 
                          AND CONVERT(date, RequestFromDay, 120) <= @endDate";
@@ -499,11 +507,11 @@ namespace TDF.Forms
         {
             if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
             {
-                bool isAnnualOrEmergencyOrEmergency = typeDropdown.Text == "Annual" || typeDropdown.Text == "Emergency" || typeDropdown.Text == "Permission";
+                bool isAnnualOrEmergencyOrPermission = typeDropdown.Text == "Annual" || typeDropdown.Text == "Emergency" || typeDropdown.Text == "Permission";
 
-                balanceGroupBox.Visible = isAnnualOrEmergencyOrEmergency;
+                balanceGroupBox.Visible = isAnnualOrEmergencyOrPermission;
 
-                if (isAnnualOrEmergencyOrEmergency)
+                if (isAnnualOrEmergencyOrPermission)
                 {
                     string leaveType = typeDropdown.Text == "Annual" ? "Annual" : typeDropdown.Text == "Emergency" ? "CasualLeave" : "Permissions";
                     string usedLeaveType = typeDropdown.Text == "Annual" ? "AnnualUsed" : typeDropdown.Text == "Emergency" ? "CasualUsed" : "PermissionsUsed";

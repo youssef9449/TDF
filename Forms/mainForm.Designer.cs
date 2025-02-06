@@ -598,7 +598,7 @@ namespace TDF.Net
             this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
             this.circularPictureBox.Name = "circularPictureBox";
             this.circularPictureBox.Size = new System.Drawing.Size(140, 134);
-            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.circularPictureBox.TabIndex = 1;
             this.circularPictureBox.TabStop = false;
             this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);

@@ -30,6 +30,7 @@ namespace TDF.Net
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainFormNewUI));
+            Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderEdges();
             this.bunifuLabel4 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel3 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel2 = new Bunifu.UI.WinForms.BunifuLabel();
@@ -41,6 +42,7 @@ namespace TDF.Net
             this.closeImg = new System.Windows.Forms.PictureBox();
             this.formPanel = new System.Windows.Forms.Panel();
             this.usersShadowPanel = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.usersIconButton = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton();
             this.usernameLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.bunifuLabel = new Bunifu.UI.WinForms.BunifuLabel();
@@ -60,6 +62,7 @@ namespace TDF.Net
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeImg)).BeginInit();
             this.formPanel.SuspendLayout();
+            this.usersShadowPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).BeginInit();
             this.shadowPanel.SuspendLayout();
             this.SuspendLayout();
@@ -237,6 +240,7 @@ namespace TDF.Net
             this.usersShadowPanel.BorderColor = System.Drawing.Color.Black;
             this.usersShadowPanel.BorderRadius = 5;
             this.usersShadowPanel.BorderThickness = 1;
+            this.usersShadowPanel.Controls.Add(this.usersIconButton);
             this.usersShadowPanel.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
             this.usersShadowPanel.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
             this.usersShadowPanel.Location = new System.Drawing.Point(12, 204);
@@ -248,11 +252,44 @@ namespace TDF.Net
             this.usersShadowPanel.ShadowDepth = 5;
             this.usersShadowPanel.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
             this.usersShadowPanel.ShadowTopLeftVisible = false;
-            this.usersShadowPanel.Size = new System.Drawing.Size(163, 301);
+            this.usersShadowPanel.Size = new System.Drawing.Size(190, 301);
             this.usersShadowPanel.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.usersShadowPanel.TabIndex = 15;
             this.usersShadowPanel.Visible = false;
             this.usersShadowPanel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.usersShadowPanel_Scroll);
+            // 
+            // usersIconButton
+            // 
+            this.usersIconButton.AllowAnimations = true;
+            this.usersIconButton.AllowBorderColorChanges = true;
+            this.usersIconButton.AllowMouseEffects = true;
+            this.usersIconButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.usersIconButton.AnimationSpeed = 200;
+            this.usersIconButton.BackColor = System.Drawing.Color.Transparent;
+            this.usersIconButton.BackgroundColor = System.Drawing.Color.DodgerBlue;
+            this.usersIconButton.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.usersIconButton.BorderRadius = 1;
+            this.usersIconButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderStyles.Solid;
+            this.usersIconButton.BorderThickness = 1;
+            this.usersIconButton.ColorContrastOnClick = 30;
+            this.usersIconButton.ColorContrastOnHover = 30;
+            this.usersIconButton.Cursor = System.Windows.Forms.Cursors.Default;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.usersIconButton.CustomizableEdges = borderEdges1;
+            this.usersIconButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.usersIconButton.Image = global::TDF.Properties.Resources.down;
+            this.usersIconButton.ImageMargin = new System.Windows.Forms.Padding(0);
+            this.usersIconButton.Location = new System.Drawing.Point(152, 9);
+            this.usersIconButton.Name = "usersIconButton";
+            this.usersIconButton.RoundBorders = true;
+            this.usersIconButton.ShowBorders = true;
+            this.usersIconButton.Size = new System.Drawing.Size(30, 30);
+            this.usersIconButton.Style = Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.ButtonStyles.Round;
+            this.usersIconButton.TabIndex = 16;
+            this.usersIconButton.Click += new System.EventHandler(this.usersIconButton_Click);
             // 
             // usernameLabel
             // 
@@ -263,7 +300,7 @@ namespace TDF.Net
             this.usernameLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.usernameLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.usernameLabel.Location = new System.Drawing.Point(9, 150);
+            this.usernameLabel.Location = new System.Drawing.Point(35, 147);
             this.usernameLabel.Name = "usernameLabel";
             this.usernameLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.usernameLabel.Size = new System.Drawing.Size(140, 57);
@@ -277,11 +314,11 @@ namespace TDF.Net
             this.circularPictureBox.BackColor = System.Drawing.Color.White;
             this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
             this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
-            this.circularPictureBox.Location = new System.Drawing.Point(12, 7);
+            this.circularPictureBox.Location = new System.Drawing.Point(38, 4);
             this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
             this.circularPictureBox.Name = "circularPictureBox";
             this.circularPictureBox.Size = new System.Drawing.Size(140, 134);
-            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.circularPictureBox.TabIndex = 13;
             this.circularPictureBox.TabStop = false;
             this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);
@@ -639,6 +676,7 @@ namespace TDF.Net
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeImg)).EndInit();
             this.formPanel.ResumeLayout(false);
+            this.usersShadowPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).EndInit();
             this.shadowPanel.ResumeLayout(false);
             this.shadowPanel.PerformLayout();
@@ -673,5 +711,6 @@ namespace TDF.Net
         private TDF.Classes.CircularPictureBox circularPictureBox;
         private Bunifu.UI.WinForms.BunifuLabel usernameLabel;
         private Bunifu.UI.WinForms.BunifuShadowPanel usersShadowPanel;
+        private Bunifu.UI.WinForms.BunifuButton.BunifuIconButton usersIconButton;
     }
 }

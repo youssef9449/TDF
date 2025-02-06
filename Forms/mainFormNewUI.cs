@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Forms;
 using TDF.Net.Classes;
 using TDF.Net.Forms;
+using TDF.Properties;
 using static TDF.Net.Classes.ThemeColor;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Program;
+using Timer = System.Windows.Forms.Timer;
 
 namespace TDF.Net
 {
@@ -22,13 +27,12 @@ namespace TDF.Net
         public mainFormNewUI()
         {
             InitializeComponent();
-            MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
         }
 
         public mainFormNewUI(loginForm loginForm)
         {
             InitializeComponent();
-            MaximizedBounds = Screen.FromHandle(Handle).WorkingArea;
+
 
             applyTheme(this);
             formPanel.BackColor = Color.White;
@@ -40,6 +44,10 @@ namespace TDF.Net
         private loginForm loginForm;
 
         private Timer connectedUsersTimer;
+        private bool isPanelExpanded = false;
+        private int expandedHeight; // Stores the full height of the panel when expanded
+        private int contractedHeight = 50; // Height of the panel to show only the header
+        private CancellationTokenSource _pipeCts = new CancellationTokenSource();
 
 
         #region Methods
@@ -309,27 +317,42 @@ namespace TDF.Net
         {
             List<User> connectedUsers = new List<User>();
 
+            // Ensure loggedInUser is not null before proceeding.
+            if (loggedInUser == null)
+            {
+                throw new InvalidOperationException("loggedInUser is null.");
+            }
+
             using (SqlConnection connection = Database.getConnection())
             {
                 connection.Open();
-               // string query = $"SELECT FullName, Department, Picture FROM Users WHERE IsConnected = 1 AND NOT Role = 'Admin' AND NOT UserName = '{loggedInUser.UserName}';";
-                string query = $"SELECT FullName, Department, Picture FROM Users WHERE IsConnected = 1 AND NOT UserName = '{loggedInUser.UserName}';";
+
+                // Use parameterized query for safety and clarity.
+                string query = "SELECT FullName, Department, Picture " +
+                               "FROM Users " +
+                               "WHERE IsConnected = 1 AND UserName <> @UserName;";
 
                 using (SqlCommand cmd = new SqlCommand(query, connection))
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        var user = new User
-                        {
-                            FullName = reader["FullName"].ToString(),
-                            Department = reader["Department"].ToString(),
-                            Picture = reader["Picture"] != DBNull.Value
-                                ? Image.FromStream(new MemoryStream((byte[])reader["Picture"]))
-                                : null // Default to null if no image
-                        };
+                    // Add parameter value.
+                    cmd.Parameters.AddWithValue("@UserName", loggedInUser.UserName);
 
-                        connectedUsers.Add(user);
+                    // Use a using block for the reader.
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var user = new User
+                            {
+                                FullName = reader["FullName"].ToString(),
+                                Department = reader["Department"].ToString(),
+                                Picture = reader["Picture"] != DBNull.Value
+                                          ? Image.FromStream(new MemoryStream((byte[])reader["Picture"]))
+                                          : null // Default to null if no image.
+                            };
+
+                            connectedUsers.Add(user);
+                        }
                     }
                 }
             }
@@ -343,48 +366,54 @@ namespace TDF.Net
             // Clear the panel before adding new items
             usersShadowPanel.Controls.Clear();
 
-            int yOffset = 10; // Vertical spacing
+            // Add the icon button back to the panel
+            usersShadowPanel.Controls.Add(usersIconButton);
 
-            // Add a label at the top
+            int yOffset = 10; // Initial vertical spacing
+
+            // Add a label at the top with the number of online users
             Label headerLabel = new Label
             {
-                Text = "Online Users :-",
-                Location = new Point(10, yOffset), // At the top
+                Text = $"Online Users ({connectedUsers.Count})", // Display the count of online users
+                Location = new Point(10, yOffset + 3), // At the top
+              //  Location = new Point((usersShadowPanel.Width - TextRenderer.MeasureText($"Online Users ({connectedUsers.Count})", new Font("Segoe UI", 12, FontStyle.Bold)).Width) / 2, yOffset), // Center the header horizontally
                 AutoSize = true,
                 Font = new Font("Segoe UI", 12, FontStyle.Bold)
             };
 
             usersShadowPanel.Controls.Add(headerLabel);
-            yOffset += headerLabel.Height + 10; // Add space for the header label
+            yOffset += headerLabel.Height + 20; // Add space for the header label
 
             foreach (User user in connectedUsers)
             {
+                // Calculate the X position to center the PictureBox in the panel
+                int pictureBoxX = (usersShadowPanel.Width - 75) / 2; // Center the 75px image
+
                 // Create PictureBox for the user's image
                 CircularPictureBox pictureBox = new CircularPictureBox
                 {
-                    Image = user.Picture ?? Properties.Resources.pngegg, // Fallback image
-                    SizeMode = PictureBoxSizeMode.StretchImage,
-                    Size = new Size(100, 100), // Set size
-                    Location = new Point(10, yOffset) // Position
+                    Image = user.Picture ?? Resources.pngegg, // Fallback image
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    Size = new Size(75, 75), // Set size
+                    Location = new Point(pictureBoxX, yOffset) // Center horizontally and adjust vertically
                 };
+
+                // Set the label width within panel constraints
+                int nameLabelWidth = usersShadowPanel.Width - 20;
+                int nameLabelX = (usersShadowPanel.Width - nameLabelWidth) / 2;
 
                 // Create Label for the user's name (below the picture)
                 Label nameLabel = new Label
                 {
                     Text = $"{user.FullName.Split(' ')[0]} - {user.Department}", // "Name - Department"
-                    Location = new Point(10, yOffset + pictureBox.Height + 5), // Positioned 5px below the PictureBox
-                    AutoSize = true,
+                    Location = new Point(nameLabelX, yOffset + pictureBox.Height + 5), // Position below picture
+                    AutoSize = true, // Allow dynamic height
                     Font = new Font("Segoe UI", 10, FontStyle.Bold),
                     ForeColor = darkColor,
-                    MaximumSize = new Size(usersShadowPanel.Width - 20, 0) // Wrap text within the panel width
+                    MaximumSize = new Size(nameLabelWidth, 0), // Wrap text within the panel width
+                    TextAlign = ContentAlignment.MiddleCenter // Ensure proper text alignment
                 };
 
-                // Dynamically resize the panel height if needed
-                /*int requiredHeight = nameLabel.Location.Y + nameLabel.Height + 10;
-                if (usersShadowPanel.Height < requiredHeight)
-                {
-                    usersShadowPanel.Height = requiredHeight;
-                }*/
 
                 // Add controls to the panel
                 usersShadowPanel.Controls.Add(pictureBox);
@@ -435,6 +464,14 @@ namespace TDF.Net
         #region Events
         private void mainFormNewUI_Load(object sender, EventArgs e)
         {
+            MaximizedBounds = Screen.FromControl(this).WorkingArea;
+
+            usersIconButton.BackgroundColor = primaryColor;
+            usersIconButton.BorderColor = darkColor;
+            expandedHeight = usersShadowPanel.Height; // Store the original height when expanded
+            usersShadowPanel.Height = contractedHeight; // Set the initial height to contracted
+            usersShadowPanel.AutoScroll = false; // Disable auto-scroll for contracted state
+
             //startPipeListener(); // Start listening for messages
             updateRoleStatus();
             setImageButtonVisibility();
@@ -445,15 +482,22 @@ namespace TDF.Net
             displayConnectedUsers();
 
             connectedUsersTimer = new Timer();
-            connectedUsersTimer.Interval = 5000; // 5 seconds
+            connectedUsersTimer.Interval = 10000; // 10 seconds
             connectedUsersTimer.Tick += ConnectedUsersTimer_Tick;
             connectedUsersTimer.Start();
+            _ = StartListeningAsync(_pipeCts.Token);
+
             /* if (hasAdminRole)
              {
                  usersShadowPanel.Visible = hasAdminRole;
                  displayConnectedUsers();
 
              }*/
+        }
+        protected override void OnMove(EventArgs e)
+        {
+            base.OnMove(e);
+            MaximizedBounds = Screen.FromControl(this).WorkingArea;
         }
         private void ConnectedUsersTimer_Tick(object sender, EventArgs e)
         {
@@ -467,7 +511,7 @@ namespace TDF.Net
             var scrollPos = AutoScrollPosition;
 
             // Adjust for scroll position when drawing the border
-            var rect = new System.Drawing.Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+            var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
 
             ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
         }
@@ -513,7 +557,7 @@ namespace TDF.Net
         }
         private void maxImage_MouseDown(object sender, MouseEventArgs e)
         {
-            maxImage.Image = Properties.Resources.max_press;
+            maxImage.Image = Resources.max_press;
         }
         private void minImg_MouseEnter(object sender, EventArgs e)
         {
@@ -541,8 +585,12 @@ namespace TDF.Net
         }
         private void mainFormNewUI_Resize(object sender, EventArgs e)
         {
-            Invalidate();
             shadowPanel.Left = (ClientSize.Width - shadowPanel.Width) / 2;
+
+            if (WindowState == FormWindowState.Normal)
+            {
+                usersShadowPanel.MinimumSize = new Size(usersShadowPanel.Width, 50);
+            }
         }
         private void formPanel_Paint(object sender, PaintEventArgs e)
         {
@@ -641,6 +689,11 @@ namespace TDF.Net
             makeUserDisconnected();
             connectedUsersTimer.Stop();
             connectedUsersTimer.Dispose();
+
+            _pipeCts.Cancel();
+            closePipeConnection(); 
+
+            loggedInUser = null;
         }
         private void circularPictureBox_Click(object sender, EventArgs e)
         {
@@ -667,7 +720,26 @@ namespace TDF.Net
         private void usersShadowPanel_Scroll(object sender, ScrollEventArgs e)
         {
             usersShadowPanel.Invalidate();
-
+        }
+        private void usersIconButton_Click(object sender, EventArgs e)
+        {
+            if (isPanelExpanded)
+            {
+                // Contract the panel
+                usersShadowPanel.Height = contractedHeight; // Set the height to contracted
+                usersShadowPanel.AutoScroll = false; // Disable auto-scroll
+                usersIconButton.Image = Resources.down; // Change the icon to "down"
+                isPanelExpanded = false; // Update the state
+            }
+            else
+            {
+                // Expand the panel
+                usersShadowPanel.Height = expandedHeight; // Set the height to expanded
+                usersShadowPanel.AutoScroll = true; // Enable auto-scroll
+                usersIconButton.Image = Resources.up; // Change the icon to "up"
+                displayConnectedUsers(); // Populate the panel with connected users
+                isPanelExpanded = true; // Update the state
+            }
         }
         #endregion
 
@@ -704,14 +776,16 @@ namespace TDF.Net
         }
         private void logoutImageButton_Click(object sender, EventArgs e)
         {
-
             makeUserDisconnected();
+
+            _pipeCts.Cancel();
+            closePipeConnection(); 
+
             loggedInUser = null;
             Close();
             loginForm.Show();
         }
+
         #endregion
-
-
     }
 }

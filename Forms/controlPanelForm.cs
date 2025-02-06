@@ -11,6 +11,7 @@ using Bunifu.UI.WinForms;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using Excel = Microsoft.Office.Interop.Excel;
+using System.IO.Pipes;
 
 namespace TDF.Forms
 {
@@ -33,14 +34,11 @@ namespace TDF.Forms
                 panel.Visible = isModern;
             }
 
-            spoofButton.Visible = hasAdminRole;
-            passwordLabel.Visible = hasAdminRole;
-            passwordTextBox.Visible = hasAdminRole;
-            resetPasswordButton.Visible = hasAdminRole;
-            importButton.Visible = hasAdminRole;
-            deleteButton.Visible = hasAdminRole;
 
-            if(hasHRRole)
+            //passwordLabel.Visible = hasAdminRole;
+            //passwordTextBox.Visible = hasAdminRole;
+            //resetPasswordButton.Visible = hasAdminRole;
+            if (hasHRRole)
             {
                 roleDropdown.Items.Remove("HR Director");
             }
@@ -77,15 +75,15 @@ namespace TDF.Forms
             switch (filter)
             {
                 case "Name":
-                    return $"{baseQuery} AND FullName LIKE @searchValue";
+                    return $"{baseQuery} AND FullName LIKE @searchValue ORDER BY FullName";
                 case "Department":
-                    return $"{baseQuery} AND Department LIKE @searchValue";
+                    return $"{baseQuery} AND Department LIKE @searchValue ORDER BY FullName";
                 case "Role":
-                    return $"{baseQuery} AND Role LIKE @searchValue";
+                    return $"{baseQuery} AND Role LIKE @searchValue ORDER BY FullName";
                 case "Title":
-                    return $"{baseQuery} AND Title LIKE @searchValue";
+                    return $"{baseQuery} AND Title LIKE @searchValue ORDER BY FullName";
                 default:
-                    return $"{baseQuery} AND (FullName LIKE @searchValue OR Department LIKE @searchValue OR Role LIKE @searchValue OR Title LIKE @searchValue)";
+                    return $"{baseQuery} AND (FullName LIKE @searchValue OR Department LIKE @searchValue OR Role LIKE @searchValue OR Title LIKE @searchValue) ORDER BY FullName";
             }
         }
         private void loadUserNames()
@@ -234,6 +232,12 @@ namespace TDF.Forms
             loadUserNames();
 
             removeBalanceDropdown.Text = "Annual";
+
+            spoofButton.Visible = hasAdminRole;
+            importButton.Visible = hasAdminRole;
+            deleteButton.Visible = hasAdminRole;
+            killButton.Visible = hasAdminRole;
+
         }
         private void searchTextBox_TextChange(object sender, EventArgs e)
         {
@@ -301,8 +305,6 @@ namespace TDF.Forms
                 usersCheckedListBox.SetItemChecked(i, isChecked);
             }
         }
-
-
         #endregion
 
         #region Buttons
@@ -638,11 +640,11 @@ namespace TDF.Forms
 
             if (usersCheckedListBox.CheckedItems.Count > 1)
             {
-                MessageBox.Show("you can't rename more than one user at the same time, please select only one.");
+                MessageBox.Show("You can't rename more than one user at the same time. Please select only one.");
                 return;
             }
 
-            string newName = nameTextBox.Text;
+            string newName = nameTextBox.Text.Trim();
 
             if (string.IsNullOrEmpty(newName))
             {
@@ -651,45 +653,65 @@ namespace TDF.Forms
                 return;
             }
 
-            string oldName = usersCheckedListBox.SelectedItem.ToString().Split('-')[0].Trim();
-
-            using (SqlConnection conn = Database.getConnection())
+            if (usersCheckedListBox.SelectedItem == null)
             {
-                conn.Open();
-
-                string query = "UPDATE Users SET FullName = @newName WHERE FullName = @oldName";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@newName", newName);
-                    cmd.Parameters.AddWithValue("@oldName", oldName);
-
-                    cmd.ExecuteNonQuery();
-                }
-
-                string updateRequests = "UPDATE Requests SET RequestUserFullName = @newName WHERE RequestUserFullName = @oldName";
-
-                using (SqlCommand cmd = new SqlCommand(updateRequests, conn))
-                {
-                    cmd.Parameters.AddWithValue("@newName", newName);
-                    cmd.Parameters.AddWithValue("@oldName", oldName);
-
-                    cmd.ExecuteNonQuery();
-                }
-                string updateLeaves = "UPDATE AnnualLeave SET FullName = @newName WHERE FullName = @oldName";
-
-                using (SqlCommand cmd = new SqlCommand(updateLeaves, conn))
-                {
-                    cmd.Parameters.AddWithValue("@newName", newName);
-                    cmd.Parameters.AddWithValue("@oldName", oldName);
-
-                    cmd.ExecuteNonQuery();
-                }
-
-                MessageBox.Show($"Selected user has been renamed.");
+                MessageBox.Show("No user selected.");
+                return;
             }
 
-            loadUserNames();
+            string oldName = usersCheckedListBox.SelectedItem.ToString().Split('-')[0].Trim();
+
+            if (oldName.Equals(newName, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show("The new name is the same as the old name.");
+                return;
+            }
+
+            if (updateUserName(oldName, newName))
+            {
+                MessageBox.Show("Selected user has been renamed successfully.");
+                loadUserNames();
+            }
+            else
+            {
+                MessageBox.Show("An error occurred while renaming the user.");
+            }
+        }
+        private bool updateUserName(string oldName, string newName)
+        {
+            string[] updateQueries =
+            {
+        "UPDATE Users SET FullName = @newName WHERE FullName = @oldName",
+        "UPDATE Requests SET RequestUserFullName = @newName WHERE RequestUserFullName = @oldName",
+        "UPDATE Requests SET RequestCloser = @newName WHERE RequestCloser = @oldName",
+        "UPDATE Requests SET RequestHRCloser = @newName WHERE RequestHRCloser = @oldName",
+        "UPDATE AnnualLeave SET FullName = @newName WHERE FullName = @oldName"
+            };
+
+            try
+            {
+                using (SqlConnection conn = Database.getConnection())
+                {
+                    conn.Open();
+
+                    foreach (string query in updateQueries)
+                    {
+                        using (SqlCommand cmd = new SqlCommand(query, conn))
+                        {
+                            cmd.Parameters.AddWithValue("@newName", newName);
+                            cmd.Parameters.AddWithValue("@oldName", oldName);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+                return false;
+            }
         }
         private void importButton_Click(object sender, EventArgs e)
         {
@@ -919,11 +941,19 @@ namespace TDF.Forms
             }
 
             string title = titleDropdown.Text;
+            string department = depDropdown.Text;
+
 
             if (string.IsNullOrEmpty(title))
             {
                 MessageBox.Show("Please select a title from the dropdown menu.");
                 titleDropdown.Focus();
+                return;
+            }
+            if (string.IsNullOrEmpty(department))
+            {
+                MessageBox.Show("Please select a department from the dropdown menu.");
+                depDropdown.Focus();
                 return;
             }
 
@@ -936,17 +966,18 @@ namespace TDF.Forms
                     // Split the selected item to get the FullName (format: "FullName - Department")
                     string userFullName = selectedItem.ToString().Split('-')[0].Trim();
 
-                    string query = "UPDATE Users SET Title = @Title WHERE FullName = @FullName";
+                    string query = "UPDATE Users SET Title = @Title, Department = @Department WHERE FullName = @FullName";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@Title", title);
+                        cmd.Parameters.AddWithValue("@Department", department);
                         cmd.Parameters.AddWithValue("@FullName", userFullName);
 
                         cmd.ExecuteNonQuery();
                     }
                 }
 
-                MessageBox.Show($"Selected users have been granted {title} title.");
+                    MessageBox.Show($"Selected users have been granted {title} title of the {department} department.");
             }
 
             loadUserNames();
@@ -967,6 +998,7 @@ namespace TDF.Forms
 
             if (result == DialogResult.Yes)
             {
+                makeUserDisconnected();
                 string userFullName = usersCheckedListBox.CheckedItems[0].ToString().Split('-')[0].Trim();
 
                 using (SqlConnection conn = Database.getConnection())
@@ -1002,7 +1034,6 @@ namespace TDF.Forms
                                 {
                                     loggedInUser.Picture = null; // Handle cases where no image exists
                                 }
-
                                 userUpdated?.Invoke();
                             }
                             else
@@ -1022,12 +1053,12 @@ namespace TDF.Forms
             }
 
             // Validate removedAmountTextBox
-            if (!decimal.TryParse(removedAmountTextBox.Text, out decimal removedAmount) || removedAmount <= 0)
+           /* if (!decimal.TryParse(removedAmountTextBox.Text, out decimal removedAmount) || removedAmount <= 0)
             {
                 MessageBox.Show("Please enter a valid positive number in the removed amount field.");
                 removedAmountTextBox.Focus();
                 return;
-            }
+            }*/
 
             // Validate reasonTextBox
             if (string.IsNullOrWhiteSpace(reasonTextBox.Text))
@@ -1040,7 +1071,8 @@ namespace TDF.Forms
             string requestReason = reasonTextBox.Text.Trim();
             string requestType = removeBalanceDropdown.Text;
             string loggedInUserFullName = loggedInUser.FullName;
-            DateTime currentDate = DateTime.Now;
+
+            DateTime fromdate = Convert.ToDateTime(fromDayDatePicker.Text);
 
             // Determine the column to update
             string columnToUpdate;
@@ -1092,7 +1124,7 @@ namespace TDF.Forms
 
                     using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                     {
-                        updateCommand.Parameters.AddWithValue("@RemovedAmount", removedAmount);
+                        updateCommand.Parameters.AddWithValue("@RemovedAmount", 1);
                         updateCommand.Parameters.AddWithValue("@FullName", fullName);
                         updateCommand.ExecuteNonQuery();
                     }
@@ -1118,14 +1150,14 @@ namespace TDF.Forms
                     {
                         insertCommand.Parameters.AddWithValue("@RequestUserID", userId);
                         insertCommand.Parameters.AddWithValue("@RequestUserFullName", fullName);
-                        insertCommand.Parameters.AddWithValue("@RequestFromDay", currentDate);
-                        insertCommand.Parameters.AddWithValue("@RequestToDay", currentDate);
+                        insertCommand.Parameters.AddWithValue("@RequestFromDay", fromdate);
+                        insertCommand.Parameters.AddWithValue("@RequestToDay", fromdate);
                         insertCommand.Parameters.AddWithValue("@RequestReason", requestReason);
                         insertCommand.Parameters.AddWithValue("@RequestStatus", "Approved");
                         insertCommand.Parameters.AddWithValue("@RequestType", requestType);
                         insertCommand.Parameters.AddWithValue("@RequestCloser", loggedInUserFullName);
                         insertCommand.Parameters.AddWithValue("@RequestDepartment", departmentName);
-                        insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", removedAmount);
+                        insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", 1);
                         insertCommand.Parameters.AddWithValue("@RequestHRStatus", "Approved");
                         insertCommand.Parameters.AddWithValue("@RequestHRCloser", loggedInUserFullName);
                         insertCommand.ExecuteNonQuery();
@@ -1137,8 +1169,199 @@ namespace TDF.Forms
 
             MessageBox.Show("Leave balances updated successfully.");
         }
+        private void addTitleButton_Click(object sender, EventArgs e)
+        {
+            if (depCheckedListBox.CheckedItems.Count != 1)
+            {
+                MessageBox.Show("Please select one department from the department check list.");
+                return;
+            }
 
+            string newTitleName = titleTextBox.Text.Trim();
+
+            if (string.IsNullOrEmpty(newTitleName))
+            {
+                MessageBox.Show("Please type the new title name in the box.");
+                titleTextBox.Focus();
+                return;
+            }
+
+            string selectedDepartment = depCheckedListBox.CheckedItems[0].ToString();
+
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+
+                // Check if the title already exists
+                string checkQuery = "SELECT COUNT(1) FROM Departments WHERE Title = @TitleName AND Department = @DepartmentName";
+                using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
+                {
+                    checkCmd.Parameters.AddWithValue("@TitleName", newTitleName);
+                    checkCmd.Parameters.AddWithValue("@DepartmentName", selectedDepartment);
+                    int exists = (int)checkCmd.ExecuteScalar(); // Returns 1 if exists, 0 otherwise
+
+                    if (exists > 0)
+                    {
+                        MessageBox.Show($"The title '{newTitleName}' already exists in the {depCheckedListBox.CheckedItems.ToString()} department.");
+                        return;
+                    }
+                }
+
+                // Add the new Title
+                string insertQuery = "INSERT INTO Departments (Department, Title) VALUES (@DepartmentName, @TitleName)";
+                using (SqlCommand insertCmd = new SqlCommand(insertQuery, conn))
+                {
+                    insertCmd.Parameters.AddWithValue("@DepartmentName", selectedDepartment);
+                    insertCmd.Parameters.AddWithValue("@TitleName", newTitleName);
+                    insertCmd.ExecuteNonQuery();
+                }
+
+                MessageBox.Show($"The title '{newTitleName}' has been added successfully to the {selectedDepartment} department.");
+            }
+        }
+        private void killButton_Click(object sender, EventArgs e)
+        {
+            if (!userSelected())
+            {
+                return;
+            }
+
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+
+                foreach (object selectedItem in usersCheckedListBox.CheckedItems)
+                {
+                    // Extract user name
+                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+
+                    // Get the machine name of the user
+                    string query = "SELECT MachineName FROM Users WHERE FullName = @FullName";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+                        object machineName = cmd.ExecuteScalar();
+
+                        if (machineName != null)
+                        {
+                            SendKillSignal(machineName.ToString()); // Send signal to that PC
+                        }
+                    }
+                }
+
+                MessageBox.Show("Selected users have been disconnected.");
+            }
+        }
+        private static void SendKillSignal(string targetPC)
+        {
+            try
+            {
+                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(targetPC, "KillPipe", PipeDirection.Out))
+                {
+                    pipeClient.Connect(2000); // Wait 2 seconds for connection
+                    using (StreamWriter writer = new StreamWriter(pipeClient))
+                    {
+                        writer.WriteLine("KILL");
+                        writer.Flush();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error sending kill signal to {targetPC}: {ex.Message}");
+            }
+        }
         #endregion
 
+        /* private void bunifuButton1_Click(object sender, EventArgs e)
+          {
+              if (!userSelected())
+              {
+                  return;
+              }
+
+              // Validate reasonTextBox
+              if (string.IsNullOrWhiteSpace(reasonTextBox.Text))
+              {
+                  MessageBox.Show("Please provide a reason.");
+                  reasonTextBox.Focus();
+                  return;
+              }
+
+              string requestReason = reasonTextBox.Text.Trim();
+              string requestType = removeBalanceDropdown.Text;
+              string loggedInUserFullName = loggedInUser.FullName;
+
+              DateTime fromdate = Convert.ToDateTime(fromDayDatePicker.Text);
+              DateTime todate = Convert.ToDateTime(toDayDatePicker.Text);
+
+              int numberOfDays = (todate - fromdate).Days +1;
+
+              using (SqlConnection connection = Database.getConnection())
+              {
+                  connection.Open();
+
+                  foreach (var selectedUser in usersCheckedListBox.CheckedItems)
+                  {
+                      // Extract user details from the selected item
+                      string[] userParts = selectedUser.ToString().Split('-');
+                      string fullName = userParts[0].Trim();
+                      string departmentName = userParts[1].Trim();
+
+                      // Fetch UserID from AnnualLeave table
+                      string getUserIdQuery = "SELECT UserID FROM AnnualLeave WHERE FullName = @FullName";
+                      int userId;
+                      using (SqlCommand getUserIdCommand = new SqlCommand(getUserIdQuery, connection))
+                      {
+                          getUserIdCommand.Parameters.AddWithValue("@FullName", fullName);
+                          object result = getUserIdCommand.ExecuteScalar();
+                          if (result == null)
+                          {
+                              MessageBox.Show($"UserID not found for user: {fullName}");
+                              continue;
+                          }
+                          userId = Convert.ToInt32(result);
+                      }
+
+                      // Insert a row into the Requests table
+                      string insertQuery = @"
+                  INSERT INTO Requests 
+                  (
+                      RequestUserID, RequestUserFullName, RequestFromDay, RequestToDay, 
+                      RequestBeginningTime, RequestEndingTime, RequestReason, RequestStatus, 
+                      RequestType, RequestRejectReason, RequestCloser, RequestDepartment, 
+                      RequestNumberOfDays, RequestHRStatus, RequestHRCloser
+                  )
+                  VALUES
+                  (
+                      @RequestUserID, @RequestUserFullName, @RequestFromDay, @RequestToDay, 
+                      NULL, NULL, @RequestReason, @RequestStatus, 
+                      @RequestType, NULL, @RequestCloser, @RequestDepartment, 
+                      @RequestNumberOfDays, @RequestHRStatus, @RequestHRCloser
+                  )";
+
+                      using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                      {
+                          insertCommand.Parameters.AddWithValue("@RequestUserID", userId);
+                          insertCommand.Parameters.AddWithValue("@RequestUserFullName", fullName);
+                          insertCommand.Parameters.AddWithValue("@RequestFromDay", fromdate);
+                          insertCommand.Parameters.AddWithValue("@RequestToDay", todate);
+                          insertCommand.Parameters.AddWithValue("@RequestReason", requestReason);
+                          insertCommand.Parameters.AddWithValue("@RequestStatus", "Approved");
+                          insertCommand.Parameters.AddWithValue("@RequestType", requestType);
+                          insertCommand.Parameters.AddWithValue("@RequestCloser", "Nourhan Niazy");
+                          insertCommand.Parameters.AddWithValue("@RequestDepartment", departmentName);
+                          insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", numberOfDays);
+                          insertCommand.Parameters.AddWithValue("@RequestHRStatus", "Approved");
+                          insertCommand.Parameters.AddWithValue("@RequestHRCloser", "Nourhan Niazy");
+                          insertCommand.ExecuteNonQuery();
+                      }
+                  }
+
+                  connection.Close();
+              }
+
+              MessageBox.Show("Requests added successfully.");
+          }*/
     }
 }

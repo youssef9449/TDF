@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -91,7 +92,40 @@ namespace TDF.Forms
             base.OnResize(e);
             Invalidate();  // Forces the form to repaint when resized
         }
+        private void balanceDataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            // Ensure the cell is from the "Picture" column
+            /*  if (e.RowIndex >= 0 && e.ColumnIndex == balanceDataGridView.Columns["Picture"].Index)
+              {
+                  // Get the cell bounds
+                  var cellBounds = e.CellBounds;
 
+                  // Ensure the bounds are square (use the smaller dimension for both width and height)
+                  int size = Math.Min(cellBounds.Width, cellBounds.Height);
+                  Rectangle squareBounds = new Rectangle(cellBounds.X, cellBounds.Y, size, size);
+
+                  // Check if the cell contains an image
+                  if (e.Value is Image img)
+                  {
+                      // Create a circular clipping region
+                      using (GraphicsPath path = new GraphicsPath())
+                      {
+                          // Add a circle that fits within the square bounds
+                          path.AddEllipse(squareBounds);
+                          e.Graphics.SetClip(path); // Apply the circular clipping region
+
+                          // Draw the image, scaling it to fit inside the circle
+                          e.Graphics.DrawImage(img, squareBounds);
+
+                          // Reset the clipping region
+                          e.Graphics.ResetClip();
+                      }
+
+                      // Mark the event as handled to prevent the default cell painting
+                      e.Handled = true;
+                  }
+              }*/
+        }
         #endregion
 
         #region Methods
@@ -101,16 +135,22 @@ namespace TDF.Forms
 
             // Base query for all users
             string query = @"SELECT AL.UserID, AL.FullName, AL.Annual, AL.CasualLeave, AL.AnnualUsed, AL.CasualUsed, 
-                     AL.AnnualBalance, AL.CasualBalance, AL.Permissions, AL.PermissionsUsed, 
-                     AL.PermissionsBalance, AL.UnpaidUsed, U.Picture
-                     FROM AnnualLeave AL
-                     INNER JOIN Users U ON AL.UserID = U.UserID";
+                 AL.AnnualBalance, AL.CasualBalance, AL.Permissions, AL.PermissionsUsed, 
+                 AL.PermissionsBalance, AL.UnpaidUsed, U.Picture
+                 FROM AnnualLeave AL
+                 INNER JOIN Users U ON AL.UserID = U.UserID
+                 WHERE U.Role != 'Admin'";  // Exclude 'Admin' users
 
-            // Append the department condition for managers
+
+            // Append the department condition for managers (correctly placed BEFORE ORDER BY)
             if (hasManagerRole && departments.Count > 0)
             {
-                query += $" WHERE U.Department IN ({string.Join(", ", departments.Select((_, i) => $"@Dept{i}"))})";
+                string deptConditions = string.Join(", ", departments.Select((_, i) => $"@Dept{i}"));
+                query += $" And U.Department IN ({deptConditions})";
             }
+
+            // Add ORDER BY after filtering
+            query += " ORDER BY AL.FullName ASC";
 
             try
             {
@@ -120,7 +160,7 @@ namespace TDF.Forms
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        // Add department parameters if the user is a manager
+                        // Add department parameters correctly
                         if (hasManagerRole && departments.Count > 0)
                         {
                             for (int i = 0; i < departments.Count; i++)
@@ -129,13 +169,13 @@ namespace TDF.Forms
                             }
                         }
 
-                        // Execute the query and fill the DataTable
+                        // Execute query and bind to DataGridView
                         using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                         {
                             DataTable dataTable = new DataTable();
                             adapter.Fill(dataTable);
 
-                            // Replace NULL values in the Picture column with a default image
+                            // Handle NULL images
                             foreach (DataRow row in dataTable.Rows)
                             {
                                 if (row["Picture"] == DBNull.Value)
@@ -144,26 +184,29 @@ namespace TDF.Forms
                                 }
                             }
 
-                            // Bind the updated DataTable to the DataGridView
+                            // Bind DataTable to DataGridView
                             balanceDataGridView.DataSource = dataTable;
 
-                            // Set Picture column to display images
-                            DataGridViewImageColumn imgCol = balanceDataGridView.Columns["Picture"] as DataGridViewImageColumn;
-                            if (imgCol != null)
+                            // Set Picture column to display images properly
+                            if (balanceDataGridView.Columns["Picture"] is DataGridViewImageColumn imgCol)
                             {
                                 imgCol.ImageLayout = DataGridViewImageCellLayout.Zoom;
                             }
                         }
                     }
+
+                    // Set column order explicitly
+                    balanceDataGridView.Columns["FullName"].DisplayIndex = 1;
+                    balanceDataGridView.Columns["Annual"].DisplayIndex = 2;
+                    balanceDataGridView.Columns["AnnualUsed"].DisplayIndex = 3;
+                    balanceDataGridView.Columns["AnnualBalance"].DisplayIndex = 4;
                 }
             }
             catch (Exception ex)
             {
-                // Handle any errors
                 MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private byte[] ImageToByteArray(Image image)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -179,8 +222,8 @@ namespace TDF.Forms
         {
             getBalanceTable();
         }
-        #endregion
 
+        #endregion
 
     }
 }

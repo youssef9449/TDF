@@ -7,6 +7,9 @@ using System.Windows.Forms;
 using TDF.Net.Classes;
 using static TDF.Net.Program;
 using TDF.Forms;
+using System.IO.Pipes;
+using System.Threading;
+using System.IO;
 
 namespace TDF.Net
 {
@@ -26,14 +29,35 @@ namespace TDF.Net
         public static List<string> departments = new List<string>();
         public static List<string> titles = new List<string>();
         private static Form oldSessionForm = null;
+        public static NamedPipeClientStream namedPipeClientStream;
 
 
         #region Methods
         private void startLoggingIn()
         {
+            closePipeConnection();
+
             string username = txtUsername.Text;
             string password = txtPassword.Text;
 
+            // Check for an outdated version
+            string appVersion = Application.ProductVersion;
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+                string versionQuery = "SELECT LatestVersion FROM AppVersion";
+                using (SqlCommand versionCmd = new SqlCommand(versionQuery, conn))
+                {
+                    string latestVersion = versionCmd.ExecuteScalar()?.ToString();
+                    if (latestVersion != null && latestVersion != appVersion)
+                    {
+                        MessageBox.Show("You are using an old version. Please use the latest version from the Taxi Partition to continue.", "Update Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return; // Stop execution here
+                    }
+                }
+            }
+
+            // Proceed with login validation
             bool isValidLogin = validateLogin(username, password);
 
             if (isValidLogin)
@@ -41,20 +65,19 @@ namespace TDF.Net
                 // Log in the user and track the session
                 loggedInUser = getCurrentUserDetails(username);
                 makeUserConnected();
+                updateMachineName();
 
-                // Step 2: Open the new session's form (new login)
+                // Open the appropriate UI
                 if (guiDropdown.Text == "Classic")
                 {
-                    // Create a new mainForm for Classic UI
                     oldSessionForm = new mainForm(this);
-                    oldSessionForm.Show();
                 }
                 else
                 {
-                    // Create a new mainFormNewUI for New UI
                     oldSessionForm = new mainFormNewUI(this);
-                    oldSessionForm.Show();
                 }
+
+                oldSessionForm.Show();
 
                 // Hide the login form and clear fields
                 clearFormFields();
@@ -62,8 +85,7 @@ namespace TDF.Net
             }
             else
             {
-                // Invalid login attempt
-                MessageBox.Show("Invalid username or password.");
+                MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         public static List<string> getConnectedUsers()
@@ -117,7 +139,6 @@ namespace TDF.Net
                 }
             }
         }
-
         public static List<string> getDepartments()
         {
             List<string> departments = new List<string>();
@@ -207,6 +228,8 @@ namespace TDF.Net
             using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
+
+                // Proceed with login validation
                 string query = "SELECT PasswordHash, Salt FROM Users WHERE UserName = @UserName";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -219,12 +242,13 @@ namespace TDF.Net
                             string salt = reader["Salt"].ToString();
                             string hash = Security.hashPassword(password, salt);
 
-                            return hash == storedHash;
+                            return hash == storedHash; // Return true if password is correct
                         }
                     }
                 }
             }
-            return false;
+
+            return false; // Return false if username is not found or password is incorrect
         }
         private bool isUsernameTaken(string username)
         {
@@ -388,6 +412,79 @@ namespace TDF.Net
                 }
             }
         }
+        public static void updateMachineName()
+        {
+            string machineName = Environment.MachineName; // Get the PC name
+
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+                string query = "UPDATE Users SET MachineName = @MachineName WHERE FullName = @FullName";
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@MachineName", machineName);
+                    cmd.Parameters.AddWithValue("@FullName", loggedInUser.FullName);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public static void closePipeConnection()
+        {
+            try
+            {
+                // If you have a named pipe client, close it
+                if (namedPipeClientStream != null)
+                {
+                    namedPipeClientStream.Close();
+                    namedPipeClientStream.Dispose();
+                    namedPipeClientStream = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error closing pipe: " + ex.Message, "Pipe Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+        public static async Task StartListeningAsync(CancellationToken cancellationToken = default)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    // Create a new NamedPipeServerStream for each connection.
+                    using (var serverPipe = new NamedPipeServerStream("KillPipe", PipeDirection.In, 1,
+                               PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
+                    {
+                        // Asynchronously wait for a connection.
+                        await serverPipe.WaitForConnectionAsync(cancellationToken);
+
+                        // Read the command asynchronously.
+                        using (var reader = new StreamReader(serverPipe))
+                        {
+                            string command = await reader.ReadLineAsync();
+                            if (command == "KILL")
+                            {
+                                // Kill signal received – exit the application.
+                                Application.Exit();
+                            }
+                        }
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // The operation was canceled—exit gracefully.
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    // Optionally log the error. You might want to use a logging framework
+                    // instead of MessageBox in production.
+                    MessageBox.Show($"Pipe Error: {ex.Message}");
+                    // Continue listening even if an error occurs.
+                }
+            }
+        }
         #endregion
 
         #region Events
@@ -500,8 +597,8 @@ namespace TDF.Net
                 clearFormFields();
                 departmentDropdown.DataSource = departments;
                 departmentDropdown.SelectedIndex = -1;
-                guiDropdown.Visible = false;
-                guiLabel.Visible = false;
+                //guiDropdown.Visible = false;
+              //  guiLabel.Visible = false;
                 return;
             }
             if (changingPassword)
@@ -521,8 +618,8 @@ namespace TDF.Net
                 titlesDropdown.Visible = false;
                 nameTextBox.UseSystemPasswordChar = true;
                 // passPictureBox.Visible = false;
-                guiDropdown.Visible = true;
-                guiLabel.Visible = true;
+              //  guiDropdown.Visible = true;
+              //  guiLabel.Visible = true;
                 clearFormFields();
                 return;
             }
@@ -568,8 +665,8 @@ namespace TDF.Net
             titleLabel.Visible = false;
             titlesDropdown.Visible = false;
             signingup = false;
-            guiLabel.Visible = true;
-            guiDropdown.Visible = true;
+          //  guiLabel.Visible = true;
+           // guiDropdown.Visible = true;
             signupButton.Text = "Sign Up";
             updateButton.Text = "Change password";
 
@@ -589,8 +686,8 @@ namespace TDF.Net
                 nameLabel.Visible = true;
                 updateButton.Visible = false;
                 //passPictureBox.Visible = false;
-                guiDropdown.Visible = false;
-                guiLabel.Visible = false;
+               //guiDropdown.Visible = false;
+                //guiLabel.Visible = false;
             }
             else
             {
@@ -603,8 +700,8 @@ namespace TDF.Net
                 signupButton.Text = "Sign Up";
                 titlesDropdown.Visible = false;
                 titleLabel.Visible = false;
-                guiDropdown.Visible = true;
-                guiLabel.Visible = true;
+              //  guiDropdown.Visible = true;
+             //   guiLabel.Visible = true;
                 //passPictureBox.Visible = false;
             }
 
@@ -614,6 +711,5 @@ namespace TDF.Net
             clearFormFields();
         }
         #endregion
-
     }
 }
