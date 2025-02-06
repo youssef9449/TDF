@@ -1,6 +1,7 @@
 ﻿using Bunifu.UI.WinForms;
 using Microsoft.Office.Interop.Excel;
 using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -333,7 +334,7 @@ namespace TDF.Net.Forms
             // 3. No "RequestRejectReason" cell has been edited (and remains unsaved) as per our flag.
             if (!anyChecked && !editingNotes && !requestNoteEdited)
             {
-                refreshRequestsTable();
+                refreshRequestsTablePreserveState();
             }
         }
         private void requestsForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -872,6 +873,106 @@ namespace TDF.Net.Forms
                 Marshal.ReleaseComObject(excelApp);
             }
         }
+        private void refreshRequestsTablePreserveState()
+        {
+            // 1. Save the current scroll position.
+            int firstDisplayedIndex = requestsDataGridView.FirstDisplayedScrollingRowIndex;
+
+            // 2. Save sorting information.
+            DataGridViewColumn sortedColumn = requestsDataGridView.SortedColumn;
+            System.ComponentModel.ListSortDirection sortDirection = System.ComponentModel.ListSortDirection.Ascending;
+            string sortColumnName = string.Empty;
+            if (sortedColumn != null)
+            {
+                sortDirection = (requestsDataGridView.SortOrder == System.Windows.Forms.SortOrder.Ascending)
+                                    ? System.ComponentModel.ListSortDirection.Ascending
+                                    : System.ComponentModel.ListSortDirection.Descending;
+                // Save the column's Name.
+                sortColumnName = sortedColumn.Name;
+            }
+
+            // If using a BindingSource, prepare the sort string.
+            BindingSource bs = requestsDataGridView.DataSource as BindingSource;
+            string sortString = string.Empty;
+            if (bs != null && !string.IsNullOrEmpty(sortColumnName))
+            {
+                // Assuming column Name equals its DataPropertyName.
+                sortString = $"{sortColumnName} {(sortDirection == System.ComponentModel.ListSortDirection.Ascending ? "ASC" : "DESC")}";
+            }
+
+            // 3. Save the currently selected row index.
+            int selectedRowIndex = -1;
+            if (requestsDataGridView.CurrentRow != null)
+            {
+                selectedRowIndex = requestsDataGridView.CurrentRow.Index;
+            }
+
+            // 4. Refresh the grid's data.
+            refreshRequestsTable();
+
+            // 5. Reapply the sort order.
+            if (!string.IsNullOrEmpty(sortColumnName))
+            {
+                // Retrieve the updated column by its name.
+                DataGridViewColumn newSortedColumn = requestsDataGridView.Columns[sortColumnName];
+                if (newSortedColumn != null)
+                {
+                    if (bs != null)
+                    {
+                        bs.Sort = sortString;
+                    }
+                    else
+                    {
+                        requestsDataGridView.Sort(newSortedColumn, sortDirection);
+                    }
+                }
+            }
+
+            // 6. Restore the scroll position if it's still valid.
+            if (firstDisplayedIndex >= 0 && firstDisplayedIndex < requestsDataGridView.Rows.Count)
+            {
+                requestsDataGridView.FirstDisplayedScrollingRowIndex = firstDisplayedIndex;
+            }
+
+            // 7. Restore the selected row.
+            if (selectedRowIndex >= 0 && selectedRowIndex < requestsDataGridView.Rows.Count)
+            {
+                // Find a visible row starting from the saved index.
+                int newIndex = selectedRowIndex;
+                while (newIndex < requestsDataGridView.Rows.Count && !requestsDataGridView.Rows[newIndex].Visible)
+                {
+                    newIndex++;
+                }
+                if (newIndex < requestsDataGridView.Rows.Count)
+                {
+                    DataGridViewRow row = requestsDataGridView.Rows[newIndex];
+                    DataGridViewCell cellToSelect = null;
+                    // Look for the first visible cell in that row.
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        if (requestsDataGridView.Columns[cell.ColumnIndex].Visible)
+                        {
+                            cellToSelect = cell;
+                            break;
+                        }
+                    }
+                    if (cellToSelect != null)
+                    {
+                        try
+                        {
+                            requestsDataGridView.CurrentCell = cellToSelect;
+                            row.Selected = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            // Log or handle this error as needed.
+                            MessageBox.Show("Error restoring selected cell: " + ex.Message);
+                        }
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Buttons

@@ -317,27 +317,42 @@ namespace TDF.Net
         {
             List<User> connectedUsers = new List<User>();
 
+            // Ensure loggedInUser is not null before proceeding.
+            if (loggedInUser == null)
+            {
+                throw new InvalidOperationException("loggedInUser is null.");
+            }
+
             using (SqlConnection connection = Database.getConnection())
             {
                 connection.Open();
-               // string query = $"SELECT FullName, Department, Picture FROM Users WHERE IsConnected = 1 AND NOT Role = 'Admin' AND NOT UserName = '{loggedInUser.UserName}';";
-                string query = $"SELECT FullName, Department, Picture FROM Users WHERE IsConnected = 1 AND NOT UserName = '{loggedInUser.UserName}';";
+
+                // Use parameterized query for safety and clarity.
+                string query = "SELECT FullName, Department, Picture " +
+                               "FROM Users " +
+                               "WHERE IsConnected = 1 AND UserName <> @UserName;";
 
                 using (SqlCommand cmd = new SqlCommand(query, connection))
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        var user = new User
-                        {
-                            FullName = reader["FullName"].ToString(),
-                            Department = reader["Department"].ToString(),
-                            Picture = reader["Picture"] != DBNull.Value
-                                ? Image.FromStream(new MemoryStream((byte[])reader["Picture"]))
-                                : null // Default to null if no image
-                        };
+                    // Add parameter value.
+                    cmd.Parameters.AddWithValue("@UserName", loggedInUser.UserName);
 
-                        connectedUsers.Add(user);
+                    // Use a using block for the reader.
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var user = new User
+                            {
+                                FullName = reader["FullName"].ToString(),
+                                Department = reader["Department"].ToString(),
+                                Picture = reader["Picture"] != DBNull.Value
+                                          ? Image.FromStream(new MemoryStream((byte[])reader["Picture"]))
+                                          : null // Default to null if no image.
+                            };
+
+                            connectedUsers.Add(user);
+                        }
                     }
                 }
             }
