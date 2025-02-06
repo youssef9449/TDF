@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
@@ -423,7 +421,6 @@ namespace TDF.Net
                 yOffset += pictureBox.Height + nameLabel.Height + 20; // Add space between users
             }
         }
-
         /* private void startPipeListener()
          {
              Thread pipeListenerThread = new Thread(new ThreadStart(ListenForMessages));
@@ -589,7 +586,7 @@ namespace TDF.Net
 
             if (WindowState == FormWindowState.Normal)
             {
-                usersShadowPanel.MinimumSize = new Size(usersShadowPanel.Width, 50);
+                usersShadowPanel.MinimumSize = new Size(usersShadowPanel.Width, contractedHeight);
             }
         }
         private void formPanel_Paint(object sender, PaintEventArgs e)
