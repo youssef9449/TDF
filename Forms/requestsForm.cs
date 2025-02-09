@@ -98,7 +98,7 @@ namespace TDF.Net.Forms
                             return;
                         }
 
-                        if (requestStatus != "Pending" || requestHRStatus != "Pending")
+                        if ((requestStatus != "Pending" || requestHRStatus != "Pending") && !hasAdminRole)
                         {
                             MessageBox.Show("You are not allowed to edit an approved request.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
