@@ -84,16 +84,23 @@ namespace TDF.Net.Forms
                 if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit")
                 {
                     string requestStatus = requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString();
+                    string requestHRStatus = requestsDataGridView.Rows[e.RowIndex].Cells["RequestHRStatus"].Value.ToString();
                     string requestUserFullName = requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString();
                     bool isRequestOwner = requestUserFullName == loggedInUser.FullName;
 
                     // Allow editing if the request is "Pending" or the user has an elevated role
-                    if (requestStatus == "Pending" || hasAdminRole || hasManagerRole || hasHRRole)
+                    if (requestStatus == "Pending" || requestHRStatus == "Pending" || hasAdminRole || hasManagerRole || hasHRRole)
                     {
                         // Prevent HR users from editing another user's request unless they have Admin/Manager roles
                         if (!isRequestOwner && hasHRRole && !hasAdminRole && !hasManagerRole)
                         {
                             MessageBox.Show("You are not allowed to edit another user's request.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+
+                        if (requestStatus != "Pending" || requestHRStatus != "Pending")
+                        {
+                            MessageBox.Show("You are not allowed to edit an approved request.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
 
