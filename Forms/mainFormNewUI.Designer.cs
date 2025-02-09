@@ -255,7 +255,6 @@ namespace TDF.Net
             this.usersShadowPanel.Size = new System.Drawing.Size(190, 301);
             this.usersShadowPanel.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.usersShadowPanel.TabIndex = 15;
-            this.usersShadowPanel.Visible = false;
             this.usersShadowPanel.Scroll += new System.Windows.Forms.ScrollEventHandler(this.usersShadowPanel_Scroll);
             // 
             // usersIconButton

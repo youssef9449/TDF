@@ -887,13 +887,13 @@ namespace TDF.Net.Forms
 
             // 2. Save sorting information.
             DataGridViewColumn sortedColumn = requestsDataGridView.SortedColumn;
-            System.ComponentModel.ListSortDirection sortDirection = System.ComponentModel.ListSortDirection.Ascending;
+            System.ComponentModel.ListSortDirection sortDirection = ListSortDirection.Ascending;
             string sortColumnName = string.Empty;
             if (sortedColumn != null)
             {
                 sortDirection = (requestsDataGridView.SortOrder == System.Windows.Forms.SortOrder.Ascending)
-                                    ? System.ComponentModel.ListSortDirection.Ascending
-                                    : System.ComponentModel.ListSortDirection.Descending;
+                                    ? ListSortDirection.Ascending
+                                    : ListSortDirection.Descending;
                 // Save the column's Name.
                 sortColumnName = sortedColumn.Name;
             }
@@ -904,7 +904,7 @@ namespace TDF.Net.Forms
             if (bs != null && !string.IsNullOrEmpty(sortColumnName))
             {
                 // Assuming column Name equals its DataPropertyName.
-                sortString = $"{sortColumnName} {(sortDirection == System.ComponentModel.ListSortDirection.Ascending ? "ASC" : "DESC")}";
+                sortString = $"{sortColumnName} {(sortDirection == ListSortDirection.Ascending ? "ASC" : "DESC")}";
             }
 
             // 3. Save the currently selected row index.
@@ -979,6 +979,111 @@ namespace TDF.Net.Forms
                 }
             }
         }
+        private bool isHRDepartmentUser(SqlConnection conn, string userFullName)
+        {
+            string query = "SELECT Department FROM Users WHERE FullName = @FullName";
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@FullName", userFullName);
+                object result = cmd.ExecuteScalar();
+                return result?.ToString() == "Human Resources";
+            }
+        }
+        private void handleBalanceUpdate(SqlConnection conn, string currentHRStatus, string currentManagerStatus, string newStatus, string role, string requestType, int numberOfDays, string userFullName)
+        {
+            bool isHRRequestUser = isHRDepartmentUser(conn, userFullName);
+
+            if (newStatus == "Approved")
+            {
+                if (isHRRequestUser)
+                {
+                    // For HR department users, HR Director directly updates the balance
+                    if (role == "HR Director" && currentHRStatus != "Approved")
+                    {
+                        adjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: true);
+                    }
+                }
+                else
+                {
+                    // For normal users, balance is updated only when both Manager and HR have approved
+                    if (role == "Manager" && currentHRStatus == "Approved" && currentManagerStatus != "Approved")
+                    {
+                        // HR approved first, and now Manager approves
+                        adjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: true);
+                    }
+                    else if ((role == "HR" || role == "HR Director") && currentManagerStatus == "Approved" && currentHRStatus != "Approved")
+                    {
+                        // Manager approved first, and now HR (or HR Director) approves
+                        adjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: true);
+                    }
+                }
+            }
+            else if (newStatus == "Rejected")
+            {
+                // Revert balances only if the request was fully approved before rejection
+                if (isHRRequestUser)
+                {
+                    if (role == "HR Director" && currentHRStatus == "Approved")
+                    {
+                        adjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: false);
+                    }
+                }
+                else
+                {
+                    if (currentHRStatus == "Approved" && currentManagerStatus == "Approved")
+                    {
+                        adjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: false);
+                    }
+                }
+            }
+        }
+        private void adjustLeaveBalance(SqlConnection conn, string requestType, int numberOfDays, string userFullName, bool isAdding)
+        {
+            string updateLeaveQuery = "";
+
+            if (requestType == "Annual")
+            {
+                updateLeaveQuery = @"UPDATE AnnualLeave
+                     SET AnnualUsed = AnnualUsed + @NumberOfDays
+                     WHERE FullName = @FullName";
+            }
+            else if (requestType == "Emergency")
+            {
+                updateLeaveQuery = @"UPDATE AnnualLeave
+                     SET CasualUsed = CasualUsed + @NumberOfDays
+                     WHERE FullName = @FullName";
+            }
+            else if (requestType == "Unpaid")
+            {
+                updateLeaveQuery = @"UPDATE AnnualLeave
+                     SET UnpaidUsed = UnpaidUsed + @NumberOfDays
+                     WHERE FullName = @FullName";
+            }
+            else if (requestType == "Permission")
+            {
+                updateLeaveQuery = @"UPDATE AnnualLeave
+                     SET PermissionsUsed = PermissionsUsed + 1
+                     WHERE FullName = @FullName";
+            }
+
+            if (!isAdding)
+            {
+                updateLeaveQuery = updateLeaveQuery.Replace("+", "-");
+            }
+
+
+            // Only execute the query if it's not empty
+            if (!string.IsNullOrEmpty(updateLeaveQuery))
+            {
+                using (SqlCommand cmd = new SqlCommand(updateLeaveQuery, conn))
+                {
+                    cmd.Parameters.AddWithValue("@NumberOfDays", numberOfDays);
+                    cmd.Parameters.AddWithValue("@FullName", userFullName);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
         #endregion
 
@@ -1036,7 +1141,7 @@ namespace TDF.Net.Forms
 
                             // Check if the user is "HR Director" and the request user is in the "HR" department
                             bool isHRDirector = loggedInUser.Role == "HR Director";
-                            bool isHRRequestUser = IsHRDepartmentUser(conn, userFullName);
+                            bool isHRRequestUser = isHRDepartmentUser(conn, userFullName);
 
                             // Construct update query
                             string query = null;
@@ -1081,7 +1186,7 @@ namespace TDF.Net.Forms
 
                             // Call HandleBalanceUpdate only once per request
                             string effectiveRole = isHRDirector ? "HR Director" : hasHRRole ? "HR" : "Manager";
-                            HandleBalanceUpdate(conn, currentHRStatus, currentManagerStatus, newStatus, effectiveRole, requestType, numberOfDays, userFullName);
+                            handleBalanceUpdate(conn, currentHRStatus, currentManagerStatus, newStatus, effectiveRole, requestType, numberOfDays, userFullName);
                         }
                     }
                     requestNoteEdited = false;
@@ -1090,112 +1195,6 @@ namespace TDF.Net.Forms
                 }
             }
         }
-        private bool IsHRDepartmentUser(SqlConnection conn, string userFullName)
-        {
-            string query = "SELECT Department FROM Users WHERE FullName = @FullName";
-            using (SqlCommand cmd = new SqlCommand(query, conn))
-            {
-                cmd.Parameters.AddWithValue("@FullName", userFullName);
-                object result = cmd.ExecuteScalar();
-                return result?.ToString() == "Human Resources";
-            }
-        }
-        private void HandleBalanceUpdate(SqlConnection conn, string currentHRStatus, string currentManagerStatus, string newStatus, string role, string requestType, int numberOfDays, string userFullName)
-        {
-            bool isHRRequestUser = IsHRDepartmentUser(conn, userFullName);
-
-            if (newStatus == "Approved")
-            {
-                if (isHRRequestUser)
-                {
-                    // For HR department users, HR Director directly updates the balance
-                    if (role == "HR Director" && currentHRStatus != "Approved")
-                    {
-                        AdjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: true);
-                    }
-                }
-                else
-                {
-                    // For normal users, balance is updated only when both Manager and HR have approved
-                    if (role == "Manager" && currentHRStatus == "Approved" && currentManagerStatus != "Approved")
-                    {
-                        // HR approved first, and now Manager approves
-                        AdjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: true);
-                    }
-                    else if ((role == "HR" || role == "HR Director") && currentManagerStatus == "Approved" && currentHRStatus != "Approved")
-                    {
-                        // Manager approved first, and now HR (or HR Director) approves
-                        AdjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: true);
-                    }
-                }
-            }
-            else if (newStatus == "Rejected")
-            {
-                // Revert balances only if the request was fully approved before rejection
-                if (isHRRequestUser)
-                {
-                    if (role == "HR Director" && currentHRStatus == "Approved")
-                    {
-                        AdjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: false);
-                    }
-                }
-                else
-                {
-                    if (currentHRStatus == "Approved" && currentManagerStatus == "Approved")
-                    {
-                        AdjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: false);
-                    }
-                }
-            }
-        }
-        private void AdjustLeaveBalance(SqlConnection conn, string requestType, int numberOfDays, string userFullName, bool isAdding)
-        {
-            string updateLeaveQuery = "";
-
-            if (requestType == "Annual")
-            {
-                updateLeaveQuery = @"UPDATE AnnualLeave
-                     SET AnnualUsed = AnnualUsed + @NumberOfDays
-                     WHERE FullName = @FullName";
-            }
-            else if (requestType == "Emergency")
-            {
-                updateLeaveQuery = @"UPDATE AnnualLeave
-                     SET CasualUsed = CasualUsed + @NumberOfDays
-                     WHERE FullName = @FullName";
-            }
-            else if (requestType == "Unpaid")
-            {
-                updateLeaveQuery = @"UPDATE AnnualLeave
-                     SET UnpaidUsed = UnpaidUsed + @NumberOfDays
-                     WHERE FullName = @FullName";
-            }
-            else if (requestType == "Permission")
-            {
-                updateLeaveQuery = @"UPDATE AnnualLeave
-                     SET PermissionsUsed = PermissionsUsed + 1
-                     WHERE FullName = @FullName";
-            }
-
-            if (!isAdding)
-            {
-                updateLeaveQuery = updateLeaveQuery.Replace("+", "-");
-            }
-
-
-            // Only execute the query if it's not empty
-            if (!string.IsNullOrEmpty(updateLeaveQuery))
-            {
-                using (SqlCommand cmd = new SqlCommand(updateLeaveQuery, conn))
-                {
-                    cmd.Parameters.AddWithValue("@NumberOfDays", numberOfDays);
-                    cmd.Parameters.AddWithValue("@FullName", userFullName);
-
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
-
         #endregion
 
     }
