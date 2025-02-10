@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
@@ -33,7 +31,6 @@ namespace TDF.Net
         {
             InitializeComponent();
 
-
             applyTheme(this);
             formPanel.BackColor = Color.White;
             this.loginForm = loginForm; // Store a reference to the login form
@@ -49,6 +46,280 @@ namespace TDF.Net
         private int contractedHeight = 50; // Height of the panel to show only the header
         private CancellationTokenSource _pipeCts = new CancellationTokenSource();
 
+        #region Events
+        private void mainFormNewUI_Load(object sender, EventArgs e)
+        {
+            MaximizedBounds = Screen.FromControl(this).WorkingArea;
+
+            usersIconButton.BackgroundColor = primaryColor;
+            usersIconButton.BorderColor = darkColor;
+            expandedHeight = usersShadowPanel.Height; // Store the original height when expanded
+            usersShadowPanel.Height = contractedHeight; // Set the initial height to contracted
+            usersShadowPanel.AutoScroll = false; // Disable auto-scroll for contracted state
+
+            //startPipeListener(); // Start listening for messages
+            updateRoleStatus();
+            setImageButtonVisibility();
+            adjustShadowPanelAndImageButtons();
+            updateUserDataControls();
+
+            displayConnectedUsers();
+
+            connectedUsersTimer = new Timer();
+            connectedUsersTimer.Interval = 10000; // 10 seconds
+            connectedUsersTimer.Tick += ConnectedUsersTimer_Tick;
+            connectedUsersTimer.Start();
+            _ = StartListeningAsync(_pipeCts.Token);
+
+        }
+        protected override void OnMove(EventArgs e)
+        {
+            base.OnMove(e);
+            MaximizedBounds = Screen.FromControl(this).WorkingArea;
+        }
+        private void ConnectedUsersTimer_Tick(object sender, EventArgs e)
+        {
+            displayConnectedUsers();
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            // Get the form's scroll position
+            var scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
+        }
+        private void panelTitleBar_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && e.Clicks == 1)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, 0x112, 0xf012, 0);
+            }
+        }
+        private void panelTitleBar_Paint(object sender, PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            // Get the form's scroll position
+            var scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
+        }
+        private void closeImg_MouseEnter(object sender, EventArgs e)
+        {
+            closeImg.Image = Properties.Resources.close_hover;
+        }
+        private void closeImg_MouseLeave(object sender, EventArgs e)
+        {
+            closeImg.Image = Properties.Resources.close_nofocus;
+        }
+        private void closeImg_MouseDown(object sender, MouseEventArgs e)
+        {
+            closeImg.Image = Properties.Resources.close_press;
+        }
+        private void maxImage_MouseEnter(object sender, EventArgs e)
+        {
+            maxImage.Image = Properties.Resources.max_hover;
+        }
+        private void maxImage_MouseLeave(object sender, EventArgs e)
+        {
+            maxImage.Image = Properties.Resources.close_nofocus;
+        }
+        private void maxImage_MouseDown(object sender, MouseEventArgs e)
+        {
+            maxImage.Image = Resources.max_press;
+        }
+        private void minImg_MouseEnter(object sender, EventArgs e)
+        {
+            minImg.Image = Properties.Resources.min_hover;
+        }
+        private void minImg_MouseLeave(object sender, EventArgs e)
+        {
+            minImg.Image = Properties.Resources.close_nofocus;
+        }
+        private void minImg_MouseDown(object sender, MouseEventArgs e)
+        {
+            minImg.Image = Properties.Resources.min_press;
+        }
+        private void closeImg_MouseClick(object sender, MouseEventArgs e)
+        {
+            Application.Exit();
+        }
+        private void maxImage_MouseClick(object sender, MouseEventArgs e)
+        {
+            WindowState = WindowState == FormWindowState.Normal ? FormWindowState.Maximized : FormWindowState.Normal;
+        }
+        private void minImg_MouseClick(object sender, MouseEventArgs e)
+        {
+            WindowState = FormWindowState.Minimized;
+        }
+        private void mainFormNewUI_Resize(object sender, EventArgs e)
+        {
+            shadowPanel.Left = (ClientSize.Width - shadowPanel.Width) / 2;
+
+            if (WindowState == FormWindowState.Normal)
+            {
+                usersShadowPanel.MinimumSize = new Size(usersShadowPanel.Width, contractedHeight);
+            }
+        }
+        private void formPanel_Paint(object sender, PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            // Get the form's scroll position
+            var scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
+        }
+        private void bunifuLabel_Paint(object sender, PaintEventArgs e)
+        {
+            // Define the parts of the text
+            string beforeHeart = "Made with ";
+            string afterHeart = " for TDF+ by Youssef";
+            string heart = "❤";
+
+            // Set up fonts and brushes
+            Font font = bunifuLabel.Font;
+            Brush textBrush = new SolidBrush(bunifuLabel.ForeColor);
+            Brush heartBrush = new SolidBrush(Color.Red);
+
+            // Measure the size of each text segment
+            SizeF beforeHeartSize = e.Graphics.MeasureString(beforeHeart, font);
+            SizeF heartSize = e.Graphics.MeasureString(heart, font);
+            SizeF afterHeartSize = e.Graphics.MeasureString(afterHeart, font);
+
+            // Calculate total width and height
+            float totalWidth = beforeHeartSize.Width + heartSize.Width + afterHeartSize.Width;
+            float totalHeight = Math.Max(beforeHeartSize.Height, Math.Max(heartSize.Height, afterHeartSize.Height));
+
+            // Resize the label to fit the content
+            bunifuLabel.Width = (int)Math.Ceiling(totalWidth);
+            bunifuLabel.Height = (int)Math.Ceiling(totalHeight);
+
+            // Draw the first part of the text
+            e.Graphics.DrawString(beforeHeart, font, textBrush, new PointF(0, 0));
+
+            // Draw the red heart
+            e.Graphics.DrawString(heart, font, heartBrush, new PointF(beforeHeartSize.Width, 0));
+
+            // Draw the rest of the text
+            e.Graphics.DrawString(afterHeart, font, textBrush, new PointF(beforeHeartSize.Width + heartSize.Width, 0));
+        }
+        private void updateMenuItem_Click(object sender, EventArgs e)
+        {
+            uploadPictureForLoggedInUser();
+        }
+        private void removeMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult confirmation = MessageBox.Show(
+      "Are you sure you want to remove the picture?",
+      "Confirm Picture removal",
+      MessageBoxButtons.YesNo,
+      MessageBoxIcon.Warning);
+
+            if (confirmation == DialogResult.Yes)
+            {
+                using (SqlConnection conn = Database.getConnection())
+                {
+                    conn.Open();
+
+                    // SQL query to set the Picture column to NULL
+                    string query = "UPDATE Users SET Picture = NULL WHERE UserName = @UserName";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        // Pass the logged-in user's UserName as a parameter
+                        cmd.Parameters.AddWithValue("@UserName", loggedInUser.UserName);
+
+                        // Execute the query
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            loggedInUser.Picture = null;
+                            circularPictureBox.Image = Properties.Resources.pngegg;
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to remove picture or user not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+        private void mainFormNewUI_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            makeUserDisconnected();
+            connectedUsersTimer.Stop();
+            connectedUsersTimer.Dispose();
+
+            _pipeCts.Cancel();
+            closePipeConnection();
+
+            loggedInUser = null;
+        }
+        private void circularPictureBox_Click(object sender, EventArgs e)
+        {
+            // Initialize the ContextMenuStrip
+            contextMenu = new ContextMenuStrip();
+
+            // Add "Update" menu item
+            ToolStripMenuItem updateMenuItem = new ToolStripMenuItem("Update Profile Picture");
+            updateMenuItem.Click += updateMenuItem_Click;
+
+            // Add items to the ContextMenuStrip
+            contextMenu.Items.Add(updateMenuItem);
+
+            if (loggedInUser.Picture != null)
+            {
+                // Add "Remove" menu item
+                ToolStripMenuItem removeMenuItem = new ToolStripMenuItem("Remove");
+                removeMenuItem.Click += removeMenuItem_Click;
+                contextMenu.Items.Add(removeMenuItem);
+            }
+
+            contextMenu.Show(Cursor.Position);
+        }
+        private void usersShadowPanel_Scroll(object sender, ScrollEventArgs e)
+        {
+            usersShadowPanel.Invalidate();
+        }
+        private void usersIconButton_Click(object sender, EventArgs e)
+        {
+            if (isPanelExpanded)
+            {
+                // Contract the panel
+                usersShadowPanel.Height = contractedHeight; // Set the height to contracted
+                usersShadowPanel.AutoScroll = false; // Disable auto-scroll
+                usersIconButton.Image = Resources.down; // Change the icon to "down"
+                isPanelExpanded = false; // Update the state
+            }
+            else
+            {
+                // Expand the panel
+                usersShadowPanel.Height = expandedHeight; // Set the height to expanded
+                usersShadowPanel.AutoScroll = true; // Enable auto-scroll
+                usersIconButton.Image = Resources.up; // Change the icon to "up"
+                displayConnectedUsers(); // Populate the panel with connected users
+                isPanelExpanded = true; // Update the state
+            }
+        }
+        #endregion
 
         #region Methods
         public static void updateRoleStatus()
@@ -423,7 +694,6 @@ namespace TDF.Net
                 yOffset += pictureBox.Height + nameLabel.Height + 20; // Add space between users
             }
         }
-
         /* private void startPipeListener()
          {
              Thread pipeListenerThread = new Thread(new ThreadStart(ListenForMessages));
@@ -459,288 +729,6 @@ namespace TDF.Net
                  }
              }
          }*/
-        #endregion
-
-        #region Events
-        private void mainFormNewUI_Load(object sender, EventArgs e)
-        {
-            MaximizedBounds = Screen.FromControl(this).WorkingArea;
-
-            usersIconButton.BackgroundColor = primaryColor;
-            usersIconButton.BorderColor = darkColor;
-            expandedHeight = usersShadowPanel.Height; // Store the original height when expanded
-            usersShadowPanel.Height = contractedHeight; // Set the initial height to contracted
-            usersShadowPanel.AutoScroll = false; // Disable auto-scroll for contracted state
-
-            //startPipeListener(); // Start listening for messages
-            updateRoleStatus();
-            setImageButtonVisibility();
-            adjustShadowPanelAndImageButtons();
-            updateUserDataControls();
-
-            usersShadowPanel.Visible = true;
-            displayConnectedUsers();
-
-            connectedUsersTimer = new Timer();
-            connectedUsersTimer.Interval = 10000; // 10 seconds
-            connectedUsersTimer.Tick += ConnectedUsersTimer_Tick;
-            connectedUsersTimer.Start();
-            _ = StartListeningAsync(_pipeCts.Token);
-
-            /* if (hasAdminRole)
-             {
-                 usersShadowPanel.Visible = hasAdminRole;
-                 displayConnectedUsers();
-
-             }*/
-        }
-        protected override void OnMove(EventArgs e)
-        {
-            base.OnMove(e);
-            MaximizedBounds = Screen.FromControl(this).WorkingArea;
-        }
-        private void ConnectedUsersTimer_Tick(object sender, EventArgs e)
-        {
-            displayConnectedUsers();
-        }
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-
-            // Get the form's scroll position
-            var scrollPos = AutoScrollPosition;
-
-            // Adjust for scroll position when drawing the border
-            var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
-
-            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
-        }
-        private void panelTitleBar_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && e.Clicks == 1)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, 0x112, 0xf012, 0);
-            }
-        }
-        private void panelTitleBar_Paint(object sender, PaintEventArgs e)
-        {
-            base.OnPaint(e);
-
-            // Get the form's scroll position
-            var scrollPos = AutoScrollPosition;
-
-            // Adjust for scroll position when drawing the border
-            var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
-
-            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
-        }
-        private void closeImg_MouseEnter(object sender, EventArgs e)
-        {
-            closeImg.Image = Properties.Resources.close_hover;
-        }
-        private void closeImg_MouseLeave(object sender, EventArgs e)
-        {
-            closeImg.Image = Properties.Resources.close_nofocus;
-        }
-        private void closeImg_MouseDown(object sender, MouseEventArgs e)
-        {
-            closeImg.Image = Properties.Resources.close_press;
-        }
-        private void maxImage_MouseEnter(object sender, EventArgs e)
-        {
-            maxImage.Image = Properties.Resources.max_hover;
-        }
-        private void maxImage_MouseLeave(object sender, EventArgs e)
-        {
-            maxImage.Image = Properties.Resources.close_nofocus;
-        }
-        private void maxImage_MouseDown(object sender, MouseEventArgs e)
-        {
-            maxImage.Image = Resources.max_press;
-        }
-        private void minImg_MouseEnter(object sender, EventArgs e)
-        {
-            minImg.Image = Properties.Resources.min_hover;
-        }
-        private void minImg_MouseLeave(object sender, EventArgs e)
-        {
-            minImg.Image = Properties.Resources.close_nofocus;
-        }
-        private void minImg_MouseDown(object sender, MouseEventArgs e)
-        {
-            minImg.Image = Properties.Resources.min_press;
-        }
-        private void closeImg_MouseClick(object sender, MouseEventArgs e)
-        {
-            Application.Exit();
-        }
-        private void maxImage_MouseClick(object sender, MouseEventArgs e)
-        {
-            WindowState = WindowState == FormWindowState.Normal ? FormWindowState.Maximized : FormWindowState.Normal;
-        }
-        private void minImg_MouseClick(object sender, MouseEventArgs e)
-        {
-            WindowState = FormWindowState.Minimized;
-        }
-        private void mainFormNewUI_Resize(object sender, EventArgs e)
-        {
-            shadowPanel.Left = (ClientSize.Width - shadowPanel.Width) / 2;
-
-            if (WindowState == FormWindowState.Normal)
-            {
-                usersShadowPanel.MinimumSize = new Size(usersShadowPanel.Width, 50);
-            }
-        }
-        private void formPanel_Paint(object sender, PaintEventArgs e)
-        {
-            base.OnPaint(e);
-
-            // Get the form's scroll position
-            var scrollPos = AutoScrollPosition;
-
-            // Adjust for scroll position when drawing the border
-            var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
-
-            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
-        }
-        private void bunifuLabel_Paint(object sender, PaintEventArgs e)
-        {
-            // Define the parts of the text
-            string beforeHeart = "Made with ";
-            string afterHeart = " for TDF+ by Youssef";
-            string heart = "❤";
-
-            // Set up fonts and brushes
-            Font font = bunifuLabel.Font;
-            Brush textBrush = new SolidBrush(bunifuLabel.ForeColor);
-            Brush heartBrush = new SolidBrush(Color.Red);
-
-            // Measure the size of each text segment
-            SizeF beforeHeartSize = e.Graphics.MeasureString(beforeHeart, font);
-            SizeF heartSize = e.Graphics.MeasureString(heart, font);
-            SizeF afterHeartSize = e.Graphics.MeasureString(afterHeart, font);
-
-            // Calculate total width and height
-            float totalWidth = beforeHeartSize.Width + heartSize.Width + afterHeartSize.Width;
-            float totalHeight = Math.Max(beforeHeartSize.Height, Math.Max(heartSize.Height, afterHeartSize.Height));
-
-            // Resize the label to fit the content
-            bunifuLabel.Width = (int)Math.Ceiling(totalWidth);
-            bunifuLabel.Height = (int)Math.Ceiling(totalHeight);
-
-            // Draw the first part of the text
-            e.Graphics.DrawString(beforeHeart, font, textBrush, new PointF(0, 0));
-
-            // Draw the red heart
-            e.Graphics.DrawString(heart, font, heartBrush, new PointF(beforeHeartSize.Width, 0));
-
-            // Draw the rest of the text
-            e.Graphics.DrawString(afterHeart, font, textBrush, new PointF(beforeHeartSize.Width + heartSize.Width, 0));
-        }
-        private void updateMenuItem_Click(object sender, EventArgs e)
-        {
-            uploadPictureForLoggedInUser();
-        }
-        private void removeMenuItem_Click(object sender, EventArgs e)
-        {
-            DialogResult confirmation = MessageBox.Show(
-      "Are you sure you want to remove the picture?",
-      "Confirm Picture removal",
-      MessageBoxButtons.YesNo,
-      MessageBoxIcon.Warning);
-
-            if (confirmation == DialogResult.Yes)
-            {
-                using (SqlConnection conn = Database.getConnection())
-                {
-                    conn.Open();
-
-                    // SQL query to set the Picture column to NULL
-                    string query = "UPDATE Users SET Picture = NULL WHERE UserName = @UserName";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        // Pass the logged-in user's UserName as a parameter
-                        cmd.Parameters.AddWithValue("@UserName", loggedInUser.UserName);
-
-                        // Execute the query
-                        int rowsAffected = cmd.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
-                        {
-                            loggedInUser.Picture = null;
-                            circularPictureBox.Image = Properties.Resources.pngegg;
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to remove picture or user not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                return;
-            }
-        }
-        private void mainFormNewUI_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            makeUserDisconnected();
-            connectedUsersTimer.Stop();
-            connectedUsersTimer.Dispose();
-
-            _pipeCts.Cancel();
-            closePipeConnection(); 
-
-            loggedInUser = null;
-        }
-        private void circularPictureBox_Click(object sender, EventArgs e)
-        {
-            // Initialize the ContextMenuStrip
-            contextMenu = new ContextMenuStrip();
-
-            // Add "Update" menu item
-            ToolStripMenuItem updateMenuItem = new ToolStripMenuItem("Update Profile Picture");
-            updateMenuItem.Click += updateMenuItem_Click;
-
-            // Add items to the ContextMenuStrip
-            contextMenu.Items.Add(updateMenuItem);
-
-            if (loggedInUser.Picture != null)
-            {
-                // Add "Remove" menu item
-                ToolStripMenuItem removeMenuItem = new ToolStripMenuItem("Remove");
-                removeMenuItem.Click += removeMenuItem_Click;
-                contextMenu.Items.Add(removeMenuItem);
-            }
-
-            contextMenu.Show(Cursor.Position);
-        }
-        private void usersShadowPanel_Scroll(object sender, ScrollEventArgs e)
-        {
-            usersShadowPanel.Invalidate();
-        }
-        private void usersIconButton_Click(object sender, EventArgs e)
-        {
-            if (isPanelExpanded)
-            {
-                // Contract the panel
-                usersShadowPanel.Height = contractedHeight; // Set the height to contracted
-                usersShadowPanel.AutoScroll = false; // Disable auto-scroll
-                usersIconButton.Image = Resources.down; // Change the icon to "down"
-                isPanelExpanded = false; // Update the state
-            }
-            else
-            {
-                // Expand the panel
-                usersShadowPanel.Height = expandedHeight; // Set the height to expanded
-                usersShadowPanel.AutoScroll = true; // Enable auto-scroll
-                usersIconButton.Image = Resources.up; // Change the icon to "up"
-                displayConnectedUsers(); // Populate the panel with connected users
-                isPanelExpanded = true; // Update the state
-            }
-        }
         #endregion
 
         #region Buttons
@@ -785,7 +773,6 @@ namespace TDF.Net
             Close();
             loginForm.Show();
         }
-
         #endregion
     }
 }

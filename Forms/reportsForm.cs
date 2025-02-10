@@ -119,14 +119,23 @@ namespace TDF.Forms
             }
 
             updateDropDown(updateMethod);
+            updateReport();
+
         }
         private void typeDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
             updateBalanceLabels();
+            updateReport();
         }
         private void nameORdepDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
             updateBalanceLabels();
+            updateReport();
+        }
+        private void statusDropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            updateReport();
+
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -303,7 +312,7 @@ namespace TDF.Forms
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Error loading the report:\n{ex.Message}\n\nQuery: {command.CommandText}");
+                  //  MessageBox.Show($"Error loading the report:\n{ex.Message}\n\nQuery: {command.CommandText}");
                 }
             }
         }
@@ -535,6 +544,7 @@ namespace TDF.Forms
 
         }
         #endregion
+
 
     }
 }
