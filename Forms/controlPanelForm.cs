@@ -1086,8 +1086,7 @@ namespace TDF.Forms
             }
             else
             {
-                MessageBox.Show("Please select a valid leave type (Annual or Emergency).");
-                return;
+                columnToUpdate = "Work From Home";
             }
 
             using (SqlConnection connection = Database.getConnection())
@@ -1116,17 +1115,19 @@ namespace TDF.Forms
                         userId = Convert.ToInt32(result);
                     }
 
-                    // Update the leave balance in AnnualLeave
-                    string updateQuery = $@"
-                UPDATE AnnualLeave
-                SET {columnToUpdate} = {columnToUpdate} + @RemovedAmount
-                WHERE FullName = @FullName";
-
-                    using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
+                    if (columnToUpdate != "Work From Home")
                     {
-                        updateCommand.Parameters.AddWithValue("@RemovedAmount", 1);
-                        updateCommand.Parameters.AddWithValue("@FullName", fullName);
-                        updateCommand.ExecuteNonQuery();
+                        // Update the leave balance in AnnualLeave
+                        string updateQuery = $@"UPDATE AnnualLeave
+                                                SET {columnToUpdate} = {columnToUpdate} + @RemovedAmount
+                                                WHERE FullName = @FullName";
+
+                        using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
+                        {
+                            updateCommand.Parameters.AddWithValue("@RemovedAmount", 1);
+                            updateCommand.Parameters.AddWithValue("@FullName", fullName);
+                            updateCommand.ExecuteNonQuery();
+                        }
                     }
 
                     // Insert a row into the Requests table
@@ -1166,8 +1167,7 @@ namespace TDF.Forms
 
                 connection.Close();
             }
-
-            MessageBox.Show("Leave balances updated successfully.");
+            MessageBox.Show("Request added successfully.");
         }
         private void addTitleButton_Click(object sender, EventArgs e)
         {

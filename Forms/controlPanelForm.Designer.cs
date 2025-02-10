@@ -2333,7 +2333,8 @@
             this.removeBalanceDropdown.ItemHighLightForeColor = System.Drawing.Color.White;
             this.removeBalanceDropdown.Items.AddRange(new object[] {
             "Annual",
-            "Emergency"});
+            "Emergency",
+            "Work From Home"});
             this.removeBalanceDropdown.ItemTopMargin = 3;
             this.removeBalanceDropdown.Location = new System.Drawing.Point(474, 589);
             this.removeBalanceDropdown.Name = "removeBalanceDropdown";
@@ -2357,7 +2358,7 @@
             this.removeDaysButton.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(122)))), ((int)(((byte)(183)))));
             this.removeDaysButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("removeDaysButton.BackgroundImage")));
             this.removeDaysButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.removeDaysButton.ButtonText = "Remove the day";
+            this.removeDaysButton.ButtonText = "Add the request";
             this.removeDaysButton.ButtonTextMarginLeft = 0;
             this.removeDaysButton.ColorContrastOnClick = 45;
             this.removeDaysButton.ColorContrastOnHover = 45;
@@ -2528,9 +2529,9 @@
             this.bunifuLabel12.Location = new System.Drawing.Point(474, 563);
             this.bunifuLabel12.Name = "bunifuLabel12";
             this.bunifuLabel12.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel12.Size = new System.Drawing.Size(113, 20);
+            this.bunifuLabel12.Size = new System.Drawing.Size(88, 20);
             this.bunifuLabel12.TabIndex = 66;
-            this.bunifuLabel12.Text = "Remove Balance:";
+            this.bunifuLabel12.Text = "Add Request:";
             this.bunifuLabel12.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
             this.bunifuLabel12.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
