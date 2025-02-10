@@ -31,7 +31,6 @@ namespace TDF.Net
         {
             InitializeComponent();
 
-
             applyTheme(this);
             formPanel.BackColor = Color.White;
             this.loginForm = loginForm; // Store a reference to the login form
@@ -774,7 +773,6 @@ namespace TDF.Net
             Close();
             loginForm.Show();
         }
-
         #endregion
     }
 }

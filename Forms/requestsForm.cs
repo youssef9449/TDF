@@ -44,7 +44,7 @@ namespace TDF.Net.Forms
 
         private Timer requestsRefreshTimer;
         private bool requestNoteEdited = false;
-        public static Request selectedRequest = new Request();
+        public static Request selectedRequest = null;
 
         #region Events
         private void requestsForm_Load(object sender, EventArgs e)
@@ -543,6 +543,8 @@ namespace TDF.Net.Forms
             // Retrieve the request data from the DataRow
             DateTime requestFromDay = Convert.ToDateTime(row["RequestFromDay"]);
 
+            selectedRequest = new Request();
+
             selectedRequest.RequestUserFullName = row["RequestUserFullName"] != DBNull.Value ? row["RequestUserFullName"].ToString() : string.Empty;
             selectedRequest.RequestID = row["RequestID"] != DBNull.Value ? Convert.ToInt32(row["RequestID"]) : 0;
             selectedRequest.RequestUserID = row["RequestID"] != DBNull.Value ? getSelectedRequestUserID() : 0;
@@ -553,11 +555,13 @@ namespace TDF.Net.Forms
 
             // Converting TimeSpan to DateTime by adding the TimeSpan to the requestFromDay
             selectedRequest.RequestBeginningTime = row["RequestBeginningTime"] != DBNull.Value ?
-                                   requestFromDay.Add((TimeSpan)row["RequestBeginningTime"]) : requestFromDay;
+                                                   requestFromDay.Add((TimeSpan)row["RequestBeginningTime"]) : requestFromDay;
+
             selectedRequest.RequestEndingTime = row["RequestEndingTime"] != DBNull.Value ?
-                                requestFromDay.Add((TimeSpan)row["RequestEndingTime"]) : requestFromDay;
+                                                requestFromDay.Add((TimeSpan)row["RequestEndingTime"]) : requestFromDay;
 
             selectedRequest.RequestStatus = row["RequestStatus"] != DBNull.Value ? row["RequestStatus"].ToString() : string.Empty;
+
 
             // Open the AddRequestForm with the selected request data for editing
             addRequestForm addRequestForm = new addRequestForm(selectedRequest); 
@@ -711,7 +715,6 @@ namespace TDF.Net.Forms
                 return (int?)cmd.ExecuteScalar() ?? 0;
             }
         }
-
         private void createPDF(string requestType, DateTime? beginningDate, DateTime? endingDate, int numberOfDays, int availableBalance, string reason, string beginningTime, string endingTime, string status, string hrStatus)
         {
             string filePath = string.Empty;

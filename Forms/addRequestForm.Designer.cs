@@ -240,7 +240,7 @@
             stateProperties4.ForeColor = System.Drawing.Color.Empty;
             stateProperties4.PlaceholderForeColor = System.Drawing.Color.Empty;
             this.reasonTextBox.OnIdleState = stateProperties4;
-            this.reasonTextBox.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.reasonTextBox.Padding = new System.Windows.Forms.Padding(3);
             this.reasonTextBox.PasswordChar = '\0';
             this.reasonTextBox.PlaceholderForeColor = System.Drawing.Color.Silver;
             this.reasonTextBox.PlaceholderText = "";
@@ -886,6 +886,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "addRequestForm";
             this.Text = "Add a Request";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.addRequestForm_FormClosing);
             this.Load += new System.EventHandler(this.addRequestForm_Load);
             this.panel.ResumeLayout(false);
             this.bunifuGroupBox1.ResumeLayout(false);

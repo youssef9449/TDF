@@ -8,7 +8,6 @@ using static TDF.Net.mainForm;
 using static TDF.Net.Forms.requestsForm;
 
 
-
 namespace TDF.Net.Forms
 {
     public partial class addRequestForm : Form
@@ -244,7 +243,7 @@ namespace TDF.Net.Forms
 
                     if (annualRadioButton.Checked)
                     {
-                            updateBalanceLabels("AnnualBalance", selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID, numberOfDaysRequested);
+                         updateBalanceLabels("AnnualBalance", selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID, numberOfDaysRequested);
 
                     }
                     else if (casualRadioButton.Checked)
@@ -468,6 +467,10 @@ namespace TDF.Net.Forms
         {
             updateLeaveBalanceLabel();
         }
+        private void addRequestForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            selectedRequest = null;
+        }
 
         #endregion
 
@@ -565,7 +568,6 @@ namespace TDF.Net.Forms
                 updateExistingRequest(requestType);
             }
 
-            selectedRequest = null;
             requestAddedOrUpdatedEvent?.Invoke();
         }
         #endregion
