@@ -44,6 +44,7 @@ namespace TDF.Net.Forms
 
         private Timer requestsRefreshTimer;
         private bool requestNoteEdited = false;
+        public static Request selectedRequest = new Request();
 
         #region Events
         private void requestsForm_Load(object sender, EventArgs e)
@@ -542,29 +543,25 @@ namespace TDF.Net.Forms
             // Retrieve the request data from the DataRow
             DateTime requestFromDay = Convert.ToDateTime(row["RequestFromDay"]);
 
-            Request selectedRequest = new Request
-            {
-                RequestID = row["RequestID"] != DBNull.Value ? Convert.ToInt32(row["RequestID"]) : 0,
-                RequestType = row["RequestType"] != DBNull.Value ? row["RequestType"].ToString() : string.Empty,
-                RequestReason = row["RequestReason"] != DBNull.Value ? row["RequestReason"].ToString() : string.Empty,
-                RequestFromDay = requestFromDay,
-                RequestToDay = row["RequestToDay"] != DBNull.Value ? Convert.ToDateTime(row["RequestToDay"]) : requestFromDay,
+            selectedRequest.RequestUserFullName = row["RequestUserFullName"] != DBNull.Value ? row["RequestUserFullName"].ToString() : string.Empty;
+            selectedRequest.RequestID = row["RequestID"] != DBNull.Value ? Convert.ToInt32(row["RequestID"]) : 0;
+            selectedRequest.RequestUserID = row["RequestID"] != DBNull.Value ? getSelectedRequestUserID() : 0;
+            selectedRequest.RequestType = row["RequestType"] != DBNull.Value ? row["RequestType"].ToString() : string.Empty;
+            selectedRequest.RequestReason = row["RequestReason"] != DBNull.Value ? row["RequestReason"].ToString() : string.Empty;
+            selectedRequest.RequestFromDay = requestFromDay;
+            selectedRequest.RequestToDay = row["RequestToDay"] != DBNull.Value ? Convert.ToDateTime(row["RequestToDay"]) : requestFromDay;
 
-                // Converting TimeSpan to DateTime by adding the TimeSpan to the requestFromDay
-                RequestBeginningTime = row["RequestBeginningTime"] != DBNull.Value ?
-                                       requestFromDay.Add((TimeSpan)row["RequestBeginningTime"]) : requestFromDay,
-                RequestEndingTime = row["RequestEndingTime"] != DBNull.Value ?
-                                    requestFromDay.Add((TimeSpan)row["RequestEndingTime"]) : requestFromDay,
+            // Converting TimeSpan to DateTime by adding the TimeSpan to the requestFromDay
+            selectedRequest.RequestBeginningTime = row["RequestBeginningTime"] != DBNull.Value ?
+                                   requestFromDay.Add((TimeSpan)row["RequestBeginningTime"]) : requestFromDay;
+            selectedRequest.RequestEndingTime = row["RequestEndingTime"] != DBNull.Value ?
+                                requestFromDay.Add((TimeSpan)row["RequestEndingTime"]) : requestFromDay;
 
-                RequestStatus = row["RequestStatus"] != DBNull.Value ? row["RequestStatus"].ToString() : string.Empty
-            };
+            selectedRequest.RequestStatus = row["RequestStatus"] != DBNull.Value ? row["RequestStatus"].ToString() : string.Empty;
 
             // Open the AddRequestForm with the selected request data for editing
-            addRequestForm addRequestForm = new addRequestForm(selectedRequest); // Assuming AddRequestForm has a constructor that takes a Request object
+            addRequestForm addRequestForm = new addRequestForm(selectedRequest); 
             addRequestForm.ShowDialog();
-
-            // Optionally, refresh the DataGridView after editing (if changes are saved)
-            //refreshRequestsTable();
 
             if (requestAddedOrUpdated)
             {
@@ -701,6 +698,20 @@ namespace TDF.Net.Forms
                 return (int?)cmd.ExecuteScalar() ?? 0;
             }
         }
+        public int getSelectedRequestUserID()
+        {
+            string query = "SELECT RequestUserID FROM Requests WHERE RequestID = @RequestID";
+
+            using (var conn = Database.getConnection())
+            using (var cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@RequestID", selectedRequest.RequestID);
+                conn.Open();
+
+                return (int?)cmd.ExecuteScalar() ?? 0;
+            }
+        }
+
         private void createPDF(string requestType, DateTime? beginningDate, DateTime? endingDate, int numberOfDays, int availableBalance, string reason, string beginningTime, string endingTime, string status, string hrStatus)
         {
             string filePath = string.Empty;

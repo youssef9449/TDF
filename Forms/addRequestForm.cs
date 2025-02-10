@@ -5,6 +5,8 @@ using System.Windows.Forms;
 using TDF.Net.Classes;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
+using static TDF.Net.Forms.requestsForm;
+
 
 
 namespace TDF.Net.Forms
@@ -207,8 +209,6 @@ namespace TDF.Net.Forms
 
             return 0; // Default return if an exception occurs.
         }
-
-
         private void updateBalanceLabels(string leaveType, int userId, int daysRequested)
         {
             availableBalance = getLeaveDays(leaveType, userId);
@@ -218,7 +218,6 @@ namespace TDF.Net.Forms
             availableBalanceLabel.Visible = true;
             remainingLabel.Visible = true;
             remainingBalanceLabel.Visible = true;
-
         }
         private void updateDays(DateTime toDate, DateTime fromDate)
         {
@@ -245,12 +244,12 @@ namespace TDF.Net.Forms
 
                     if (annualRadioButton.Checked)
                     {
-                        updateBalanceLabels("AnnualBalance", loggedInUser.userID, numberOfDaysRequested);
+                            updateBalanceLabels("AnnualBalance", selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID, numberOfDaysRequested);
 
                     }
                     else if (casualRadioButton.Checked)
                     {
-                        updateBalanceLabels("CasualBalance", loggedInUser.userID, numberOfDaysRequested);
+                        updateBalanceLabels("CasualBalance", selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID, numberOfDaysRequested);
                     }
                     else
                     {
@@ -565,6 +564,8 @@ namespace TDF.Net.Forms
             {
                 updateExistingRequest(requestType);
             }
+
+            selectedRequest = null;
             requestAddedOrUpdatedEvent?.Invoke();
         }
         #endregion

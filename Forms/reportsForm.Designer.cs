@@ -59,9 +59,9 @@
             this.filtersGroupBox = new Bunifu.UI.WinForms.BunifuGroupBox();
             this.panel = new System.Windows.Forms.Panel();
             this.bunifuFormControlBox1 = new Bunifu.UI.WinForms.BunifuFormControlBox();
+            this.userName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ToDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.userName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.requestType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Days = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Hours = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -169,9 +169,9 @@
             this.reportsDataGridView.ColumnHeadersHeight = 40;
             this.reportsDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.reportsDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.userName,
             this.Date,
             this.ToDate,
-            this.userName,
             this.requestType,
             this.Days,
             this.Hours,
@@ -597,6 +597,7 @@
             this.statusDropdown.Text = null;
             this.statusDropdown.TextAlignment = Bunifu.UI.WinForms.BunifuDropdown.TextAlign.Center;
             this.statusDropdown.TextLeftMargin = 5;
+            this.statusDropdown.SelectedIndexChanged += new System.EventHandler(this.statusDropdown_SelectedIndexChanged);
             // 
             // bunifuLabel5
             // 
@@ -889,6 +890,14 @@
             this.bunifuFormControlBox1.Size = new System.Drawing.Size(160, 37);
             this.bunifuFormControlBox1.TabIndex = 19;
             // 
+            // userName
+            // 
+            this.userName.DataPropertyName = "RequestUserFullName";
+            this.userName.HeaderText = "Name";
+            this.userName.MinimumWidth = 6;
+            this.userName.Name = "userName";
+            this.userName.ReadOnly = true;
+            // 
             // Date
             // 
             this.Date.DataPropertyName = "RequestFromDay";
@@ -903,14 +912,6 @@
             this.ToDate.HeaderText = "To";
             this.ToDate.Name = "ToDate";
             this.ToDate.ReadOnly = true;
-            // 
-            // userName
-            // 
-            this.userName.DataPropertyName = "RequestUserFullName";
-            this.userName.HeaderText = "Name";
-            this.userName.MinimumWidth = 6;
-            this.userName.Name = "userName";
-            this.userName.ReadOnly = true;
             // 
             // requestType
             // 
@@ -1030,9 +1031,9 @@
         private Bunifu.UI.WinForms.BunifuGroupBox filtersGroupBox;
         private System.Windows.Forms.Panel panel;
         private Bunifu.UI.WinForms.BunifuFormControlBox bunifuFormControlBox1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn userName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Date;
         private System.Windows.Forms.DataGridViewTextBoxColumn ToDate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn userName;
         private System.Windows.Forms.DataGridViewTextBoxColumn requestType;
         private System.Windows.Forms.DataGridViewTextBoxColumn Days;
         private System.Windows.Forms.DataGridViewTextBoxColumn Hours;
