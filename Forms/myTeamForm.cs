@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -38,7 +37,6 @@ namespace TDF.Forms
         {
             Program.applyTheme(this);
             getBalanceTable();
-
         }
         private void balanceForm_Resize(object sender, EventArgs e)
         {
@@ -200,6 +198,7 @@ namespace TDF.Forms
                     balanceDataGridView.Columns["Annual"].DisplayIndex = 2;
                     balanceDataGridView.Columns["AnnualUsed"].DisplayIndex = 3;
                     balanceDataGridView.Columns["AnnualBalance"].DisplayIndex = 4;
+                    balanceDataGridView.Columns["UnpaidUsed"].DisplayIndex = balanceDataGridView.Columns.Count - 1;
                 }
             }
             catch (Exception ex)
@@ -222,7 +221,6 @@ namespace TDF.Forms
         {
             getBalanceTable();
         }
-
         #endregion
 
     }

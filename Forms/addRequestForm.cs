@@ -6,13 +6,15 @@ using TDF.Net.Classes;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Forms.requestsForm;
+using System.Drawing;
+
 
 
 namespace TDF.Net.Forms
 {
     public partial class addRequestForm : Form
     {
-        Request RequestToEdit;
+        Request requestToEdit;
 
         public addRequestForm()
         {
@@ -27,7 +29,7 @@ namespace TDF.Net.Forms
         {
             InitializeComponent();
 
-            RequestToEdit = request;
+            requestToEdit = request;
 
             populateFieldsWithRequestData();
         }
@@ -85,8 +87,9 @@ namespace TDF.Net.Forms
                 // Show time-related controls and hide date-related controls
                 setTimeControlsVisibility(true);
                 setDateControlsVisibility(false);
-                setBalanceControlsVisibility(false);
+                setBalanceControlsVisibility(true);
                 leaveGroupBox.Visible = false;
+                updateLeaveBalanceLabel();
             }
         }
         private void workFromHomeRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
@@ -125,7 +128,7 @@ namespace TDF.Net.Forms
         {
             if (unpaidRadioButton.Checked)
             {
-                if (getLeaveDays("AnnualBalance", requiredUserID) + getLeaveDays("CasualBalance", requiredUserID) > 0 && RequestToEdit == null)
+                if (getLeaveDays("AnnualBalance", requiredUserID) + getLeaveDays("CasualBalance", requiredUserID) > 0 && requestToEdit == null)
                 {
                     MessageBox.Show("You have Annual or Emergency balance. You can use it instead.");
                 }
@@ -150,8 +153,7 @@ namespace TDF.Net.Forms
         #region Methods
         private void populateFieldsWithRequestData()
         {
-
-            switch (RequestToEdit.RequestType)
+            switch (requestToEdit.RequestType)
             {
                 case "Work From Home":
                     SetRadioButtonStates(workFromHome: true, externalAssignment: false, dayOff: false, exit: false, annual: false, casual: false);
@@ -163,8 +165,8 @@ namespace TDF.Net.Forms
                     SetRadioButtonStates(workFromHome: false, externalAssignment: true, dayOff: false, exit: false, annual: false, casual: false);
                     break;
                 default:
-                    bool isAnnual = RequestToEdit.RequestType == "Annual";
-                    bool isCasual = RequestToEdit.RequestType == "Emergency";
+                    bool isAnnual = requestToEdit.RequestType == "Annual";
+                    bool isCasual = requestToEdit.RequestType == "Emergency";
 
                     SetRadioButtonStates(workFromHome: false, externalAssignment: false, dayOff: true, exit: false, isAnnual, isCasual);
                     break;
@@ -198,13 +200,13 @@ namespace TDF.Net.Forms
             }
 
             // Populate other fields
-            reasonTextBox.Text = RequestToEdit.RequestReason;
-            fromDayDatePicker.Value = RequestToEdit.RequestFromDay;
-            toDayDatePicker.Value = DateTime.TryParse(RequestToEdit.RequestToDay?.ToString(), out var toDate) ? toDate : DateTime.Now;
+            reasonTextBox.Text = requestToEdit.RequestReason;
+            fromDayDatePicker.Value = requestToEdit.RequestFromDay;
+            toDayDatePicker.Value = DateTime.TryParse(requestToEdit.RequestToDay?.ToString(), out var toDate) ? toDate : DateTime.Now;
 
             bool isDayOff = dayoffRadioButton.Checked;
-            fromTimeTextBox.Text = isDayOff ? string.Empty : RequestToEdit.RequestBeginningTime?.TimeOfDay.ToString(@"hh\:mm");
-            toTimeTextBox.Text = isDayOff ? string.Empty : RequestToEdit.RequestEndingTime?.TimeOfDay.ToString(@"hh\:mm");
+            fromTimeTextBox.Text = isDayOff ? string.Empty : requestToEdit.RequestBeginningTime?.TimeOfDay.ToString(@"hh\:mm");
+            toTimeTextBox.Text = isDayOff ? string.Empty : requestToEdit.RequestEndingTime?.TimeOfDay.ToString(@"hh\:mm");
 
             // Adjust control states based on user role
             bool isEditable = !(hasManagerRole || hasAdminRole);
@@ -336,7 +338,50 @@ namespace TDF.Net.Forms
                         object result = cmd.ExecuteScalar();
 
                         // Directly return the result if it's not null, otherwise return 0.
-                        return result != DBNull.Value || result == null ? Convert.ToInt32(result) : 0;
+                        return (result != DBNull.Value && result != null) ? Convert.ToInt32(result) : 0;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("A database error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return 0; // Default return if an exception occurs.
+        }
+        private int getMonthlyPermissionsCount(int userID)
+        {
+            try
+            {
+                DateTime fromTime = Convert.ToDateTime(fromDayDatePicker.Value); // Get the selected date
+                int month = fromTime.Month;
+                int year = fromTime.Year;
+
+                using (SqlConnection conn = Database.getConnection())
+                {
+                    conn.Open();
+
+                    string query = @"SELECT COUNT(*) FROM Requests 
+                             WHERE RequestType = @RequestType 
+                             AND RequestUserID = @RequestUserID 
+                             AND MONTH(RequestFromDay) = @Month 
+                             AND YEAR(RequestFromDay) = @Year"; // Ensure it's from the same month & year
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@RequestType", "Permission");
+                        cmd.Parameters.AddWithValue("@RequestUserID", userID);
+                        cmd.Parameters.AddWithValue("@Month", month);
+                        cmd.Parameters.AddWithValue("@Year", year);
+
+                        object result = cmd.ExecuteScalar();
+
+                        // Correct DBNull check
+                        return (result != DBNull.Value && result != null) ? Convert.ToInt32(result) : 0;
                     }
                 }
             }
@@ -385,17 +430,24 @@ namespace TDF.Net.Forms
                 {
                     updateDays(toDate, fromDate);
 
+                    pendingLabel.Location = new Point(48, 333);
+                    daysLabel.Text = "Days requested:";
+                    daysLabel.Location = new Point(40, 307);
+
                     if (annualRadioButton.Checked)
                     {
                         pendingDays = getPendingDaysCount(requiredUserID, "Annual");
                         updateBalanceLabels("AnnualBalance", requiredUserID, numberOfDaysRequested);
+                        pendingLabel.Text = "Pending Days:";
                         pendingLabel.Visible = true;
                         pendingDaysLabel.Visible = true;
+
                     }
                     else if (casualRadioButton.Checked)
                     {
                         pendingDays = getPendingDaysCount(requiredUserID, "Emergency");
                         updateBalanceLabels("CasualBalance", requiredUserID, numberOfDaysRequested);
+                        pendingLabel.Text = "Pending Days:";
                         pendingLabel.Visible = true;
                         pendingDaysLabel.Visible = true;
                     }
@@ -408,6 +460,20 @@ namespace TDF.Net.Forms
                         pendingLabel.Visible = false;
                         pendingDaysLabel.Visible = false;
                     }
+                }
+                else if (exitRadioButton.Checked)
+                {
+                    daysLabel.Text = "Permissions requested:";
+                    daysLabel.Location = new Point(5, 307);
+                    pendingLabel.Location = new Point(10, 333);
+                    pendingDays = getMonthlyPermissionsCount(requiredUserID);
+                    availableBalanceLabel.Text = (2 - pendingDays).ToString();
+                    daysRequestedLabel.Text = "1";
+                    remainingBalanceLabel.Text = (Convert.ToInt32(availableBalanceLabel.Text) - pendingDays - 1).ToString();
+                    pendingLabel.Visible = true;
+                    pendingDaysLabel.Visible = true;
+                    pendingLabel.Text = "Pending Permissions:";
+                    pendingDaysLabel.Text = pendingDays.ToString();
                 }
             }
         }
@@ -505,14 +571,14 @@ namespace TDF.Net.Forms
         }
         private void updateExistingRequest(string requestType)
         {
-            RequestToEdit.RequestType = requestType;
-            RequestToEdit.RequestReason = reasonTextBox.Text;
-            RequestToEdit.RequestFromDay = fromDayDatePicker.Value;
-            RequestToEdit.RequestToDay = dayoffRadioButton.Checked || workFromHomeRadioButton.Checked ? toDayDatePicker.Value : (DateTime?)null;
-            RequestToEdit.RequestBeginningTime = requestType == "Permission" || requestType == "External Assignment" ? Convert.ToDateTime(fromTimeTextBox.Text) : (DateTime?)null;
-            RequestToEdit.RequestEndingTime = requestType == "Permission" || requestType == "External Assignment" ? Convert.ToDateTime(toTimeTextBox.Text) : (DateTime?)null;
-            RequestToEdit.RequestNumberOfDays = requestType == "Permission" || requestType == "External Assignment" ? 0 : numberOfDaysRequested;
-            RequestToEdit.update();
+            requestToEdit.RequestType = requestType;
+            requestToEdit.RequestReason = reasonTextBox.Text;
+            requestToEdit.RequestFromDay = fromDayDatePicker.Value;
+            requestToEdit.RequestToDay = dayoffRadioButton.Checked || workFromHomeRadioButton.Checked ? toDayDatePicker.Value : (DateTime?)null;
+            requestToEdit.RequestBeginningTime = requestType == "Permission" || requestType == "External Assignment" ? Convert.ToDateTime(fromTimeTextBox.Text) : (DateTime?)null;
+            requestToEdit.RequestEndingTime = requestType == "Permission" || requestType == "External Assignment" ? Convert.ToDateTime(toTimeTextBox.Text) : (DateTime?)null;
+            requestToEdit.RequestNumberOfDays = requestType == "Permission" || requestType == "External Assignment" ? 0 : numberOfDaysRequested;
+            requestToEdit.update();
         }
         private string determineRequestType()
         {
@@ -541,9 +607,7 @@ namespace TDF.Net.Forms
                     MessageBox.Show("Ending time can't be earlier than or equal to the beginning time.");
                     return;
                 }
-
             }
-
             // Validate inputs for day-based requests
             else
             {
@@ -557,38 +621,48 @@ namespace TDF.Net.Forms
                 }
             }
 
-            if (annualRadioButton.Checked)
+            if (dayoffRadioButton.Checked)
             {
-                if (numberOfDaysRequested > availableBalance)
+                if (annualRadioButton.Checked)
                 {
-                    MessageBox.Show("You don't have enough Annual balance. You can adjust your dates accordingly and request the remaining days as unpaid.");
-                    return;
+                    if (int.TryParse(remainingBalanceLabel.Text, out int remainingBalance) && remainingBalance < 0)
+                    {
+                        MessageBox.Show("You don't have enough Annual balance.");
+                        return;
+                    }
+                }
+
+                if (casualRadioButton.Checked)
+                {
+                    if (int.TryParse(remainingBalanceLabel.Text, out int remainingBalance) && remainingBalance < 0)
+                    {
+                        MessageBox.Show("You don't have enough Emergency balance.");
+                        return;
+                    }
                 }
             }
-            if (casualRadioButton.Checked)
-            {
-                if (numberOfDaysRequested > availableBalance)
-                {
-                    MessageBox.Show("You don't have enough Emergency balance. You can adjust your dates accordingly and request the remaining days as unpaid.");
-                    return;
-                }
-            }
+
             if (exitRadioButton.Checked)
             {
-                if (getPermissionBalance(selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID) == 0)
+                if (getPermissionBalance(requiredUserID) == 0)
                 {
-                    MessageBox.Show("You don't have Permission balance.");
+                    MessageBox.Show("You don't have enough Permission balance.");
                     return;
                 }
 
-                // Parse the input times
+                if (getMonthlyPermissionsCount(requiredUserID) >= 2)
+                {
+                    MessageBox.Show("You have already applied for 2 Permissions this month.");
+                    return;
+                }
+
                 if (DateTime.TryParse(fromTimeTextBox.Text, out DateTime fromTime) &&
                     DateTime.TryParse(toTimeTextBox.Text, out DateTime toTime))
                 {
                     // Check if the time difference exceeds 2 hours
                     if (toTime - fromTime > TimeSpan.FromHours(2))
                     {
-                        MessageBox.Show("You can't apply for more than 2 hours.");
+                        MessageBox.Show("You can't apply for permission for more than 2 hours.");
                         return;
                     }
                 }
@@ -600,18 +674,23 @@ namespace TDF.Net.Forms
 
             }
 
-
             // Determine request type
             string requestType = determineRequestType();
 
             // Create or update request
-            if (RequestToEdit == null)
+            if (requestToEdit == null)
             {
                 addNewRequest(requestType);
             }
             else
             {
                 updateExistingRequest(requestType);
+            }
+
+            if (requestType == "Annual" || requestType == "Emergency")
+            {
+                pendingDaysLabel.Text = (Convert.ToInt32(pendingDaysLabel.Text) + numberOfDaysRequested).ToString();
+                remainingBalanceLabel.Text = (Convert.ToInt32(remainingBalanceLabel.Text) - numberOfDaysRequested).ToString();
             }
 
             requestAddedOrUpdatedEvent?.Invoke();
