@@ -47,6 +47,7 @@ namespace TDF.Forms
             nameORdepDropdown.SelectedItem = hasManagerRole || hasAdminRole || hasHRRole ? "All" : loggedInUser.FullName;
             statusDropdown.SelectedIndex = 0;
             typeDropdown.SelectedIndex = 0;
+            reportsDataGridView.Columns["Department"].Visible = hasManagerRole || hasAdminRole || hasHRRole;
             updateReport();
         }
         private void reportsDataGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -135,7 +136,6 @@ namespace TDF.Forms
         private void statusDropdown_SelectedIndexChanged(object sender, EventArgs e)
         {
             updateReport();
-
         }
         protected override void OnPaint(PaintEventArgs e)
         {

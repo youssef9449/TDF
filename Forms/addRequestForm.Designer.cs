@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(addRequestForm));
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties1 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties2 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties3 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties4 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties5 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties6 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties7 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties8 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.dayoffRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.exitRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.dayoffLabel = new Bunifu.UI.WinForms.BunifuLabel();
@@ -69,6 +69,8 @@
             this.unpaidLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.unpaidRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.toDayDatePicker = new Bunifu.UI.WinForms.BunifuDatePicker();
+            this.pendingDaysLabel = new Bunifu.UI.WinForms.BunifuLabel();
+            this.pendingLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.panel.SuspendLayout();
             this.bunifuGroupBox1.SuspendLayout();
             this.leaveGroupBox.SuspendLayout();
@@ -214,32 +216,32 @@
             this.reasonTextBox.IconRight = null;
             this.reasonTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.reasonTextBox.Lines = new string[0];
-            this.reasonTextBox.Location = new System.Drawing.Point(73, 368);
+            this.reasonTextBox.Location = new System.Drawing.Point(74, 398);
             this.reasonTextBox.MaxLength = 32767;
             this.reasonTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.reasonTextBox.Modified = false;
             this.reasonTextBox.Multiline = false;
             this.reasonTextBox.Name = "reasonTextBox";
-            stateProperties1.BorderColor = System.Drawing.Color.DodgerBlue;
-            stateProperties1.FillColor = System.Drawing.Color.Empty;
-            stateProperties1.ForeColor = System.Drawing.Color.Empty;
-            stateProperties1.PlaceholderForeColor = System.Drawing.Color.Empty;
-            this.reasonTextBox.OnActiveState = stateProperties1;
-            stateProperties2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            stateProperties2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            stateProperties2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
-            stateProperties2.PlaceholderForeColor = System.Drawing.Color.DarkGray;
-            this.reasonTextBox.OnDisabledState = stateProperties2;
-            stateProperties3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
-            stateProperties3.FillColor = System.Drawing.Color.Empty;
-            stateProperties3.ForeColor = System.Drawing.Color.Empty;
-            stateProperties3.PlaceholderForeColor = System.Drawing.Color.Empty;
-            this.reasonTextBox.OnHoverState = stateProperties3;
-            stateProperties4.BorderColor = System.Drawing.Color.Silver;
-            stateProperties4.FillColor = System.Drawing.Color.White;
-            stateProperties4.ForeColor = System.Drawing.Color.Empty;
-            stateProperties4.PlaceholderForeColor = System.Drawing.Color.Empty;
-            this.reasonTextBox.OnIdleState = stateProperties4;
+            stateProperties5.BorderColor = System.Drawing.Color.DodgerBlue;
+            stateProperties5.FillColor = System.Drawing.Color.Empty;
+            stateProperties5.ForeColor = System.Drawing.Color.Empty;
+            stateProperties5.PlaceholderForeColor = System.Drawing.Color.Empty;
+            this.reasonTextBox.OnActiveState = stateProperties5;
+            stateProperties6.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            stateProperties6.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            stateProperties6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            stateProperties6.PlaceholderForeColor = System.Drawing.Color.DarkGray;
+            this.reasonTextBox.OnDisabledState = stateProperties6;
+            stateProperties7.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            stateProperties7.FillColor = System.Drawing.Color.Empty;
+            stateProperties7.ForeColor = System.Drawing.Color.Empty;
+            stateProperties7.PlaceholderForeColor = System.Drawing.Color.Empty;
+            this.reasonTextBox.OnHoverState = stateProperties7;
+            stateProperties8.BorderColor = System.Drawing.Color.Silver;
+            stateProperties8.FillColor = System.Drawing.Color.White;
+            stateProperties8.ForeColor = System.Drawing.Color.Empty;
+            stateProperties8.PlaceholderForeColor = System.Drawing.Color.Empty;
+            this.reasonTextBox.OnIdleState = stateProperties8;
             this.reasonTextBox.Padding = new System.Windows.Forms.Padding(3);
             this.reasonTextBox.PasswordChar = '\0';
             this.reasonTextBox.PlaceholderForeColor = System.Drawing.Color.Silver;
@@ -268,7 +270,7 @@
             this.reasonLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.reasonLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.reasonLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.reasonLabel.Location = new System.Drawing.Point(9, 374);
+            this.reasonLabel.Location = new System.Drawing.Point(10, 404);
             this.reasonLabel.Name = "reasonLabel";
             this.reasonLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.reasonLabel.Size = new System.Drawing.Size(51, 20);
@@ -330,11 +332,11 @@
             this.submitButton.ColorContrastOnClick = 45;
             this.submitButton.ColorContrastOnHover = 45;
             this.submitButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.submitButton.CustomizableEdges = borderEdges1;
+            borderEdges2.BottomLeft = true;
+            borderEdges2.BottomRight = true;
+            borderEdges2.TopLeft = true;
+            borderEdges2.TopRight = true;
+            this.submitButton.CustomizableEdges = borderEdges2;
             this.submitButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.submitButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.submitButton.DisabledFillColor = System.Drawing.Color.Empty;
@@ -360,7 +362,7 @@
             this.submitButton.IdleIconLeftImage = null;
             this.submitButton.IdleIconRightImage = null;
             this.submitButton.IndicateFocus = false;
-            this.submitButton.Location = new System.Drawing.Point(262, 410);
+            this.submitButton.Location = new System.Drawing.Point(263, 440);
             this.submitButton.Name = "submitButton";
             this.submitButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.submitButton.OnDisabledState.BorderRadius = 1;
@@ -556,7 +558,7 @@
             this.remainingLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.remainingLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.remainingLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.remainingLabel.Location = new System.Drawing.Point(15, 333);
+            this.remainingLabel.Location = new System.Drawing.Point(15, 354);
             this.remainingLabel.Name = "remainingLabel";
             this.remainingLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.remainingLabel.Size = new System.Drawing.Size(130, 20);
@@ -604,7 +606,7 @@
             this.remainingBalanceLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.remainingBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.remainingBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.remainingBalanceLabel.Location = new System.Drawing.Point(156, 333);
+            this.remainingBalanceLabel.Location = new System.Drawing.Point(156, 354);
             this.remainingBalanceLabel.Name = "remainingBalanceLabel";
             this.remainingBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.remainingBalanceLabel.Size = new System.Drawing.Size(36, 20);
@@ -857,12 +859,46 @@
             this.toDayDatePicker.TabIndex = 41;
             this.toDayDatePicker.ValueChanged += new System.EventHandler(this.toDayDatePicker_ValueChanged);
             // 
+            // pendingDaysLabel
+            // 
+            this.pendingDaysLabel.AllowParentOverrides = false;
+            this.pendingDaysLabel.AutoEllipsis = false;
+            this.pendingDaysLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.pendingDaysLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.pendingDaysLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.pendingDaysLabel.Location = new System.Drawing.Point(156, 333);
+            this.pendingDaysLabel.Name = "pendingDaysLabel";
+            this.pendingDaysLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.pendingDaysLabel.Size = new System.Drawing.Size(36, 20);
+            this.pendingDaysLabel.TabIndex = 43;
+            this.pendingDaysLabel.Text = "------";
+            this.pendingDaysLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.pendingDaysLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // pendingLabel
+            // 
+            this.pendingLabel.AllowParentOverrides = false;
+            this.pendingLabel.AutoEllipsis = false;
+            this.pendingLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.pendingLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.pendingLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.pendingLabel.Location = new System.Drawing.Point(48, 333);
+            this.pendingLabel.Name = "pendingLabel";
+            this.pendingLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.pendingLabel.Size = new System.Drawing.Size(93, 20);
+            this.pendingLabel.TabIndex = 42;
+            this.pendingLabel.Text = "Pending Days:";
+            this.pendingLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.pendingLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
             // addRequestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(654, 452);
+            this.ClientSize = new System.Drawing.Size(654, 475);
+            this.Controls.Add(this.pendingDaysLabel);
+            this.Controls.Add(this.pendingLabel);
             this.Controls.Add(this.toDayDatePicker);
             this.Controls.Add(this.remainingBalanceLabel);
             this.Controls.Add(this.daysRequestedLabel);
@@ -935,5 +971,7 @@
         private Bunifu.UI.WinForms.BunifuDatePicker toDayDatePicker;
         private Bunifu.UI.WinForms.BunifuLabel unpaidLabel;
         private Bunifu.UI.WinForms.BunifuRadioButton unpaidRadioButton;
+        private Bunifu.UI.WinForms.BunifuLabel pendingDaysLabel;
+        private Bunifu.UI.WinForms.BunifuLabel pendingLabel;
     }
 }

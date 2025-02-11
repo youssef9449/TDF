@@ -32,10 +32,120 @@ namespace TDF.Net.Forms
             populateFieldsWithRequestData();
         }
 
-        int numberOfDaysRequested, availableBalance = 0;
+        int numberOfDaysRequested, availableBalance, pendingDays = 0;
         public static bool requestAddedOrUpdated;
         public event Action requestAddedOrUpdatedEvent;
+        int requiredUserID = selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID;
 
+        #region Events
+        private void addRequestForm_Load(object sender, EventArgs e)
+        {
+            Program.applyTheme(this);
+
+            availableBalanceLabel.ForeColor = ThemeColor.darkColor;
+            daysRequestedLabel.ForeColor = ThemeColor.darkColor;
+            remainingBalanceLabel.ForeColor = ThemeColor.darkColor;
+            pendingDaysLabel.ForeColor = ThemeColor.darkColor;
+        }
+        private void panel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && e.Clicks == 1)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, 0x112, 0xf012, 0);
+            }
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        private void panel_Paint(object sender, PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        private void dayoffRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            if (dayoffRadioButton.Checked)
+            {
+                // Hide time-related controls and show date-related controls
+                setTimeControlsVisibility(false);
+                setDateControlsVisibility(true);
+
+                setBalanceControlsVisibility(true);
+                updateLeaveBalanceLabel();
+                leaveGroupBox.Visible = true;
+            }
+        }
+        private void exitRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            if (exitRadioButton.Checked)
+            {
+                // Show time-related controls and hide date-related controls
+                setTimeControlsVisibility(true);
+                setDateControlsVisibility(false);
+                setBalanceControlsVisibility(false);
+                leaveGroupBox.Visible = false;
+            }
+        }
+        private void workFromHomeRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            if (workFromHomeRadioButton.Checked)
+            {
+                // Hide time-related controls and show date-related controls
+                setTimeControlsVisibility(false);
+                setDateControlsVisibility(true);
+                setBalanceControlsVisibility(false);
+                leaveGroupBox.Visible = false;
+                daysRequestedLabel.Visible = true;
+                daysLabel.Visible = true;
+            }
+        }
+        private void externalAssignmentRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            if (externalAssignmentRadioButton.Checked)
+            {
+                // Show time-related controls and hide date-related controls
+                setTimeControlsVisibility(true);
+                setDateControlsVisibility(false);
+                setBalanceControlsVisibility(false);
+                leaveGroupBox.Visible = false;
+            }
+        }
+        private void annualRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            updateLeaveBalanceLabel();
+        }
+        private void casualRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            updateLeaveBalanceLabel();
+        }
+        private void unpaidRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
+        {
+            if (unpaidRadioButton.Checked)
+            {
+                if (getLeaveDays("AnnualBalance", requiredUserID) + getLeaveDays("CasualBalance", requiredUserID) > 0 && RequestToEdit == null)
+                {
+                    MessageBox.Show("You have Annual or Emergency balance. You can use it instead.");
+                }
+
+                updateLeaveBalanceLabel();
+            }
+        }
+        private void toDayDatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            updateLeaveBalanceLabel();
+        }
+        private void fromDayDatePicker_ValueChanged(object sender, EventArgs e)
+        {
+            updateLeaveBalanceLabel();
+        }
+        private void addRequestForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            selectedRequest = null;
+        }
+        #endregion
 
         #region Methods
         private void populateFieldsWithRequestData()
@@ -176,7 +286,7 @@ namespace TDF.Net.Forms
 
             return days;
         }
-        public static int getPermissionBalance()
+        public static int getPermissionBalance(int userID)
         {
             try
             {
@@ -188,7 +298,7 @@ namespace TDF.Net.Forms
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@UserID", loggedInUser.userID);
+                        cmd.Parameters.AddWithValue("@UserID", userID);
 
                         object result = cmd.ExecuteScalar();
 
@@ -208,11 +318,45 @@ namespace TDF.Net.Forms
 
             return 0; // Default return if an exception occurs.
         }
+        public static int getPendingDaysCount(int userID, string requestType)
+        {
+            try
+            {
+                using (SqlConnection conn = Database.getConnection())
+                {
+                    conn.Open();
+
+                    string query = "SELECT SUM (RequestNumberOfDays) FROM Requests WHERE RequestType = @RequestType AND (RequestStatus = 'Pending' OR RequestHRStatus = 'Pending') AND RequestUserID = @RequestUserID";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@RequestType", requestType);
+                        cmd.Parameters.AddWithValue("@RequestUserID", userID);
+
+                        object result = cmd.ExecuteScalar();
+
+                        // Directly return the result if it's not null, otherwise return 0.
+                        return result != DBNull.Value || result == null ? Convert.ToInt32(result) : 0;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("A database error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return 0; // Default return if an exception occurs.
+        }
         private void updateBalanceLabels(string leaveType, int userId, int daysRequested)
         {
             availableBalance = getLeaveDays(leaveType, userId);
             availableBalanceLabel.Text = availableBalance.ToString();
-            remainingBalanceLabel.Text = (availableBalance - daysRequested).ToString();
+            pendingDaysLabel.Text = pendingDays.ToString();
+            remainingBalanceLabel.Text = (availableBalance - daysRequested - pendingDays).ToString();
             balanceLabel.Visible = true;
             availableBalanceLabel.Visible = true;
             remainingLabel.Visible = true;
@@ -243,12 +387,17 @@ namespace TDF.Net.Forms
 
                     if (annualRadioButton.Checked)
                     {
-                         updateBalanceLabels("AnnualBalance", selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID, numberOfDaysRequested);
-
+                        pendingDays = getPendingDaysCount(requiredUserID, "Annual");
+                        updateBalanceLabels("AnnualBalance", requiredUserID, numberOfDaysRequested);
+                        pendingLabel.Visible = true;
+                        pendingDaysLabel.Visible = true;
                     }
                     else if (casualRadioButton.Checked)
                     {
-                        updateBalanceLabels("CasualBalance", selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID, numberOfDaysRequested);
+                        pendingDays = getPendingDaysCount(requiredUserID, "Emergency");
+                        updateBalanceLabels("CasualBalance", requiredUserID, numberOfDaysRequested);
+                        pendingLabel.Visible = true;
+                        pendingDaysLabel.Visible = true;
                     }
                     else
                     {
@@ -256,6 +405,8 @@ namespace TDF.Net.Forms
                         availableBalanceLabel.Visible = false;
                         remainingLabel.Visible = false;
                         remainingBalanceLabel.Visible = false;
+                        pendingLabel.Visible = false;
+                        pendingDaysLabel.Visible = false;
                     }
                 }
             }
@@ -280,6 +431,8 @@ namespace TDF.Net.Forms
             availableBalanceLabel.Visible = isVisible;
             daysRequestedLabel.Visible = isVisible;
             remainingBalanceLabel.Visible = isVisible;
+            pendingLabel.Visible = isVisible;
+            pendingDaysLabel.Visible = isVisible;
         }
         private bool validateTimeInputs(string fromText, string toText, out DateTime from, out DateTime to)
         {
@@ -361,117 +514,16 @@ namespace TDF.Net.Forms
             RequestToEdit.RequestNumberOfDays = requestType == "Permission" || requestType == "External Assignment" ? 0 : numberOfDaysRequested;
             RequestToEdit.update();
         }
-        #endregion
-
-        #region Events
-        private void addRequestForm_Load(object sender, EventArgs e)
+        private string determineRequestType()
         {
-            Program.applyTheme(this);
-
-            availableBalanceLabel.ForeColor = ThemeColor.darkColor;
-            daysRequestedLabel.ForeColor = ThemeColor.darkColor;
-            remainingBalanceLabel.ForeColor = ThemeColor.darkColor;
+            return exitRadioButton.Checked
+                ? "Permission"
+                : workFromHomeRadioButton.Checked
+                ? "Work From Home"
+                : dayoffRadioButton.Checked
+                ? (annualRadioButton.Checked ? "Annual" : casualRadioButton.Checked ? "Emergency" : "Unpaid")
+                : "External Assignment";
         }
-        private void panel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && e.Clicks == 1)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, 0x112, 0xf012, 0);
-            }
-        }
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
-        }
-        private void panel_Paint(object sender, PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
-        }
-        private void dayoffRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
-        {
-            if (dayoffRadioButton.Checked)
-            {
-                // Hide time-related controls and show date-related controls
-                setTimeControlsVisibility(false);
-                setDateControlsVisibility(true);
-                setBalanceControlsVisibility(true);
-                updateLeaveBalanceLabel();
-                leaveGroupBox.Visible = true;
-
-            }
-        }
-        private void exitRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
-        {
-            if (exitRadioButton.Checked)
-            {
-                // Show time-related controls and hide date-related controls
-                setTimeControlsVisibility(true);
-                setDateControlsVisibility(false);
-                setBalanceControlsVisibility(false);
-                leaveGroupBox.Visible = false;
-            }
-        }
-        private void workFromHomeRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
-        {
-            if (workFromHomeRadioButton.Checked)
-            {
-                // Hide time-related controls and show date-related controls
-                setTimeControlsVisibility(false);
-                setDateControlsVisibility(true);
-                setBalanceControlsVisibility(false);
-                leaveGroupBox.Visible = false;
-                daysRequestedLabel.Visible = true;
-                daysLabel.Visible = true;
-            }
-        }
-        private void externalAssignmentRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
-        {
-            if (externalAssignmentRadioButton.Checked)
-            {
-                // Show time-related controls and hide date-related controls
-                setTimeControlsVisibility(true);
-                setDateControlsVisibility(false);
-                setBalanceControlsVisibility(false);
-                leaveGroupBox.Visible = false;
-            }
-        }
-        private void annualRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
-        {
-            updateLeaveBalanceLabel();
-
-        }
-        private void casualRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
-        {
-            updateLeaveBalanceLabel();
-        }
-        private void unpaidRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
-        {
-            if (unpaidRadioButton.Checked)
-            {
-                if (getLeaveDays("AnnualBalance", loggedInUser.userID) + getLeaveDays("CasualBalance", loggedInUser.userID) > 0 && RequestToEdit == null)
-                {
-                    MessageBox.Show("You have Annual or Emergency balance. You can use it instead.");
-                }
-
-                updateLeaveBalanceLabel();
-            }
-        }
-        private void toDayDatePicker_ValueChanged(object sender, EventArgs e)
-        {
-            updateLeaveBalanceLabel();
-        }
-        private void fromDayDatePicker_ValueChanged(object sender, EventArgs e)
-        {
-            updateLeaveBalanceLabel();
-        }
-        private void addRequestForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            selectedRequest = null;
-        }
-
         #endregion
 
         #region Buttons
@@ -523,7 +575,7 @@ namespace TDF.Net.Forms
             }
             if (exitRadioButton.Checked)
             {
-                if(getPermissionBalance() == 0)
+                if (getPermissionBalance(selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID) == 0)
                 {
                     MessageBox.Show("You don't have Permission balance.");
                     return;
@@ -550,13 +602,7 @@ namespace TDF.Net.Forms
 
 
             // Determine request type
-            string requestType = exitRadioButton.Checked
-                ? "Permission"
-                : workFromHomeRadioButton.Checked
-                ? "Work From Home"
-                : dayoffRadioButton.Checked
-                ? (annualRadioButton.Checked ? "Annual" : casualRadioButton.Checked ? "Emergency" : "Unpaid")
-                : "External Assignment";
+            string requestType = determineRequestType();
 
             // Create or update request
             if (RequestToEdit == null)
