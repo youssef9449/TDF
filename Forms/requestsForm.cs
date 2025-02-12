@@ -404,8 +404,7 @@ namespace TDF.Net.Forms
         }
         private string buildQueryForManagerOrAdminORHR()
         {
-            string baseQuery = @"
-        SELECT 
+            string baseQuery = @"SELECT 
             r.RequestID, 
             r.RequestUserFullName, 
             r.RequestType, 
@@ -577,10 +576,7 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["RequestHRStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Edit"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Remove"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
-            if (requestsDataGridView.Columns["Report"] != null)
-            {
-                requestsDataGridView.Columns["Report"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
-            }
+            requestsDataGridView.Columns["Report"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["RequestStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
             requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
             requestsDataGridView.Columns["Approve"].DisplayIndex = requestsDataGridView.Columns.Count - 1;

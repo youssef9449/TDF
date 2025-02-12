@@ -288,7 +288,7 @@ namespace TDF.Net.Forms
 
             return days;
         }
-        public static int getPermissionBalance(int userID)
+        public static int getPermissionUsed(int userID)
         {
             try
             {
@@ -296,7 +296,7 @@ namespace TDF.Net.Forms
                 {
                     conn.Open();
 
-                    string query = "SELECT PermissionsBalance FROM AnnualLeave WHERE UserID = @UserID";
+                    string query = "SELECT PermissionsUsed FROM AnnualLeave WHERE UserID = @UserID";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -463,17 +463,23 @@ namespace TDF.Net.Forms
                 }
                 else if (exitRadioButton.Checked)
                 {
-                    daysLabel.Text = "Permissions requested:";
+                    daysLabel.Text = "Permissions Requested:";
                     daysLabel.Location = new Point(5, 307);
                     pendingLabel.Location = new Point(10, 333);
                     pendingDays = getMonthlyPermissionsCount(requiredUserID);
-                    availableBalanceLabel.Text = (2 - pendingDays).ToString();
+                    availableBalanceLabel.Text = (2 - getPermissionUsed(requiredUserID)).ToString();
                     daysRequestedLabel.Text = "1";
                     remainingBalanceLabel.Text = (Convert.ToInt32(availableBalanceLabel.Text) - pendingDays - 1).ToString();
                     pendingLabel.Visible = true;
                     pendingDaysLabel.Visible = true;
                     pendingLabel.Text = "Pending Permissions:";
                     pendingDaysLabel.Text = pendingDays.ToString();
+                }
+                else if (workFromHomeRadioButton.Checked)
+                {
+                    pendingLabel.Location = new Point(48, 333);
+                    daysLabel.Text = "Days requested:";
+                    daysLabel.Location = new Point(40, 307);
                 }
             }
         }
@@ -644,7 +650,7 @@ namespace TDF.Net.Forms
 
             if (exitRadioButton.Checked)
             {
-                if (getPermissionBalance(requiredUserID) == 0)
+                if (int.TryParse(remainingBalanceLabel.Text, out int remainingBalance) && remainingBalance < 0)
                 {
                     MessageBox.Show("You don't have enough Permission balance.");
                     return;
@@ -691,6 +697,11 @@ namespace TDF.Net.Forms
             {
                 pendingDaysLabel.Text = (Convert.ToInt32(pendingDaysLabel.Text) + numberOfDaysRequested).ToString();
                 remainingBalanceLabel.Text = (Convert.ToInt32(remainingBalanceLabel.Text) - numberOfDaysRequested).ToString();
+            }
+            else if (requestType == "Permission")
+            {
+                pendingDaysLabel.Text = (Convert.ToInt32(pendingDaysLabel.Text) + 1).ToString();
+                remainingBalanceLabel.Text = (Convert.ToInt32(remainingBalanceLabel.Text) - 1).ToString();
             }
 
             requestAddedOrUpdatedEvent?.Invoke();
