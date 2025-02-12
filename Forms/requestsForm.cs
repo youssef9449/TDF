@@ -382,6 +382,7 @@ namespace TDF.Net.Forms
                 }
 
                 requestsDataGridView.DataSource = requestsTable;
+                adjustRemainingBalanceForPermissions();
                 reorderDataGridViewColumns();
             }
             catch (Exception ex)
@@ -389,6 +390,7 @@ namespace TDF.Net.Forms
                 MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void loadRequestsForManagerOrAdminOrHR(DataTable requestsTable)
         {
             string query = buildQueryForManagerOrAdminORHR();
@@ -583,6 +585,63 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["RequestReason"].DisplayIndex = 7;
         }
+        private int getMonthlyPermissionsCount(int userID, DateTime requestDate)
+        {
+            try
+            {
+                int month = requestDate.Month;
+                int year = requestDate.Year;
+
+                using (SqlConnection conn = Database.getConnection())
+                {
+                    conn.Open();
+
+                    string query = @"SELECT COUNT(*) FROM Requests 
+                             WHERE RequestType = @RequestType 
+                             AND RequestUserID = @RequestUserID 
+                             AND MONTH(RequestFromDay) = @Month 
+                             AND YEAR(RequestFromDay) = @Year AND RequestStatus = 'Approved' AND RequestHRStatus = 'Approved'";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@RequestType", "Permission");
+                        cmd.Parameters.AddWithValue("@RequestUserID", userID);
+                        cmd.Parameters.AddWithValue("@Month", month);
+                        cmd.Parameters.AddWithValue("@Year", year);
+
+                        object result = cmd.ExecuteScalar();
+                        return (result != DBNull.Value && result != null) ? Convert.ToInt32(result) : 0;
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("A database error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return 0;
+        }
+        private void adjustRemainingBalanceForPermissions()
+        {
+            foreach (DataGridViewRow row in requestsDataGridView.Rows)
+            {
+                if (row.Cells["RequestType"].Value?.ToString() == "Permission")
+                {
+                    int userID = loggedInUser.userID;
+                    DateTime requestDate = Convert.ToDateTime(row.Cells["RequestFromDay"].Value);
+                    int monthlyCount = getMonthlyPermissionsCount(userID, requestDate);
+                    int adjustedBalance = 2 - monthlyCount;
+
+                    row.Cells["remainingBalance"].Value = adjustedBalance;
+                }
+            }
+        }
+
+
         private (string managerName, string managerDepartment) getManagerName()
         {
             string managerName = string.Empty;

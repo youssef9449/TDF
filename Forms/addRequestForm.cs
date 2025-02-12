@@ -9,7 +9,6 @@ using static TDF.Net.Forms.requestsForm;
 using System.Drawing;
 
 
-
 namespace TDF.Net.Forms
 {
     public partial class addRequestForm : Form
@@ -78,6 +77,9 @@ namespace TDF.Net.Forms
                 setBalanceControlsVisibility(true);
                 updateLeaveBalanceLabel();
                 leaveGroupBox.Visible = true;
+                pendingLabel.Location = new Point(48, 333);
+                daysLabel.Text = "Days requested:";
+                daysLabel.Location = new Point(40, 307);
             }
         }
         private void exitRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
@@ -103,6 +105,9 @@ namespace TDF.Net.Forms
                 leaveGroupBox.Visible = false;
                 daysRequestedLabel.Visible = true;
                 daysLabel.Visible = true;
+                pendingLabel.Location = new Point(48, 333);
+                daysLabel.Text = "Days requested:";
+                daysLabel.Location = new Point(40, 307);
             }
         }
         private void externalAssignmentRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
@@ -143,6 +148,12 @@ namespace TDF.Net.Forms
         private void fromDayDatePicker_ValueChanged(object sender, EventArgs e)
         {
             updateLeaveBalanceLabel();
+
+            if (exitRadioButton.Checked)
+            {
+                updateLabelsForPermissionBalance();
+            }
+
         }
         private void addRequestForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -288,24 +299,42 @@ namespace TDF.Net.Forms
 
             return days;
         }
-        public static int getPermissionUsed(int userID)
+        public int getPermissionUsed(int userID)
         {
             try
             {
+                DateTime fromTime = Convert.ToDateTime(fromDayDatePicker.Value); // Get the selected date
+
+                int month = fromTime.Month;
+                int year = fromTime.Year;
+
                 using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
 
-                    string query = "SELECT PermissionsUsed FROM AnnualLeave WHERE UserID = @UserID";
+                    string query = @"
+    SELECT COUNT(*) 
+    FROM Requests 
+    WHERE RequestType = @RequestType 
+      AND RequestUserID = @RequestUserID 
+      AND MONTH(RequestFromDay) = @Month 
+      AND YEAR(RequestFromDay) = @Year 
+      AND RequestStatus = 'Approved' 
+      AND RequestHRStatus = 'Approved'";
+
+                    // Ensure it's from the same month & year
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@UserID", userID);
+                        cmd.Parameters.AddWithValue("@RequestType", "Permission");
+                        cmd.Parameters.AddWithValue("@RequestUserID", userID);
+                        cmd.Parameters.AddWithValue("@Month", month);
+                        cmd.Parameters.AddWithValue("@Year", year);
 
                         object result = cmd.ExecuteScalar();
 
-                        // Directly return the result if it's not null, otherwise return 0.
-                        return result != null ? Convert.ToInt32(result) : 0;
+                        // Correct DBNull check
+                        return (result != DBNull.Value && result != null) ? Convert.ToInt32(result) : 0;
                     }
                 }
             }
@@ -365,11 +394,17 @@ namespace TDF.Net.Forms
                 {
                     conn.Open();
 
-                    string query = @"SELECT COUNT(*) FROM Requests 
-                             WHERE RequestType = @RequestType 
-                             AND RequestUserID = @RequestUserID 
-                             AND MONTH(RequestFromDay) = @Month 
-                             AND YEAR(RequestFromDay) = @Year"; // Ensure it's from the same month & year
+                    string query = @"
+    SELECT COUNT(*) 
+    FROM Requests 
+    WHERE RequestType = @RequestType 
+      AND RequestUserID = @RequestUserID 
+      AND MONTH(RequestFromDay) = @Month 
+      AND YEAR(RequestFromDay) = @Year 
+      AND RequestStatus != 'Approved' 
+      AND RequestHRStatus != 'Approved'";
+
+                    // Ensure it's from the same month & year
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -430,10 +465,6 @@ namespace TDF.Net.Forms
                 {
                     updateDays(toDate, fromDate);
 
-                    pendingLabel.Location = new Point(48, 333);
-                    daysLabel.Text = "Days requested:";
-                    daysLabel.Location = new Point(40, 307);
-
                     if (annualRadioButton.Checked)
                     {
                         pendingDays = getPendingDaysCount(requiredUserID, "Annual");
@@ -461,28 +492,28 @@ namespace TDF.Net.Forms
                         pendingDaysLabel.Visible = false;
                     }
                 }
-                else if (exitRadioButton.Checked)
+               else if (exitRadioButton.Checked)
                 {
-                    daysLabel.Text = "Permissions Requested:";
+                    daysLabel.Text = "Permissions requested:";
                     daysLabel.Location = new Point(5, 307);
                     pendingLabel.Location = new Point(10, 333);
-                    pendingDays = getMonthlyPermissionsCount(requiredUserID);
-                    availableBalanceLabel.Text = (2 - getPermissionUsed(requiredUserID)).ToString();
-                    daysRequestedLabel.Text = "1";
-                    remainingBalanceLabel.Text = (Convert.ToInt32(availableBalanceLabel.Text) - pendingDays - 1).ToString();
-                    pendingLabel.Visible = true;
-                    pendingDaysLabel.Visible = true;
-                    pendingLabel.Text = "Pending Permissions:";
-                    pendingDaysLabel.Text = pendingDays.ToString();
-                }
-                else if (workFromHomeRadioButton.Checked)
-                {
-                    pendingLabel.Location = new Point(48, 333);
-                    daysLabel.Text = "Days requested:";
-                    daysLabel.Location = new Point(40, 307);
+                    updateLabelsForPermissionBalance();
                 }
             }
         }
+
+        private void updateLabelsForPermissionBalance()
+        {
+            pendingDays = getMonthlyPermissionsCount(requiredUserID);
+            availableBalanceLabel.Text = (2 - getPermissionUsed(requiredUserID)).ToString();
+            daysRequestedLabel.Text = "1";
+            remainingBalanceLabel.Text = (Convert.ToInt32(availableBalanceLabel.Text) - pendingDays - 1).ToString();
+            pendingLabel.Visible = true;
+            pendingDaysLabel.Visible = true;
+            pendingLabel.Text = "Pending Permissions:";
+            pendingDaysLabel.Text = pendingDays.ToString();
+        }
+
         private void setTimeControlsVisibility(bool isVisible)
         {
             fromTimeTextBox.Visible = isVisible;
