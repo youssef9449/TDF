@@ -398,6 +398,8 @@ namespace TDF.Net.Forms
         }
         private void loadRequestsForUser(DataTable requestsTable)
         {
+            if(loggedInUser == null) return;
+
             string query = buildQueryForUser();
             executeQuery(query, requestsTable, cmd =>
             {
@@ -585,7 +587,7 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["RequestReason"].DisplayIndex = 7;
         }
-        private int getMonthlyPermissionsCount(int userID, DateTime requestDate)
+        private int getUsedMonthlyPermissionsCount(string userName, DateTime requestDate)
         {
             try
             {
@@ -598,14 +600,14 @@ namespace TDF.Net.Forms
 
                     string query = @"SELECT COUNT(*) FROM Requests 
                              WHERE RequestType = @RequestType 
-                             AND RequestUserID = @RequestUserID 
+                             AND RequestUserFullName = @RequestUserFullName 
                              AND MONTH(RequestFromDay) = @Month 
                              AND YEAR(RequestFromDay) = @Year AND RequestStatus = 'Approved' AND RequestHRStatus = 'Approved'";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@RequestType", "Permission");
-                        cmd.Parameters.AddWithValue("@RequestUserID", userID);
+                        cmd.Parameters.AddWithValue("@RequestUserFullName", userName);
                         cmd.Parameters.AddWithValue("@Month", month);
                         cmd.Parameters.AddWithValue("@Year", year);
 
@@ -631,9 +633,9 @@ namespace TDF.Net.Forms
             {
                 if (row.Cells["RequestType"].Value?.ToString() == "Permission")
                 {
-                    int userID = loggedInUser.userID;
+                    string userName = Convert.ToString(row.Cells["RequestUserFullName"].Value);
                     DateTime requestDate = Convert.ToDateTime(row.Cells["RequestFromDay"].Value);
-                    int monthlyCount = getMonthlyPermissionsCount(userID, requestDate);
+                    int monthlyCount = getUsedMonthlyPermissionsCount(userName, requestDate);
                     int adjustedBalance = 2 - monthlyCount;
 
                     row.Cells["remainingBalance"].Value = adjustedBalance;

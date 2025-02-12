@@ -193,73 +193,69 @@ namespace TDF.Forms
                          WHERE CONVERT(date, RequestFromDay, 120) >= @startDate 
                          AND CONVERT(date, RequestFromDay, 120) <= @endDate";
 
-            // Determine filter condition based on dropdown selections
-            string condition = "";
+            // Determine filter conditions based on dropdown selections
+            List<string> conditions = new List<string>();
+            List<SqlParameter> parameters = new List<SqlParameter>
+    {
+        new SqlParameter("@startDate", startDate),
+        new SqlParameter("@endDate", endDate)
+    };
 
+            // Department or Name filter
             if (filterDropdown.Text == "Department" && nameORdepDropdown.Text != "All")
             {
-                condition = " AND RequestDepartment = @filterValue";
+                conditions.Add("RequestDepartment = @filterValue");
+                parameters.Add(new SqlParameter("@filterValue", nameORdepDropdown.Text));
             }
             else if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
             {
-                condition = " AND RequestUserFullName = @filterValue";
+                conditions.Add("RequestUserFullName = @filterValue");
+                parameters.Add(new SqlParameter("@filterValue", nameORdepDropdown.Text));
             }
 
+            // Status filter
             if (statusDropdown.Text != "All")
             {
-                condition += " AND RequestStatus = @status";
+                conditions.Add("RequestStatus = @status");
+                parameters.Add(new SqlParameter("@status", statusDropdown.Text));
             }
 
+            // Type filter
             if (typeDropdown.Text != "All")
             {
-                condition += " AND RequestType = @type";
+                conditions.Add("RequestType = @type");
+                parameters.Add(new SqlParameter("@type", typeDropdown.Text));
             }
 
             // If the user has a manager role, add condition to filter by manager's departments
-            string departmentsCondition = "";
             if (hasManagerRole)
             {
                 List<string> managerDepartments = getDepartmentsOfManager();
                 if (managerDepartments.Count > 0)
                 {
-                    departmentsCondition = " AND RequestDepartment IN (" +
+                    string departmentsCondition = "RequestDepartment IN (" +
                         string.Join(", ", managerDepartments.Select((_, i) => $"@department{i}")) + ")";
+                    conditions.Add(departmentsCondition);
+
+                    for (int i = 0; i < managerDepartments.Count; i++)
+                    {
+                        parameters.Add(new SqlParameter($"@department{i}", managerDepartments[i]));
+                    }
                 }
             }
 
             // Combine all conditions and add ORDER BY
-            string orderByClause = " ORDER BY RequestFromDay ASC";
+            string condition = conditions.Count > 0 ? " AND " + string.Join(" AND ", conditions) : "";
+            string query = baseQuery + condition + " ORDER BY RequestFromDay ASC";
 
             using (SqlConnection connection = Database.getConnection())
             {
-                SqlCommand command = new SqlCommand(baseQuery + condition + departmentsCondition + orderByClause, connection);
-                command.Parameters.AddWithValue("@startDate", startDate);
-                command.Parameters.AddWithValue("@endDate", endDate);
+                SqlCommand command = new SqlCommand(query, connection);
 
-                // Add parameter for filter value if applicable
-                if (!string.IsNullOrEmpty(condition))
+                // Add all parameters to the command
+                foreach (var param in parameters)
                 {
-                    command.Parameters.AddWithValue("@filterValue", nameORdepDropdown.Text);
-                }
-
-                if (statusDropdown.Text != "All")
-                {
-                    command.Parameters.AddWithValue("@status", statusDropdown.Text);
-                }
-
-                if (typeDropdown.Text != "All")
-                {
-                    command.Parameters.AddWithValue("@type", typeDropdown.Text);
-                }
-
-                // Add parameters for manager's departments if the user has a manager role
-                if (hasManagerRole)
-                {
-                    List<string> managerDepartments = getDepartmentsOfManager();
-                    for (int i = 0; i < managerDepartments.Count; i++)
-                    {
-                        command.Parameters.AddWithValue($"@department{i}", managerDepartments[i]);
-                    }
+                    command.Parameters.Add(param);
                 }
 
                 try
@@ -268,36 +264,22 @@ namespace TDF.Forms
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
 
-
-                    //  DataGridViewTextBoxColumn hoursColumn = new DataGridViewTextBoxColumn();
-                    //  hoursColumn.Name = "Hours";
-                    //  hoursColumn.HeaderText = "Hours";
-                    //  hoursColumn.ValueType = typeof(double);  // Set type to double
-                    //    reportsDataGridView.Columns.Add(hoursColumn);
-
                     // Add a new "Hours" column to the DataTable to store the calculated hours
-                     dataTable.Columns.Add("Hours", typeof(double));
-                    // Loop through each row and calculate the difference between EndingTime and BeginningTime
+                    dataTable.Columns.Add("Hours", typeof(double));
 
+                    // Loop through each row and calculate the difference between EndingTime and BeginningTime
                     foreach (DataRow row in dataTable.Rows)
                     {
-                        // Check if both the BeginningTime and EndingTime are not DBNull
                         if (row["RequestBeginningTime"] != DBNull.Value && row["RequestEndingTime"] != DBNull.Value)
                         {
-                            // Safely cast to TimeSpan
                             TimeSpan beginTime = (TimeSpan)row["RequestBeginningTime"];
                             TimeSpan endTime = (TimeSpan)row["RequestEndingTime"];
-
-                            // Calculate the difference in hours (TotalHours gives the result as a double)
                             double hoursDifference = endTime.TotalHours - beginTime.TotalHours;
-
-                            // Assign the calculated hours as double to the Hours column
-                            row["Hours"] = hoursDifference;  // Explicitly store as double
+                            row["Hours"] = hoursDifference;
                         }
                         else
                         {
-                            // If either time is DBNull, set the Hours column to 0
-                            row["Hours"] = 0;  // Default to 0 hours if either time is null
+                            row["Hours"] = 0;
                         }
                     }
 
@@ -308,11 +290,10 @@ namespace TDF.Forms
                     // Bind the result to the DataGridView
                     reportsDataGridView.DataSource = dataTable;
                     reportsDataGridView.Columns["HRStatus"].DisplayIndex = reportsDataGridView.Columns.Count - 2;
-
                 }
                 catch (Exception ex)
                 {
-                  //  MessageBox.Show($"Error loading the report:\n{ex.Message}\n\nQuery: {command.CommandText}");
+                   // MessageBox.Show($"Error loading the report:\n{ex.Message}\n\nQuery: {command.CommandText}");
                 }
             }
         }
@@ -516,11 +497,11 @@ namespace TDF.Forms
         {
             if (filterDropdown.Text == "Name" && nameORdepDropdown.Text != "All")
             {
-                bool isAnnualOrEmergencyOrPermission = typeDropdown.Text == "Annual" || typeDropdown.Text == "Emergency" || typeDropdown.Text == "Permission";
+                bool isAnnualOrEmergency = typeDropdown.Text == "Annual" || typeDropdown.Text == "Emergency";
 
-                balanceGroupBox.Visible = isAnnualOrEmergencyOrPermission;
+                balanceGroupBox.Visible = isAnnualOrEmergency;
 
-                if (isAnnualOrEmergencyOrPermission)
+                if (isAnnualOrEmergency)
                 {
                     string leaveType = typeDropdown.Text == "Annual" ? "Annual" : typeDropdown.Text == "Emergency" ? "CasualLeave" : "Permissions";
                     string usedLeaveType = typeDropdown.Text == "Annual" ? "AnnualUsed" : typeDropdown.Text == "Emergency" ? "CasualUsed" : "PermissionsUsed";
@@ -544,7 +525,6 @@ namespace TDF.Forms
 
         }
         #endregion
-
 
     }
 }

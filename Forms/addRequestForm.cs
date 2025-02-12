@@ -36,7 +36,7 @@ namespace TDF.Net.Forms
         int numberOfDaysRequested, availableBalance, pendingDays = 0;
         public static bool requestAddedOrUpdated;
         public event Action requestAddedOrUpdatedEvent;
-        int requiredUserID = selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID;
+        public static int requiredUserID = selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID;
 
         #region Events
         private void addRequestForm_Load(object sender, EventArgs e)
@@ -382,7 +382,7 @@ namespace TDF.Net.Forms
 
             return 0; // Default return if an exception occurs.
         }
-        private int getMonthlyPermissionsCount(int userID)
+        private int getPendingMonthlyPermissionsCount(int userID)
         {
             try
             {
@@ -394,15 +394,13 @@ namespace TDF.Net.Forms
                 {
                     conn.Open();
 
-                    string query = @"
-    SELECT COUNT(*) 
-    FROM Requests 
-    WHERE RequestType = @RequestType 
-      AND RequestUserID = @RequestUserID 
-      AND MONTH(RequestFromDay) = @Month 
-      AND YEAR(RequestFromDay) = @Year 
-      AND RequestStatus != 'Approved' 
-      AND RequestHRStatus != 'Approved'";
+                    string query = @"SELECT COUNT(*) 
+                                    FROM Requests 
+                                    WHERE RequestType = @RequestType 
+                                    AND RequestUserID = @RequestUserID 
+                                    AND MONTH(RequestFromDay) = @Month 
+                                    AND YEAR(RequestFromDay) = @Year 
+                                    AND (RequestStatus = 'Pending' OR RequestHRStatus = 'Pending')";
 
                     // Ensure it's from the same month & year
 
@@ -501,10 +499,9 @@ namespace TDF.Net.Forms
                 }
             }
         }
-
         private void updateLabelsForPermissionBalance()
         {
-            pendingDays = getMonthlyPermissionsCount(requiredUserID);
+            pendingDays = getPendingMonthlyPermissionsCount(requiredUserID);
             availableBalanceLabel.Text = (2 - getPermissionUsed(requiredUserID)).ToString();
             daysRequestedLabel.Text = "1";
             remainingBalanceLabel.Text = (Convert.ToInt32(availableBalanceLabel.Text) - pendingDays - 1).ToString();
@@ -513,7 +510,6 @@ namespace TDF.Net.Forms
             pendingLabel.Text = "Pending Permissions:";
             pendingDaysLabel.Text = pendingDays.ToString();
         }
-
         private void setTimeControlsVisibility(bool isVisible)
         {
             fromTimeTextBox.Visible = isVisible;
@@ -687,7 +683,7 @@ namespace TDF.Net.Forms
                     return;
                 }
 
-                if (getMonthlyPermissionsCount(requiredUserID) >= 2)
+                if (getPendingMonthlyPermissionsCount(requiredUserID) >= 2)
                 {
                     MessageBox.Show("You have already applied for 2 Permissions this month.");
                     return;
