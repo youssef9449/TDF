@@ -501,6 +501,7 @@ namespace TDF.Net.Forms
         }
         private void updateLabelsForPermissionBalance()
         {
+            
             pendingDays = getPendingMonthlyPermissionsCount(requiredUserID);
             availableBalanceLabel.Text = (2 - getPermissionUsed(requiredUserID)).ToString();
             daysRequestedLabel.Text = "1";
