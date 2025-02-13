@@ -511,7 +511,7 @@ namespace TDF.Net.Forms
             this.refreshButton.AllowToggling = false;
             this.refreshButton.AnimationSpeed = 200;
             this.refreshButton.AutoGenerateColors = false;
-            this.refreshButton.AutoRoundBorders = false;
+            this.refreshButton.AutoRoundBorders = true;
             this.refreshButton.AutoSizeLeftIcon = true;
             this.refreshButton.AutoSizeRightIcon = true;
             this.refreshButton.BackColor = System.Drawing.Color.Transparent;
@@ -554,7 +554,7 @@ namespace TDF.Net.Forms
             this.refreshButton.IndicateFocus = false;
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
-            this.refreshButton.OnDisabledState.BorderRadius = 1;
+            this.refreshButton.OnDisabledState.BorderRadius = 30;
             this.refreshButton.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.refreshButton.OnDisabledState.BorderThickness = 1;
             this.refreshButton.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -562,7 +562,7 @@ namespace TDF.Net.Forms
             this.refreshButton.OnDisabledState.IconLeftImage = null;
             this.refreshButton.OnDisabledState.IconRightImage = null;
             this.refreshButton.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
-            this.refreshButton.onHoverState.BorderRadius = 1;
+            this.refreshButton.onHoverState.BorderRadius = 30;
             this.refreshButton.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.refreshButton.onHoverState.BorderThickness = 1;
             this.refreshButton.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
@@ -570,7 +570,7 @@ namespace TDF.Net.Forms
             this.refreshButton.onHoverState.IconLeftImage = null;
             this.refreshButton.onHoverState.IconRightImage = null;
             this.refreshButton.OnIdleState.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.refreshButton.OnIdleState.BorderRadius = 1;
+            this.refreshButton.OnIdleState.BorderRadius = 30;
             this.refreshButton.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.refreshButton.OnIdleState.BorderThickness = 1;
             this.refreshButton.OnIdleState.FillColor = System.Drawing.Color.DodgerBlue;
@@ -578,7 +578,7 @@ namespace TDF.Net.Forms
             this.refreshButton.OnIdleState.IconLeftImage = null;
             this.refreshButton.OnIdleState.IconRightImage = null;
             this.refreshButton.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            this.refreshButton.OnPressedState.BorderRadius = 1;
+            this.refreshButton.OnPressedState.BorderRadius = 30;
             this.refreshButton.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.refreshButton.OnPressedState.BorderThickness = 1;
             this.refreshButton.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -599,7 +599,7 @@ namespace TDF.Net.Forms
             this.addRequestButton.AllowToggling = false;
             this.addRequestButton.AnimationSpeed = 200;
             this.addRequestButton.AutoGenerateColors = false;
-            this.addRequestButton.AutoRoundBorders = false;
+            this.addRequestButton.AutoRoundBorders = true;
             this.addRequestButton.AutoSizeLeftIcon = true;
             this.addRequestButton.AutoSizeRightIcon = true;
             this.addRequestButton.BackColor = System.Drawing.Color.Transparent;
@@ -642,7 +642,7 @@ namespace TDF.Net.Forms
             this.addRequestButton.IndicateFocus = false;
             this.addRequestButton.Name = "addRequestButton";
             this.addRequestButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
-            this.addRequestButton.OnDisabledState.BorderRadius = 1;
+            this.addRequestButton.OnDisabledState.BorderRadius = 30;
             this.addRequestButton.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.addRequestButton.OnDisabledState.BorderThickness = 1;
             this.addRequestButton.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -650,7 +650,7 @@ namespace TDF.Net.Forms
             this.addRequestButton.OnDisabledState.IconLeftImage = null;
             this.addRequestButton.OnDisabledState.IconRightImage = null;
             this.addRequestButton.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
-            this.addRequestButton.onHoverState.BorderRadius = 1;
+            this.addRequestButton.onHoverState.BorderRadius = 30;
             this.addRequestButton.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.addRequestButton.onHoverState.BorderThickness = 1;
             this.addRequestButton.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
@@ -658,7 +658,7 @@ namespace TDF.Net.Forms
             this.addRequestButton.onHoverState.IconLeftImage = null;
             this.addRequestButton.onHoverState.IconRightImage = null;
             this.addRequestButton.OnIdleState.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.addRequestButton.OnIdleState.BorderRadius = 1;
+            this.addRequestButton.OnIdleState.BorderRadius = 30;
             this.addRequestButton.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.addRequestButton.OnIdleState.BorderThickness = 1;
             this.addRequestButton.OnIdleState.FillColor = System.Drawing.Color.DodgerBlue;
@@ -666,7 +666,7 @@ namespace TDF.Net.Forms
             this.addRequestButton.OnIdleState.IconLeftImage = null;
             this.addRequestButton.OnIdleState.IconRightImage = null;
             this.addRequestButton.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            this.addRequestButton.OnPressedState.BorderRadius = 1;
+            this.addRequestButton.OnPressedState.BorderRadius = 30;
             this.addRequestButton.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.addRequestButton.OnPressedState.BorderThickness = 1;
             this.addRequestButton.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -687,7 +687,7 @@ namespace TDF.Net.Forms
             this.applyButton.AllowToggling = false;
             this.applyButton.AnimationSpeed = 200;
             this.applyButton.AutoGenerateColors = false;
-            this.applyButton.AutoRoundBorders = false;
+            this.applyButton.AutoRoundBorders = true;
             this.applyButton.AutoSizeLeftIcon = true;
             this.applyButton.AutoSizeRightIcon = true;
             this.applyButton.BackColor = System.Drawing.Color.Transparent;
@@ -730,7 +730,7 @@ namespace TDF.Net.Forms
             this.applyButton.IndicateFocus = false;
             this.applyButton.Name = "applyButton";
             this.applyButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
-            this.applyButton.OnDisabledState.BorderRadius = 1;
+            this.applyButton.OnDisabledState.BorderRadius = 30;
             this.applyButton.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.applyButton.OnDisabledState.BorderThickness = 1;
             this.applyButton.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -738,7 +738,7 @@ namespace TDF.Net.Forms
             this.applyButton.OnDisabledState.IconLeftImage = null;
             this.applyButton.OnDisabledState.IconRightImage = null;
             this.applyButton.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
-            this.applyButton.onHoverState.BorderRadius = 1;
+            this.applyButton.onHoverState.BorderRadius = 30;
             this.applyButton.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.applyButton.onHoverState.BorderThickness = 1;
             this.applyButton.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
@@ -746,7 +746,7 @@ namespace TDF.Net.Forms
             this.applyButton.onHoverState.IconLeftImage = null;
             this.applyButton.onHoverState.IconRightImage = null;
             this.applyButton.OnIdleState.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.applyButton.OnIdleState.BorderRadius = 1;
+            this.applyButton.OnIdleState.BorderRadius = 30;
             this.applyButton.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.applyButton.OnIdleState.BorderThickness = 1;
             this.applyButton.OnIdleState.FillColor = System.Drawing.Color.DodgerBlue;
@@ -754,7 +754,7 @@ namespace TDF.Net.Forms
             this.applyButton.OnIdleState.IconLeftImage = null;
             this.applyButton.OnIdleState.IconRightImage = null;
             this.applyButton.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            this.applyButton.OnPressedState.BorderRadius = 1;
+            this.applyButton.OnPressedState.BorderRadius = 30;
             this.applyButton.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.applyButton.OnPressedState.BorderThickness = 1;
             this.applyButton.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));

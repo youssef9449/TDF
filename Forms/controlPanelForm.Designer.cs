@@ -76,7 +76,6 @@
             Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties31 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
             Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties32 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
             Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges15 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges borderEdges16 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderEdges();
             this.usersCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.roleButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.usersLabel = new Bunifu.UI.WinForms.BunifuLabel();
@@ -128,7 +127,6 @@
             this.titleTextBox = new Bunifu.UI.WinForms.BunifuTextBox();
             this.titleLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.addTitleButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
-            this.killButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -2834,98 +2832,6 @@
             this.addTitleButton.UseDefaultRadiusAndThickness = true;
             this.addTitleButton.Click += new System.EventHandler(this.addTitleButton_Click);
             // 
-            // killButton
-            // 
-            this.killButton.AllowAnimations = true;
-            this.killButton.AllowMouseEffects = true;
-            this.killButton.AllowToggling = false;
-            this.killButton.AnimationSpeed = 200;
-            this.killButton.AutoGenerateColors = false;
-            this.killButton.AutoRoundBorders = false;
-            this.killButton.AutoSizeLeftIcon = true;
-            this.killButton.AutoSizeRightIcon = true;
-            this.killButton.BackColor = System.Drawing.Color.Transparent;
-            this.killButton.BackColor1 = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(122)))), ((int)(((byte)(183)))));
-            this.killButton.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("killButton.BackgroundImage")));
-            this.killButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.killButton.ButtonText = "Kill";
-            this.killButton.ButtonTextMarginLeft = 0;
-            this.killButton.ColorContrastOnClick = 45;
-            this.killButton.ColorContrastOnHover = 45;
-            this.killButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges16.BottomLeft = true;
-            borderEdges16.BottomRight = true;
-            borderEdges16.TopLeft = true;
-            borderEdges16.TopRight = true;
-            this.killButton.CustomizableEdges = borderEdges16;
-            this.killButton.DialogResult = System.Windows.Forms.DialogResult.None;
-            this.killButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
-            this.killButton.DisabledFillColor = System.Drawing.Color.Empty;
-            this.killButton.DisabledForecolor = System.Drawing.Color.Empty;
-            this.killButton.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton.ButtonStates.Pressed;
-            this.killButton.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.killButton.ForeColor = System.Drawing.Color.White;
-            this.killButton.IconLeft = null;
-            this.killButton.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.killButton.IconLeftCursor = System.Windows.Forms.Cursors.Default;
-            this.killButton.IconLeftPadding = new System.Windows.Forms.Padding(11, 3, 3, 3);
-            this.killButton.IconMarginLeft = 11;
-            this.killButton.IconPadding = 10;
-            this.killButton.IconRight = null;
-            this.killButton.IconRightAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.killButton.IconRightCursor = System.Windows.Forms.Cursors.Default;
-            this.killButton.IconRightPadding = new System.Windows.Forms.Padding(3, 3, 7, 3);
-            this.killButton.IconSize = 25;
-            this.killButton.IdleBorderColor = System.Drawing.Color.Empty;
-            this.killButton.IdleBorderRadius = 0;
-            this.killButton.IdleBorderThickness = 0;
-            this.killButton.IdleFillColor = System.Drawing.Color.Empty;
-            this.killButton.IdleIconLeftImage = null;
-            this.killButton.IdleIconRightImage = null;
-            this.killButton.IndicateFocus = false;
-            this.killButton.Location = new System.Drawing.Point(26, 657);
-            this.killButton.Name = "killButton";
-            this.killButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
-            this.killButton.OnDisabledState.BorderRadius = 1;
-            this.killButton.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.killButton.OnDisabledState.BorderThickness = 1;
-            this.killButton.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.killButton.OnDisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
-            this.killButton.OnDisabledState.IconLeftImage = null;
-            this.killButton.OnDisabledState.IconRightImage = null;
-            this.killButton.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
-            this.killButton.onHoverState.BorderRadius = 1;
-            this.killButton.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.killButton.onHoverState.BorderThickness = 1;
-            this.killButton.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
-            this.killButton.onHoverState.ForeColor = System.Drawing.Color.White;
-            this.killButton.onHoverState.IconLeftImage = null;
-            this.killButton.onHoverState.IconRightImage = null;
-            this.killButton.OnIdleState.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.killButton.OnIdleState.BorderRadius = 1;
-            this.killButton.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.killButton.OnIdleState.BorderThickness = 1;
-            this.killButton.OnIdleState.FillColor = System.Drawing.Color.DodgerBlue;
-            this.killButton.OnIdleState.ForeColor = System.Drawing.Color.White;
-            this.killButton.OnIdleState.IconLeftImage = null;
-            this.killButton.OnIdleState.IconRightImage = null;
-            this.killButton.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            this.killButton.OnPressedState.BorderRadius = 1;
-            this.killButton.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
-            this.killButton.OnPressedState.BorderThickness = 1;
-            this.killButton.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            this.killButton.OnPressedState.ForeColor = System.Drawing.Color.White;
-            this.killButton.OnPressedState.IconLeftImage = null;
-            this.killButton.OnPressedState.IconRightImage = null;
-            this.killButton.Size = new System.Drawing.Size(163, 29);
-            this.killButton.TabIndex = 74;
-            this.killButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.killButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
-            this.killButton.TextMarginLeft = 0;
-            this.killButton.TextPadding = new System.Windows.Forms.Padding(0);
-            this.killButton.UseDefaultRadiusAndThickness = true;
-            this.killButton.Click += new System.EventHandler(this.killButton_Click);
-            // 
             // controlPanelForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2933,7 +2839,6 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1280, 720);
-            this.Controls.Add(this.killButton);
             this.Controls.Add(this.addTitleButton);
             this.Controls.Add(this.titleLabel);
             this.Controls.Add(this.titleTextBox);
@@ -3049,6 +2954,5 @@
         private Bunifu.UI.WinForms.BunifuTextBox titleTextBox;
         private Bunifu.UI.WinForms.BunifuLabel titleLabel;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton addTitleButton;
-        private Bunifu.UI.WinForms.BunifuButton.BunifuButton killButton;
     }
 }

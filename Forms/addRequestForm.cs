@@ -167,13 +167,13 @@ namespace TDF.Net.Forms
             switch (requestToEdit.RequestType)
             {
                 case "Work From Home":
-                    SetRadioButtonStates(workFromHome: true, externalAssignment: false, dayOff: false, exit: false, annual: false, casual: false);
+                    SetRadioButtonStates(workFromHome: true, externalAssignment: false, dayOff: false, exit: false, annual: true, casual: false);
                     break;
                 case "Permission":
-                    SetRadioButtonStates(workFromHome: false, externalAssignment: false, dayOff: false, exit: true, annual: false, casual: false);
+                    SetRadioButtonStates(workFromHome: false, externalAssignment: false, dayOff: false, exit: true, annual: true, casual: false);
                     break;
                 case "External Assignment":
-                    SetRadioButtonStates(workFromHome: false, externalAssignment: true, dayOff: false, exit: false, annual: false, casual: false);
+                    SetRadioButtonStates(workFromHome: false, externalAssignment: true, dayOff: false, exit: false, annual: true, casual: false);
                     break;
                 default:
                     bool isAnnual = requestToEdit.RequestType == "Annual";
@@ -435,30 +435,34 @@ namespace TDF.Net.Forms
         }
         private void updateLabelsForDayOffBalance(string leaveType, int userId, int daysRequested)
         {
+            // Retrieve the available leave balance.
             availableBalance = getLeaveDays(leaveType, userId);
             availableBalanceLabel.Text = availableBalance.ToString();
 
-            if (annualRadioButton.Checked)
+            // Determine the expected request type based on the selected radio button.
+            string expectedRequestType = annualRadioButton.Checked ? "Annual" :
+                                         casualRadioButton.Checked ? "Emergency" : null;
+
+            if (expectedRequestType != null)
             {
-                pendingDaysLabel.Text = requestToEdit != null && requestToEdit.RequestType == "Annual" ?
-                                       (pendingDays - requestToEdit.RequestNumberOfDays).ToString() :
-                                       pendingDays.ToString();
+                // Calculate adjusted pending days if we're editing an existing request.
+                int adjustedPendingDays = pendingDays;
+                if (requestToEdit != null && requestToEdit.RequestType == expectedRequestType)
+                {
+                    adjustedPendingDays -= requestToEdit.RequestNumberOfDays;
+                }
+                pendingDaysLabel.Text = adjustedPendingDays.ToString();
 
-                remainingBalanceLabel.Text = requestToEdit != null && requestToEdit.RequestType == "Annual" ?
-                (availableBalance - daysRequested - pendingDays + requestToEdit.RequestNumberOfDays).ToString() : 
-                (availableBalance - daysRequested - pendingDays).ToString();
-            }
-            else if (casualRadioButton.Checked)
-            {
-                pendingDaysLabel.Text = requestToEdit != null && requestToEdit.RequestType == "Emergency" ?
-                       (pendingDays - requestToEdit.RequestNumberOfDays).ToString() :
-                       pendingDays.ToString();
-
-                remainingBalanceLabel.Text = requestToEdit != null && requestToEdit.RequestType == "Emergency" ?
-                (availableBalance - daysRequested - pendingDays + requestToEdit.RequestNumberOfDays).ToString() :
-                (availableBalance - daysRequested - pendingDays).ToString();
+                // Calculate the remaining balance.
+                int remaining = availableBalance - daysRequested - pendingDays;
+                if (requestToEdit != null && requestToEdit.RequestType == expectedRequestType)
+                {
+                    remaining += requestToEdit.RequestNumberOfDays;
+                }
+                remainingBalanceLabel.Text = remaining.ToString();
             }
 
+            // Ensure the balance-related labels are visible.
             balanceLabel.Visible = true;
             availableBalanceLabel.Visible = true;
             remainingLabel.Visible = true;
@@ -466,15 +470,36 @@ namespace TDF.Net.Forms
         }
         private void updateLabelsForPermissionBalance()
         {
-            pendingPermissons = getPendingMonthlyPermissionsCount(requiredUserID);
-            pendingPermissons -= requestToEdit != null && requestToEdit.RequestType == "Permission" ? 1 : 0;
-            availableBalanceLabel.Text = (2 - getPermissionUsed(requiredUserID)).ToString();
-            daysRequestedLabel.Text = "1";
-            remainingBalanceLabel.Text = (Convert.ToInt32(availableBalanceLabel.Text) - pendingPermissons - 1).ToString();
-            pendingLabel.Visible = true;
-            pendingDaysLabel.Visible = true;
+            // Define constants for clarity.
+            const int maxMonthlyPermissions = 2;
+            const int requestedPermissions = 1;
+
+            // Retrieve pending permissions count.
+            int pendingPermissions = getPendingMonthlyPermissionsCount(requiredUserID);
+
+            // If editing an existing permission request, adjust the pending count.
+            if (requestToEdit != null && requestToEdit.RequestType == "Permission")
+            {
+                pendingPermissions--;
+            }
+
+            // Calculate available permissions.
+            int usedPermissions = getPermissionUsed(requiredUserID);
+            int availablePermissions = maxMonthlyPermissions - usedPermissions;
+            availableBalanceLabel.Text = availablePermissions.ToString();
+
+            // Set the requested days label.
+            daysRequestedLabel.Text = requestedPermissions.ToString();
+
+            // Compute remaining balance.
+            int remainingBalance = availablePermissions - pendingPermissions - requestedPermissions;
+            remainingBalanceLabel.Text = remainingBalance.ToString();
+
+            // Update pending labels.
             pendingLabel.Text = "Pending Permissions:";
-            pendingDaysLabel.Text = pendingPermissons.ToString();
+            pendingLabel.Visible = true;
+            pendingDaysLabel.Text = pendingPermissions.ToString();
+            pendingDaysLabel.Visible = true;
         }
         private void updateRequestedDaysLabel(DateTime toDate, DateTime fromDate)
         {

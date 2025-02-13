@@ -236,8 +236,6 @@ namespace TDF.Forms
             spoofButton.Visible = hasAdminRole;
             importButton.Visible = hasAdminRole;
             deleteButton.Visible = hasAdminRole;
-            killButton.Visible = hasAdminRole;
-
         }
         private void searchTextBox_TextChange(object sender, EventArgs e)
         {
@@ -1217,58 +1215,6 @@ namespace TDF.Forms
                 }
 
                 MessageBox.Show($"The title '{newTitleName}' has been added successfully to the {selectedDepartment} department.");
-            }
-        }
-        private void killButton_Click(object sender, EventArgs e)
-        {
-            if (!userSelected())
-            {
-                return;
-            }
-
-            using (SqlConnection conn = Database.getConnection())
-            {
-                conn.Open();
-
-                foreach (object selectedItem in usersCheckedListBox.CheckedItems)
-                {
-                    // Extract user name
-                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
-
-                    // Get the machine name of the user
-                    string query = "SELECT MachineName FROM Users WHERE FullName = @FullName";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@FullName", userFullName);
-                        object machineName = cmd.ExecuteScalar();
-
-                        if (machineName != null)
-                        {
-                            SendKillSignal(machineName.ToString()); // Send signal to that PC
-                        }
-                    }
-                }
-
-                MessageBox.Show("Selected users have been disconnected.");
-            }
-        }
-        private static void SendKillSignal(string targetPC)
-        {
-            try
-            {
-                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(targetPC, "KillPipe", PipeDirection.Out))
-                {
-                    pipeClient.Connect(2000); // Wait 2 seconds for connection
-                    using (StreamWriter writer = new StreamWriter(pipeClient))
-                    {
-                        writer.WriteLine("KILL");
-                        writer.Flush();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error sending kill signal to {targetPC}: {ex.Message}");
             }
         }
         #endregion

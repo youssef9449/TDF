@@ -29,14 +29,10 @@ namespace TDF.Net
         public static List<string> departments = new List<string>();
         public static List<string> titles = new List<string>();
         private static Form oldSessionForm = null;
-        public static NamedPipeClientStream namedPipeClientStream;
-
 
         #region Methods
         private void startLoggingIn()
         {
-            closePipeConnection();
-
             string username = txtUsername.Text;
             string password = txtPassword.Text;
 
@@ -427,23 +423,6 @@ namespace TDF.Net
                     cmd.Parameters.AddWithValue("@FullName", loggedInUser.FullName);
                     cmd.ExecuteNonQuery();
                 }
-            }
-        }
-        public static void closePipeConnection()
-        {
-            try
-            {
-                // If you have a named pipe client, close it
-                if (namedPipeClientStream != null)
-                {
-                    namedPipeClientStream.Close();
-                    namedPipeClientStream.Dispose();
-                    namedPipeClientStream = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error closing pipe: " + ex.Message, "Pipe Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
         public static async Task StartListeningAsync(CancellationToken cancellationToken = default)

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Forms;
@@ -45,7 +43,6 @@ namespace TDF.Net
         private int expandedHeight; // Stores the full height of the panel when expanded
         private Point usersIconLocation;
         private int contractedHeight = 50; // Height of the panel to show only the header
-        private CancellationTokenSource _pipeCts = new CancellationTokenSource();
 
         #region Events
         private void mainFormNewUI_Load(object sender, EventArgs e)
@@ -71,7 +68,6 @@ namespace TDF.Net
             connectedUsersTimer.Interval = 10000; // 10 seconds
             connectedUsersTimer.Tick += ConnectedUsersTimer_Tick;
             connectedUsersTimer.Start();
-            _ = StartListeningAsync(_pipeCts.Token);
 
         }
         protected override void OnMove(EventArgs e)
@@ -269,9 +265,6 @@ namespace TDF.Net
             makeUserDisconnected();
             connectedUsersTimer.Stop();
             connectedUsersTimer.Dispose();
-
-            _pipeCts.Cancel();
-            closePipeConnection();
 
             loggedInUser = null;
         }
@@ -775,9 +768,6 @@ namespace TDF.Net
         private void logoutImageButton_Click(object sender, EventArgs e)
         {
             makeUserDisconnected();
-
-            _pipeCts.Cancel();
-            closePipeConnection(); 
 
             loggedInUser = null;
             Close();
