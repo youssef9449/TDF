@@ -390,7 +390,6 @@ namespace TDF.Net.Forms
                 MessageBox.Show("An unexpected error occurred: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void loadRequestsForManagerOrAdminOrHR(DataTable requestsTable)
         {
             string query = buildQueryForManagerOrAdminORHR();
@@ -555,6 +554,8 @@ namespace TDF.Net.Forms
             selectedRequest.RequestReason = row["RequestReason"] != DBNull.Value ? row["RequestReason"].ToString() : string.Empty;
             selectedRequest.RequestFromDay = requestFromDay;
             selectedRequest.RequestToDay = row["RequestToDay"] != DBNull.Value ? Convert.ToDateTime(row["RequestToDay"]) : requestFromDay;
+            selectedRequest.RequestNumberOfDays = row["RequestNumberOfDays"] != DBNull.Value ? Convert.ToInt32(row["RequestNumberOfDays"]) : 0;
+
 
             // Converting TimeSpan to DateTime by adding the TimeSpan to the requestFromDay
             selectedRequest.RequestBeginningTime = row["RequestBeginningTime"] != DBNull.Value ?

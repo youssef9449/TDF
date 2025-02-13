@@ -43,6 +43,7 @@ namespace TDF.Net
         private Timer connectedUsersTimer;
         private bool isPanelExpanded = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
+        private Point usersIconLocation;
         private int contractedHeight = 50; // Height of the panel to show only the header
         private CancellationTokenSource _pipeCts = new CancellationTokenSource();
 
@@ -56,6 +57,7 @@ namespace TDF.Net
             expandedHeight = usersShadowPanel.Height; // Store the original height when expanded
             usersShadowPanel.Height = contractedHeight; // Set the initial height to contracted
             usersShadowPanel.AutoScroll = false; // Disable auto-scroll for contracted state
+            usersIconLocation = usersIconButton.Location;
 
             //startPipeListener(); // Start listening for messages
             updateRoleStatus();
@@ -297,7 +299,7 @@ namespace TDF.Net
         }
         private void usersShadowPanel_Scroll(object sender, ScrollEventArgs e)
         {
-            usersShadowPanel.Invalidate();
+           usersShadowPanel.Invalidate();
         }
         private void usersIconButton_Click(object sender, EventArgs e)
         {
@@ -308,6 +310,8 @@ namespace TDF.Net
                 usersShadowPanel.AutoScroll = false; // Disable auto-scroll
                 usersIconButton.Image = Resources.down; // Change the icon to "down"
                 isPanelExpanded = false; // Update the state
+                usersIconButton.Location = usersIconLocation;
+
             }
             else
             {
@@ -317,6 +321,7 @@ namespace TDF.Net
                 usersIconButton.Image = Resources.up; // Change the icon to "up"
                 displayConnectedUsers(); // Populate the panel with connected users
                 isPanelExpanded = true; // Update the state
+                usersIconButton.Location = usersIconLocation;
             }
         }
         #endregion
@@ -632,12 +637,16 @@ namespace TDF.Net
         }
         private void displayConnectedUsers()
         {
+            // Suspend layout updates to prevent intermediate redraws
+            usersShadowPanel.SuspendLayout();
+
             List<User> connectedUsers = getConnectedUsers();
 
             // Clear the panel before adding new items
             usersShadowPanel.Controls.Clear();
 
             // Add the icon button back to the panel
+            usersIconButton.Location = usersIconLocation;
             usersShadowPanel.Controls.Add(usersIconButton);
 
             int yOffset = 10; // Initial vertical spacing
@@ -647,7 +656,6 @@ namespace TDF.Net
             {
                 Text = $"Online Users ({connectedUsers.Count})", // Display the count of online users
                 Location = new Point(10, yOffset + 3), // At the top
-              //  Location = new Point((usersShadowPanel.Width - TextRenderer.MeasureText($"Online Users ({connectedUsers.Count})", new Font("Segoe UI", 12, FontStyle.Bold)).Width) / 2, yOffset), // Center the header horizontally
                 AutoSize = true,
                 Font = new Font("Segoe UI", 12, FontStyle.Bold)
             };
@@ -685,7 +693,6 @@ namespace TDF.Net
                     TextAlign = ContentAlignment.MiddleCenter // Ensure proper text alignment
                 };
 
-
                 // Add controls to the panel
                 usersShadowPanel.Controls.Add(pictureBox);
                 usersShadowPanel.Controls.Add(nameLabel);
@@ -693,6 +700,9 @@ namespace TDF.Net
                 // Update vertical offset for the next user
                 yOffset += pictureBox.Height + nameLabel.Height + 20; // Add space between users
             }
+
+            // Resume layout updates and perform a layout recalculation (including auto scroll updates)
+            usersShadowPanel.ResumeLayout(true);
         }
         /* private void startPipeListener()
          {
@@ -736,18 +746,18 @@ namespace TDF.Net
         {
             //  showFormInPanel(new requestsForm(false));
             requestsForm requestsForm = new requestsForm(true);
-            requestsForm.Show();
+            requestsForm.ShowDialog();
         }
         private void reportsImageButton_Click(object sender, EventArgs e)
         {
            // showFormInPanel(new reportsForm(false));
             reportsForm reportsForm = new reportsForm(true);
-            reportsForm.Show();
+            reportsForm.ShowDialog();
         }
         private void teamImageButton_Click(object sender, EventArgs e)
         {
             myTeamForm balanceForm = new myTeamForm(true);
-            balanceForm.Show();
+            balanceForm.ShowDialog();
             //showFormInPanel(new balanceForm(false));
         }
         private void controlPanelImageButton_Click(object sender, EventArgs e)
