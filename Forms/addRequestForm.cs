@@ -21,7 +21,7 @@ namespace TDF.Net.Forms
              externalAssignmentRadioButton.Checked = false;
              casualRadioButton.Checked = false;
              dayoffRadioButton.Checked = true;
-            annualRadioButton.Checked = true;
+             annualRadioButton.Checked = true;
         }
 
         public addRequestForm(Request request)
@@ -33,7 +33,7 @@ namespace TDF.Net.Forms
             populateFieldsWithRequestData();
         }
 
-        int numberOfDaysRequested, availableBalance, pendingDays, pendingPermissons = 0;
+        int numberOfDaysRequested, availableBalance, pendingDays, pendingPermissions = 0;
         public static bool requestAddedOrUpdated;
         public event Action requestAddedOrUpdatedEvent;
         public static int requiredUserID = selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID;
@@ -70,6 +70,7 @@ namespace TDF.Net.Forms
         {
             if (dayoffRadioButton.Checked)
             {
+                exitRadioButton.Checked = false;
                 // Hide time-related controls and show date-related controls
                 setTimeControlsVisibility(false);
                 setDateControlsVisibility(true);
@@ -77,9 +78,7 @@ namespace TDF.Net.Forms
                 setBalanceControlsVisibility(true);
                 updateLeaveBalanceLabel();
                 leaveGroupBox.Visible = true;
-                pendingLabel.Location = new Point(48, 333);
-                daysLabel.Text = "Days requested:";
-                daysLabel.Location = new Point(40, 307);
+                setDaysLabelLocation();
             }
         }
         private void exitRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
@@ -92,6 +91,7 @@ namespace TDF.Net.Forms
                 setBalanceControlsVisibility(true);
                 leaveGroupBox.Visible = false;
                 updateLeaveBalanceLabel();
+                setDaysLabelLocation();
             }
         }
         private void workFromHomeRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
@@ -105,9 +105,7 @@ namespace TDF.Net.Forms
                 leaveGroupBox.Visible = false;
                 daysRequestedLabel.Visible = true;
                 daysLabel.Visible = true;
-                pendingLabel.Location = new Point(48, 333);
-                daysLabel.Text = "Days requested:";
-                daysLabel.Location = new Point(40, 307);
+                setDaysLabelLocation();
             }
         }
         private void externalAssignmentRadioButton_CheckedChanged(object sender, BunifuRadioButton.CheckedChangedEventArgs e)
@@ -454,7 +452,7 @@ namespace TDF.Net.Forms
                 pendingDaysLabel.Text = adjustedPendingDays.ToString();
 
                 // Calculate the remaining balance.
-                int remaining = availableBalance - daysRequested - pendingDays;
+                int remaining = availableBalance - pendingDays;
                 if (requestToEdit != null && requestToEdit.RequestType == expectedRequestType)
                 {
                     remaining += requestToEdit.RequestNumberOfDays;
@@ -475,7 +473,7 @@ namespace TDF.Net.Forms
             const int requestedPermissions = 1;
 
             // Retrieve pending permissions count.
-            int pendingPermissions = getPendingMonthlyPermissionsCount(requiredUserID);
+            pendingPermissions = getPendingMonthlyPermissionsCount(requiredUserID);
 
             // If editing an existing permission request, adjust the pending count.
             if (requestToEdit != null && requestToEdit.RequestType == "Permission")
@@ -492,19 +490,13 @@ namespace TDF.Net.Forms
             daysRequestedLabel.Text = requestedPermissions.ToString();
 
             // Compute remaining balance.
-            int remainingBalance = availablePermissions - pendingPermissions - requestedPermissions;
+            int remainingBalance = availablePermissions - pendingPermissions;
             remainingBalanceLabel.Text = remainingBalance.ToString();
 
             // Update pending labels.
-            pendingLabel.Text = "Pending Permissions:";
             pendingLabel.Visible = true;
             pendingDaysLabel.Text = pendingPermissions.ToString();
             pendingDaysLabel.Visible = true;
-        }
-        private void updateRequestedDaysLabel(DateTime toDate, DateTime fromDate)
-        {
-            numberOfDaysRequested = getWorkingDays(fromDate, toDate);
-            daysRequestedLabel.Text = numberOfDaysRequested.ToString();
         }
         private void updateLeaveBalanceLabel()
         {
@@ -528,16 +520,14 @@ namespace TDF.Net.Forms
                     {
                         pendingDays = getPendingDaysCount(requiredUserID, "Annual");
                         updateLabelsForDayOffBalance("AnnualBalance", requiredUserID, numberOfDaysRequested);
-                        pendingLabel.Text = "Pending Days:";
+
                         pendingLabel.Visible = true;
                         pendingDaysLabel.Visible = true;
-
                     }
                     else if (casualRadioButton.Checked)
                     {
                         pendingDays = getPendingDaysCount(requiredUserID, "Emergency");
                         updateLabelsForDayOffBalance("CasualBalance", requiredUserID, numberOfDaysRequested);
-                        pendingLabel.Text = "Pending Days:";
                         pendingLabel.Visible = true;
                         pendingDaysLabel.Visible = true;
                     }
@@ -551,14 +541,27 @@ namespace TDF.Net.Forms
                         pendingDaysLabel.Visible = false;
                     }
                 }
-               else if (exitRadioButton.Checked)
+                else if (exitRadioButton.Checked)
                 {
-                    daysLabel.Text = "Permissions requested:";
-                    daysLabel.Location = new Point(5, 307);
-                    pendingLabel.Location = new Point(10, 333);
+
                     updateLabelsForPermissionBalance();
                 }
             }
+        }
+        private void updateRequestedDaysLabel(DateTime toDate, DateTime fromDate)
+        {
+            numberOfDaysRequested = getWorkingDays(fromDate, toDate);
+            daysRequestedLabel.Text = numberOfDaysRequested.ToString();
+        }
+        private void setDaysLabelLocation()
+        {
+            bool isExit = exitRadioButton.Checked;
+
+            daysLabel.Text = isExit ? "Permissions requested:" : "Days requested:";
+            daysLabel.Location = isExit ? new Point(5, 350) : new Point(40, 350);
+
+            pendingLabel.Text = isExit ? "Pending Permissions:" : "Pending Days:";
+            pendingLabel.Location = isExit ? new Point(10, 304) : new Point(48, 304);
         }
         private void setTimeControlsVisibility(bool isVisible)
         {
@@ -678,8 +681,11 @@ namespace TDF.Net.Forms
         #region Buttons
         private void submitButton_Click(object sender, EventArgs e)
         {
+            
+            int remainingBalance = int.TryParse(remainingBalanceLabel.Text, out int rBalance) ? rBalance : 0;
+            int daysRequested = int.TryParse(daysRequestedLabel.Text, out int requested) ? requested : 0;
+           
             // Validate inputs for time-based requests
-
             if (exitRadioButton.Checked || externalAssignmentRadioButton.Checked)
             {
                 if (!validateTimeInputs(fromTimeTextBox.Text, toTimeTextBox.Text, out DateTime from, out DateTime to))
@@ -687,9 +693,36 @@ namespace TDF.Net.Forms
 
                 if (from >= to)
                 {
-                    MessageBox.Show("Ending time can't be earlier than or equal to the beginning time.");
+                    MessageBox.Show("Ending time can't be earlier than or equal to the beginning time.", "Invalid Request");
                     return;
                 }
+
+                if (exitRadioButton.Checked)
+                {
+
+                    if (pendingPermissions >= 2)
+                    {
+                        MessageBox.Show("You have already applied for 2 Permissions this month.", "Insufficient Balance");
+                        return;
+                    }
+
+                    if (DateTime.TryParse(fromTimeTextBox.Text, out DateTime fromTime) &&
+                        DateTime.TryParse(toTimeTextBox.Text, out DateTime toTime))
+                    {
+                        // Check if the time difference exceeds 2 hours
+                        if (toTime - fromTime > TimeSpan.FromHours(2))
+                        {
+                            MessageBox.Show("You can't apply for permission for more than 2 hours.", "Not Allowed");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please enter valid time values in both fields.", "Invalid Request");
+                        return;
+                    }
+                }
+
             }
             // Validate inputs for day-based requests
             else
@@ -699,64 +732,35 @@ namespace TDF.Net.Forms
 
                 if (fromDay > toDay)
                 {
-                    MessageBox.Show("Ending date can't be earlier than the beginning date.");
+                    MessageBox.Show("Ending date can't be earlier than the beginning date.", "Invalid Request");
+                    return;
+                }
+               else if (daysRequested <= 0)
+                {
+                    MessageBox.Show("You cannot apply for leave on Friday or Saturday.", "Invalid Request");
                     return;
                 }
             }
-
             if (dayoffRadioButton.Checked)
             {
                 if (annualRadioButton.Checked)
                 {
-                    if (int.TryParse(remainingBalanceLabel.Text, out int remainingBalance) && remainingBalance < 0)
+                    if (requested > rBalance)
                     {
-                        MessageBox.Show("You don't have enough Annual balance.");
+                        MessageBox.Show("You don't have enough Annual balance.", "Insufficient Balance");
                         return;
                     }
                 }
 
                 if (casualRadioButton.Checked)
                 {
-                    if (int.TryParse(remainingBalanceLabel.Text, out int remainingBalance) && remainingBalance < 0)
+                    if (requested > rBalance)
                     {
-                        MessageBox.Show("You don't have enough Emergency balance.");
+                        MessageBox.Show("You don't have enough Emergency balance.", "Insufficient Balance");
                         return;
                     }
                 }
             }
-
-            if (exitRadioButton.Checked)
-            {
-                if (int.TryParse(remainingBalanceLabel.Text, out int remainingBalance) && remainingBalance < 0)
-                {
-                    MessageBox.Show("You don't have enough Permission balance.");
-                    return;
-                }
-
-                if (getPendingMonthlyPermissionsCount(requiredUserID) >= 2)
-                {
-                    MessageBox.Show("You have already applied for 2 Permissions this month.");
-                    return;
-                }
-
-                if (DateTime.TryParse(fromTimeTextBox.Text, out DateTime fromTime) &&
-                    DateTime.TryParse(toTimeTextBox.Text, out DateTime toTime))
-                {
-                    // Check if the time difference exceeds 2 hours
-                    if (toTime - fromTime > TimeSpan.FromHours(2))
-                    {
-                        MessageBox.Show("You can't apply for permission for more than 2 hours.");
-                        return;
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Please enter valid time values in both fields.");
-                    return;
-                }
-
-            }
-
             // Determine request type
             string requestType = determineRequestType();
 
@@ -764,21 +768,23 @@ namespace TDF.Net.Forms
             if (requestToEdit == null)
             {
                 addNewRequest(requestType);
-
-                if (requestType == "Annual" || requestType == "Emergency")
-                {
-                    pendingDaysLabel.Text = (Convert.ToInt32(pendingDaysLabel.Text) + numberOfDaysRequested).ToString();
-                    remainingBalanceLabel.Text = (Convert.ToInt32(remainingBalanceLabel.Text) - numberOfDaysRequested).ToString();
-                }
-                else if (requestType == "Permission")
-                {
-                    pendingDaysLabel.Text = (Convert.ToInt32(pendingDaysLabel.Text) + 1).ToString();
-                    remainingBalanceLabel.Text = (Convert.ToInt32(remainingBalanceLabel.Text) - 1).ToString();
-                }
             }
             else
             {
                 updateExistingRequest(requestType);
+            }
+
+            if (requestType == "Annual" || requestType == "Emergency")
+            {
+                pendingDays += numberOfDaysRequested;
+                pendingDaysLabel.Text = pendingDays.ToString();
+                remainingBalanceLabel.Text = (remainingBalance - numberOfDaysRequested).ToString();
+            }
+            else if (requestType == "Permission")
+            {
+                pendingPermissions++;
+                pendingDaysLabel.Text = pendingPermissions.ToString();
+                remainingBalanceLabel.Text = (remainingBalance - 1).ToString();
             }
             requestAddedOrUpdatedEvent?.Invoke();
         }

@@ -77,7 +77,10 @@ namespace TDF.Net
         }
         private void ConnectedUsersTimer_Tick(object sender, EventArgs e)
         {
-            displayConnectedUsers();
+            if(!isPanelExpanded)
+            {
+                displayConnectedUsers();
+            }
         }
         protected override void OnPaint(PaintEventArgs e)
         {

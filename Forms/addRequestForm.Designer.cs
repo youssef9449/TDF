@@ -526,7 +526,7 @@
             this.daysLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.daysLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.daysLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.daysLabel.Location = new System.Drawing.Point(40, 307);
+            this.daysLabel.Location = new System.Drawing.Point(40, 350);
             this.daysLabel.Name = "daysLabel";
             this.daysLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.daysLabel.Size = new System.Drawing.Size(105, 20);
@@ -558,7 +558,7 @@
             this.remainingLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.remainingLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.remainingLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.remainingLabel.Location = new System.Drawing.Point(15, 354);
+            this.remainingLabel.Location = new System.Drawing.Point(15, 327);
             this.remainingLabel.Name = "remainingLabel";
             this.remainingLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.remainingLabel.Size = new System.Drawing.Size(130, 20);
@@ -590,7 +590,7 @@
             this.daysRequestedLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.daysRequestedLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.daysRequestedLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.daysRequestedLabel.Location = new System.Drawing.Point(156, 307);
+            this.daysRequestedLabel.Location = new System.Drawing.Point(156, 350);
             this.daysRequestedLabel.Name = "daysRequestedLabel";
             this.daysRequestedLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.daysRequestedLabel.Size = new System.Drawing.Size(36, 20);
@@ -606,7 +606,7 @@
             this.remainingBalanceLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.remainingBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.remainingBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.remainingBalanceLabel.Location = new System.Drawing.Point(156, 354);
+            this.remainingBalanceLabel.Location = new System.Drawing.Point(156, 327);
             this.remainingBalanceLabel.Name = "remainingBalanceLabel";
             this.remainingBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.remainingBalanceLabel.Size = new System.Drawing.Size(36, 20);
@@ -624,9 +624,9 @@
             this.workFromHomeLabel.Location = new System.Drawing.Point(340, 15);
             this.workFromHomeLabel.Name = "workFromHomeLabel";
             this.workFromHomeLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.workFromHomeLabel.Size = new System.Drawing.Size(113, 20);
+            this.workFromHomeLabel.Size = new System.Drawing.Size(116, 20);
             this.workFromHomeLabel.TabIndex = 32;
-            this.workFromHomeLabel.Text = "Work from home";
+            this.workFromHomeLabel.Text = "Work from Home";
             this.workFromHomeLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
             this.workFromHomeLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
@@ -866,7 +866,7 @@
             this.pendingDaysLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.pendingDaysLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.pendingDaysLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.pendingDaysLabel.Location = new System.Drawing.Point(156, 333);
+            this.pendingDaysLabel.Location = new System.Drawing.Point(156, 304);
             this.pendingDaysLabel.Name = "pendingDaysLabel";
             this.pendingDaysLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.pendingDaysLabel.Size = new System.Drawing.Size(36, 20);
@@ -882,7 +882,7 @@
             this.pendingLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.pendingLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.pendingLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.pendingLabel.Location = new System.Drawing.Point(48, 333);
+            this.pendingLabel.Location = new System.Drawing.Point(48, 304);
             this.pendingLabel.Name = "pendingLabel";
             this.pendingLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.pendingLabel.Size = new System.Drawing.Size(93, 20);

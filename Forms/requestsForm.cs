@@ -979,17 +979,10 @@ namespace TDF.Net.Forms
                 sortString = $"{sortColumnName} {(sortDirection == ListSortDirection.Ascending ? "ASC" : "DESC")}";
             }
 
-            // 3. Save the currently selected row index.
-            int selectedRowIndex = -1;
-            if (requestsDataGridView.CurrentRow != null)
-            {
-                selectedRowIndex = requestsDataGridView.CurrentRow.Index;
-            }
-
-            // 4. Refresh the grid's data.
+            // 3. Refresh the grid's data.
             refreshRequestsTable();
 
-            // 5. Reapply the sort order.
+            // 4. Reapply the sort order.
             if (!string.IsNullOrEmpty(sortColumnName))
             {
                 // Retrieve the updated column by its name.
@@ -1007,48 +1000,10 @@ namespace TDF.Net.Forms
                 }
             }
 
-            // 6. Restore the scroll position if it's still valid.
+            // 5. Restore the scroll position if it's still valid.
             if (firstDisplayedIndex >= 0 && firstDisplayedIndex < requestsDataGridView.Rows.Count)
             {
                 requestsDataGridView.FirstDisplayedScrollingRowIndex = firstDisplayedIndex;
-            }
-
-            // 7. Restore the selected row.
-            if (selectedRowIndex >= 0 && selectedRowIndex < requestsDataGridView.Rows.Count)
-            {
-                // Find a visible row starting from the saved index.
-                int newIndex = selectedRowIndex;
-                while (newIndex < requestsDataGridView.Rows.Count && !requestsDataGridView.Rows[newIndex].Visible)
-                {
-                    newIndex++;
-                }
-                if (newIndex < requestsDataGridView.Rows.Count)
-                {
-                    DataGridViewRow row = requestsDataGridView.Rows[newIndex];
-                    DataGridViewCell cellToSelect = null;
-                    // Look for the first visible cell in that row.
-                    foreach (DataGridViewCell cell in row.Cells)
-                    {
-                        if (requestsDataGridView.Columns[cell.ColumnIndex].Visible)
-                        {
-                            cellToSelect = cell;
-                            break;
-                        }
-                    }
-                    if (cellToSelect != null)
-                    {
-                        try
-                        {
-                            requestsDataGridView.CurrentCell = cellToSelect;
-                            row.Selected = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            // Log or handle this error as needed.
-                            MessageBox.Show("Error restoring selected cell: " + ex.Message);
-                        }
-                    }
-                }
             }
         }
         private bool isHRDepartmentUser(SqlConnection conn, string userFullName)
