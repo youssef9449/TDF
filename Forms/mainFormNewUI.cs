@@ -77,10 +77,8 @@ namespace TDF.Net
         }
         private void ConnectedUsersTimer_Tick(object sender, EventArgs e)
         {
-            if(!isPanelExpanded)
-            {
-                displayConnectedUsers();
-            }
+            if (isPanelExpanded) return;
+            displayConnectedUsers();
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -295,7 +293,7 @@ namespace TDF.Net
         }
         private void usersShadowPanel_Scroll(object sender, ScrollEventArgs e)
         {
-           usersShadowPanel.Invalidate();
+            usersShadowPanel.Invalidate();
         }
         private void usersIconButton_Click(object sender, EventArgs e)
         {

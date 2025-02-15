@@ -503,49 +503,41 @@ namespace TDF.Net.Forms
             DateTime toDate = Convert.ToDateTime(toDayDatePicker.Value).Date;
             DateTime fromDate = Convert.ToDateTime(fromDayDatePicker.Value).Date;
 
-            if (toDate < fromDate)
-            {
-                daysRequestedLabel.Text = "------";
-                remainingBalanceLabel.Text = "------";
-            }
-            else
+            updateRequestedDaysLabel(toDate, fromDate);
+
+            if (dayoffRadioButton.Checked)
             {
                 updateRequestedDaysLabel(toDate, fromDate);
 
-                if (dayoffRadioButton.Checked)
+                if (annualRadioButton.Checked)
                 {
-                    updateRequestedDaysLabel(toDate, fromDate);
+                    pendingDays = getPendingDaysCount(requiredUserID, "Annual");
+                    updateLabelsForDayOffBalance("AnnualBalance", requiredUserID, numberOfDaysRequested);
 
-                    if (annualRadioButton.Checked)
-                    {
-                        pendingDays = getPendingDaysCount(requiredUserID, "Annual");
-                        updateLabelsForDayOffBalance("AnnualBalance", requiredUserID, numberOfDaysRequested);
-
-                        pendingLabel.Visible = true;
-                        pendingDaysLabel.Visible = true;
-                    }
-                    else if (casualRadioButton.Checked)
-                    {
-                        pendingDays = getPendingDaysCount(requiredUserID, "Emergency");
-                        updateLabelsForDayOffBalance("CasualBalance", requiredUserID, numberOfDaysRequested);
-                        pendingLabel.Visible = true;
-                        pendingDaysLabel.Visible = true;
-                    }
-                    else
-                    {
-                        balanceLabel.Visible = false;
-                        availableBalanceLabel.Visible = false;
-                        remainingLabel.Visible = false;
-                        remainingBalanceLabel.Visible = false;
-                        pendingLabel.Visible = false;
-                        pendingDaysLabel.Visible = false;
-                    }
+                    pendingLabel.Visible = true;
+                    pendingDaysLabel.Visible = true;
                 }
-                else if (exitRadioButton.Checked)
+                else if (casualRadioButton.Checked)
                 {
-
-                    updateLabelsForPermissionBalance();
+                    pendingDays = getPendingDaysCount(requiredUserID, "Emergency");
+                    updateLabelsForDayOffBalance("CasualBalance", requiredUserID, numberOfDaysRequested);
+                    pendingLabel.Visible = true;
+                    pendingDaysLabel.Visible = true;
                 }
+                else
+                {
+                    balanceLabel.Visible = false;
+                    availableBalanceLabel.Visible = false;
+                    remainingLabel.Visible = false;
+                    remainingBalanceLabel.Visible = false;
+                    pendingLabel.Visible = false;
+                    pendingDaysLabel.Visible = false;
+                }
+            }
+            else if (exitRadioButton.Checked)
+            {
+
+                updateLabelsForPermissionBalance();
             }
         }
         private void updateRequestedDaysLabel(DateTime toDate, DateTime fromDate)
