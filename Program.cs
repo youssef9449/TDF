@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using TDF.Classes;
@@ -108,7 +107,7 @@ namespace TDF.Net
         }
 
         static bool roundCorners = true;
-        static int borderRadius = 5;
+        static int borderRadius = 25;
 
         public static void applyTheme(Form form)
         {

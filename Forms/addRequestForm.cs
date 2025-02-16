@@ -18,25 +18,25 @@ namespace TDF.Net.Forms
         public addRequestForm()
         {
             InitializeComponent();
-             externalAssignmentRadioButton.Checked = false;
-             casualRadioButton.Checked = false;
-             dayoffRadioButton.Checked = true;
-             annualRadioButton.Checked = true;
+            externalAssignmentRadioButton.Checked = false;
+            casualRadioButton.Checked = false;
+            dayoffRadioButton.Checked = true;
+            annualRadioButton.Checked = true;
+            requiredUserID = loggedInUser.userID;
         }
 
         public addRequestForm(Request request)
         {
             InitializeComponent();
-
             requestToEdit = request;
-
+            requiredUserID = request.RequestUserID;
             populateFieldsWithRequestData();
         }
 
         int numberOfDaysRequested, availableBalance, pendingDays, pendingPermissions = 0;
         public static bool requestAddedOrUpdated;
         public event Action requestAddedOrUpdatedEvent;
-        public static int requiredUserID = selectedRequest == null ? loggedInUser.userID : selectedRequest.RequestUserID;
+        int requiredUserID = loggedInUser.userID;
 
         #region Events
         private void addRequestForm_Load(object sender, EventArgs e)
@@ -218,8 +218,8 @@ namespace TDF.Net.Forms
             toTimeTextBox.Text = isDayOff ? string.Empty : requestToEdit.RequestEndingTime?.TimeOfDay.ToString(@"hh\:mm");
 
             // Adjust control states based on user role
-            bool isEditable = requestToEdit.RequestUserFullName == loggedInUser.FullName;
-            reasonTextBox.ReadOnly = isEditable;
+            bool isEditable = requestToEdit.RequestUserFullName == loggedInUser.FullName || hasAdminRole;
+            reasonTextBox.ReadOnly = !isEditable;
             workFromHomeRadioButton.Enabled = isEditable;
             externalAssignmentRadioButton.Enabled = isEditable;
             dayoffRadioButton.Enabled = isEditable;
@@ -444,19 +444,16 @@ namespace TDF.Net.Forms
             if (expectedRequestType != null)
             {
                 // Calculate adjusted pending days if we're editing an existing request.
-                int adjustedPendingDays = pendingDays;
+
                 if (requestToEdit != null && requestToEdit.RequestType == expectedRequestType)
                 {
-                    adjustedPendingDays -= requestToEdit.RequestNumberOfDays;
+                    pendingDays -= requestToEdit.RequestNumberOfDays;
                 }
-                pendingDaysLabel.Text = adjustedPendingDays.ToString();
+                pendingDaysLabel.Text = pendingDays.ToString();
 
                 // Calculate the remaining balance.
                 int remaining = availableBalance - pendingDays;
-                if (requestToEdit != null && requestToEdit.RequestType == expectedRequestType)
-                {
-                    remaining += requestToEdit.RequestNumberOfDays;
-                }
+
                 remainingBalanceLabel.Text = remaining.ToString();
             }
 

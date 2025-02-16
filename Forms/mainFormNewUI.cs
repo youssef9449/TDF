@@ -114,23 +114,23 @@ namespace TDF.Net
         }
         private void closeImg_MouseEnter(object sender, EventArgs e)
         {
-            closeImg.Image = Properties.Resources.close_hover;
+            closeImg.Image = Resources.close_hover;
         }
         private void closeImg_MouseLeave(object sender, EventArgs e)
         {
-            closeImg.Image = Properties.Resources.close_nofocus;
+            closeImg.Image = Resources.close_nofocus;
         }
         private void closeImg_MouseDown(object sender, MouseEventArgs e)
         {
-            closeImg.Image = Properties.Resources.close_press;
+            closeImg.Image = Resources.close_press;
         }
         private void maxImage_MouseEnter(object sender, EventArgs e)
         {
-            maxImage.Image = Properties.Resources.max_hover;
+            maxImage.Image = Resources.max_hover;
         }
         private void maxImage_MouseLeave(object sender, EventArgs e)
         {
-            maxImage.Image = Properties.Resources.close_nofocus;
+            maxImage.Image = Resources.close_nofocus;
         }
         private void maxImage_MouseDown(object sender, MouseEventArgs e)
         {
@@ -138,15 +138,15 @@ namespace TDF.Net
         }
         private void minImg_MouseEnter(object sender, EventArgs e)
         {
-            minImg.Image = Properties.Resources.min_hover;
+            minImg.Image = Resources.min_hover;
         }
         private void minImg_MouseLeave(object sender, EventArgs e)
         {
-            minImg.Image = Properties.Resources.close_nofocus;
+            minImg.Image = Resources.close_nofocus;
         }
         private void minImg_MouseDown(object sender, MouseEventArgs e)
         {
-            minImg.Image = Properties.Resources.min_press;
+            minImg.Image = Resources.min_press;
         }
         private void closeImg_MouseClick(object sender, MouseEventArgs e)
         {
@@ -171,7 +171,7 @@ namespace TDF.Net
         }
         private void formPanel_Paint(object sender, PaintEventArgs e)
         {
-            base.OnPaint(e);
+            /*base.OnPaint(e);
 
             // Get the form's scroll position
             var scrollPos = AutoScrollPosition;
@@ -179,7 +179,7 @@ namespace TDF.Net
             // Adjust for scroll position when drawing the border
             var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
 
-            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);*/
         }
         private void bunifuLabel_Paint(object sender, PaintEventArgs e)
         {
@@ -247,7 +247,7 @@ namespace TDF.Net
                         if (rowsAffected > 0)
                         {
                             loggedInUser.Picture = null;
-                            circularPictureBox.Image = Properties.Resources.pngegg;
+                            circularPictureBox.Image = Resources.pngegg;
                         }
                         else
                         {
@@ -331,7 +331,7 @@ namespace TDF.Net
         }
         public void updateUserDataControls()
         {
-            circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : Properties.Resources.pngegg;
+            circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : Resources.pngegg;
 
             usernameLabel.Text = $"Welcome, {loggedInUser.FullName.Split(' ')[0]}!";
         }

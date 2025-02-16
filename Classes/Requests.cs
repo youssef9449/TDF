@@ -90,7 +90,7 @@ namespace TDF.Net.Classes
                     // Execute query and show result
                     bool success = cmd.ExecuteNonQuery() > 0;
                     Forms.addRequestForm.requestAddedOrUpdated = success;
-                    MessageBox.Show(success ? "Request added successfully." : "Failed to add request.");
+                    MessageBox.Show(success ? "Request added successfully." : "Failed to add request.", "Add Request", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (SqlException ex)
@@ -146,12 +146,12 @@ namespace TDF.Net.Classes
 
                         if (rowsAffected > 0)
                         {
-                            MessageBox.Show("Request updated successfully.");
+                            MessageBox.Show("Request updated successfully.", "Update Request", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             Forms.addRequestForm.requestAddedOrUpdated = true;
                         }
                         else
                         {
-                            MessageBox.Show("No request was updated.");
+                            MessageBox.Show("No request was updated.", "Update Request", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             Forms.addRequestForm.requestAddedOrUpdated = false;
                         }
                     }

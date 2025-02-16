@@ -1,6 +1,7 @@
 ﻿using Bunifu.UI.WinForms;
 using Microsoft.Office.Interop.Excel;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
@@ -17,6 +18,7 @@ using DataTable = System.Data.DataTable;
 using Excel = Microsoft.Office.Interop.Excel;
 using Point = System.Drawing.Point;
 using Rectangle = System.Drawing.Rectangle;
+using SortOrder = System.Windows.Forms.SortOrder;
 
 namespace TDF.Net.Forms
 {
@@ -49,7 +51,7 @@ namespace TDF.Net.Forms
         #region Events
         private void requestsForm_Load(object sender, EventArgs e)
         {
-            applyButton.Visible = hasManagerRole || hasAdminRole || hasHRRole;
+           applyButton.Visible = hasManagerRole || hasAdminRole || hasHRRole;
 
             refreshRequestsTable();
 
@@ -408,7 +410,8 @@ namespace TDF.Net.Forms
         private string buildQueryForManagerOrAdminORHR()
         {
             string baseQuery = @"SELECT 
-            r.RequestID, 
+            r.RequestID,
+            r.RequestUserID,
             r.RequestUserFullName, 
             r.RequestType, 
             r.RequestReason, 
@@ -466,7 +469,8 @@ namespace TDF.Net.Forms
         {
             return @"
         SELECT 
-            r.RequestID, 
+            r.RequestID,
+            r.RequestUserID
             r.RequestUserFullName, 
             r.RequestType, 
             r.RequestReason, 
@@ -549,7 +553,7 @@ namespace TDF.Net.Forms
 
             selectedRequest.RequestUserFullName = row["RequestUserFullName"] != DBNull.Value ? row["RequestUserFullName"].ToString() : string.Empty;
             selectedRequest.RequestID = row["RequestID"] != DBNull.Value ? Convert.ToInt32(row["RequestID"]) : 0;
-            selectedRequest.RequestUserID = row["RequestID"] != DBNull.Value ? getSelectedRequestUserID() : 0;
+            selectedRequest.RequestUserID = row["RequestUserID"] != DBNull.Value ? Convert.ToInt32(row["RequestUserID"]) : 0;
             selectedRequest.RequestType = row["RequestType"] != DBNull.Value ? row["RequestType"].ToString() : string.Empty;
             selectedRequest.RequestReason = row["RequestReason"] != DBNull.Value ? row["RequestReason"].ToString() : string.Empty;
             selectedRequest.RequestFromDay = requestFromDay;
@@ -578,7 +582,41 @@ namespace TDF.Net.Forms
         }
         private void reorderDataGridViewColumns()
         {
-            requestsDataGridView.Columns["RequestHRStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
+            //MessageBox.Show($"{requestsDataGridView.Columns["RequestUserID"].DisplayIndex}");
+            //requestsDataGridView.Columns["RequestID"].DisplayIndex = 0;
+        //    requestsDataGridView.Columns["RequestUserID"].DisplayIndex = requestsDataGridView.Columns["RequestID"].DisplayIndex + 1;
+         //   requestsDataGridView.Columns["RequestUserFullName"].DisplayIndex = requestsDataGridView.Columns["RequestID"].DisplayIndex + 2;
+            string[] columnOrder =
+                          {
+    "RequestID",
+    "RequestUserFullName",
+    "RequestType",
+    "RequestFromDay",
+    "RequestToDay",
+    "NumberOfDays",
+    "remainingBalance",
+    "RequestReason",
+    "RequestBeginningTime",
+    "RequestEndingTime",
+    "RequestRejectReason",
+    "RequestHRStatus",
+    "RequestStatus",
+    "Edit",
+    "Remove",
+    "Report",
+    "Approve",
+    "Reject",
+        "RequestUserID"
+
+            };
+
+            for (int i = 0; i < columnOrder.Length; i++)
+            {
+                requestsDataGridView.Columns[columnOrder[i]].DisplayIndex = i;
+            }
+
+
+            /*requestsDataGridView.Columns["RequestHRStatus"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Edit"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Remove"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Report"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
@@ -586,7 +624,7 @@ namespace TDF.Net.Forms
             requestsDataGridView.Columns["RequestRejectReason"].DisplayIndex = requestsDataGridView.Columns.Count - 4;
             requestsDataGridView.Columns["Approve"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
             requestsDataGridView.Columns["Reject"].DisplayIndex = requestsDataGridView.Columns.Count - 1;
-            requestsDataGridView.Columns["RequestReason"].DisplayIndex = 7;
+            requestsDataGridView.Columns["RequestReason"].DisplayIndex = 7;*/
         }
         private int getUsedMonthlyPermissionsCount(string userName, DateTime requestDate)
         {
@@ -643,8 +681,6 @@ namespace TDF.Net.Forms
                 }
             }
         }
-
-
         private (string managerName, string managerDepartment) getManagerName()
         {
             string managerName = string.Empty;
@@ -959,51 +995,53 @@ namespace TDF.Net.Forms
 
             // 2. Save sorting information.
             DataGridViewColumn sortedColumn = requestsDataGridView.SortedColumn;
-            System.ComponentModel.ListSortDirection sortDirection = ListSortDirection.Ascending;
+            ListSortDirection sortDirection = ListSortDirection.Ascending;
             string sortColumnName = string.Empty;
             if (sortedColumn != null)
             {
-                sortDirection = (requestsDataGridView.SortOrder == System.Windows.Forms.SortOrder.Ascending)
+                sortDirection = (requestsDataGridView.SortOrder == SortOrder.Ascending)
                                     ? ListSortDirection.Ascending
                                     : ListSortDirection.Descending;
                 // Save the column's Name.
                 sortColumnName = sortedColumn.Name;
             }
 
-            // If using a BindingSource, prepare the sort string.
-            BindingSource bs = requestsDataGridView.DataSource as BindingSource;
-            string sortString = string.Empty;
-            if (bs != null && !string.IsNullOrEmpty(sortColumnName))
+            // 3. Save selected rows.
+            List<int> selectedRowIds = new List<int>();
+            foreach (DataGridViewRow row in requestsDataGridView.SelectedRows)
             {
-                // Assuming column Name equals its DataPropertyName.
-                sortString = $"{sortColumnName} {(sortDirection == ListSortDirection.Ascending ? "ASC" : "DESC")}";
-            }
-
-            // 3. Refresh the grid's data.
-            refreshRequestsTable();
-
-            // 4. Reapply the sort order.
-            if (!string.IsNullOrEmpty(sortColumnName))
-            {
-                // Retrieve the updated column by its name.
-                DataGridViewColumn newSortedColumn = requestsDataGridView.Columns[sortColumnName];
-                if (newSortedColumn != null)
+                if (row.Cells["RequestID"].Value != null)
                 {
-                    if (bs != null)
-                    {
-                        bs.Sort = sortString;
-                    }
-                    else
-                    {
-                        requestsDataGridView.Sort(newSortedColumn, sortDirection);
-                    }
+                    selectedRowIds.Add(Convert.ToInt32(row.Cells["RequestID"].Value));
                 }
             }
 
-            // 5. Restore the scroll position if it's still valid.
+            // 4. Refresh the grid's data.
+            refreshRequestsTable();
+
+            // 5. Reapply the sort order.
+            if (!string.IsNullOrEmpty(sortColumnName))
+            {
+                DataGridViewColumn newSortedColumn = requestsDataGridView.Columns[sortColumnName];
+                if (newSortedColumn != null)
+                {
+                    requestsDataGridView.Sort(newSortedColumn, sortDirection);
+                }
+            }
+
+            // 6. Restore the scroll position if it's still valid.
             if (firstDisplayedIndex >= 0 && firstDisplayedIndex < requestsDataGridView.Rows.Count)
             {
                 requestsDataGridView.FirstDisplayedScrollingRowIndex = firstDisplayedIndex;
+            }
+
+            // 7. Restore selected rows.
+            foreach (DataGridViewRow row in requestsDataGridView.Rows)
+            {
+                if (row.Cells["RequestID"].Value != null && selectedRowIds.Contains(Convert.ToInt32(row.Cells["RequestID"].Value)))
+                {
+                    row.Selected = true;
+                }
             }
         }
         private bool isHRDepartmentUser(SqlConnection conn, string userFullName)
@@ -1111,7 +1149,6 @@ namespace TDF.Net.Forms
                 }
             }
         }
-
         #endregion
 
         #region Buttons

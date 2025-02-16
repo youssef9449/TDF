@@ -363,7 +363,7 @@ namespace TDF.Net
             this.teamImageButton.ImageSize = new System.Drawing.Size(68, 73);
             this.teamImageButton.ImageZoomSize = new System.Drawing.Size(78, 83);
             this.teamImageButton.InitialImage = ((System.Drawing.Image)(resources.GetObject("teamImageButton.InitialImage")));
-            this.teamImageButton.Location = new System.Drawing.Point(776, 520);
+            this.teamImageButton.Location = new System.Drawing.Point(776, 515);
             this.teamImageButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.teamImageButton.Name = "teamImageButton";
             this.teamImageButton.Rotation = 0;
@@ -401,7 +401,7 @@ namespace TDF.Net
             this.requestsImageButton.ImageSize = new System.Drawing.Size(68, 73);
             this.requestsImageButton.ImageZoomSize = new System.Drawing.Size(78, 83);
             this.requestsImageButton.InitialImage = ((System.Drawing.Image)(resources.GetObject("requestsImageButton.InitialImage")));
-            this.requestsImageButton.Location = new System.Drawing.Point(251, 520);
+            this.requestsImageButton.Location = new System.Drawing.Point(251, 515);
             this.requestsImageButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.requestsImageButton.Name = "requestsImageButton";
             this.requestsImageButton.Rotation = 0;
@@ -439,7 +439,7 @@ namespace TDF.Net
             this.reportsImageButton.ImageSize = new System.Drawing.Size(68, 73);
             this.reportsImageButton.ImageZoomSize = new System.Drawing.Size(78, 83);
             this.reportsImageButton.InitialImage = ((System.Drawing.Image)(resources.GetObject("reportsImageButton.InitialImage")));
-            this.reportsImageButton.Location = new System.Drawing.Point(426, 520);
+            this.reportsImageButton.Location = new System.Drawing.Point(426, 515);
             this.reportsImageButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.reportsImageButton.Name = "reportsImageButton";
             this.reportsImageButton.Rotation = 0;
@@ -477,7 +477,7 @@ namespace TDF.Net
             this.logoutImageButton.ImageSize = new System.Drawing.Size(68, 73);
             this.logoutImageButton.ImageZoomSize = new System.Drawing.Size(78, 83);
             this.logoutImageButton.InitialImage = ((System.Drawing.Image)(resources.GetObject("logoutImageButton.InitialImage")));
-            this.logoutImageButton.Location = new System.Drawing.Point(601, 521);
+            this.logoutImageButton.Location = new System.Drawing.Point(601, 516);
             this.logoutImageButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.logoutImageButton.Name = "logoutImageButton";
             this.logoutImageButton.Rotation = 0;
@@ -515,7 +515,7 @@ namespace TDF.Net
             this.controlPanelImageButton.ImageSize = new System.Drawing.Size(68, 73);
             this.controlPanelImageButton.ImageZoomSize = new System.Drawing.Size(78, 83);
             this.controlPanelImageButton.InitialImage = ((System.Drawing.Image)(resources.GetObject("controlPanelImageButton.InitialImage")));
-            this.controlPanelImageButton.Location = new System.Drawing.Point(951, 520);
+            this.controlPanelImageButton.Location = new System.Drawing.Point(951, 515);
             this.controlPanelImageButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.controlPanelImageButton.Name = "controlPanelImageButton";
             this.controlPanelImageButton.Rotation = 0;
@@ -545,7 +545,7 @@ namespace TDF.Net
             this.shadowPanel.Controls.Add(this.bunifuLabel5);
             this.shadowPanel.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
             this.shadowPanel.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
-            this.shadowPanel.Location = new System.Drawing.Point(204, 571);
+            this.shadowPanel.Location = new System.Drawing.Point(204, 566);
             this.shadowPanel.Name = "shadowPanel";
             this.shadowPanel.PanelColor = System.Drawing.Color.White;
             this.shadowPanel.PanelColor2 = System.Drawing.Color.White;
