@@ -15,7 +15,7 @@ namespace TDF.Net.Classes
         public string Department { get; set; }
         public Image Picture { get; set; }
         public string Title { get; set; }
-
+        public int isConnected { get; set; }
 
         public User()
         {

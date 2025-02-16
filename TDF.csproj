@@ -120,6 +120,12 @@
     <Compile Include="Classes\Requests.cs" />
     <Compile Include="Classes\themeColor.cs" />
     <Compile Include="Classes\User.cs" />
+    <Compile Include="Forms\chatForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\chatForm.Designer.cs">
+      <DependentUpon>chatForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\mainFormNewUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -172,6 +178,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security.cs" />
+    <EmbeddedResource Include="Forms\chatForm.resx">
+      <DependentUpon>chatForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\mainFormNewUI.resx">
       <DependentUpon>mainFormNewUI.cs</DependentUpon>
       <SubType>Designer</SubType>

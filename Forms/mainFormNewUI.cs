@@ -10,11 +10,13 @@ using TDF.Forms;
 using TDF.Net.Classes;
 using TDF.Net.Forms;
 using TDF.Properties;
+using Bunifu.UI.WinForms;
 using static TDF.Net.Classes.ThemeColor;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Program;
 using Timer = System.Windows.Forms.Timer;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TDF.Net
 {
@@ -30,8 +32,13 @@ namespace TDF.Net
             InitializeComponent();
 
             applyTheme(this);
+            //notificationsSnackbar.InformationOptions.BackColor = Color.Black;
+            //notificationsSnackbar.InformationOptions.ForeColor = Color.White;
+            //notificationsSnackbar.InformationOptions.BorderColor = darkColor;
+            //notificationsSnackbar.InformationOptions.ActionBackColor = lightColor;
             formPanel.BackColor = Color.White;
             this.loginForm = loginForm; // Store a reference to the login form
+            startNotificationChecker();
         }
 
         private ContextMenuStrip contextMenu;
@@ -43,6 +50,13 @@ namespace TDF.Net
         private int expandedHeight; // Stores the full height of the panel when expanded
         private Point usersIconLocation;
         private int contractedHeight = 50; // Height of the panel to show only the header
+        Timer notificationTimer = new Timer();
+
+        private FlowLayoutPanel flowLayout;
+        private Label headerLabel;
+        private int previousUserCount = -1;
+        private Point previousScrollPosition = Point.Empty;
+
 
         #region Events
         private void mainFormNewUI_Load(object sender, EventArgs e)
@@ -51,9 +65,9 @@ namespace TDF.Net
 
             usersIconButton.BackgroundColor = primaryColor;
             usersIconButton.BorderColor = darkColor;
-            expandedHeight = usersShadowPanel.Height; // Store the original height when expanded
-            usersShadowPanel.Height = contractedHeight; // Set the initial height to contracted
-            usersShadowPanel.AutoScroll = false; // Disable auto-scroll for contracted state
+            expandedHeight = usersPanel.Height; // Store the original height when expanded
+            usersPanel.Height = contractedHeight; // Set the initial height to contracted
+            usersPanel.AutoScroll = false; // Disable auto-scroll for contracted state
             usersIconLocation = usersIconButton.Location;
 
             //startPipeListener(); // Start listening for messages
@@ -68,7 +82,6 @@ namespace TDF.Net
             connectedUsersTimer.Interval = 10000; // 10 seconds
             connectedUsersTimer.Tick += ConnectedUsersTimer_Tick;
             connectedUsersTimer.Start();
-
         }
         protected override void OnMove(EventArgs e)
         {
@@ -77,7 +90,7 @@ namespace TDF.Net
         }
         private void ConnectedUsersTimer_Tick(object sender, EventArgs e)
         {
-            if (isPanelExpanded) return;
+            //if (isPanelExpanded) return;
             displayConnectedUsers();
         }
         protected override void OnPaint(PaintEventArgs e)
@@ -166,7 +179,7 @@ namespace TDF.Net
 
             if (WindowState == FormWindowState.Normal)
             {
-                usersShadowPanel.MinimumSize = new Size(usersShadowPanel.Width, contractedHeight);
+                usersPanel.MinimumSize = new Size(usersPanel.Width, contractedHeight);
             }
         }
         private void formPanel_Paint(object sender, PaintEventArgs e)
@@ -264,8 +277,17 @@ namespace TDF.Net
         private void mainFormNewUI_FormClosing(object sender, FormClosingEventArgs e)
         {
             makeUserDisconnected();
-            connectedUsersTimer.Stop();
-            connectedUsersTimer.Dispose();
+
+            if (connectedUsersTimer != null)
+            {
+                connectedUsersTimer.Stop();
+                connectedUsersTimer.Dispose();
+            }
+            if (notificationTimer != null)
+            {
+                notificationTimer.Stop();
+                notificationTimer.Dispose();
+            }
 
             loggedInUser = null;
         }
@@ -291,17 +313,13 @@ namespace TDF.Net
 
             contextMenu.Show(Cursor.Position);
         }
-        private void usersShadowPanel_Scroll(object sender, ScrollEventArgs e)
-        {
-            usersShadowPanel.Invalidate();
-        }
         private void usersIconButton_Click(object sender, EventArgs e)
         {
             if (isPanelExpanded)
             {
                 // Contract the panel
-                usersShadowPanel.Height = contractedHeight; // Set the height to contracted
-                usersShadowPanel.AutoScroll = false; // Disable auto-scroll
+                usersPanel.Height = contractedHeight; // Set the height to contracted
+              //  usersPanel.AutoScroll = false; // Disable auto-scroll
                 usersIconButton.Image = Resources.down; // Change the icon to "down"
                 isPanelExpanded = false; // Update the state
                 usersIconButton.Location = usersIconLocation;
@@ -310,8 +328,8 @@ namespace TDF.Net
             else
             {
                 // Expand the panel
-                usersShadowPanel.Height = expandedHeight; // Set the height to expanded
-                usersShadowPanel.AutoScroll = true; // Enable auto-scroll
+                usersPanel.Height = expandedHeight; // Set the height to expanded
+             //   usersPanel.AutoScroll = true; // Enable auto-scroll
                 usersIconButton.Image = Resources.up; // Change the icon to "up"
                 displayConnectedUsers(); // Populate the panel with connected users
                 isPanelExpanded = true; // Update the state
@@ -321,6 +339,94 @@ namespace TDF.Net
         #endregion
 
         #region Methods
+        private void startNotificationChecker()
+        {
+
+            notificationTimer.Interval = 3000; // Check every 3 seconds
+            if (loggedInUser != null)
+            {
+                notificationTimer.Tick += (s, e) => checkForNewMessages();
+                notificationTimer.Start();
+            }
+        }
+        private void checkForNewMessages()
+        {
+            if (loggedInUser != null)
+            {
+                string query = "SELECT SenderID, COUNT(*) AS UnreadCount FROM Notifications WHERE ReceiverID = @ReceiverID AND IsSeen = 0 GROUP BY SenderID";
+                using (SqlConnection conn = Database.getConnection())
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@ReceiverID", loggedInUser.userID);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int senderID = reader.GetInt32(0);
+                                int unreadCount = reader.GetInt32(1);
+
+                                // Trigger the notification
+                                showNewMessageNotification(senderID, unreadCount);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private string getUserName(int userID)
+        {
+            string userName = string.Empty;
+            using (SqlConnection conn = Database.getConnection())
+            {
+                string query = "SELECT FullName FROM Users WHERE UserID = @UserID";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", userID);
+                    conn.Open();
+                    object result = cmd.ExecuteScalar();
+                    if (result != null)
+                    {
+                        userName = result.ToString();
+                    }
+                }
+            }
+            return userName;
+        }
+        private void showNewMessageNotification(int senderID, int unreadCount)
+        {
+            if (this.IsDisposed || this.Disposing)
+                return;
+
+            string senderName = getUserName(senderID);
+            string message = $"{senderName} sent you {unreadCount} new message(s)";
+
+            notificationsSnackbar.Show(
+                this,
+                message,
+                BunifuSnackbar.MessageTypes.Information,
+                5000,
+                "",
+                BunifuSnackbar.Positions.TopCenter
+            );
+
+            markNotificationsAsSeen(senderID);
+        }
+        private void markNotificationsAsSeen(int senderID)
+        {
+            string query = "UPDATE Notifications SET IsSeen = 1 WHERE ReceiverID = @ReceiverID AND SenderID = @SenderID AND IsSeen = 0";
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@ReceiverID", loggedInUser.userID);
+                    cmd.Parameters.AddWithValue("@SenderID", senderID);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
         public static void updateRoleStatus()
         {
             hasManagerRole = loggedInUser.Role != null && managerRoles.Any(role =>
@@ -583,24 +689,19 @@ namespace TDF.Net
                 MessageBox.Show("An error occurred while saving the image: " + ex.Message);
             }
         }
-        public static List<User> getConnectedUsers()
+        public static List<User> getAllUsers()
         {
             List<User> connectedUsers = new List<User>();
-
-            // Ensure loggedInUser is not null before proceeding.
-            if (loggedInUser == null)
-            {
-                throw new InvalidOperationException("loggedInUser is null.");
-            }
 
             using (SqlConnection connection = Database.getConnection())
             {
                 connection.Open();
 
                 // Use parameterized query for safety and clarity.
-                string query = "SELECT FullName, Department, Picture " +
+                string query = "SELECT FullName, Department, Picture, UserID, isConnected " +
                                "FROM Users " +
-                               "WHERE IsConnected = 1 AND UserName <> @UserName;";
+                               "WHERE UserName <> @UserName " +
+                               "ORDER BY isConnected DESC";
 
                 using (SqlCommand cmd = new SqlCommand(query, connection))
                 {
@@ -616,9 +717,11 @@ namespace TDF.Net
                             {
                                 FullName = reader["FullName"].ToString(),
                                 Department = reader["Department"].ToString(),
+                                userID = reader["UserID"] != DBNull.Value ? Convert.ToInt32(reader["UserID"]) : 0,
+                                isConnected = reader["isConnected"] != DBNull.Value ? Convert.ToInt32(reader["isConnected"]) : 0,
                                 Picture = reader["Picture"] != DBNull.Value
                                           ? Image.FromStream(new MemoryStream((byte[])reader["Picture"]))
-                                          : null // Default to null if no image.
+                                          : Resources.pngegg // Default to null if no image.
                             };
 
                             connectedUsers.Add(user);
@@ -626,78 +729,157 @@ namespace TDF.Net
                     }
                 }
             }
-
             return connectedUsers;
         }
+
         private void displayConnectedUsers()
         {
-            // Suspend layout updates to prevent intermediate redraws
-            usersShadowPanel.SuspendLayout();
+            List<User> connectedUsers = getAllUsers();
+            int currentUserCount = connectedUsers.Count;
+            bool userCountChanged = currentUserCount != previousUserCount;
 
-            List<User> connectedUsers = getConnectedUsers();
-
-            // Clear the panel before adding new items
-            usersShadowPanel.Controls.Clear();
-
-            // Add the icon button back to the panel
-            usersIconButton.Location = usersIconLocation;
-            usersShadowPanel.Controls.Add(usersIconButton);
-
-            int yOffset = 10; // Initial vertical spacing
-
-            // Add a label at the top with the number of online users
-            Label headerLabel = new Label
+            if (userCountChanged)
             {
-                Text = $"Online Users ({connectedUsers.Count})", // Display the count of online users
-                Location = new Point(10, yOffset + 3), // At the top
-                AutoSize = true,
-                Font = new Font("Segoe UI", 12, FontStyle.Bold)
-            };
-
-            usersShadowPanel.Controls.Add(headerLabel);
-            yOffset += headerLabel.Height + 20; // Add space for the header label
-
-            foreach (User user in connectedUsers)
-            {
-                // Calculate the X position to center the PictureBox in the panel
-                int pictureBoxX = (usersShadowPanel.Width - 75) / 2; // Center the 75px image
-
-                // Create PictureBox for the user's image
-                CircularPictureBox pictureBox = new CircularPictureBox
+                // Save the scroll position before clearing, if available
+                if (flowLayout != null)
                 {
-                    Image = user.Picture ?? Resources.pngegg, // Fallback image
-                    SizeMode = PictureBoxSizeMode.Zoom,
-                    Size = new Size(75, 75), // Set size
-                    Location = new Point(pictureBoxX, yOffset) // Center horizontally and adjust vertically
-                };
+                    previousScrollPosition = flowLayout.AutoScrollPosition;
+                }
 
-                // Set the label width within panel constraints
-                int nameLabelWidth = usersShadowPanel.Width - 20;
-                int nameLabelX = (usersShadowPanel.Width - nameLabelWidth) / 2;
+                // Suspend layout to reduce flickering
+                usersPanel.SuspendLayout();
 
-                // Create Label for the user's name (below the picture)
-                Label nameLabel = new Label
+                // Clear existing controls
+                usersPanel.Controls.Clear();
+
+                // Re-add the icon button (if needed)
+                usersPanel.Controls.Add(usersIconButton);
+
+                // Create/recreate the header label
+                headerLabel = new Label
                 {
-                    Text = $"{user.FullName.Split(' ')[0]} - {user.Department}", // "Name - Department"
-                    Location = new Point(nameLabelX, yOffset + pictureBox.Height + 5), // Position below picture
-                    AutoSize = true, // Allow dynamic height
-                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                    ForeColor = darkColor,
-                    MaximumSize = new Size(nameLabelWidth, 0), // Wrap text within the panel width
-                    TextAlign = ContentAlignment.MiddleCenter // Ensure proper text alignment
+                    Text = $"Online Users ({connectedUsers.Count})",
+                    Location = new Point(10, 10),
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                    Tag = "header"
                 };
+                usersPanel.Controls.Add(headerLabel);
 
-                // Add controls to the panel
-                usersShadowPanel.Controls.Add(pictureBox);
-                usersShadowPanel.Controls.Add(nameLabel);
+                // Create the FlowLayoutPanel with a bigger height (e.g., 400 px)
+                flowLayout = new FlowLayoutPanel
+                {
+                    Name = "flowLayoutUsers",
+                    Location = new Point(0, 60),
+                    Size = new Size(usersPanel.Width, 600), // Increase height to give more space
+                    AutoScroll = true,
+                    FlowDirection = FlowDirection.TopDown,
+                    WrapContents = false
+                };
+                usersPanel.Controls.Add(flowLayout);
 
-                // Update vertical offset for the next user
-                yOffset += pictureBox.Height + nameLabel.Height + 20; // Add space between users
+                // Build user panels with slightly bigger pictures and fonts
+                foreach (User user in connectedUsers)
+                {
+                    Panel userPanel = new Panel
+                    {
+                        Size = new Size(flowLayout.Width - 25, 120), // Slightly taller
+                        Margin = new Padding(5),                    // Small margin between panels
+                        BorderStyle = BorderStyle.None,
+                        Tag = user.userID
+                    };
+
+                    // Increase the picture size to 60×60
+                    CircularPictureBox pictureBox = new CircularPictureBox
+                    {
+                        Image = user.Picture,
+                        SizeMode = PictureBoxSizeMode.Zoom,
+                        Size = new Size(60, 60),
+                        Location = new Point((userPanel.Width - 60) / 2, 10),
+                        Cursor = Cursors.Hand
+                    };
+
+                    // Restore the Department in the label
+                    // Slightly bigger font (10 pt)
+                    Label nameLabel = new Label
+                    {
+                        Text = $"{user.FullName.Split(' ')[0]} - {user.Department}",
+                        Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                        ForeColor = darkColor,
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        MaximumSize = new Size(userPanel.Width - 20, 0),
+                        AutoSize = true,
+                        Location = new Point(10, pictureBox.Bottom + 5)
+                    };
+
+                    // Create the online indicator (10×10 circle), visibility depends on status
+                    Panel onlineIndicator = new Panel
+                    {
+                        Size = new Size(10, 10),
+                        BackColor = Color.Green,
+                        Visible = user.isConnected == 1,
+                        Name = "onlineIndicator"
+                    };
+                    // Position it at the bottom-right corner of the picture
+                    onlineIndicator.Location = new Point(
+                        pictureBox.Right - onlineIndicator.Width / 2,
+                        pictureBox.Bottom - onlineIndicator.Height / 2
+                    );
+                    System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+                    path.AddEllipse(0, 0, onlineIndicator.Width, onlineIndicator.Height);
+                    onlineIndicator.Region = new Region(path);
+
+                    // Add controls to the panel
+                    userPanel.Controls.Add(pictureBox);
+                    userPanel.Controls.Add(nameLabel);
+                    userPanel.Controls.Add(onlineIndicator);
+
+                    // Open chat when clicking the picture
+                    pictureBox.Click += (s, e) =>
+                    {
+                        chatForm cf = new chatForm(loggedInUser.userID, user.userID, user.FullName, user.Picture);
+                        cf.Show();
+                    };
+
+                    flowLayout.Controls.Add(userPanel);
+                }
+
+                // Restore the scroll position if available
+                if (flowLayout != null && previousScrollPosition != Point.Empty)
+                {
+                    flowLayout.AutoScrollPosition = new Point(
+                        previousScrollPosition.X,
+                        Math.Abs(previousScrollPosition.Y)
+                    );
+                }
+
+                usersPanel.ResumeLayout(true);
+                previousUserCount = currentUserCount;
             }
-
-            // Resume layout updates and perform a layout recalculation (including auto scroll updates)
-            usersShadowPanel.ResumeLayout(true);
+            else
+            {
+                // If user count hasn't changed, update only the online indicators
+                foreach (User user in connectedUsers)
+                {
+                    foreach (Control control in flowLayout.Controls)
+                    {
+                        if (control is Panel userPanel && (int)userPanel.Tag == user.userID)
+                        {
+                            var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault();
+                            if (onlineIndicator != null)
+                            {
+                                onlineIndicator.Visible = user.isConnected == 1;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
         }
+
+
+
+
         /* private void startPipeListener()
          {
              Thread pipeListenerThread = new Thread(new ThreadStart(ListenForMessages));
