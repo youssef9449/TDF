@@ -37,6 +37,9 @@
             this.messageTextBox = new Bunifu.UI.WinForms.BunifuTextBox();
             this.sendButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.messagesListBox = new System.Windows.Forms.ListBox();
+            this.panel = new System.Windows.Forms.Panel();
+            this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
+            this.panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // messageTextBox
@@ -71,7 +74,7 @@
             this.messageTextBox.IconRight = null;
             this.messageTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.messageTextBox.Lines = new string[0];
-            this.messageTextBox.Location = new System.Drawing.Point(8, 244);
+            this.messageTextBox.Location = new System.Drawing.Point(17, 281);
             this.messageTextBox.MaxLength = 32767;
             this.messageTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.messageTextBox.Modified = false;
@@ -107,7 +110,7 @@
             this.messageTextBox.SelectionLength = 0;
             this.messageTextBox.SelectionStart = 0;
             this.messageTextBox.ShortcutsEnabled = true;
-            this.messageTextBox.Size = new System.Drawing.Size(396, 39);
+            this.messageTextBox.Size = new System.Drawing.Size(400, 38);
             this.messageTextBox.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.messageTextBox.TabIndex = 0;
             this.messageTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -165,7 +168,7 @@
             this.sendButton.IdleIconLeftImage = null;
             this.sendButton.IdleIconRightImage = null;
             this.sendButton.IndicateFocus = false;
-            this.sendButton.Location = new System.Drawing.Point(155, 289);
+            this.sendButton.Location = new System.Drawing.Point(164, 325);
             this.sendButton.Name = "sendButton";
             this.sendButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.sendButton.OnDisabledState.BorderRadius = 1;
@@ -214,23 +217,103 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.messagesListBox.FormattingEnabled = true;
-            this.messagesListBox.Location = new System.Drawing.Point(8, 0);
+            this.messagesListBox.Location = new System.Drawing.Point(17, 50);
             this.messagesListBox.Name = "messagesListBox";
-            this.messagesListBox.Size = new System.Drawing.Size(396, 238);
+            this.messagesListBox.Size = new System.Drawing.Size(400, 225);
             this.messagesListBox.TabIndex = 2;
+            // 
+            // panel
+            // 
+            this.panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.panel.Controls.Add(this.controlBox);
+            this.panel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel.Location = new System.Drawing.Point(0, 0);
+            this.panel.Name = "panel";
+            this.panel.Size = new System.Drawing.Size(429, 41);
+            this.panel.TabIndex = 25;
+            // 
+            // controlBox
+            // 
+            this.controlBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.controlBox.BunifuFormDrag = null;
+            this.controlBox.CloseBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.controlBox.CloseBoxOptions.BorderRadius = 0;
+            this.controlBox.CloseBoxOptions.Enabled = true;
+            this.controlBox.CloseBoxOptions.EnableDefaultAction = true;
+            this.controlBox.CloseBoxOptions.HoverColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
+            this.controlBox.CloseBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.CloseBoxOptions.Icon")));
+            this.controlBox.CloseBoxOptions.IconAlt = null;
+            this.controlBox.CloseBoxOptions.IconColor = System.Drawing.Color.White;
+            this.controlBox.CloseBoxOptions.IconHoverColor = System.Drawing.Color.White;
+            this.controlBox.CloseBoxOptions.IconPressedColor = System.Drawing.Color.White;
+            this.controlBox.CloseBoxOptions.IconSize = new System.Drawing.Size(18, 18);
+            this.controlBox.CloseBoxOptions.PressedColor = System.Drawing.Color.FromArgb(((int)(((byte)(232)))), ((int)(((byte)(17)))), ((int)(((byte)(35)))));
+            this.controlBox.ForeColor = System.Drawing.Color.White;
+            this.controlBox.HelpBox = false;
+            this.controlBox.HelpBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.controlBox.HelpBoxOptions.BorderRadius = 0;
+            this.controlBox.HelpBoxOptions.Enabled = true;
+            this.controlBox.HelpBoxOptions.EnableDefaultAction = true;
+            this.controlBox.HelpBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.controlBox.HelpBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.HelpBoxOptions.Icon")));
+            this.controlBox.HelpBoxOptions.IconAlt = null;
+            this.controlBox.HelpBoxOptions.IconColor = System.Drawing.Color.Black;
+            this.controlBox.HelpBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.controlBox.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.controlBox.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
+            this.controlBox.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.controlBox.Location = new System.Drawing.Point(267, 2);
+            this.controlBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.controlBox.MaximizeBox = false;
+            this.controlBox.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.controlBox.MaximizeBoxOptions.BorderRadius = 0;
+            this.controlBox.MaximizeBoxOptions.Enabled = true;
+            this.controlBox.MaximizeBoxOptions.EnableDefaultAction = true;
+            this.controlBox.MaximizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.controlBox.MaximizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.MaximizeBoxOptions.Icon")));
+            this.controlBox.MaximizeBoxOptions.IconAlt = ((System.Drawing.Image)(resources.GetObject("controlBox.MaximizeBoxOptions.IconAlt")));
+            this.controlBox.MaximizeBoxOptions.IconColor = System.Drawing.Color.White;
+            this.controlBox.MaximizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.controlBox.MaximizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.controlBox.MaximizeBoxOptions.IconSize = new System.Drawing.Size(16, 16);
+            this.controlBox.MaximizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.controlBox.MinimizeBox = true;
+            this.controlBox.MinimizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
+            this.controlBox.MinimizeBoxOptions.BorderRadius = 0;
+            this.controlBox.MinimizeBoxOptions.Enabled = true;
+            this.controlBox.MinimizeBoxOptions.EnableDefaultAction = true;
+            this.controlBox.MinimizeBoxOptions.HoverColor = System.Drawing.Color.LightGray;
+            this.controlBox.MinimizeBoxOptions.Icon = ((System.Drawing.Image)(resources.GetObject("controlBox.MinimizeBoxOptions.Icon")));
+            this.controlBox.MinimizeBoxOptions.IconAlt = null;
+            this.controlBox.MinimizeBoxOptions.IconColor = System.Drawing.Color.White;
+            this.controlBox.MinimizeBoxOptions.IconHoverColor = System.Drawing.Color.Black;
+            this.controlBox.MinimizeBoxOptions.IconPressedColor = System.Drawing.Color.Black;
+            this.controlBox.MinimizeBoxOptions.IconSize = new System.Drawing.Size(14, 14);
+            this.controlBox.MinimizeBoxOptions.PressedColor = System.Drawing.Color.Silver;
+            this.controlBox.Name = "controlBox";
+            this.controlBox.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.controlBox.ShowDesignBorders = false;
+            this.controlBox.Size = new System.Drawing.Size(160, 37);
+            this.controlBox.TabIndex = 19;
             // 
             // chatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(413, 333);
+            this.ClientSize = new System.Drawing.Size(429, 372);
+            this.ControlBox = false;
+            this.Controls.Add(this.panel);
             this.Controls.Add(this.messagesListBox);
             this.Controls.Add(this.sendButton);
             this.Controls.Add(this.messageTextBox);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.MaximumSize = new System.Drawing.Size(429, 372);
+            this.MinimumSize = new System.Drawing.Size(429, 372);
             this.Name = "chatForm";
             this.Text = "chatForm";
             this.Load += new System.EventHandler(this.chatForm_Load);
+            this.panel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -240,5 +323,7 @@
         private Bunifu.UI.WinForms.BunifuTextBox messageTextBox;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton2 sendButton;
         private System.Windows.Forms.ListBox messagesListBox;
+        private System.Windows.Forms.Panel panel;
+        private Bunifu.UI.WinForms.BunifuFormControlBox controlBox;
     }
 }

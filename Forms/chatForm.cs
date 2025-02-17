@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDF.Net;
 using static TDF.Net.loginForm;
 using static TDF.Net.Program;
-using TDF.Net;
 
 namespace TDF.Forms
 {
@@ -59,7 +53,7 @@ namespace TDF.Forms
             {
                 string query = @"
                 SELECT SenderID, MessageText, Timestamp 
-                FROM ChatMessages 
+                FROM Messages 
                 WHERE (SenderID = @CurrentUserID AND ReceiverID = @ChatWithUserID) 
                    OR (SenderID = @ChatWithUserID AND ReceiverID = @CurrentUserID)
                 ORDER BY Timestamp ASC";
@@ -95,7 +89,7 @@ namespace TDF.Forms
 
         private void sendMessage(int receiverID, string messageText)
         {
-            string query = "INSERT INTO ChatMessages (SenderID, ReceiverID, MessageText) VALUES (@SenderID, @ReceiverID, @MessageText); SELECT SCOPE_IDENTITY();";
+            string query = "INSERT INTO Messages (SenderID, ReceiverID, MessageText) VALUES (@SenderID, @ReceiverID, @MessageText); SELECT SCOPE_IDENTITY();";
             int messageID;
             using (SqlConnection conn = Database.getConnection())
             {

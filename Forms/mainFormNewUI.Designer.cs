@@ -42,9 +42,6 @@ namespace TDF.Net
             this.minImg = new System.Windows.Forms.PictureBox();
             this.closeImg = new System.Windows.Forms.PictureBox();
             this.formPanel = new System.Windows.Forms.Panel();
-            this.usersIconButton = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton();
-            this.usernameLabel = new Bunifu.UI.WinForms.BunifuLabel();
-            this.bunifuLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.teamImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
             this.requestsImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
             this.reportsImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
@@ -56,8 +53,11 @@ namespace TDF.Net
             this.bunifuLabel7 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel6 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel5 = new Bunifu.UI.WinForms.BunifuLabel();
-            this.notificationsSnackbar = new Bunifu.UI.WinForms.BunifuSnackbar(this.components);
+            this.usernameLabel = new Bunifu.UI.WinForms.BunifuLabel();
+            this.bunifuLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.usersPanel = new System.Windows.Forms.Panel();
+            this.usersIconButton = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton();
+            this.notificationsSnackbar = new Bunifu.UI.WinForms.BunifuSnackbar(this.components);
             this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.panelTitleBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
@@ -222,86 +222,16 @@ namespace TDF.Net
             this.formPanel.Controls.Add(this.logoutImageButton);
             this.formPanel.Controls.Add(this.controlPanelImageButton);
             this.formPanel.Controls.Add(this.shadowPanel);
-            this.formPanel.Controls.Add(this.usersPanel);
             this.formPanel.Controls.Add(this.usernameLabel);
             this.formPanel.Controls.Add(this.circularPictureBox);
             this.formPanel.Controls.Add(this.bunifuLabel);
+            this.formPanel.Controls.Add(this.usersPanel);
             this.formPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.formPanel.Location = new System.Drawing.Point(0, 66);
             this.formPanel.Name = "formPanel";
             this.formPanel.Size = new System.Drawing.Size(1280, 654);
             this.formPanel.TabIndex = 11;
             this.formPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.formPanel_Paint);
-            // 
-            // usersIconButton
-            // 
-            this.usersIconButton.AllowAnimations = true;
-            this.usersIconButton.AllowBorderColorChanges = true;
-            this.usersIconButton.AllowMouseEffects = true;
-            this.usersIconButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.usersIconButton.AnimationSpeed = 200;
-            this.usersIconButton.BackColor = System.Drawing.Color.Transparent;
-            this.usersIconButton.BackgroundColor = System.Drawing.Color.DodgerBlue;
-            this.usersIconButton.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.usersIconButton.BorderRadius = 1;
-            this.usersIconButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderStyles.Solid;
-            this.usersIconButton.BorderThickness = 1;
-            this.usersIconButton.ColorContrastOnClick = 30;
-            this.usersIconButton.ColorContrastOnHover = 30;
-            this.usersIconButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.usersIconButton.CustomizableEdges = borderEdges1;
-            this.usersIconButton.DialogResult = System.Windows.Forms.DialogResult.None;
-            this.usersIconButton.Image = global::TDF.Properties.Resources.down;
-            this.usersIconButton.ImageMargin = new System.Windows.Forms.Padding(0);
-            this.usersIconButton.Location = new System.Drawing.Point(158, 3);
-            this.usersIconButton.Name = "usersIconButton";
-            this.usersIconButton.RoundBorders = true;
-            this.usersIconButton.ShowBorders = true;
-            this.usersIconButton.Size = new System.Drawing.Size(30, 30);
-            this.usersIconButton.Style = Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.ButtonStyles.Round;
-            this.usersIconButton.TabIndex = 16;
-            this.usersIconButton.Click += new System.EventHandler(this.usersIconButton_Click);
-            // 
-            // usernameLabel
-            // 
-            this.usernameLabel.AllowParentOverrides = false;
-            this.usernameLabel.AutoEllipsis = false;
-            this.usernameLabel.AutoSize = false;
-            this.usernameLabel.Cursor = System.Windows.Forms.Cursors.Default;
-            this.usernameLabel.CursorType = System.Windows.Forms.Cursors.Default;
-            this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.usernameLabel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.usernameLabel.Location = new System.Drawing.Point(35, 147);
-            this.usernameLabel.Name = "usernameLabel";
-            this.usernameLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.usernameLabel.Size = new System.Drawing.Size(140, 57);
-            this.usernameLabel.TabIndex = 14;
-            this.usernameLabel.Text = "Welcome, User!";
-            this.usernameLabel.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
-            this.usernameLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
-            // 
-            // bunifuLabel
-            // 
-            this.bunifuLabel.AllowParentOverrides = false;
-            this.bunifuLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bunifuLabel.AutoEllipsis = false;
-            this.bunifuLabel.AutoSize = false;
-            this.bunifuLabel.Cursor = System.Windows.Forms.Cursors.Default;
-            this.bunifuLabel.CursorType = System.Windows.Forms.Cursors.Default;
-            this.bunifuLabel.Font = new System.Drawing.Font("Segoe UI Emoji", 9F);
-            this.bunifuLabel.Location = new System.Drawing.Point(3, 628);
-            this.bunifuLabel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.bunifuLabel.Name = "bunifuLabel";
-            this.bunifuLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel.Size = new System.Drawing.Size(104, 24);
-            this.bunifuLabel.TabIndex = 12;
-            this.bunifuLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
-            this.bunifuLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
-            this.bunifuLabel.Paint += new System.Windows.Forms.PaintEventHandler(this.bunifuLabel_Paint);
             // 
             // teamImageButton
             // 
@@ -610,6 +540,87 @@ namespace TDF.Net
             this.bunifuLabel5.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
             this.bunifuLabel5.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
+            // usernameLabel
+            // 
+            this.usernameLabel.AllowParentOverrides = false;
+            this.usernameLabel.AutoEllipsis = false;
+            this.usernameLabel.AutoSize = false;
+            this.usernameLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.usernameLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.usernameLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.usernameLabel.Location = new System.Drawing.Point(35, 147);
+            this.usernameLabel.Name = "usernameLabel";
+            this.usernameLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.usernameLabel.Size = new System.Drawing.Size(140, 57);
+            this.usernameLabel.TabIndex = 14;
+            this.usernameLabel.Text = "Welcome, User!";
+            this.usernameLabel.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
+            this.usernameLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // bunifuLabel
+            // 
+            this.bunifuLabel.AllowParentOverrides = false;
+            this.bunifuLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.bunifuLabel.AutoEllipsis = false;
+            this.bunifuLabel.AutoSize = false;
+            this.bunifuLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel.Font = new System.Drawing.Font("Segoe UI Emoji", 9F);
+            this.bunifuLabel.Location = new System.Drawing.Point(3, 628);
+            this.bunifuLabel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bunifuLabel.Name = "bunifuLabel";
+            this.bunifuLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.bunifuLabel.Size = new System.Drawing.Size(104, 24);
+            this.bunifuLabel.TabIndex = 12;
+            this.bunifuLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.bunifuLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            this.bunifuLabel.Paint += new System.Windows.Forms.PaintEventHandler(this.bunifuLabel_Paint);
+            // 
+            // usersPanel
+            // 
+            this.usersPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.usersPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.usersPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.usersPanel.Controls.Add(this.usersIconButton);
+            this.usersPanel.Location = new System.Drawing.Point(1083, 6);
+            this.usersPanel.Name = "usersPanel";
+            this.usersPanel.Size = new System.Drawing.Size(193, 635);
+            this.usersPanel.TabIndex = 12;
+            // 
+            // usersIconButton
+            // 
+            this.usersIconButton.AllowAnimations = true;
+            this.usersIconButton.AllowBorderColorChanges = true;
+            this.usersIconButton.AllowMouseEffects = true;
+            this.usersIconButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.usersIconButton.AnimationSpeed = 200;
+            this.usersIconButton.BackColor = System.Drawing.Color.Transparent;
+            this.usersIconButton.BackgroundColor = System.Drawing.Color.DodgerBlue;
+            this.usersIconButton.BorderColor = System.Drawing.Color.DodgerBlue;
+            this.usersIconButton.BorderRadius = 1;
+            this.usersIconButton.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderStyles.Solid;
+            this.usersIconButton.BorderThickness = 1;
+            this.usersIconButton.ColorContrastOnClick = 30;
+            this.usersIconButton.ColorContrastOnHover = 30;
+            this.usersIconButton.Cursor = System.Windows.Forms.Cursors.Default;
+            borderEdges1.BottomLeft = true;
+            borderEdges1.BottomRight = true;
+            borderEdges1.TopLeft = true;
+            borderEdges1.TopRight = true;
+            this.usersIconButton.CustomizableEdges = borderEdges1;
+            this.usersIconButton.DialogResult = System.Windows.Forms.DialogResult.None;
+            this.usersIconButton.Image = global::TDF.Properties.Resources.down;
+            this.usersIconButton.ImageMargin = new System.Windows.Forms.Padding(0);
+            this.usersIconButton.Location = new System.Drawing.Point(154, 5);
+            this.usersIconButton.Name = "usersIconButton";
+            this.usersIconButton.RoundBorders = true;
+            this.usersIconButton.ShowBorders = true;
+            this.usersIconButton.Size = new System.Drawing.Size(30, 30);
+            this.usersIconButton.Style = Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.ButtonStyles.Round;
+            this.usersIconButton.TabIndex = 16;
+            this.usersIconButton.Click += new System.EventHandler(this.usersIconButton_Click);
+            // 
             // notificationsSnackbar
             // 
             this.notificationsSnackbar.AllowDragging = false;
@@ -679,17 +690,6 @@ namespace TDF.Net
             this.notificationsSnackbar.WarningOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon3")));
             this.notificationsSnackbar.WarningOptions.IconLeftMargin = 12;
             this.notificationsSnackbar.ZoomCloseIcon = true;
-            // 
-            // usersPanel
-            // 
-            this.usersPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.usersPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.usersPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.usersPanel.Controls.Add(this.usersIconButton);
-            this.usersPanel.Location = new System.Drawing.Point(1075, 6);
-            this.usersPanel.Name = "usersPanel";
-            this.usersPanel.Size = new System.Drawing.Size(193, 635);
-            this.usersPanel.TabIndex = 12;
             // 
             // circularPictureBox
             // 

@@ -16,7 +16,6 @@ using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Program;
 using Timer = System.Windows.Forms.Timer;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TDF.Net
 {
@@ -437,7 +436,7 @@ namespace TDF.Net
         }
         public void updateUserDataControls()
         {
-            circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : Resources.pngegg;
+            circularPictureBox.Image = loggedInUser.Picture ?? Resources.pngegg;
 
             usernameLabel.Text = $"Welcome, {loggedInUser.FullName.Split(' ')[0]}!";
         }
@@ -498,7 +497,7 @@ namespace TDF.Net
                 }
             }
         }
-        private void showFormInPanel(Form form)
+        /*private void showFormInPanel(Form form)
         {
             form.TopLevel = false; // Make it a child control rather than a top-level form
             form.Dock = DockStyle.Fill;
@@ -522,7 +521,7 @@ namespace TDF.Net
             };
 
             form.Show();
-        }
+        }*/
         private void adjustShadowPanelAndImageButtons()
         {
             // Set anchor style for all controls in shadowPanel
@@ -731,65 +730,106 @@ namespace TDF.Net
             }
             return connectedUsers;
         }
-
         private void displayConnectedUsers()
         {
+            // Get all users (the SQL query orders them by isConnected DESC).
             List<User> connectedUsers = getAllUsers();
             int currentUserCount = connectedUsers.Count;
-            bool userCountChanged = currentUserCount != previousUserCount;
+            int onlineCount = connectedUsers.Count(u => u.isConnected == 1);
 
-            if (userCountChanged)
+            // --- HEADER: Find or create the header label.
+            Label headerLabel = usersPanel.Controls
+                .OfType<Label>()
+                .FirstOrDefault(ctrl => ctrl.Tag != null && ctrl.Tag.ToString() == "header");
+            if (headerLabel == null)
             {
-                // Save the scroll position before clearing, if available
-                if (flowLayout != null)
-                {
-                    previousScrollPosition = flowLayout.AutoScrollPosition;
-                }
-
-                // Suspend layout to reduce flickering
-                usersPanel.SuspendLayout();
-
-                // Clear existing controls
-                usersPanel.Controls.Clear();
-
-                // Re-add the icon button (if needed)
-                usersPanel.Controls.Add(usersIconButton);
-
-                // Create/recreate the header label
                 headerLabel = new Label
                 {
-                    Text = $"Online Users ({connectedUsers.Count})",
+                    Tag = "header",
                     Location = new Point(10, 10),
                     AutoSize = true,
-                    Font = new Font("Segoe UI", 12, FontStyle.Bold),
-                    Tag = "header"
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold)
                 };
                 usersPanel.Controls.Add(headerLabel);
+            }
+            headerLabel.Text = $"Online Users ({onlineCount})";  // Always update header
 
-                // Create the FlowLayoutPanel with a bigger height (e.g., 400 px)
+            // --- FLOWLAYOUTPANEL: Find or create the FlowLayoutPanel.
+            FlowLayoutPanel flowLayout = usersPanel.Controls
+                .OfType<FlowLayoutPanel>()
+                .FirstOrDefault(ctrl => ctrl.Name == "flowLayoutUsers");
+            if (flowLayout == null)
+            {
                 flowLayout = new FlowLayoutPanel
                 {
                     Name = "flowLayoutUsers",
-                    Location = new Point(0, 60),
-                    Size = new Size(usersPanel.Width, 600), // Increase height to give more space
+                    // Position below the header
+                    Location = new Point(0, headerLabel.Bottom + 10),
+                    Size = new Size(usersPanel.Width, 600), // Fixed height; adjust as desired
                     AutoScroll = true,
                     FlowDirection = FlowDirection.TopDown,
-                    WrapContents = false
+                    WrapContents = false,
+                    Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
                 };
                 usersPanel.Controls.Add(flowLayout);
+            }
+            else
+            {
+                // Update the flowLayout size (in case the parent changed)
+                flowLayout.Size = new Size(usersPanel.Width, 600);
+            }
 
-                // Build user panels with slightly bigger pictures and fonts
+            // Save the current scroll position.
+            int savedScrollPos = flowLayout.VerticalScroll.Value;
+
+            // Determine whether we need to rebuild the entire list.
+            bool needRebuild = false;
+            if (flowLayout.Controls.Count != currentUserCount)
+            {
+                needRebuild = true;
+            }
+            else
+            {
+                // Check the order of user panels (each panel's Tag stores the userID).
+                for (int i = 0; i < flowLayout.Controls.Count; i++)
+                {
+                    Panel panel = flowLayout.Controls[i] as Panel;
+                    if (panel != null)
+                    {
+                        int panelUserId = (int)panel.Tag;
+                        // Since connectedUsers is sorted by isConnected DESC via SQL,
+                        // the i-th item should match the panel's Tag.
+                        if (panelUserId != connectedUsers[i].userID)
+                        {
+                            needRebuild = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (needRebuild)
+            {
+                // Save the scroll position.
+                previousScrollPosition = flowLayout.AutoScrollPosition;
+
+                // Suspend layout to reduce flicker.
+                usersPanel.SuspendLayout();
+                flowLayout.SuspendLayout();
+
+                // Clear and rebuild the FlowLayoutPanel.
+                flowLayout.Controls.Clear();
                 foreach (User user in connectedUsers)
                 {
                     Panel userPanel = new Panel
                     {
-                        Size = new Size(flowLayout.Width - 25, 120), // Slightly taller
-                        Margin = new Padding(5),                    // Small margin between panels
+                        Size = new Size(flowLayout.Width - 25, 120),
+                        Margin = new Padding(5),
                         BorderStyle = BorderStyle.None,
                         Tag = user.userID
                     };
 
-                    // Increase the picture size to 60×60
+                    // Increase picture size a bit.
                     CircularPictureBox pictureBox = new CircularPictureBox
                     {
                         Image = user.Picture,
@@ -798,21 +838,27 @@ namespace TDF.Net
                         Location = new Point((userPanel.Width - 60) / 2, 10),
                         Cursor = Cursors.Hand
                     };
+                    pictureBox.Click += (s, e) =>
+                    {
+                        chatForm cf = new chatForm(loggedInUser.userID, user.userID, user.FullName, user.Picture);
+                        cf.Show();
+                    };
+                    userPanel.Controls.Add(pictureBox);
 
-                    // Restore the Department in the label
-                    // Slightly bigger font (10 pt)
+                    // Show full name and department.
                     Label nameLabel = new Label
                     {
                         Text = $"{user.FullName.Split(' ')[0]} - {user.Department}",
                         Font = new Font("Segoe UI", 10, FontStyle.Bold),
                         ForeColor = darkColor,
                         TextAlign = ContentAlignment.MiddleCenter,
-                        MaximumSize = new Size(userPanel.Width - 20, 0),
                         AutoSize = true,
+                        MaximumSize = new Size(userPanel.Width - 20, 0),
                         Location = new Point(10, pictureBox.Bottom + 5)
                     };
+                    userPanel.Controls.Add(nameLabel);
 
-                    // Create the online indicator (10×10 circle), visibility depends on status
+                    // Online indicator (10x10 circle).
                     Panel onlineIndicator = new Panel
                     {
                         Size = new Size(10, 10),
@@ -820,7 +866,6 @@ namespace TDF.Net
                         Visible = user.isConnected == 1,
                         Name = "onlineIndicator"
                     };
-                    // Position it at the bottom-right corner of the picture
                     onlineIndicator.Location = new Point(
                         pictureBox.Right - onlineIndicator.Width / 2,
                         pictureBox.Bottom - onlineIndicator.Height / 2
@@ -828,42 +873,29 @@ namespace TDF.Net
                     System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
                     path.AddEllipse(0, 0, onlineIndicator.Width, onlineIndicator.Height);
                     onlineIndicator.Region = new Region(path);
-
-                    // Add controls to the panel
-                    userPanel.Controls.Add(pictureBox);
-                    userPanel.Controls.Add(nameLabel);
                     userPanel.Controls.Add(onlineIndicator);
-
-                    // Open chat when clicking the picture
-                    pictureBox.Click += (s, e) =>
-                    {
-                        chatForm cf = new chatForm(loggedInUser.userID, user.userID, user.FullName, user.Picture);
-                        cf.Show();
-                    };
 
                     flowLayout.Controls.Add(userPanel);
                 }
+                previousUserCount = currentUserCount;
 
-                // Restore the scroll position if available
-                if (flowLayout != null && previousScrollPosition != Point.Empty)
+                // Restore scroll position.
+                if (previousScrollPosition != Point.Empty)
                 {
-                    flowLayout.AutoScrollPosition = new Point(
-                        previousScrollPosition.X,
-                        Math.Abs(previousScrollPosition.Y)
-                    );
+                    flowLayout.AutoScrollPosition = new Point(previousScrollPosition.X, Math.Abs(previousScrollPosition.Y));
                 }
 
-                usersPanel.ResumeLayout(true);
-                previousUserCount = currentUserCount;
+                flowLayout.ResumeLayout();
+                usersPanel.ResumeLayout();
             }
             else
             {
-                // If user count hasn't changed, update only the online indicators
+                // If no rebuild is needed, simply update online indicators.
                 foreach (User user in connectedUsers)
                 {
-                    foreach (Control control in flowLayout.Controls)
+                    foreach (Control ctrl in flowLayout.Controls)
                     {
-                        if (control is Panel userPanel && (int)userPanel.Tag == user.userID)
+                        if (ctrl is Panel userPanel && (int)userPanel.Tag == user.userID)
                         {
                             var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault();
                             if (onlineIndicator != null)
@@ -875,11 +907,18 @@ namespace TDF.Net
                     }
                 }
             }
+
+            // Always update header label in case online count changed.
+            headerLabel.Text = $"Online Users ({onlineCount})";
+
+            // Restore scroll position (again, to be sure).
+            try
+            {
+                flowLayout.VerticalScroll.Value = savedScrollPos;
+                flowLayout.AutoScrollPosition = new Point(0, savedScrollPos);
+            }
+            catch { }
         }
-
-
-
-
         /* private void startPipeListener()
          {
              Thread pipeListenerThread = new Thread(new ThreadStart(ListenForMessages));
