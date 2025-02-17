@@ -724,7 +724,6 @@ namespace TDF.Net
             this.ShowIcon = false;
             this.Text = "TDF";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.mainFormNewUI_FormClosing);
             this.Load += new System.EventHandler(this.mainFormNewUI_Load);
             this.Resize += new System.EventHandler(this.mainFormNewUI_Resize);
             this.panelTitleBar.ResumeLayout(false);

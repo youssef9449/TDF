@@ -15,7 +15,9 @@ using static TDF.Net.Classes.ThemeColor;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Program;
+using static TDF.Net.Database;
 using Timer = System.Windows.Forms.Timer;
+using Microsoft.AspNet.SignalR.Client;
 
 namespace TDF.Net
 {
@@ -45,7 +47,7 @@ namespace TDF.Net
         private loginForm loginForm;
 
         private Timer connectedUsersTimer;
-        private bool isPanelExpanded = false;
+        private bool isPanelExpanded, isFormClosing = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
         private Point usersIconLocation;
         private int contractedHeight = 50; // Height of the panel to show only the header
@@ -53,9 +55,11 @@ namespace TDF.Net
 
         private FlowLayoutPanel flowLayout;
         private Label headerLabel;
-        private int previousUserCount = -1;
+        private int previousUserCount = -1; 
         private Point previousScrollPosition = Point.Empty;
 
+        private HubConnection connection;
+        private IHubProxy hubProxy;
 
         #region Events
         private void mainFormNewUI_Load(object sender, EventArgs e)
@@ -66,10 +70,9 @@ namespace TDF.Net
             usersIconButton.BorderColor = darkColor;
             expandedHeight = usersPanel.Height; // Store the original height when expanded
             usersPanel.Height = contractedHeight; // Set the initial height to contracted
-            usersPanel.AutoScroll = false; // Disable auto-scroll for contracted state
             usersIconLocation = usersIconButton.Location;
+            InitializeSignalR(); 
 
-            //startPipeListener(); // Start listening for messages
             updateRoleStatus();
             setImageButtonVisibility();
             adjustShadowPanelAndImageButtons();
@@ -273,22 +276,31 @@ namespace TDF.Net
                 return;
             }
         }
-        private void mainFormNewUI_FormClosing(object sender, FormClosingEventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            makeUserDisconnected();
-
-            if (connectedUsersTimer != null)
+            if (!isFormClosing)
             {
-                connectedUsersTimer.Stop();
-                connectedUsersTimer.Dispose();
-            }
-            if (notificationTimer != null)
-            {
-                notificationTimer.Stop();
-                notificationTimer.Dispose();
+                isFormClosing = true;
+
+                makeUserDisconnected();
+
+                if (connectedUsersTimer != null)
+                {
+                    connectedUsersTimer.Stop();
+                    connectedUsersTimer.Dispose();
+                }
+
+                if (notificationTimer != null)
+                {
+                    notificationTimer.Stop();
+                    notificationTimer.Dispose();
+                }
+
+                hubProxy = null;
+                loggedInUser = null;
             }
 
-            loggedInUser = null;
+            base.OnFormClosing(e);
         }
         private void circularPictureBox_Click(object sender, EventArgs e)
         {
@@ -338,7 +350,36 @@ namespace TDF.Net
         #endregion
 
         #region Methods
-        private void startNotificationChecker()
+        private async System.Threading.Tasks.Task InitializeSignalR()
+        {
+            string url = $"http://{serverIPAddress}:8080";
+            connection = new HubConnection(url);
+            hubProxy = connection.CreateHubProxy("NotificationHub");
+
+            // Subscribe to receive notifications.
+            hubProxy.On<string>("receiveNotification", (message) =>
+            {
+                // Ensure UI updates happen on the UI thread.
+                this.Invoke(new Action(() =>
+                {
+                    MessageBox.Show(message, "New Notification");
+                }));
+            });
+
+            try
+            {
+                await connection.Start();
+                MessageBox.Show("Connected to SignalR Server.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error connecting to SignalR Server: " + ex.Message);
+                Console.WriteLine("Error: " + ex.Message);
+            }
+        }
+
+    
+private void startNotificationChecker()
         {
 
             notificationTimer.Interval = 3000; // Check every 3 seconds

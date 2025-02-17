@@ -67,7 +67,7 @@ namespace TDF.Forms
                     {
                         while (reader.Read())
                         {
-                            string sender = (int)reader["SenderID"] == currentUserID ? "You" : "Them";
+                            string sender = (int)reader["SenderID"] == currentUserID ? "You" : Text;
                             string message = reader["MessageText"].ToString();
                             DateTime timestamp = (DateTime)reader["Timestamp"];
                             messagesListBox.Items.Add($"{sender}: {message} ({timestamp:T})");
