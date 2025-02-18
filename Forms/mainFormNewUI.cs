@@ -39,25 +39,20 @@ namespace TDF.Net
             //notificationsSnackbar.InformationOptions.ActionBackColor = lightColor;
             formPanel.BackColor = Color.White;
             this.loginForm = loginForm; // Store a reference to the login form
-            startNotificationChecker();
+            //startNotificationChecker();
         }
 
         private ContextMenuStrip contextMenu;
 
         private loginForm loginForm;
 
-        private Timer connectedUsersTimer;
         private bool isPanelExpanded, isFormClosing = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
         private Point usersIconLocation;
         private int contractedHeight = 50; // Height of the panel to show only the header
-        Timer notificationTimer = new Timer();
 
         private int previousUserCount = -1; 
         private Point previousScrollPosition = Point.Empty;
-
-      //  private HubConnection connection;
-       // private IHubProxy hubProxy;
 
         #region Events
         private void mainFormNewUI_Load(object sender, EventArgs e)
@@ -69,7 +64,17 @@ namespace TDF.Net
             expandedHeight = usersPanel.Height; // Store the original height when expanded
             usersPanel.Height = contractedHeight; // Set the initial height to contracted
             usersIconLocation = usersIconButton.Location;
-            //InitializeSignalR(); 
+            InitializeSignalR();
+
+            // Subscribe to the SignalR "updateUserList" event.
+            SignalRManager.HubProxy.On("updateUserList", () =>
+            {
+                // Since this event comes on a non-UI thread, marshal to the UI thread.
+                Invoke(new Action(() =>
+                {
+                    displayConnectedUsers();
+                }));
+            });
 
             updateRoleStatus();
             setImageButtonVisibility();
@@ -77,11 +82,6 @@ namespace TDF.Net
             updateUserDataControls();
 
             displayConnectedUsers();
-
-            connectedUsersTimer = new Timer();
-            connectedUsersTimer.Interval = 10000; // 10 seconds
-            connectedUsersTimer.Tick += ConnectedUsersTimer_Tick;
-            connectedUsersTimer.Start();
         }
         protected override void OnMove(EventArgs e)
         {
@@ -276,25 +276,17 @@ namespace TDF.Net
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            if (SignalRManager.IsConnected)
+            {
+                await SignalRManager.Connection.Stop();
+            }
+
             if (!isFormClosing)
             {
                 isFormClosing = true;
 
                 makeUserDisconnected();
 
-                if (connectedUsersTimer != null)
-                {
-                    connectedUsersTimer.Stop();
-                    connectedUsersTimer.Dispose();
-                }
-
-                if (notificationTimer != null)
-                {
-                    notificationTimer.Stop();
-                    notificationTimer.Dispose();
-                }
-
-                //hubProxy = null;
                 loggedInUser = null;
             }
 
@@ -348,124 +340,13 @@ namespace TDF.Net
         #endregion
 
         #region Methods
-        /* private async System.Threading.Tasks.Task InitializeSignalR()
+        private async System.Threading.Tasks.Task InitializeSignalR()
         {
             //serverIPAddress = "192.168.1.11";
             serverIPAddress = "localhost";
 
             string url = $"http://{serverIPAddress}:8080";
-            connection = new HubConnection(url);
-            hubProxy = connection.CreateHubProxy("NotificationHub");
-
-            // Subscribe to receive notifications.
-            hubProxy.On<string>("receiveNotification", (message) =>
-            {
-                // Ensure UI updates happen on the UI thread.
-                Invoke(new Action(() =>
-                {
-                    MessageBox.Show(message, "New Notification");
-                }));
-            });
-
-            try
-            {
-                await connection.Start();
-                MessageBox.Show("Connected to SignalR Server.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error connecting to SignalR Server: " + ex.Message);
-                MessageBox.Show("Error: " + ex.Message);
-            }
-        }*/
-  
-        private void startNotificationChecker()
-        {
-
-            notificationTimer.Interval = 5000; // Check every 3 seconds
-            if (loggedInUser != null)
-            {
-                notificationTimer.Tick += (s, e) => checkForNewMessages();
-                notificationTimer.Start();
-            }
-        }
-        private void checkForNewMessages()
-        {
-            if (loggedInUser != null)
-            {
-                string query = "SELECT SenderID, COUNT(*) AS UnreadCount FROM Notifications WHERE ReceiverID = @ReceiverID AND IsSeen = 0 GROUP BY SenderID";
-                using (SqlConnection conn = getConnection())
-                {
-                    conn.Open();
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@ReceiverID", loggedInUser.userID);
-                        using (SqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                int senderID = reader.GetInt32(0);
-                                int unreadCount = reader.GetInt32(1);
-
-                                // Trigger the notification
-                                showNewMessageNotification(senderID, unreadCount);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        private string getUserName(int userID)
-        {
-            string userName = string.Empty;
-            using (SqlConnection conn = Database.getConnection())
-            {
-                string query = "SELECT FullName FROM Users WHERE UserID = @UserID";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@UserID", userID);
-                    conn.Open();
-                    object result = cmd.ExecuteScalar();
-                    if (result != null)
-                    {
-                        userName = result.ToString();
-                    }
-                }
-            }
-            return userName;
-        }
-        private void showNewMessageNotification(int senderID, int unreadCount)
-        {
-            if (this.IsDisposed || this.Disposing)
-                return;
-
-            string senderName = getUserName(senderID);
-            string message = $"{senderName} sent you {unreadCount} new message(s)";
-
-            notificationsSnackbar.Show(
-                this,
-                message,
-                BunifuSnackbar.MessageTypes.Information,
-                5000,
-                "",
-                BunifuSnackbar.Positions.TopCenter
-            );
-
-            markNotificationsAsSeen(senderID);
-        }
-        private void markNotificationsAsSeen(int senderID)
-        {
-            string query = "UPDATE Notifications SET IsSeen = 1 WHERE ReceiverID = @ReceiverID AND SenderID = @SenderID AND IsSeen = 0";
-            using (SqlConnection conn = Database.getConnection())
-            {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@ReceiverID", loggedInUser.userID);
-                    cmd.Parameters.AddWithValue("@SenderID", senderID);
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            await SignalRManager.InitializeAsync(url, loggedInUser.userID);
         }
         public static void updateRoleStatus()
         {
@@ -960,41 +841,6 @@ namespace TDF.Net
             }
             catch { }
         }
-        /* private void startPipeListener()
-         {
-             Thread pipeListenerThread = new Thread(new ThreadStart(ListenForMessages));
-             pipeListenerThread.IsBackground = true;
-             pipeListenerThread.Start();
-         }
-         private void ListenForMessages()
-         {
-             using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("UserLogoutPipe", PipeDirection.In))
-             {
-                 // Wait for a connection from a client (new session)
-                 pipeServer.WaitForConnection();
-
-                 using (StreamReader reader = new StreamReader(pipeServer))
-                 {
-                     // Read the message from the new session
-                     string message = reader.ReadLine();
-                     if (message == "UserLoggedOut")
-                     {
-                         // Use a valid control on the UI thread for invoking the action
-                         Invoke((Action)(() =>
-                         {
-                             MessageBox.Show("You have been logged out because the user is opened on another PC.");
-                             Close(); // Close the old session (form)
-
-                             // Show the login form on the main thread
-                             if (loginForm != null)
-                             {
-                                 loginForm.Show();
-                             }
-                         }));
-                     }
-                 }
-             }
-         }*/
         #endregion
 
         #region Buttons

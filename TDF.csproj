@@ -76,9 +76,6 @@
     <Reference Include="Microsoft.Owin.Host.HttpListener, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Owin.Host.HttpListener.4.2.2\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.Owin.Host.SystemWeb.2.1.0\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Owin.Hosting, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Owin.Hosting.4.2.2\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
     </Reference>
@@ -155,6 +152,7 @@
     <Compile Include="Classes\NetworkUtils.cs" />
     <Compile Include="Classes\NotificationClient.cs" />
     <Compile Include="Classes\Requests.cs" />
+    <Compile Include="Classes\SignalRManager.cs" />
     <Compile Include="Classes\themeColor.cs" />
     <Compile Include="Classes\User.cs" />
     <Compile Include="Forms\chatForm.cs">
@@ -356,6 +354,12 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NotificationHubLibrary\NotificationHubLibrary.csproj">
+      <Project>{a464b161-9840-4bf5-9bc1-d4ffceb910f0}</Project>
+      <Name>NotificationHubLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

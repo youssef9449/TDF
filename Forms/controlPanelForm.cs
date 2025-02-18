@@ -12,6 +12,7 @@ using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.IO.Pipes;
+using System.Threading.Tasks;
 
 namespace TDF.Forms
 {
@@ -1217,6 +1218,32 @@ namespace TDF.Forms
                 MessageBox.Show($"The title '{newTitleName}' has been added successfully to the {selectedDepartment} department.");
             }
         }
+
+        private void broadcastButton_Click(object sender, EventArgs e)
+        {
+            string message = messageTextBox.Text;
+
+            if (string.IsNullOrEmpty(message)) return;
+            DialogResult confirmation = MessageBox.Show($"Are you sure you want to broadcat this message? '{message}'",
+                           "Confirm Broadcasting",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (confirmation == DialogResult.Yes)
+            {
+                // Use the shared SignalR manager's HubProxy
+                if (SignalRManager.HubProxy != null)
+                {
+                    // Optionally, replace "Your broadcast message here" with textBox.Text if you want to use text from a text box.
+                    SignalRManager.HubProxy.Invoke("SendNotificationToAll", message);
+                }
+                else
+                {
+                    MessageBox.Show("Not connected to the hub yet.");
+                }
+            }
+        }
+
+
         #endregion
 
         /* private void bunifuButton1_Click(object sender, EventArgs e)

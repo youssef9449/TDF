@@ -249,7 +249,6 @@ namespace TDF.Net
             this.teamImageButton.FadeWhenInactive = false;
             this.teamImageButton.Flip = Bunifu.UI.WinForms.BunifuImageButton.FlipOrientation.Normal;
             this.teamImageButton.Image = global::TDF.Properties.Resources.myteam;
-            this.teamImageButton.ImageActive = null;
             this.teamImageButton.ImageLocation = null;
             this.teamImageButton.ImageMargin = 10;
             this.teamImageButton.ImageSize = new System.Drawing.Size(68, 73);

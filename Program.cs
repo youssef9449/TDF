@@ -23,11 +23,11 @@ namespace TDF.Net
         {
             // Check if the application is already running
             string appName = Process.GetCurrentProcess().ProcessName;
-            if (Process.GetProcessesByName(appName).Length > 1)
+         /*   if (Process.GetProcessesByName(appName).Length > 1)
             {
                 MessageBox.Show("Another instance of the TDF app is already running.","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
+            }*/
 
             //setProcessDpiAwareness(); // Enable DPI scaling
 
