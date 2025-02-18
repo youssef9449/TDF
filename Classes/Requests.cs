@@ -22,7 +22,6 @@ namespace TDF.Net.Classes
         public string RequestDepartment { get; set; }
         public int RequestNumberOfDays { get; set; }
 
-
         public Request()
         {
 

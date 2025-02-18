@@ -470,7 +470,7 @@ namespace TDF.Net.Forms
             return @"
         SELECT 
             r.RequestID,
-            r.RequestUserID
+            r.RequestUserID,
             r.RequestUserFullName, 
             r.RequestType, 
             r.RequestReason, 

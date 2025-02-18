@@ -1,4 +1,4 @@
-﻿namespace TDF.Forms
+﻿namespace TDF.Net.Forms
 {
     partial class chatForm
     {
@@ -29,17 +29,17 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(chatForm));
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties1 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties2 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties3 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties4 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
-            Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties9 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties10 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties11 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuTextBox.StateProperties stateProperties12 = new Bunifu.UI.WinForms.BunifuTextBox.StateProperties();
+            Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges borderEdges3 = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2.BorderEdges();
             this.messageTextBox = new Bunifu.UI.WinForms.BunifuTextBox();
             this.sendButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
             this.messagesListBox = new System.Windows.Forms.ListBox();
             this.panel = new System.Windows.Forms.Panel();
+            this.usernameLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
-            this.bunifuFormDrag1 = new Bunifu.UI.WinForms.BunifuFormDrag();
             this.panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -81,30 +81,30 @@
             this.messageTextBox.Modified = false;
             this.messageTextBox.Multiline = false;
             this.messageTextBox.Name = "messageTextBox";
-            stateProperties1.BorderColor = System.Drawing.Color.DodgerBlue;
-            stateProperties1.FillColor = System.Drawing.Color.Empty;
-            stateProperties1.ForeColor = System.Drawing.Color.Empty;
-            stateProperties1.PlaceholderForeColor = System.Drawing.Color.Empty;
-            this.messageTextBox.OnActiveState = stateProperties1;
-            stateProperties2.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            stateProperties2.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            stateProperties2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
-            stateProperties2.PlaceholderForeColor = System.Drawing.Color.DarkGray;
-            this.messageTextBox.OnDisabledState = stateProperties2;
-            stateProperties3.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
-            stateProperties3.FillColor = System.Drawing.Color.Empty;
-            stateProperties3.ForeColor = System.Drawing.Color.Empty;
-            stateProperties3.PlaceholderForeColor = System.Drawing.Color.Empty;
-            this.messageTextBox.OnHoverState = stateProperties3;
-            stateProperties4.BorderColor = System.Drawing.Color.Silver;
-            stateProperties4.FillColor = System.Drawing.Color.White;
-            stateProperties4.ForeColor = System.Drawing.Color.Empty;
-            stateProperties4.PlaceholderForeColor = System.Drawing.Color.Empty;
-            this.messageTextBox.OnIdleState = stateProperties4;
+            stateProperties9.BorderColor = System.Drawing.Color.DodgerBlue;
+            stateProperties9.FillColor = System.Drawing.Color.Empty;
+            stateProperties9.ForeColor = System.Drawing.Color.Empty;
+            stateProperties9.PlaceholderForeColor = System.Drawing.Color.Empty;
+            this.messageTextBox.OnActiveState = stateProperties9;
+            stateProperties10.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            stateProperties10.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
+            stateProperties10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            stateProperties10.PlaceholderForeColor = System.Drawing.Color.DarkGray;
+            this.messageTextBox.OnDisabledState = stateProperties10;
+            stateProperties11.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(181)))), ((int)(((byte)(255)))));
+            stateProperties11.FillColor = System.Drawing.Color.Empty;
+            stateProperties11.ForeColor = System.Drawing.Color.Empty;
+            stateProperties11.PlaceholderForeColor = System.Drawing.Color.Empty;
+            this.messageTextBox.OnHoverState = stateProperties11;
+            stateProperties12.BorderColor = System.Drawing.Color.Silver;
+            stateProperties12.FillColor = System.Drawing.Color.White;
+            stateProperties12.ForeColor = System.Drawing.Color.Empty;
+            stateProperties12.PlaceholderForeColor = System.Drawing.Color.Empty;
+            this.messageTextBox.OnIdleState = stateProperties12;
             this.messageTextBox.Padding = new System.Windows.Forms.Padding(3);
             this.messageTextBox.PasswordChar = '\0';
             this.messageTextBox.PlaceholderForeColor = System.Drawing.Color.Silver;
-            this.messageTextBox.PlaceholderText = "Enter text";
+            this.messageTextBox.PlaceholderText = "";
             this.messageTextBox.ReadOnly = false;
             this.messageTextBox.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.messageTextBox.SelectedText = "";
@@ -118,9 +118,10 @@
             this.messageTextBox.TextMarginBottom = 0;
             this.messageTextBox.TextMarginLeft = 3;
             this.messageTextBox.TextMarginTop = 1;
-            this.messageTextBox.TextPlaceholder = "Enter text";
+            this.messageTextBox.TextPlaceholder = "";
             this.messageTextBox.UseSystemPasswordChar = false;
             this.messageTextBox.WordWrap = true;
+            this.messageTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.messageTextBox_KeyDown);
             // 
             // sendButton
             // 
@@ -141,11 +142,11 @@
             this.sendButton.ColorContrastOnClick = 45;
             this.sendButton.ColorContrastOnHover = 45;
             this.sendButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.sendButton.CustomizableEdges = borderEdges1;
+            borderEdges3.BottomLeft = true;
+            borderEdges3.BottomRight = true;
+            borderEdges3.TopLeft = true;
+            borderEdges3.TopRight = true;
+            this.sendButton.CustomizableEdges = borderEdges3;
             this.sendButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.sendButton.DisabledBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.sendButton.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -217,21 +218,44 @@
             this.messagesListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.messagesListBox.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.messagesListBox.FormattingEnabled = true;
+            this.messagesListBox.ItemHeight = 15;
             this.messagesListBox.Location = new System.Drawing.Point(17, 50);
             this.messagesListBox.Name = "messagesListBox";
-            this.messagesListBox.Size = new System.Drawing.Size(400, 225);
+            this.messagesListBox.Size = new System.Drawing.Size(400, 214);
             this.messagesListBox.TabIndex = 2;
             // 
             // panel
             // 
             this.panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(150)))), ((int)(((byte)(136)))));
+            this.panel.Controls.Add(this.usernameLabel);
             this.panel.Controls.Add(this.controlBox);
             this.panel.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel.Location = new System.Drawing.Point(0, 0);
             this.panel.Name = "panel";
             this.panel.Size = new System.Drawing.Size(429, 41);
             this.panel.TabIndex = 25;
+            this.panel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel_Paint);
+            this.panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel_MouseDown);
+            // 
+            // usernameLabel
+            // 
+            this.usernameLabel.AllowParentOverrides = false;
+            this.usernameLabel.AutoEllipsis = false;
+            this.usernameLabel.AutoSize = false;
+            this.usernameLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.usernameLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.usernameLabel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.usernameLabel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.usernameLabel.Location = new System.Drawing.Point(12, 12);
+            this.usernameLabel.Name = "usernameLabel";
+            this.usernameLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.usernameLabel.Size = new System.Drawing.Size(241, 20);
+            this.usernameLabel.TabIndex = 26;
+            this.usernameLabel.Text = "User";
+            this.usernameLabel.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
+            this.usernameLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
             // controlBox
             // 
@@ -297,31 +321,6 @@
             this.controlBox.Size = new System.Drawing.Size(160, 37);
             this.controlBox.TabIndex = 19;
             // 
-            // bunifuFormDrag1
-            // 
-            this.bunifuFormDrag1.AllowOpacityChangesWhileDragging = false;
-            this.bunifuFormDrag1.ContainerControl = this;
-            this.bunifuFormDrag1.DockIndicatorsOpacity = 0.5D;
-            this.bunifuFormDrag1.DockingIndicatorsColor = System.Drawing.Color.FromArgb(((int)(((byte)(202)))), ((int)(((byte)(215)))), ((int)(((byte)(233)))));
-            this.bunifuFormDrag1.DockingOptions.DockAll = true;
-            this.bunifuFormDrag1.DockingOptions.DockBottomLeft = true;
-            this.bunifuFormDrag1.DockingOptions.DockBottomRight = true;
-            this.bunifuFormDrag1.DockingOptions.DockFullScreen = true;
-            this.bunifuFormDrag1.DockingOptions.DockLeft = true;
-            this.bunifuFormDrag1.DockingOptions.DockRight = true;
-            this.bunifuFormDrag1.DockingOptions.DockTopLeft = true;
-            this.bunifuFormDrag1.DockingOptions.DockTopRight = true;
-            this.bunifuFormDrag1.DragOpacity = 0.9D;
-            this.bunifuFormDrag1.Enabled = true;
-            this.bunifuFormDrag1.ParentForm = this;
-            this.bunifuFormDrag1.ShowCursorChanges = true;
-            this.bunifuFormDrag1.ShowDockingIndicators = true;
-            this.bunifuFormDrag1.TitleBarOptions.BunifuFormDrag = this.bunifuFormDrag1;
-            this.bunifuFormDrag1.TitleBarOptions.DoubleClickToExpandWindow = true;
-            this.bunifuFormDrag1.TitleBarOptions.Enabled = true;
-            this.bunifuFormDrag1.TitleBarOptions.TitleBarControl = null;
-            this.bunifuFormDrag1.TitleBarOptions.UseBackColorOnDockingIndicators = false;
-            // 
             // chatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -352,6 +351,6 @@
         private System.Windows.Forms.ListBox messagesListBox;
         private System.Windows.Forms.Panel panel;
         private Bunifu.UI.WinForms.BunifuFormControlBox controlBox;
-        private Bunifu.UI.WinForms.BunifuFormDrag bunifuFormDrag1;
+        private Bunifu.UI.WinForms.BunifuLabel usernameLabel;
     }
 }

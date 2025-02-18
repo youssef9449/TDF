@@ -151,7 +151,9 @@
     </Compile>
     <Compile Include="Classes\CrashLogger.cs" />
     <Compile Include="Classes\IniFile.cs" />
+    <Compile Include="Classes\Message.cs" />
     <Compile Include="Classes\NetworkUtils.cs" />
+    <Compile Include="Classes\NotificationClient.cs" />
     <Compile Include="Classes\Requests.cs" />
     <Compile Include="Classes\themeColor.cs" />
     <Compile Include="Classes\User.cs" />

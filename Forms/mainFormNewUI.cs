@@ -53,13 +53,11 @@ namespace TDF.Net
         private int contractedHeight = 50; // Height of the panel to show only the header
         Timer notificationTimer = new Timer();
 
-        private FlowLayoutPanel flowLayout;
-        private Label headerLabel;
         private int previousUserCount = -1; 
         private Point previousScrollPosition = Point.Empty;
 
-        private HubConnection connection;
-        private IHubProxy hubProxy;
+      //  private HubConnection connection;
+       // private IHubProxy hubProxy;
 
         #region Events
         private void mainFormNewUI_Load(object sender, EventArgs e)
@@ -71,7 +69,7 @@ namespace TDF.Net
             expandedHeight = usersPanel.Height; // Store the original height when expanded
             usersPanel.Height = contractedHeight; // Set the initial height to contracted
             usersIconLocation = usersIconButton.Location;
-            InitializeSignalR(); 
+            //InitializeSignalR(); 
 
             updateRoleStatus();
             setImageButtonVisibility();
@@ -296,7 +294,7 @@ namespace TDF.Net
                     notificationTimer.Dispose();
                 }
 
-                hubProxy = null;
+                //hubProxy = null;
                 loggedInUser = null;
             }
 
@@ -350,8 +348,11 @@ namespace TDF.Net
         #endregion
 
         #region Methods
-        private async System.Threading.Tasks.Task InitializeSignalR()
+        /* private async System.Threading.Tasks.Task InitializeSignalR()
         {
+            //serverIPAddress = "192.168.1.11";
+            serverIPAddress = "localhost";
+
             string url = $"http://{serverIPAddress}:8080";
             connection = new HubConnection(url);
             hubProxy = connection.CreateHubProxy("NotificationHub");
@@ -360,7 +361,7 @@ namespace TDF.Net
             hubProxy.On<string>("receiveNotification", (message) =>
             {
                 // Ensure UI updates happen on the UI thread.
-                this.Invoke(new Action(() =>
+                Invoke(new Action(() =>
                 {
                     MessageBox.Show(message, "New Notification");
                 }));
@@ -374,15 +375,14 @@ namespace TDF.Net
             catch (Exception ex)
             {
                 MessageBox.Show("Error connecting to SignalR Server: " + ex.Message);
-                Console.WriteLine("Error: " + ex.Message);
+                MessageBox.Show("Error: " + ex.Message);
             }
-        }
-
-    
-private void startNotificationChecker()
+        }*/
+  
+        private void startNotificationChecker()
         {
 
-            notificationTimer.Interval = 3000; // Check every 3 seconds
+            notificationTimer.Interval = 5000; // Check every 3 seconds
             if (loggedInUser != null)
             {
                 notificationTimer.Tick += (s, e) => checkForNewMessages();
@@ -394,7 +394,7 @@ private void startNotificationChecker()
             if (loggedInUser != null)
             {
                 string query = "SELECT SenderID, COUNT(*) AS UnreadCount FROM Notifications WHERE ReceiverID = @ReceiverID AND IsSeen = 0 GROUP BY SenderID";
-                using (SqlConnection conn = Database.getConnection())
+                using (SqlConnection conn = getConnection())
                 {
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -741,7 +741,7 @@ private void startNotificationChecker()
                 string query = "SELECT FullName, Department, Picture, UserID, isConnected " +
                                "FROM Users " +
                                "WHERE UserName <> @UserName " +
-                               "ORDER BY isConnected DESC";
+                               "ORDER BY isConnected DESC, FullName ASC";
 
                 using (SqlCommand cmd = new SqlCommand(query, connection))
                 {
