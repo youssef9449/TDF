@@ -7,8 +7,15 @@ public static class SignalRManager
 {
     public static HubConnection Connection { get; private set; }
     public static IHubProxy HubProxy { get; private set; }
-    public static bool IsConnected => Connection != null && Connection.State == ConnectionState.Connected;
 
+    // Fully qualify ConnectionState to avoid ambiguity.
+    public static bool IsConnected => Connection != null && Connection.State == Microsoft.AspNet.SignalR.Client.ConnectionState.Connected;
+
+    /// <summary>
+    /// Initializes the SignalR connection, subscribes to events, and registers the current user.
+    /// </summary>
+    /// <param name="serverUrl">The URL of the SignalR server (e.g., "http://localhost:8080").</param>
+    /// <param name="currentUserID">The ID of the current user.</param>
     public static async Task InitializeAsync(string serverUrl, int currentUserID)
     {
         if (Connection == null)
@@ -16,19 +23,18 @@ public static class SignalRManager
             Connection = new HubConnection(serverUrl);
             HubProxy = Connection.CreateHubProxy("NotificationHub");
 
-            // Global handler for notifications (can be re-dispatched)
+            // Global handler for receiving notifications.
             HubProxy.On<string>("receiveNotification", message =>
             {
-                // For example, display a global notification message
+                // Ensure UI updates occur on the UI thread.
                 MessageBox.Show(message, "New Notification");
             });
-            // (Optional) Subscribe to the user list update event.
-            // You can also subscribe for this event in the form that displays the user list.
+
+            // Subscribe to the updateUserList event.
             HubProxy.On("updateUserList", () =>
             {
-                // Raise an event or simply log here.
-                // It is often better to subscribe to this event directly in the form that owns the usersPanel.
-                Console.WriteLine("User list update event received.");
+                // For example, log or raise an event to update the UI.
+                Console.WriteLine("User list update event received from SignalR.");
             });
 
             try
@@ -39,9 +45,7 @@ public static class SignalRManager
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error connecting to the Server you won't receive messages nor notifications");
-              //  MessageBox.Show("Error connecting to the Server: " + ex.Message);
-
+                MessageBox.Show("Error connecting to the Server; you won't receive messages nor notifications");
             }
         }
     }

@@ -13,7 +13,7 @@ namespace TDF.Net.Forms
     public partial class chatForm : Form
     {
         private int currentUserID;
-        private int chatWithUserID;
+        public int chatWithUserID;
         private string chatWithUserName;
         private Image chatWithUserImage;
 
@@ -89,6 +89,7 @@ namespace TDF.Net.Forms
             if (e.KeyCode == Keys.Enter)
             {
                 BeginInvoke(new Action(async () => await BeginSendingMessageAsync()));
+                e.Handled = true;
             }
         }
         protected override void OnFormClosing(FormClosingEventArgs e)

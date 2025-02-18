@@ -48,9 +48,7 @@ namespace TDF.Net
 
         private bool isPanelExpanded, isFormClosing = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
-        private Point usersIconLocation;
         private int contractedHeight = 50; // Height of the panel to show only the header
-
         private int previousUserCount = -1; 
         private Point previousScrollPosition = Point.Empty;
 
@@ -63,17 +61,30 @@ namespace TDF.Net
             usersIconButton.BorderColor = darkColor;
             expandedHeight = usersPanel.Height; // Store the original height when expanded
             usersPanel.Height = contractedHeight; // Set the initial height to contracted
-            usersIconLocation = usersIconButton.Location;
+            //usersIconLocation = usersIconButton.Location;
             InitializeSignalR();
 
             // Subscribe to the SignalR "updateUserList" event.
             SignalRManager.HubProxy.On("updateUserList", () =>
             {
-                // Since this event comes on a non-UI thread, marshal to the UI thread.
-                Invoke(new Action(() =>
+                // Check if the form's handle is created and not disposed before invoking.
+                if (!IsDisposed && IsHandleCreated)
                 {
-                    displayConnectedUsers();
-                }));
+                    try
+                    {
+                        this.Invoke(new Action(() =>
+                        {
+                            if (!IsDisposed)
+                            {
+                                displayConnectedUsers();
+                            }
+                        }));
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // The form was disposed; no need to update.
+                    }
+                }
             });
 
             updateRoleStatus();
@@ -274,19 +285,33 @@ namespace TDF.Net
                 return;
             }
         }
-        protected override void OnFormClosing(FormClosingEventArgs e)
+        protected override async void OnFormClosing(FormClosingEventArgs e)
         {
-            if (SignalRManager.IsConnected)
-            {
-                await SignalRManager.Connection.Stop();
-            }
-
             if (!isFormClosing)
             {
                 isFormClosing = true;
 
+                // Update the database to mark the user as disconnected.
                 makeUserDisconnected();
 
+                // If connected via SignalR, gracefully disconnect.
+                if (SignalRManager.IsConnected)
+                {
+                    try
+                    {
+                        // Notify the hub that this user is disconnecting.
+                        await SignalRManager.HubProxy.Invoke("UserDisconnected", loggedInUser.UserName);
+                        // Stop the SignalR connection.
+                        SignalRManager.Connection.Stop();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log any error that occurs during disconnection.
+                        Console.WriteLine("Error while stopping SignalR connection: " + ex.Message);
+                    }
+                }
+
+                // Clear the logged-in user reference.
                 loggedInUser = null;
             }
 
@@ -323,7 +348,7 @@ namespace TDF.Net
               //  usersPanel.AutoScroll = false; // Disable auto-scroll
                 usersIconButton.Image = Resources.down; // Change the icon to "down"
                 isPanelExpanded = false; // Update the state
-                usersIconButton.Location = usersIconLocation;
+                //usersIconButton.Location = usersIconLocation;
 
             }
             else
@@ -332,9 +357,9 @@ namespace TDF.Net
                 usersPanel.Height = expandedHeight; // Set the height to expanded
              //   usersPanel.AutoScroll = true; // Enable auto-scroll
                 usersIconButton.Image = Resources.up; // Change the icon to "up"
-                displayConnectedUsers(); // Populate the panel with connected users
+               // displayConnectedUsers(); // Populate the panel with connected users
                 isPanelExpanded = true; // Update the state
-                usersIconButton.Location = usersIconLocation;
+                //usersIconButton.Location = usersIconLocation;
             }
         }
         #endregion
@@ -760,10 +785,27 @@ namespace TDF.Net
                         Location = new Point((userPanel.Width - 60) / 2, 10),
                         Cursor = Cursors.Hand
                     };
+
+                    // When the picture is clicked, check if a chat window for this conversation is already open.
                     pictureBox.Click += (s, e) =>
                     {
-                        chatForm cf = new chatForm(loggedInUser.userID, user.userID, user.FullName, user.Picture);
-                        cf.Show();
+                        // Assumes chatForm has a public property 'ChatWithUserID'.
+                        chatForm existingChatForm = Application.OpenForms
+                            .OfType<chatForm>()
+                              .FirstOrDefault(cf => cf.chatWithUserID == user.userID);
+
+                        if (existingChatForm != null)
+                        {
+                            // Bring the existing chat form to the front.
+                            existingChatForm.BringToFront();
+                            existingChatForm.Focus();
+                        }
+                        else
+                        {
+                            // Create and show a new chat form.
+                            chatForm newChatForm = new chatForm(loggedInUser.userID, user.userID, user.FullName, user.Picture);
+                            newChatForm.Show();
+                        }
                     };
                     userPanel.Controls.Add(pictureBox);
 
@@ -841,6 +883,7 @@ namespace TDF.Net
             }
             catch { }
         }
+
         #endregion
 
         #region Buttons
@@ -874,11 +917,36 @@ namespace TDF.Net
             //showFormInPanel(controlPanelForm);
             controlPanelForm.ShowDialog();
         }
-        private void logoutImageButton_Click(object sender, EventArgs e)
+        private async void logoutImageButton_Click(object sender, EventArgs e)
         {
-            makeUserDisconnected();
+            if (!isFormClosing)
+            {
+                isFormClosing = true;
 
-            loggedInUser = null;
+                // Update the database to mark the user as disconnected.
+                makeUserDisconnected();
+
+                // If connected via SignalR, gracefully disconnect.
+                if (SignalRManager.IsConnected)
+                {
+                    try
+                    {
+                        // Notify the hub that this user is disconnecting.
+                        await SignalRManager.HubProxy.Invoke("UserDisconnected", loggedInUser.UserName);
+                        // Stop the SignalR connection (Stop() is synchronous).
+                        SignalRManager.Connection.Stop();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log any error that occurs during disconnection.
+                        Console.WriteLine("Error while stopping SignalR connection: " + ex.Message);
+                    }
+                }
+
+                // Clear the logged-in user reference.
+                loggedInUser = null;
+            }
+
             Close();
             loginForm.Show();
         }

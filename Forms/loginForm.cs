@@ -31,7 +31,7 @@ namespace TDF.Net
         private static Form oldSessionForm = null;
 
         #region Methods
-        private void startLoggingIn()
+        private async void startLoggingIn()
         {
             string username = txtUsername.Text;
             string password = txtPassword.Text;
@@ -62,6 +62,12 @@ namespace TDF.Net
                 loggedInUser = getCurrentUserDetails(username);
                 makeUserConnected();
                 updateMachineName();
+
+                // Initialize SignalR and register this user so the hub can broadcast updateUserList.
+                string serverUrl = "http://localhost:8080"; // or your actual URL
+                await SignalRManager.InitializeAsync(serverUrl, loggedInUser.userID);
+                // The above call invokes RegisterUserConnection on the server, which in turn does:
+                // Clients.All.updateUserList();
 
                 // Open the appropriate UI
                 if (guiDropdown.Text == "Classic")
@@ -507,7 +513,7 @@ namespace TDF.Net
             {
                 if (!signingup && !changingPassword)
                 {
-                    startLoggingIn();
+                     startLoggingIn();
 
                     // Optionally suppress the beep sound on Enter key press
                     e.Handled = true;
