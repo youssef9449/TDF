@@ -16,6 +16,8 @@ namespace TDF.Net.Classes
         public Image Picture { get; set; }
         public string Title { get; set; }
         public int isConnected { get; set; }
+        public int PendingMessageCount { get; set; }
+
 
         public User()
         {

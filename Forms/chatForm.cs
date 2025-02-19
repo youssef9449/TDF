@@ -7,6 +7,9 @@ using Microsoft.AspNet.SignalR.Client;
 using static TDF.Net.Program;
 using static TDF.Net.mainForm;
 using TDF.Net.Classes;
+using Microsoft.AspNet.SignalR.Infrastructure;
+using static NotificationHub;
+using System.Collections.Generic;
 
 namespace TDF.Net.Forms
 {

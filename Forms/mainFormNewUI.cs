@@ -18,6 +18,11 @@ using static TDF.Net.Program;
 using static TDF.Net.Database;
 using Timer = System.Windows.Forms.Timer;
 using Microsoft.AspNet.SignalR.Client;
+using System.Drawing.Drawing2D;
+using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR.Infrastructure;
+using static NotificationHub;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace TDF.Net
 {
@@ -39,7 +44,8 @@ namespace TDF.Net
             //notificationsSnackbar.InformationOptions.ActionBackColor = lightColor;
             formPanel.BackColor = Color.White;
             this.loginForm = loginForm; // Store a reference to the login form
-            //startNotificationChecker();
+            SignalRManager.HubProxy.On<int, int>("UpdateMessageCount", UpdateMessageCounter);
+            SignalRManager.HubProxy.On<int, string>("ReceivePendingMessage", HandlePendingMessage);
         }
 
         private ContextMenuStrip contextMenu;
@@ -51,6 +57,9 @@ namespace TDF.Net
         private int contractedHeight = 50; // Height of the panel to show only the header
         private int previousUserCount = -1; 
         private Point previousScrollPosition = Point.Empty;
+        private FlowLayoutPanel flowLayout;
+        private Dictionary<int, Panel> userPanels = new Dictionary<int, Panel>();
+
 
         #region Events
         private void mainFormNewUI_Load(object sender, EventArgs e)
@@ -61,8 +70,7 @@ namespace TDF.Net
             usersIconButton.BorderColor = darkColor;
             expandedHeight = usersPanel.Height; // Store the original height when expanded
             usersPanel.Height = contractedHeight; // Set the initial height to contracted
-            //usersIconLocation = usersIconButton.Location;
-            //InitializeSignalR();
+
 
             // Subscribe to the SignalR "updateUserList" event.
             SignalRManager.HubProxy.On("updateUserList", () =>
@@ -93,6 +101,19 @@ namespace TDF.Net
             updateUserDataControls();
 
             displayConnectedUsers();
+
+            if (!IsDisposed && IsHandleCreated)
+            {
+                try
+                {
+                    LoadPendingMessages();
+
+                }
+                catch (ObjectDisposedException)
+                {
+                    // The form was disposed; no need to update.
+                }
+            }
         }
         protected override void OnMove(EventArgs e)
         {
@@ -635,39 +656,241 @@ namespace TDF.Net
                 MessageBox.Show("An error occurred while saving the image: " + ex.Message);
             }
         }
+
+        #region Message Handling Methods
+        private async void HandlePendingMessage(int senderId, string message)
+        {
+            if (IsChatOpen(senderId)) return;
+
+            BeginInvoke(new Action(async () =>
+            {
+                // Update counter
+                UpdateMessageCounter(senderId, 1);
+
+                // Get updated message list
+                var pendingData = await SignalRManager.HubProxy.Invoke<Dictionary<int, PendingMessageData>>(
+                    "GetPendingMessageCounts",
+                    loggedInUser.userID
+                );
+
+                if (pendingData.TryGetValue(senderId, out var data) &&
+                    userPanels.TryGetValue(senderId, out Panel panel))
+                {
+                    ShowMessageBalloons(panel, data.Messages);
+                }
+            }));
+        }
+        private async Task LoadPendingMessages()
+        {
+            try
+            {
+                var pendingData = await SignalRManager.HubProxy.Invoke<Dictionary<int, PendingMessageData>>(
+                    "GetPendingMessageCounts",
+                    loggedInUser.userID
+                );
+
+                foreach (var entry in pendingData)
+                {
+                    var userPanel = GetUserPanel(entry.Key);
+                    if (userPanel != null)
+                    {
+                        UpdateMessageCounter(entry.Key, entry.Value.Count);
+                        if (entry.Value.Messages.Count > 0 && !IsChatOpen(entry.Key))
+                        {
+                            ShowMessageBalloons(userPanel, entry.Value.Messages);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading pending messages: {ex.Message}");
+            }
+        }
+        private int GetCurrentMessageCount(Panel panel)
+        {
+            var counter = panel.Controls.Find("msgCounter", true).FirstOrDefault() as Label;
+            return int.TryParse(counter?.Text, out int count) ? count : 0;
+        }
+        #endregion
+
+        #region Updated UI Methods
+        public void UpdateMessageCounter(int senderId, int count)
+        {
+            if (userPanels.TryGetValue(senderId, out Panel panel))
+            {
+                if (panel.InvokeRequired)
+                {
+                    panel.Invoke((MethodInvoker)delegate {
+                        UpdateMessageCounterUI(panel, count);
+                    });
+                }
+                else
+                {
+                    UpdateMessageCounterUI(panel, count);
+                }
+            }
+        }
+
+        private void UpdateMessageCounterUI(Panel panel, int count)
+        {
+            var counter = panel.Controls.Find("msgCounter", true).FirstOrDefault() as Label;
+            if (counter == null) return;
+
+            counter.Text = count > 0 ? count.ToString() : "";
+            counter.Visible = count > 0;
+
+            // Reorder panels if needed
+            if (count > 0 && flowLayout != null && !flowLayout.IsDisposed)
+            {
+                flowLayout.Controls.SetChildIndex(panel, 0);
+                flowLayout.ScrollControlIntoView(panel);
+            }
+        }
+        #endregion
+
+        public bool IsChatOpen(int senderId) =>
+            Application.OpenForms.OfType<chatForm>()
+                .Any(f => f.chatWithUserID == senderId);
+        private async void ShowMessageBalloons(Panel userPanel, List<string> messages)
+        {
+            var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().First();
+            Point screenPos = userPanel.PointToScreen(pictureBox.Location);
+            int offset = 0;
+
+            foreach (string message in messages)
+            {
+                await Task.Delay(500);
+                BeginInvoke(new Action(() =>
+                {
+                    MessageBalloon balloon = new MessageBalloon(
+                        new Point(screenPos.X - 210, screenPos.Y + offset),
+                        message
+                    );
+                    balloon.Show();
+                }));
+                offset += 65;
+            }
+        }
+        public async Task ShowSequentialBalloons(int senderId, List<string> messages)
+        {
+            var panel = flowLayout.Controls
+                .OfType<Panel>()
+                .FirstOrDefault(p => (int)p.Tag == senderId);
+
+            if (panel != null)
+            {
+                var pictureBox = panel.Controls.OfType<CircularPictureBox>().First();
+                var screenPos = panel.PointToScreen(pictureBox.Location);
+                int offset = 0;
+
+                foreach (var message in messages)
+                {
+                    BeginInvoke(new Action(() =>
+                    {
+                        new MessageBalloon(new Point(screenPos.X, screenPos.Y + offset), message).Show();
+                    }));
+                    offset += 65;
+                    await Task.Delay(500);
+                }
+            }
+        }
+        #region Updated Chat Form Integration
+        private async void OpenChatForm(int userId)
+        {
+            var user = getAllUsers().FirstOrDefault(u => u.userID == userId);
+            if (user == null) return;
+
+            var existingChat = Application.OpenForms.OfType<chatForm>()
+                .FirstOrDefault(f => f.chatWithUserID == userId);
+
+            if (existingChat == null)
+            {
+                // Mark messages as delivered
+                await SignalRManager.HubProxy.Invoke("MarkMessagesAsDelivered", userId, loggedInUser.userID);
+                UpdateMessageCounter(userId, 0);
+
+                // Show historical messages
+                var messages = await SignalRManager.HubProxy.Invoke<List<string>>(
+                    "GetPendingMessages", loggedInUser.userID, userId);
+
+                if (messages.Count > 0)
+                {
+                    ShowMessageBalloons(userPanels[userId], messages);
+                }
+
+                // Open new chat form
+                new chatForm(loggedInUser.userID, userId, user.FullName, user.Picture).Show();
+            }
+            else
+            {
+                existingChat.BringToFront();
+            }
+        }
+        #endregion
+        private Panel GetUserPanel(int userId)
+        {
+            return flowLayout.Controls
+                .OfType<Panel>()
+                .FirstOrDefault(p => (int)p.Tag == userId);
+        }
         public static List<User> getAllUsers()
         {
             List<User> connectedUsers = new List<User>();
+            var pendingCounts = new Dictionary<int, int>();
 
-            using (SqlConnection connection = Database.getConnection())
+            using (SqlConnection connection = getConnection())
             {
                 connection.Open();
 
-                // Use parameterized query for safety and clarity.
-                string query = "SELECT FullName, Department, Picture, UserID, isConnected " +
-                               "FROM Users " +
-                               "WHERE UserName <> @UserName " +
-                               "ORDER BY isConnected DESC, FullName ASC";
+                // First get all pending counts for the logged-in user
+                string countQuery = @"
+            SELECT SenderID, COUNT(*) AS PendingCount
+            FROM PendingNotifications
+            WHERE ReceiverID = @ReceiverID AND IsDelivered = 0
+            GROUP BY SenderID";
 
-                using (SqlCommand cmd = new SqlCommand(query, connection))
+                using (SqlCommand countCmd = new SqlCommand(countQuery, connection))
                 {
-                    // Add parameter value.
-                    cmd.Parameters.AddWithValue("@UserName", loggedInUser.UserName);
-
-                    // Use a using block for the reader.
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    countCmd.Parameters.AddWithValue("@ReceiverID", loggedInUser.userID);
+                    using (SqlDataReader countReader = countCmd.ExecuteReader())
                     {
-                        while (reader.Read())
+                        while (countReader.Read())
                         {
+                            int senderId = Convert.ToInt32(countReader["SenderID"]);
+                            int count = Convert.ToInt32(countReader["PendingCount"]);
+                            pendingCounts[senderId] = count;
+                        }
+                    }
+                }
+
+                // Now get all users
+                string userQuery = @"
+            SELECT FullName, Department, Picture, UserID, isConnected
+            FROM Users
+            WHERE UserName <> @UserName
+            ORDER BY isConnected DESC, FullName ASC";
+
+                using (SqlCommand userCmd = new SqlCommand(userQuery, connection))
+                {
+                    userCmd.Parameters.AddWithValue("@UserName", loggedInUser.UserName);
+
+                    using (SqlDataReader userReader = userCmd.ExecuteReader())
+                    {
+                        while (userReader.Read())
+                        {
+                            int userId = Convert.ToInt32(userReader["UserID"]);
+
                             var user = new User
                             {
-                                FullName = reader["FullName"].ToString(),
-                                Department = reader["Department"].ToString(),
-                                userID = reader["UserID"] != DBNull.Value ? Convert.ToInt32(reader["UserID"]) : 0,
-                                isConnected = reader["isConnected"] != DBNull.Value ? Convert.ToInt32(reader["isConnected"]) : 0,
-                                Picture = reader["Picture"] != DBNull.Value
-                                          ? Image.FromStream(new MemoryStream((byte[])reader["Picture"]))
-                                          : Resources.pngegg // Default to null if no image.
+                                FullName = userReader["FullName"].ToString(),
+                                Department = userReader["Department"].ToString(),
+                                userID = userId,
+                                isConnected = Convert.ToInt32(userReader["isConnected"]),
+                                Picture = userReader["Picture"] != DBNull.Value
+                                          ? Image.FromStream(new MemoryStream((byte[])userReader["Picture"]))
+                                          : Resources.pngegg,
+                                PendingMessageCount = pendingCounts.TryGetValue(userId, out var count) ? count : 0
                             };
 
                             connectedUsers.Add(user);
@@ -675,16 +898,22 @@ namespace TDF.Net
                     }
                 }
             }
-            return connectedUsers;
+
+            // Sort by pending messages, online status, then name
+            return connectedUsers
+                .OrderByDescending(u => u.PendingMessageCount)
+                .ThenByDescending(u => u.isConnected)
+                .ThenBy(u => u.FullName)
+                .ToList();
         }
         private void displayConnectedUsers()
         {
-            // Get all users (the SQL query orders them by isConnected DESC).
+            // Get all users with pending message counts
             List<User> connectedUsers = getAllUsers();
             int currentUserCount = connectedUsers.Count;
             int onlineCount = connectedUsers.Count(u => u.isConnected == 1);
 
-            // --- HEADER: Find or create the header label.
+            // --- HEADER: Find or create the header label
             Label headerLabel = usersPanel.Controls
                 .OfType<Label>()
                 .FirstOrDefault(ctrl => ctrl.Tag != null && ctrl.Tag.ToString() == "header");
@@ -699,9 +928,9 @@ namespace TDF.Net
                 };
                 usersPanel.Controls.Add(headerLabel);
             }
-            headerLabel.Text = $"Online Users ({onlineCount})";  // Always update header
+            headerLabel.Text = $"Online Users ({onlineCount})";
 
-            // --- FLOWLAYOUTPANEL: Find or create the FlowLayoutPanel.
+            // --- FLOWLAYOUTPANEL: Find or create the FlowLayoutPanel
             FlowLayoutPanel flowLayout = usersPanel.Controls
                 .OfType<FlowLayoutPanel>()
                 .FirstOrDefault(ctrl => ctrl.Name == "flowLayoutUsers");
@@ -710,9 +939,8 @@ namespace TDF.Net
                 flowLayout = new FlowLayoutPanel
                 {
                     Name = "flowLayoutUsers",
-                    // Position below the header
                     Location = new Point(0, headerLabel.Bottom + 10),
-                    Size = new Size(usersPanel.Width, 600), // Fixed height; adjust as desired
+                    Size = new Size(usersPanel.Width, 600),
                     AutoScroll = true,
                     FlowDirection = FlowDirection.TopDown,
                     WrapContents = false,
@@ -722,50 +950,41 @@ namespace TDF.Net
             }
             else
             {
-                // Update the flowLayout size (in case the parent changed)
                 flowLayout.Size = new Size(usersPanel.Width, 600);
             }
 
-            // Save the current scroll position.
+            // Save current scroll position
             int savedScrollPos = flowLayout.VerticalScroll.Value;
 
-            // Determine whether we need to rebuild the entire list.
-            bool needRebuild = false;
-            if (flowLayout.Controls.Count != currentUserCount)
+            // Order users by pending messages then online status
+            connectedUsers = connectedUsers
+                .OrderByDescending(u => u.PendingMessageCount)
+                .ThenByDescending(u => u.isConnected)
+                .ThenBy(u => u.FullName)
+                .ToList();
+
+            bool needRebuild = flowLayout.Controls.Count != currentUserCount;
+
+            // Check if order needs updating
+            if (!needRebuild)
             {
-                needRebuild = true;
-            }
-            else
-            {
-                // Check the order of user panels (each panel's Tag stores the userID).
                 for (int i = 0; i < flowLayout.Controls.Count; i++)
                 {
-                    Panel panel = flowLayout.Controls[i] as Panel;
-                    if (panel != null)
+                    if (flowLayout.Controls[i] is Panel panel &&
+                        (int)panel.Tag != connectedUsers[i].userID)
                     {
-                        int panelUserId = (int)panel.Tag;
-                        // Since connectedUsers is sorted by isConnected DESC via SQL,
-                        // the i-th item should match the panel's Tag.
-                        if (panelUserId != connectedUsers[i].userID)
-                        {
-                            needRebuild = true;
-                            break;
-                        }
+                        needRebuild = true;
+                        break;
                     }
                 }
             }
 
             if (needRebuild)
             {
-                // Save the scroll position.
-                previousScrollPosition = flowLayout.AutoScrollPosition;
-
-                // Suspend layout to reduce flicker.
                 usersPanel.SuspendLayout();
                 flowLayout.SuspendLayout();
-
-                // Clear and rebuild the FlowLayoutPanel.
                 flowLayout.Controls.Clear();
+
                 foreach (User user in connectedUsers)
                 {
                     Panel userPanel = new Panel
@@ -776,7 +995,7 @@ namespace TDF.Net
                         Tag = user.userID
                     };
 
-                    // Increase picture size a bit.
+                    // Profile Picture
                     CircularPictureBox pictureBox = new CircularPictureBox
                     {
                         Image = user.Picture,
@@ -786,30 +1005,50 @@ namespace TDF.Net
                         Cursor = Cursors.Hand
                     };
 
-                    // When the picture is clicked, check if a chat window for this conversation is already open.
-                    pictureBox.Click += (s, e) =>
+                    // Message Counter
+                    Label msgCounter = new Label
                     {
-                        // Assumes chatForm has a public property 'ChatWithUserID'.
-                        chatForm existingChatForm = Application.OpenForms
-                            .OfType<chatForm>()
-                              .FirstOrDefault(cf => cf.chatWithUserID == user.userID);
-
-                        if (existingChatForm != null)
-                        {
-                            // Bring the existing chat form to the front.
-                            existingChatForm.BringToFront();
-                            existingChatForm.Focus();
-                        }
-                        else
-                        {
-                            // Create and show a new chat form.
-                            chatForm newChatForm = new chatForm(loggedInUser.userID, user.userID, user.FullName, user.Picture);
-                            newChatForm.Show();
-                        }
+                        Text = user.PendingMessageCount > 0 ? user.PendingMessageCount.ToString() : "",
+                        Size = new Size(20, 20),
+                        BackColor = Color.FromArgb(33, 150, 243), // Material Blue
+                        ForeColor = Color.White,
+                        Font = new Font("Segoe UI", 8, FontStyle.Bold),
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        Location = new Point(pictureBox.Right - 15, pictureBox.Top - 5),
+                        Visible = user.PendingMessageCount > 0,
+                        Name = "msgCounter",
+                        Tag = user.userID
                     };
-                    userPanel.Controls.Add(pictureBox);
 
-                    // Show full name and department.
+                    // Make counter circular
+                    using (var gp = new GraphicsPath())
+                    {
+                        gp.AddEllipse(0, 0, msgCounter.Width, msgCounter.Height);
+                        msgCounter.Region = new Region(gp);
+                    }
+
+                    // Click Handler
+                    pictureBox.Click += (s, e) => OpenChatForm(user.userID);
+
+                    // Online Indicator
+                    Panel onlineIndicator = new Panel
+                    {
+                        Size = new Size(10, 10),
+                        BackColor = Color.Green,
+                        Visible = user.isConnected == 1,
+                        Name = "onlineIndicator",
+                        Location = new Point(
+                            pictureBox.Right - 15,
+                            pictureBox.Bottom - 15
+                        )
+                    };
+                    using (var gp = new GraphicsPath())
+                    {
+                        gp.AddEllipse(0, 0, onlineIndicator.Width, onlineIndicator.Height);
+                        onlineIndicator.Region = new Region(gp);
+                    }
+
+                    // Name Label
                     Label nameLabel = new Label
                     {
                         Text = $"{user.FullName.Split(' ')[0]} - {user.Department}",
@@ -820,33 +1059,15 @@ namespace TDF.Net
                         MaximumSize = new Size(userPanel.Width - 20, 0),
                         Location = new Point(10, pictureBox.Bottom + 5)
                     };
-                    userPanel.Controls.Add(nameLabel);
 
-                    // Online indicator (10x10 circle).
-                    Panel onlineIndicator = new Panel
-                    {
-                        Size = new Size(10, 10),
-                        BackColor = Color.Green,
-                        Visible = user.isConnected == 1,
-                        Name = "onlineIndicator"
-                    };
-                    onlineIndicator.Location = new Point(
-                        pictureBox.Right - onlineIndicator.Width / 2,
-                        pictureBox.Bottom - onlineIndicator.Height / 2
-                    );
-                    System.Drawing.Drawing2D.GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
-                    path.AddEllipse(0, 0, onlineIndicator.Width, onlineIndicator.Height);
-                    onlineIndicator.Region = new Region(path);
-                    userPanel.Controls.Add(onlineIndicator);
+                    userPanel.Controls.AddRange(new Control[] {
+                pictureBox,
+                msgCounter,
+                onlineIndicator,
+                nameLabel
+            });
 
                     flowLayout.Controls.Add(userPanel);
-                }
-                previousUserCount = currentUserCount;
-
-                // Restore scroll position.
-                if (previousScrollPosition != Point.Empty)
-                {
-                    flowLayout.AutoScrollPosition = new Point(previousScrollPosition.X, Math.Abs(previousScrollPosition.Y));
                 }
 
                 flowLayout.ResumeLayout();
@@ -854,32 +1075,35 @@ namespace TDF.Net
             }
             else
             {
-                // If no rebuild is needed, simply update online indicators.
+                // Update existing panels
                 foreach (User user in connectedUsers)
                 {
-                    foreach (Control ctrl in flowLayout.Controls)
+                    var userPanel = flowLayout.Controls
+                        .OfType<Panel>()
+                        .FirstOrDefault(p => (int)p.Tag == user.userID);
+
+                    if (userPanel != null)
                     {
-                        if (ctrl is Panel userPanel && (int)userPanel.Tag == user.userID)
+                        // Update online indicator
+                        var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault();
+                        if (onlineIndicator != null)
+                            onlineIndicator.Visible = user.isConnected == 1;
+
+                        // Update message counter
+                        var msgCounter = userPanel.Controls.Find("msgCounter", true).FirstOrDefault() as Label;
+                        if (msgCounter != null)
                         {
-                            var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault();
-                            if (onlineIndicator != null)
-                            {
-                                onlineIndicator.Visible = user.isConnected == 1;
-                            }
-                            break;
+                            msgCounter.Text = user.PendingMessageCount > 0 ? user.PendingMessageCount.ToString() : "";
+                            msgCounter.Visible = user.PendingMessageCount > 0;
                         }
                     }
                 }
             }
 
-            // Always update header label in case online count changed.
-            headerLabel.Text = $"Online Users ({onlineCount})";
-
-            // Restore scroll position (again, to be sure).
+            // Restore scroll position
             try
             {
-                flowLayout.VerticalScroll.Value = savedScrollPos;
-                flowLayout.AutoScrollPosition = new Point(0, savedScrollPos);
+                flowLayout.VerticalScroll.Value = Math.Min(savedScrollPos, flowLayout.VerticalScroll.Maximum);
             }
             catch { }
         }

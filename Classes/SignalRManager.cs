@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDF.Net;
 
 public static class SignalRManager
 {
@@ -35,7 +38,26 @@ public static class SignalRManager
                 // For example, log or raise an event to update the UI.
                 Console.WriteLine("User list update event received from SignalR.");
             });
-
+            HubProxy.On<int, string>("ReceivePendingMessage", (senderId, message) =>
+            {
+                var mainFormNewUI = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
+                if (mainFormNewUI != null && !mainFormNewUI.IsChatOpen(senderId))
+                {
+                    mainFormNewUI.BeginInvoke(new Action(async () =>
+                    {
+                        await mainFormNewUI.ShowSequentialBalloons(senderId, new List<string> { message });
+                        mainFormNewUI.UpdateMessageCounter(senderId, 1);
+                    }));
+                }
+            });
+            HubProxy.On<int, int, int>("updateMessageCounts", (receiverId, senderId, count) =>
+            {
+                var mainFormNewUI = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
+                mainFormNewUI?.BeginInvoke(new Action(() =>
+                    mainFormNewUI.UpdateMessageCounter(senderId, count)));
+            });
+        
+    
             try
             {
                 await Connection.Start();
