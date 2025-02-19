@@ -15,7 +15,7 @@ namespace TDF.Net.Forms
         private int currentUserID;
         public int chatWithUserID;
         private string chatWithUserName;
-        private Image chatWithUserImage;
+        ///private Image chatWithUserImage;
 
         #region Events
         public chatForm(int currentUserID, int chatWithUserID, string chatWithUserName, Image chatWithUserImage)
@@ -24,7 +24,7 @@ namespace TDF.Net.Forms
             this.currentUserID = currentUserID;
             this.chatWithUserID = chatWithUserID;
             this.chatWithUserName = chatWithUserName;
-            this.chatWithUserImage = chatWithUserImage;
+            //this.chatWithUserImage = chatWithUserImage;
 
             Text = chatWithUserName;
             usernameLabel.Text = chatWithUserName;

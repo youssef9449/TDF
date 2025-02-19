@@ -62,7 +62,7 @@ namespace TDF.Net
             expandedHeight = usersPanel.Height; // Store the original height when expanded
             usersPanel.Height = contractedHeight; // Set the initial height to contracted
             //usersIconLocation = usersIconButton.Location;
-            InitializeSignalR();
+            //InitializeSignalR();
 
             // Subscribe to the SignalR "updateUserList" event.
             SignalRManager.HubProxy.On("updateUserList", () =>
@@ -365,14 +365,14 @@ namespace TDF.Net
         #endregion
 
         #region Methods
-        private async System.Threading.Tasks.Task InitializeSignalR()
+        /*private async System.Threading.Tasks.Task InitializeSignalR()
         {
             //serverIPAddress = "192.168.1.11";
             serverIPAddress = "localhost";
 
             string url = $"http://{serverIPAddress}:8080";
             await SignalRManager.InitializeAsync(url, loggedInUser.userID);
-        }
+        }*/
         public static void updateRoleStatus()
         {
             hasManagerRole = loggedInUser.Role != null && managerRoles.Any(role =>

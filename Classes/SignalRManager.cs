@@ -8,8 +8,7 @@ public static class SignalRManager
     public static HubConnection Connection { get; private set; }
     public static IHubProxy HubProxy { get; private set; }
 
-    // Fully qualify ConnectionState to avoid ambiguity.
-    public static bool IsConnected => Connection != null && Connection.State == Microsoft.AspNet.SignalR.Client.ConnectionState.Connected;
+    public static bool IsConnected => Connection != null && Connection.State == ConnectionState.Connected;
 
     /// <summary>
     /// Initializes the SignalR connection, subscribes to events, and registers the current user.
@@ -46,6 +45,8 @@ public static class SignalRManager
             catch (Exception ex)
             {
                 MessageBox.Show("Error connecting to the Server; you won't receive messages nor notifications");
+                //MessageBox.Show($"Error connecting to the Server;{ex}");
+
             }
         }
     }
