@@ -47,6 +47,62 @@ namespace TDF.Net.Classes
 
         public void add()
         {
+            // Define the request types that require conflict checking
+            string[] requestTypesToCheck = { "Annual", "Work From Home", "Unpaid", "Emergency" };
+
+            // Check if the request type requires conflict checking
+            if (Array.IndexOf(requestTypesToCheck, RequestType) >= 0)
+            {
+                // Check for conflicting requests
+                if (hasConflictingRequests())
+                {
+                    MessageBox.Show("This request conflicts with existing requests. Please check your dates.", "Request Conflict", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
+            // Proceed with adding the request if no conflicts are found or conflict check is not required
+            insertRequest();
+        }
+
+        private bool hasConflictingRequests()
+        {
+            string query = @"
+            SELECT COUNT(*)
+            FROM Requests
+            WHERE RequestUserID = @RequestUserID
+            AND (RequestType = 'Annual' OR RequestType = 'Work From Home' OR RequestType = 'Unpaid' OR RequestType = 'Emergency')
+            AND (
+                (RequestFromDay <= @RequestToDay AND RequestToDay >= @RequestFromDay)  -- Overlapping date ranges
+            )";
+
+            try
+            {
+                using (SqlConnection conn = Database.getConnection())
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    conn.Open();
+                    cmd.Parameters.AddWithValue("@RequestUserID", RequestUserID);
+                    cmd.Parameters.AddWithValue("@RequestFromDay", RequestFromDay);
+                    cmd.Parameters.AddWithValue("@RequestToDay", RequestToDay);
+
+                    int conflictCount = (int)cmd.ExecuteScalar();
+                    return conflictCount > 0;
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show($"A database error occurred: {ex.Message}");
+                return true; // Assume conflict to prevent potential data corruption
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+                return true; // Assume conflict to prevent potential data corruption
+            }
+        }
+        private void insertRequest()
+        {
             string query = @"
         INSERT INTO Requests (
             RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay,
