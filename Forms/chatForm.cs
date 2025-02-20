@@ -18,17 +18,13 @@ namespace TDF.Net.Forms
         private int currentUserID;
         public int chatWithUserID;
         private string chatWithUserName;
-        ///private Image chatWithUserImage;
 
-        #region Events
         public chatForm(int currentUserID, int chatWithUserID, string chatWithUserName, Image chatWithUserImage)
         {
             InitializeComponent();
             this.currentUserID = currentUserID;
             this.chatWithUserID = chatWithUserID;
             this.chatWithUserName = chatWithUserName;
-            //this.chatWithUserImage = chatWithUserImage;
-
             Text = chatWithUserName;
             usernameLabel.Text = chatWithUserName;
 
@@ -39,77 +35,18 @@ namespace TDF.Net.Forms
                 Icon = icon;
             }
         }
+
         private async void chatForm_Load(object sender, EventArgs e)
         {
             applyTheme(this);
-            // Optionally subscribe to chat-specific notifications
-            SignalRManager.HubProxy.On<string>("receiveNotification", message =>
-            {
-                if (message.Contains($"New message from {chatWithUserID}:"))
-                {
-                    BeginInvoke(new Action(async () =>
-                    {
-                        await LoadMessagesAsync(true);
-                    }));
-                }
-            });
+            // Mark messages as delivered when chat is opened
+            await SignalRManager.HubProxy.Invoke("MarkMessagesAsDelivered", chatWithUserID, currentUserID);
 
-            await LoadMessagesAsync();
+            // Load messages
+            await LoadMessagesAsync(true);
             BeginInvoke((Action)(() => scrollToBottom()));
         }
-        private void usernameLabel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && e.Clicks == 1)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, 0x112, 0xf012, 0);
-            }
-        }
-        private void panel_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left && e.Clicks == 1)
-            {
-                ReleaseCapture();
-                SendMessage(Handle, 0x112, 0xf012, 0);
-            }
-        }
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            Point scrollPos = AutoScrollPosition;
-            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
-            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
-        }
-        private void panel_Paint(object sender, PaintEventArgs e)
-        {
-            base.OnPaint(e);
-            Point scrollPos = AutoScrollPosition;
-            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
-            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
-        }
-        private void messageTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                BeginInvoke(new Action(async () => await BeginSendingMessageAsync()));
-                e.Handled = true;
-            }
-        }
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            base.OnFormClosing(e);
-        }
-        #endregion
 
-        #region Methods
-        private async Task BeginSendingMessageAsync()
-        {
-            if (string.IsNullOrWhiteSpace(messageTextBox.Text))
-                return;
-
-            await SendMessageAsync(chatWithUserID, messageTextBox.Text);
-            messageTextBox.Clear();
-        }
         private async Task LoadMessagesAsync(bool scrollToBottom = false)
         {
             messagesListBox.BeginUpdate();
@@ -153,6 +90,7 @@ namespace TDF.Net.Forms
                 messagesListBox.EndUpdate();
             }
         }
+
         private async Task SendMessageAsync(int receiverID, string messageText)
         {
             TDF.Classes.Message message = new TDF.Classes.Message()
@@ -161,16 +99,13 @@ namespace TDF.Net.Forms
                 ReceiverID = receiverID,
                 MessageText = messageText,
             };
-
-            // Save the message to the database
             message.add();
 
             try
             {
                 if (SignalRManager.IsConnected)
                 {
-                    await SignalRManager.HubProxy.Invoke("SendMessageNotification", receiverID,
-                        $"New message from {currentUserID}: {messageText}");
+                    await SignalRManager.HubProxy.Invoke("SendNotification", new List<int> { receiverID }, messageText, currentUserID, true, true);
                 }
             }
             catch (Exception ex)
@@ -180,17 +115,71 @@ namespace TDF.Net.Forms
 
             await LoadMessagesAsync(true);
         }
+
         private void scrollToBottom()
         {
             if (messagesListBox.Items.Count > 0)
                 messagesListBox.TopIndex = messagesListBox.Items.Count - 1;
             messageTextBox.Focus();
         }
-        #endregion
 
         private void sendButton_Click(object sender, EventArgs e)
         {
             BeginInvoke(new Action(async () => await BeginSendingMessageAsync()));
         }
+
+        private async Task BeginSendingMessageAsync()
+        {
+            if (string.IsNullOrWhiteSpace(messageTextBox.Text))
+                return;
+
+            await SendMessageAsync(chatWithUserID, messageTextBox.Text);
+            messageTextBox.Clear();
+        }
+
+        #region Events
+        private void usernameLabel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && e.Clicks == 1)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, 0x112, 0xf012, 0);
+            }
+        }
+        private void panel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && e.Clicks == 1)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, 0x112, 0xf012, 0);
+            }
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            Point scrollPos = AutoScrollPosition;
+            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        private void panel_Paint(object sender, PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            Point scrollPos = AutoScrollPosition;
+            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        private void messageTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                BeginInvoke(new Action(async () => await BeginSendingMessageAsync()));
+                e.Handled = true;
+            }
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+        }
+        #endregion
     }
 }

@@ -249,6 +249,7 @@ namespace TDF.Net
             this.teamImageButton.FadeWhenInactive = false;
             this.teamImageButton.Flip = Bunifu.UI.WinForms.BunifuImageButton.FlipOrientation.Normal;
             this.teamImageButton.Image = global::TDF.Properties.Resources.myteam;
+            this.teamImageButton.ImageActive = null;
             this.teamImageButton.ImageLocation = null;
             this.teamImageButton.ImageMargin = 10;
             this.teamImageButton.ImageSize = new System.Drawing.Size(68, 73);
@@ -624,7 +625,7 @@ namespace TDF.Net
             borderEdges1.TopRight = true;
             this.usersIconButton.CustomizableEdges = borderEdges1;
             this.usersIconButton.DialogResult = System.Windows.Forms.DialogResult.None;
-            this.usersIconButton.Image = global::TDF.Properties.Resources.down;
+            this.usersIconButton.Image = global::TDF.Properties.Resources.up;
             this.usersIconButton.ImageMargin = new System.Windows.Forms.Padding(0);
             this.usersIconButton.Location = new System.Drawing.Point(154, 5);
             this.usersIconButton.Name = "usersIconButton";

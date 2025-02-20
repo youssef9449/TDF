@@ -1219,7 +1219,7 @@ namespace TDF.Forms
             }
         }
 
-        private void broadcastButton_Click(object sender, EventArgs e)
+        private async void broadcastButton_Click(object sender, EventArgs e)
         {
             string message = messageTextBox.Text;
 
@@ -1230,20 +1230,30 @@ namespace TDF.Forms
 
             if (confirmation == DialogResult.Yes)
             {
-                // Use the shared SignalR manager's HubProxy
-                if (SignalRManager.HubProxy != null)
+                // Example: Send notification to selected users in a ListBox
+                var selectedUserIDs = usersCheckedListBox.SelectedItems.Cast<User>().Select(u => u.userID).ToList();
+                if (selectedUserIDs.Any())
                 {
-                    // Optionally, replace "Your broadcast message here" with textBox.Text if you want to use text from a text box.
-                    SignalRManager.HubProxy.Invoke("SendNotificationToAll", message);
+                    await SignalRManager.HubProxy.Invoke("SendNotification", selectedUserIDs, "Test notification", null, false, false);
                 }
                 else
                 {
-                    MessageBox.Show("Not connected to the hub yet.");
+                    // Send to all if no selection
+                    await SignalRManager.HubProxy.Invoke("SendNotification", null, "Test notification to all", null, false, false);
                 }
             }
         }
 
 
+        #endregion
+
+        #region Send chat message to selected users
+        /*// Example: Send chat message to selected users
+    var selectedUserIDs = listBoxUsers.SelectedItems.Cast<User>().Select(u => u.userID).ToList();
+    if (selectedUserIDs.Any())
+    {
+        await SignalRManager.HubProxy.Invoke("SendNotification", selectedUserIDs, "Group chat message", loggedInUser.userID, true, true);
+    }*/
         #endregion
 
         /* private void bunifuButton1_Click(object sender, EventArgs e)

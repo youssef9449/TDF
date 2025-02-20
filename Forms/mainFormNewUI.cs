@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using static NotificationHub;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using Microsoft.AspNet.SignalR.Client.Hubs;
 
 namespace TDF.Net
 {
@@ -44,8 +45,10 @@ namespace TDF.Net
             //notificationsSnackbar.InformationOptions.ActionBackColor = lightColor;
             formPanel.BackColor = Color.White;
             this.loginForm = loginForm; // Store a reference to the login form
+
             SignalRManager.HubProxy.On<int, int>("UpdateMessageCount", UpdateMessageCounter);
             SignalRManager.HubProxy.On<int, string>("ReceivePendingMessage", HandlePendingMessage);
+
         }
 
         private ContextMenuStrip contextMenu;
@@ -56,7 +59,6 @@ namespace TDF.Net
         private int expandedHeight; // Stores the full height of the panel when expanded
         private int contractedHeight = 50; // Height of the panel to show only the header
         private int previousUserCount = -1; 
-        private Point previousScrollPosition = Point.Empty;
         private FlowLayoutPanel flowLayout;
         private Dictionary<int, Panel> userPanels = new Dictionary<int, Panel>();
 
@@ -69,7 +71,7 @@ namespace TDF.Net
             usersIconButton.BackgroundColor = primaryColor;
             usersIconButton.BorderColor = darkColor;
             expandedHeight = usersPanel.Height; // Store the original height when expanded
-            usersPanel.Height = contractedHeight; // Set the initial height to contracted
+            //usersPanel.Height = contractedHeight; // Set the initial height to contracted
 
 
             // Subscribe to the SignalR "updateUserList" event.
@@ -114,6 +116,7 @@ namespace TDF.Net
                     // The form was disposed; no need to update.
                 }
             }
+            // Add new chat message handler
         }
         protected override void OnMove(EventArgs e)
         {
@@ -664,10 +667,7 @@ namespace TDF.Net
 
             BeginInvoke(new Action(async () =>
             {
-                // Update counter
                 UpdateMessageCounter(senderId, 1);
-
-                // Get updated message list
                 var pendingData = await SignalRManager.HubProxy.Invoke<Dictionary<int, PendingMessageData>>(
                     "GetPendingMessageCounts",
                     loggedInUser.userID
@@ -676,7 +676,7 @@ namespace TDF.Net
                 if (pendingData.TryGetValue(senderId, out var data) &&
                     userPanels.TryGetValue(senderId, out Panel panel))
                 {
-                    ShowMessageBalloons(panel, data.Messages);
+                    await ShowMessageBalloons(null, panel, data.Messages);
                 }
             }));
         }
@@ -697,7 +697,7 @@ namespace TDF.Net
                         UpdateMessageCounter(entry.Key, entry.Value.Count);
                         if (entry.Value.Messages.Count > 0 && !IsChatOpen(entry.Key))
                         {
-                            ShowMessageBalloons(userPanel, entry.Value.Messages);
+                            await ShowMessageBalloons(null, userPanel, entry.Value.Messages);
                         }
                     }
                 }
@@ -706,11 +706,6 @@ namespace TDF.Net
             {
                 Console.WriteLine($"Error loading pending messages: {ex.Message}");
             }
-        }
-        private int GetCurrentMessageCount(Panel panel)
-        {
-            var counter = panel.Controls.Find("msgCounter", true).FirstOrDefault() as Label;
-            return int.TryParse(counter?.Text, out int count) ? count : 0;
         }
         #endregion
 
@@ -731,16 +726,36 @@ namespace TDF.Net
                 }
             }
         }
-
         private void UpdateMessageCounterUI(Panel panel, int count)
         {
-            var counter = panel.Controls.Find("msgCounter", true).FirstOrDefault() as Label;
-            if (counter == null) return;
+            var pictureBox = panel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
+            if (pictureBox == null) return;
+
+            Label counter = panel.Controls.Find("msgCounter", true).FirstOrDefault() as Label;
+            if (counter == null)
+            {
+                counter = new Label
+                {
+                    Name = "msgCounter",
+                    Size = new Size(20, 20),
+                    BackColor = Color.FromArgb(33, 150, 243),
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 8, FontStyle.Bold),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Location = new Point(pictureBox.Right - 15, pictureBox.Top - 5),
+                    Visible = false
+                };
+                using (var gp = new GraphicsPath())
+                {
+                    gp.AddEllipse(0, 0, counter.Width, counter.Height);
+                    counter.Region = new Region(gp);
+                }
+                panel.Controls.Add(counter);
+            }
 
             counter.Text = count > 0 ? count.ToString() : "";
             counter.Visible = count > 0;
 
-            // Reorder panels if needed
             if (count > 0 && flowLayout != null && !flowLayout.IsDisposed)
             {
                 flowLayout.Controls.SetChildIndex(panel, 0);
@@ -749,27 +764,31 @@ namespace TDF.Net
         }
         #endregion
 
-        public bool IsChatOpen(int senderId) =>
-            Application.OpenForms.OfType<chatForm>()
-                .Any(f => f.chatWithUserID == senderId);
-        private async void ShowMessageBalloons(Panel userPanel, List<string> messages)
-        {
-            var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().First();
-            Point screenPos = userPanel.PointToScreen(pictureBox.Location);
-            int offset = 0;
 
-            foreach (string message in messages)
+        public bool IsChatOpen(int senderId) =>
+                Application.OpenForms.OfType<chatForm>()
+                    .Any(f => f.chatWithUserID == senderId);
+        public async Task ShowMessageBalloons(int? senderId, Panel userPanel, List<string> messages)
+        {
+            var panel = userPanel ?? flowLayout.Controls
+                .OfType<Panel>()
+                .FirstOrDefault(p => (int)p.Tag == senderId);
+
+            if (panel != null)
             {
-                await Task.Delay(500);
-                BeginInvoke(new Action(() =>
+                var pictureBox = panel.Controls.OfType<CircularPictureBox>().First();
+                var screenPos = pictureBox.PointToScreen(new Point(0, 0));
+                int offset = 0;
+
+                foreach (var message in messages)
                 {
-                    MessageBalloon balloon = new MessageBalloon(
-                        new Point(screenPos.X - 210, screenPos.Y + offset),
-                        message
-                    );
-                    balloon.Show();
-                }));
-                offset += 65;
+                    BeginInvoke(new Action(() =>
+                    {
+                        new MessageBalloon(new Point(screenPos.X - 210, screenPos.Y + offset), message).Show();
+                    }));
+                    offset += 65;
+                    await Task.Delay(500);
+                }
             }
         }
         public async Task ShowSequentialBalloons(int senderId, List<string> messages)
@@ -781,14 +800,14 @@ namespace TDF.Net
             if (panel != null)
             {
                 var pictureBox = panel.Controls.OfType<CircularPictureBox>().First();
-                var screenPos = panel.PointToScreen(pictureBox.Location);
+                var screenPos = pictureBox.PointToScreen(new Point(0, 0));
                 int offset = 0;
 
                 foreach (var message in messages)
                 {
                     BeginInvoke(new Action(() =>
                     {
-                        new MessageBalloon(new Point(screenPos.X, screenPos.Y + offset), message).Show();
+                        new MessageBalloon(new Point(screenPos.X - 210, screenPos.Y + offset), message).Show();
                     }));
                     offset += 65;
                     await Task.Delay(500);
@@ -801,26 +820,30 @@ namespace TDF.Net
             var user = getAllUsers().FirstOrDefault(u => u.userID == userId);
             if (user == null) return;
 
-            var existingChat = Application.OpenForms.OfType<chatForm>()
-                .FirstOrDefault(f => f.chatWithUserID == userId);
-
+            var existingChat = Application.OpenForms.OfType<chatForm>().FirstOrDefault(f => f.chatWithUserID == userId);
             if (existingChat == null)
             {
-                // Mark messages as delivered
-                await SignalRManager.HubProxy.Invoke("MarkMessagesAsDelivered", userId, loggedInUser.userID);
-                UpdateMessageCounter(userId, 0);
-
-                // Show historical messages
-                var messages = await SignalRManager.HubProxy.Invoke<List<string>>(
-                    "GetPendingMessages", loggedInUser.userID, userId);
-
-                if (messages.Count > 0)
+                try
                 {
-                    ShowMessageBalloons(userPanels[userId], messages);
+                    if (!SignalRManager.IsConnected)
+                    {
+                        Console.WriteLine("SignalR not connected. Cannot mark messages as delivered.");
+                        return;
+                    }
+                    await SignalRManager.HubProxy.Invoke("MarkMessagesAsDelivered", userId, loggedInUser.userID);
+                    UpdateMessageCounter(userId, 0);
+                    var messages = await SignalRManager.HubProxy.Invoke<List<string>>("GetPendingMessages", loggedInUser.userID, userId);
+                    if (messages != null && messages.Count > 0)
+                    {
+                        await ShowMessageBalloons(null, userPanels[userId], messages);
+                    }
+                    new chatForm(loggedInUser.userID, userId, user.FullName, user.Picture).Show();
                 }
-
-                // Open new chat form
-                new chatForm(loggedInUser.userID, userId, user.FullName, user.Picture).Show();
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in OpenChatForm: {ex.Message}");
+                    MessageBox.Show("Failed to open chat. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
@@ -828,6 +851,7 @@ namespace TDF.Net
             }
         }
         #endregion
+
         private Panel GetUserPanel(int userId)
         {
             return flowLayout.Controls
@@ -846,7 +870,7 @@ namespace TDF.Net
                 // First get all pending counts for the logged-in user
                 string countQuery = @"
             SELECT SenderID, COUNT(*) AS PendingCount
-            FROM PendingNotifications
+            FROM PendingChatMessages
             WHERE ReceiverID = @ReceiverID AND IsDelivered = 0
             GROUP BY SenderID";
 
