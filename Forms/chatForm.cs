@@ -18,7 +18,21 @@ namespace TDF.Net.Forms
         private int currentUserID;
         public int chatWithUserID;
         private string chatWithUserName;
-
+        // Helper for async BeginInvoke
+        private Task BeginInvokeAsync(Func<Task> action)
+        {
+            return Task.Run(async () =>
+            {
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(async () => await action()));
+                }
+                else
+                {
+                    await action();
+                }
+            });
+        }
         public chatForm(int currentUserID, int chatWithUserID, string chatWithUserName, Image chatWithUserImage)
         {
             InitializeComponent();
@@ -35,19 +49,32 @@ namespace TDF.Net.Forms
                 Icon = icon;
             }
         }
-
         private async void chatForm_Load(object sender, EventArgs e)
         {
             applyTheme(this);
-            // Mark messages as delivered when chat is opened
-            await SignalRManager.HubProxy.Invoke("MarkMessagesAsDelivered", chatWithUserID, currentUserID);
+            try
+            {
+                if (SignalRManager.IsConnected)
+                {
+                    // Mark messages as delivered when chat opens
+                    await SignalRManager.HubProxy.Invoke("MarkMessagesAsDelivered", chatWithUserID, currentUserID);
+                }
+                else
+                {
+                    Console.WriteLine("SignalR not connected in chatForm_Load.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error marking messages as delivered: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                MessageBox.Show("Failed to load chat history. Some messages may not be marked as delivered.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
-            // Load messages
             await LoadMessagesAsync(true);
             BeginInvoke((Action)(() => scrollToBottom()));
         }
 
-        private async Task LoadMessagesAsync(bool scrollToBottom = false)
+        public async Task LoadMessagesAsync(bool scrollToBottom = false)
         {
             messagesListBox.BeginUpdate();
             int currentTopIndex = messagesListBox.TopIndex;
@@ -85,12 +112,33 @@ namespace TDF.Net.Forms
                 else if (messagesListBox.Items.Count > 0)
                     messagesListBox.TopIndex = Math.Min(currentTopIndex, messagesListBox.Items.Count - 1);
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading messages: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
             finally
             {
                 messagesListBox.EndUpdate();
             }
         }
-
+        public async Task AppendMessageAsync(int senderId, string messageText)
+        {
+            messagesListBox.BeginUpdate();
+            try
+            {
+                string sender = (senderId == currentUserID) ? "You" : chatWithUserName;
+                messagesListBox.Items.Add($"{sender}: {messageText} ({DateTime.Now:T})");
+                scrollToBottom();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error appending message: {ex.Message}");
+            }
+            finally
+            {
+                messagesListBox.EndUpdate();
+            }
+        }
         private async Task SendMessageAsync(int receiverID, string messageText)
         {
             TDF.Classes.Message message = new TDF.Classes.Message()
@@ -105,36 +153,40 @@ namespace TDF.Net.Forms
             {
                 if (SignalRManager.IsConnected)
                 {
+                    Console.WriteLine($"Sending message from {currentUserID} to {receiverID}: {messageText}");
                     await SignalRManager.HubProxy.Invoke("SendNotification", new List<int> { receiverID }, messageText, currentUserID, true, true);
+                    Console.WriteLine($"Message sent to {receiverID}");
+                }
+                else
+                {
+                    Console.WriteLine("SignalR not connected. Message queued locally.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error sending the message: {ex.Message}");
+                Console.WriteLine($"Error sending message: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
 
             await LoadMessagesAsync(true);
         }
-
         private void scrollToBottom()
         {
             if (messagesListBox.Items.Count > 0)
                 messagesListBox.TopIndex = messagesListBox.Items.Count - 1;
             messageTextBox.Focus();
         }
-
-        private void sendButton_Click(object sender, EventArgs e)
+        private async void sendButton_Click(object sender, EventArgs e)
         {
-            BeginInvoke(new Action(async () => await BeginSendingMessageAsync()));
+            await BeginSendingMessageAsync();
         }
 
         private async Task BeginSendingMessageAsync()
         {
-            if (string.IsNullOrWhiteSpace(messageTextBox.Text))
-                return;
+            if (string.IsNullOrWhiteSpace(messageTextBox.Text)) return;
 
-            await SendMessageAsync(chatWithUserID, messageTextBox.Text);
-            messageTextBox.Clear();
+            string messageText = messageTextBox.Text;
+            messageTextBox.Text = ""; // Clear immediately to prevent double send
+            await SendMessageAsync(chatWithUserID, messageText);
         }
 
         #region Events
@@ -172,6 +224,7 @@ namespace TDF.Net.Forms
         {
             if (e.KeyCode == Keys.Enter)
             {
+                e.SuppressKeyPress = true; // Prevent double trigger
                 BeginInvoke(new Action(async () => await BeginSendingMessageAsync()));
                 e.Handled = true;
             }

@@ -68,7 +68,8 @@ namespace TDF.Net
                 CrashLogger.LogException(e.Exception);
 
                 // Call your method to update the user's status to "disconnected"
-                makeUserDisconnected(); // Ensure this method is accessible in this context
+                mainFormNewUI.triggerServerDisconnect();
+                // Ensure this method is accessible in this context
             }
             catch (Exception ex2)
             {
@@ -96,7 +97,7 @@ namespace TDF.Net
                 }
 
                 // Call your disconnect method here as well
-                makeUserDisconnected();
+                mainFormNewUI.triggerServerDisconnect();
             }
             catch (Exception ex2)
             {

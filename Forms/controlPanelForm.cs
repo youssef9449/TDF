@@ -10,6 +10,7 @@ using TDF.Net.Classes;
 using Bunifu.UI.WinForms;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
+using static TDF.Net.mainFormNewUI;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.IO.Pipes;
 using System.Threading.Tasks;
@@ -997,7 +998,7 @@ namespace TDF.Forms
 
             if (result == DialogResult.Yes)
             {
-                makeUserDisconnected();
+                mainFormNewUI.triggerServerDisconnect();
                 string userFullName = usersCheckedListBox.CheckedItems[0].ToString().Split('-')[0].Trim();
 
                 using (SqlConnection conn = Database.getConnection())
@@ -1234,12 +1235,12 @@ namespace TDF.Forms
                 var selectedUserIDs = usersCheckedListBox.SelectedItems.Cast<User>().Select(u => u.userID).ToList();
                 if (selectedUserIDs.Any())
                 {
-                    await SignalRManager.HubProxy.Invoke("SendNotification", selectedUserIDs, "Test notification", null, false, false);
+                    await SignalRManager.HubProxy.Invoke("SendNotification", selectedUserIDs, $"{message}", null, false, false);
                 }
                 else
                 {
                     // Send to all if no selection
-                    await SignalRManager.HubProxy.Invoke("SendNotification", null, "Test notification to all", null, false, false);
+                    await SignalRManager.HubProxy.Invoke("SendNotification", null, $"{message}", null, false, false);
                 }
             }
         }

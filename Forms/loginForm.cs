@@ -29,65 +29,74 @@ namespace TDF.Net
         public static List<string> departments = new List<string>();
         public static List<string> titles = new List<string>();
         private static Form oldSessionForm = null;
+        private bool isLoggingIn = false;
 
         #region Methods
         private async void startLoggingIn()
         {
-            string username = txtUsername.Text;
-            string password = txtPassword.Text;
+            if (isLoggingIn) return;
+            isLoggingIn = true;
 
-            // Check for an outdated version
-            string appVersion = Application.ProductVersion;
-            using (SqlConnection conn = Database.getConnection())
+            try
             {
-                conn.Open();
-                string versionQuery = "SELECT LatestVersion FROM AppVersion";
-                using (SqlCommand versionCmd = new SqlCommand(versionQuery, conn))
+                string username = txtUsername.Text;
+                string password = txtPassword.Text;
+
+                // Check for an outdated version
+                string appVersion = Application.ProductVersion;
+                using (SqlConnection conn = Database.getConnection())
                 {
-                    string latestVersion = versionCmd.ExecuteScalar()?.ToString();
-                    if (latestVersion != null && latestVersion != appVersion)
+                    conn.Open();
+                    string versionQuery = "SELECT LatestVersion FROM AppVersion";
+                    using (SqlCommand versionCmd = new SqlCommand(versionQuery, conn))
                     {
-                        MessageBox.Show("You are using an old version. Please use the latest version from the Taxi Partition to continue.", "Update Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return; // Stop execution here
+                        string latestVersion = versionCmd.ExecuteScalar()?.ToString();
+                        if (latestVersion != null && latestVersion != appVersion)
+                        {
+                            MessageBox.Show("You are using an old version. Please use the latest version from the Taxi Partition to continue.", "Update Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
                     }
                 }
-            }
 
-            // Proceed with login validation
-            bool isValidLogin = validateLogin(username, password);
+                // Proceed with login validation
+                bool isValidLogin = validateLogin(username, password);
 
-            if (isValidLogin)
-            {
-                // Log in the user and track the session
-                loggedInUser = getCurrentUserDetails(username);
-                makeUserConnected();
-                updateMachineName();
-
-                // Initialize SignalR and register this user so the hub can broadcast updateUserList.
-                string serverUrl = "http://localhost:8080"; // or your actual URL
-                await SignalRManager.InitializeAsync(serverUrl, loggedInUser.userID);
-                // The above call invokes RegisterUserConnection on the server, which in turn does:
-                // Clients.All.updateUserList();
-
-                // Open the appropriate UI
-                if (guiDropdown.Text == "Classic")
+                if (isValidLogin)
                 {
-                    oldSessionForm = new mainForm(this);
+                    // Log in the user and track the session
+                    loggedInUser = getCurrentUserDetails(username);
+                    makeUserConnected();
+                    updateMachineName();
+
+                    // Initialize SignalR and register this user
+                    string serverUrl = "http://localhost:8080"; // Replace with your actual URL
+                    await SignalRManager.InitializeAsync(serverUrl, loggedInUser.userID);
+
+                    // Open the appropriate UI
+                    if (guiDropdown.Text == "Classic")
+                    {
+                        oldSessionForm = new mainForm(this);
+                    }
+                    else
+                    {
+                        oldSessionForm = new mainFormNewUI(this);
+                    }
+
+                    oldSessionForm.Show();
+
+                    // Hide the login form and clear fields
+                    clearFormFields();
+                    Hide();
                 }
                 else
                 {
-                    oldSessionForm = new mainFormNewUI(this);
+                    MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
-                oldSessionForm.Show();
-
-                // Hide the login form and clear fields
-                clearFormFields();
-                Hide();
             }
-            else
+            finally
             {
-                MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                isLoggingIn = false;
             }
         }
         public static List<string> getConnectedUsers()
@@ -122,22 +131,6 @@ namespace TDF.Net
                 {
                     cmd.Parameters.AddWithValue("@userName", loggedInUser.UserName);
                     cmd.ExecuteNonQuery();
-                }
-            }
-        }
-        public static void makeUserDisconnected()
-        {
-            if (loggedInUser != null)
-            {
-                using (SqlConnection connection = Database.getConnection())
-                {
-                    connection.Open();
-                    string query = "UPDATE Users SET IsConnected = 0 WHERE UserName = @userName";
-                    using (SqlCommand cmd = new SqlCommand(query, connection))
-                    {
-                        cmd.Parameters.AddWithValue("@userName", loggedInUser.UserName);
-                        cmd.ExecuteNonQuery();
-                    }
                 }
             }
         }

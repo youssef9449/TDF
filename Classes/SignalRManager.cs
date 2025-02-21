@@ -15,22 +15,44 @@ public static class SignalRManager
 
     public static async Task InitializeAsync(string serverUrl, int currentUserID)
     {
+
         if (Connection == null)
         {
             Connection = new HubConnection(serverUrl);
             HubProxy = Connection.CreateHubProxy("NotificationHub");
 
-            // Handler for general notifications (MessageBox)
+            // Handle general notifications with MessageBox
             HubProxy.On<string>("receiveGeneralNotification", message =>
             {
-                MessageBox.Show(message, "New Notification");
+                Console.WriteLine($"Received general notification: {message}");
+                if (!string.IsNullOrEmpty(message))
+                {
+                    var mainForm = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
+                    if (mainForm != null && !mainForm.IsDisposed && mainForm.IsHandleCreated)
+                    {
+                        mainForm.BeginInvoke(new Action(() =>
+                        {
+                            MessageBox.Show(message, "System Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }));
+                    }
+                }
             });
 
-            // Handler for pending messages (UI updates in mainFormNewUI)
             HubProxy.On<int, string>("receivePendingMessage", (senderId, message) =>
             {
+                Console.WriteLine($"SignalRManager received message from {senderId}: {message}");
                 var mainFormNewUI = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
-                if (mainFormNewUI != null && !mainFormNewUI.IsChatOpen(senderId))
+                var chatForm = Application.OpenForms.OfType<chatForm>().FirstOrDefault(f => f.chatWithUserID == senderId);
+
+                if (chatForm != null && !chatForm.IsDisposed && chatForm.IsHandleCreated)
+                {
+                    chatForm.BeginInvoke(new Action(async () =>
+                    {
+                        Console.WriteLine($"Refreshing chatForm for {chatForm.chatWithUserID}");
+                        await chatForm.AppendMessageAsync(true); // Assuming LoadMessagesAsync is public or accessible
+                    }));
+                }
+                else if (mainFormNewUI != null && !mainFormNewUI.IsChatOpen(senderId))
                 {
                     mainFormNewUI.BeginInvoke(new Action(async () =>
                     {
@@ -61,7 +83,7 @@ public static class SignalRManager
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error connecting to the Server; you won't receive messages nor notifications");
+                MessageBox.Show("Error connecting to the Server; you won't receive messages nor notifications","Server Error");
             }
         }
     }

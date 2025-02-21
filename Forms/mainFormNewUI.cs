@@ -47,52 +47,53 @@ namespace TDF.Net
             this.loginForm = loginForm; // Store a reference to the login form
 
             SignalRManager.HubProxy.On<int, int>("UpdateMessageCount", UpdateMessageCounter);
-            SignalRManager.HubProxy.On<int, string>("ReceivePendingMessage", HandlePendingMessage);
-
+            SignalRManager.HubProxy.On<int, string>("receivePendingMessage", HandlePendingMessage); 
         }
 
         private ContextMenuStrip contextMenu;
 
         private loginForm loginForm;
 
-        private bool isPanelExpanded, isFormClosing = false;
+        private bool isPanelExpanded = true;
+        private bool isFormClosing = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
         private int contractedHeight = 50; // Height of the panel to show only the header
         private int previousUserCount = -1; 
         private FlowLayoutPanel flowLayout;
         private Dictionary<int, Panel> userPanels = new Dictionary<int, Panel>();
+        // Helper for async Invoke
+        private Task InvokeAsync(Action action)
+        {
+            return Task.Run(() => this.Invoke(action));
+        }
 
 
         #region Events
-        private void mainFormNewUI_Load(object sender, EventArgs e)
+        private async void mainFormNewUI_Load(object sender, EventArgs e)
         {
             MaximizedBounds = Screen.FromControl(this).WorkingArea;
-
             usersIconButton.BackgroundColor = primaryColor;
             usersIconButton.BorderColor = darkColor;
-            expandedHeight = usersPanel.Height; // Store the original height when expanded
-            //usersPanel.Height = contractedHeight; // Set the initial height to contracted
+            expandedHeight = usersPanel.Height;
 
-
-            // Subscribe to the SignalR "updateUserList" event.
-            SignalRManager.HubProxy.On("updateUserList", () =>
+            SignalRManager.HubProxy.On("updateUserList", async () =>
             {
-                // Check if the form's handle is created and not disposed before invoking.
                 if (!IsDisposed && IsHandleCreated)
                 {
                     try
                     {
-                        this.Invoke(new Action(() =>
+                        await this.InvokeAsync(async () =>
                         {
                             if (!IsDisposed)
                             {
-                                displayConnectedUsers();
+                                Console.WriteLine("Received updateUserList event");
+                                await DisplayConnectedUsersAsync();
                             }
-                        }));
+                        });
                     }
-                    catch (ObjectDisposedException)
+                    catch (Exception ex)
                     {
-                        // The form was disposed; no need to update.
+                        Console.WriteLine($"Error in updateUserList handler: {ex.Message}");
                     }
                 }
             });
@@ -102,31 +103,21 @@ namespace TDF.Net
             adjustShadowPanelAndImageButtons();
             updateUserDataControls();
 
-            displayConnectedUsers();
+            await DisplayConnectedUsersAsync();
 
             if (!IsDisposed && IsHandleCreated)
             {
                 try
                 {
-                    LoadPendingMessages();
-
+                    await LoadPendingMessages();
                 }
-                catch (ObjectDisposedException)
-                {
-                    // The form was disposed; no need to update.
-                }
+                catch (ObjectDisposedException) { }
             }
-            // Add new chat message handler
         }
         protected override void OnMove(EventArgs e)
         {
             base.OnMove(e);
             MaximizedBounds = Screen.FromControl(this).WorkingArea;
-        }
-        private void ConnectedUsersTimer_Tick(object sender, EventArgs e)
-        {
-            //if (isPanelExpanded) return;
-            displayConnectedUsers();
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -196,9 +187,17 @@ namespace TDF.Net
         {
             minImg.Image = Resources.min_press;
         }
-        private void closeImg_MouseClick(object sender, MouseEventArgs e)
+        private async void closeImg_MouseClick(object sender, MouseEventArgs e)
         {
-            Application.Exit();
+            if (!isFormClosing)
+            {
+                isFormClosing = true;
+
+                await triggerServerDisconnect();
+
+                loggedInUser = null;
+                Application.Exit();
+            }
         }
         private void maxImage_MouseClick(object sender, MouseEventArgs e)
         {
@@ -309,38 +308,6 @@ namespace TDF.Net
                 return;
             }
         }
-        protected override async void OnFormClosing(FormClosingEventArgs e)
-        {
-            if (!isFormClosing)
-            {
-                isFormClosing = true;
-
-                // Update the database to mark the user as disconnected.
-                makeUserDisconnected();
-
-                // If connected via SignalR, gracefully disconnect.
-                if (SignalRManager.IsConnected)
-                {
-                    try
-                    {
-                        // Notify the hub that this user is disconnecting.
-                        await SignalRManager.HubProxy.Invoke("UserDisconnected", loggedInUser.UserName);
-                        // Stop the SignalR connection.
-                        SignalRManager.Connection.Stop();
-                    }
-                    catch (Exception ex)
-                    {
-                        // Log any error that occurs during disconnection.
-                        Console.WriteLine("Error while stopping SignalR connection: " + ex.Message);
-                    }
-                }
-
-                // Clear the logged-in user reference.
-                loggedInUser = null;
-            }
-
-            base.OnFormClosing(e);
-        }
         private void circularPictureBox_Click(object sender, EventArgs e)
         {
             // Initialize the ContextMenuStrip
@@ -363,40 +330,25 @@ namespace TDF.Net
 
             contextMenu.Show(Cursor.Position);
         }
-        private void usersIconButton_Click(object sender, EventArgs e)
+        private async void usersIconButton_Click(object sender, EventArgs e)
         {
             if (isPanelExpanded)
             {
-                // Contract the panel
-                usersPanel.Height = contractedHeight; // Set the height to contracted
-              //  usersPanel.AutoScroll = false; // Disable auto-scroll
-                usersIconButton.Image = Resources.down; // Change the icon to "down"
-                isPanelExpanded = false; // Update the state
-                //usersIconButton.Location = usersIconLocation;
-
+                usersPanel.Height = contractedHeight;
+                usersIconButton.Image = Resources.down;
+                isPanelExpanded = false;
             }
             else
             {
-                // Expand the panel
-                usersPanel.Height = expandedHeight; // Set the height to expanded
-             //   usersPanel.AutoScroll = true; // Enable auto-scroll
-                usersIconButton.Image = Resources.up; // Change the icon to "up"
-               // displayConnectedUsers(); // Populate the panel with connected users
-                isPanelExpanded = true; // Update the state
-                //usersIconButton.Location = usersIconLocation;
+                usersPanel.Height = expandedHeight;
+                usersIconButton.Image = Resources.up;
+                await DisplayConnectedUsersAsync(); // Now async
+                isPanelExpanded = true;
             }
         }
         #endregion
 
         #region Methods
-        /*private async System.Threading.Tasks.Task InitializeSignalR()
-        {
-            //serverIPAddress = "192.168.1.11";
-            serverIPAddress = "localhost";
-
-            string url = $"http://{serverIPAddress}:8080";
-            await SignalRManager.InitializeAsync(url, loggedInUser.userID);
-        }*/
         public static void updateRoleStatus()
         {
             hasManagerRole = loggedInUser.Role != null && managerRoles.Any(role =>
@@ -468,31 +420,6 @@ namespace TDF.Net
                 }
             }
         }
-        /*private void showFormInPanel(Form form)
-        {
-            form.TopLevel = false; // Make it a child control rather than a top-level form
-            form.Dock = DockStyle.Fill;
-
-            foreach (Control control in formPanel.Controls)
-            {
-                control.Hide();
-            }
-
-            formPanel.Controls.Add(form);
-
-
-            // Restore hidden controls when the form is closed
-            form.FormClosed += (s, e) =>
-            {
-                foreach (Control control in formPanel.Controls)
-                {
-                    control.Show();
-                }
-                setImageButtonVisibility();
-            };
-
-            form.Show();
-        }*/
         private void adjustShadowPanelAndImageButtons()
         {
             // Set anchor style for all controls in shadowPanel
@@ -665,9 +592,9 @@ namespace TDF.Net
         {
             if (IsChatOpen(senderId)) return;
 
-            BeginInvoke(new Action(async () =>
+            try
             {
-                UpdateMessageCounter(senderId, 1);
+                // Perform async SignalR call
                 var pendingData = await SignalRManager.HubProxy.Invoke<Dictionary<int, PendingMessageData>>(
                     "GetPendingMessageCounts",
                     loggedInUser.userID
@@ -676,9 +603,26 @@ namespace TDF.Net
                 if (pendingData.TryGetValue(senderId, out var data) &&
                     userPanels.TryGetValue(senderId, out Panel panel))
                 {
-                    await ShowMessageBalloons(null, panel, data.Messages);
+                    // Update UI on the UI thread and await async balloon display
+                    if (InvokeRequired)
+                    {
+                        await InvokeAsync(async () =>
+                        {
+                            UpdateMessageCounter(senderId, 1);
+                            await ShowMessageBalloons(null, panel, data.Messages);
+                        });
+                    }
+                    else
+                    {
+                        UpdateMessageCounter(senderId, 1);
+                        await ShowMessageBalloons(null, panel, data.Messages);
+                    }
                 }
-            }));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in HandlePendingMessage: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
         }
         private async Task LoadPendingMessages()
         {
@@ -755,6 +699,24 @@ namespace TDF.Net
 
             counter.Text = count > 0 ? count.ToString() : "";
             counter.Visible = count > 0;
+            counter.BringToFront(); // Ensure it’s on top
+
+            // Anti-aliasing for smoother edges
+            counter.Paint += (s, e) =>
+            {
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                using (var brush = new SolidBrush(counter.BackColor))
+                {
+                    e.Graphics.FillEllipse(brush, 0, 0, counter.Width - 1, counter.Height - 1);
+                }
+                using (var pen = new Pen(Color.Black, 1))
+                {
+                    e.Graphics.DrawEllipse(pen, 0, 0, counter.Width - 1, counter.Height - 1);
+                }
+                TextRenderer.DrawText(e.Graphics, counter.Text, counter.Font,
+                    new Rectangle(0, 0, counter.Width, counter.Height), counter.ForeColor,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+            };
 
             if (count > 0 && flowLayout != null && !flowLayout.IsDisposed)
             {
@@ -791,63 +753,55 @@ namespace TDF.Net
                 }
             }
         }
-        public async Task ShowSequentialBalloons(int senderId, List<string> messages)
-        {
-            var panel = flowLayout.Controls
-                .OfType<Panel>()
-                .FirstOrDefault(p => (int)p.Tag == senderId);
 
-            if (panel != null)
-            {
-                var pictureBox = panel.Controls.OfType<CircularPictureBox>().First();
-                var screenPos = pictureBox.PointToScreen(new Point(0, 0));
-                int offset = 0;
-
-                foreach (var message in messages)
-                {
-                    BeginInvoke(new Action(() =>
-                    {
-                        new MessageBalloon(new Point(screenPos.X - 210, screenPos.Y + offset), message).Show();
-                    }));
-                    offset += 65;
-                    await Task.Delay(500);
-                }
-            }
-        }
         #region Updated Chat Form Integration
         private async void OpenChatForm(int userId)
         {
-            var user = getAllUsers().FirstOrDefault(u => u.userID == userId);
+            var user = (await GetAllUsersAsync()).FirstOrDefault(u => u.userID == userId);
             if (user == null) return;
 
             var existingChat = Application.OpenForms.OfType<chatForm>().FirstOrDefault(f => f.chatWithUserID == userId);
-            if (existingChat == null)
+            if (existingChat != null)
             {
-                try
+                existingChat.BringToFront();
+                return;
+            }
+
+            try
+            {
+                if (!SignalRManager.IsConnected)
                 {
-                    if (!SignalRManager.IsConnected)
-                    {
-                        Console.WriteLine("SignalR not connected. Cannot mark messages as delivered.");
-                        return;
-                    }
-                    await SignalRManager.HubProxy.Invoke("MarkMessagesAsDelivered", userId, loggedInUser.userID);
+                    Console.WriteLine("SignalR not connected. Cannot open chat.");
+                    MessageBox.Show("Cannot open chat: connection lost.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Get pending messages before updating UI
+                var messages = await SignalRManager.HubProxy.Invoke<List<string>>("GetPendingMessages", loggedInUser.userID, userId);
+
+                // Safely update UI components
+                if (userPanels.ContainsKey(userId))
+                {
                     UpdateMessageCounter(userId, 0);
-                    var messages = await SignalRManager.HubProxy.Invoke<List<string>>("GetPendingMessages", loggedInUser.userID, userId);
                     if (messages != null && messages.Count > 0)
                     {
                         await ShowMessageBalloons(null, userPanels[userId], messages);
                     }
-                    new chatForm(loggedInUser.userID, userId, user.FullName, user.Picture).Show();
                 }
-                catch (Exception ex)
+                else
                 {
-                    Console.WriteLine($"Error in OpenChatForm: {ex.Message}");
-                    MessageBox.Show("Failed to open chat. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Console.WriteLine($"Warning: User panel not found for userId: {userId}");
                 }
+
+                // Open new chat form
+                new chatForm(loggedInUser.userID, userId, user.FullName, user.Picture).Show();
             }
-            else
+            catch (Exception ex)
             {
-                existingChat.BringToFront();
+                Console.WriteLine($"Error in OpenChatForm: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                MessageBox.Show("Failed to open chat. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         #endregion
@@ -858,86 +812,88 @@ namespace TDF.Net
                 .OfType<Panel>()
                 .FirstOrDefault(p => (int)p.Tag == userId);
         }
-        public static List<User> getAllUsers()
+        public static async Task<List<User>> GetAllUsersAsync()
         {
-            List<User> connectedUsers = new List<User>();
-            var pendingCounts = new Dictionary<int, int>();
+            if (loggedInUser == null) return new List<User>();
 
-            using (SqlConnection connection = getConnection())
+            List<User> users = new List<User>();
+            try
             {
-                connection.Open();
+                // Get connected user IDs from SignalR
+                var connectedUserIDs = await SignalRManager.HubProxy.Invoke<List<int>>("GetConnectedUserIDs");
 
-                // First get all pending counts for the logged-in user
-                string countQuery = @"
-            SELECT SenderID, COUNT(*) AS PendingCount
-            FROM PendingChatMessages
-            WHERE ReceiverID = @ReceiverID AND IsDelivered = 0
-            GROUP BY SenderID";
-
-                using (SqlCommand countCmd = new SqlCommand(countQuery, connection))
+                using (SqlConnection connection = Database.getConnection())
                 {
-                    countCmd.Parameters.AddWithValue("@ReceiverID", loggedInUser.userID);
-                    using (SqlDataReader countReader = countCmd.ExecuteReader())
+                    await connection.OpenAsync();
+
+                    // Single query combining user details and pending counts
+                    string query = @"
+                SELECT 
+                    u.UserID, 
+                    u.FullName, 
+                    u.Department, 
+                    u.Picture, 
+                    ISNULL(pc.PendingCount, 0) AS PendingMessageCount
+                FROM Users u
+                LEFT JOIN (
+                    SELECT SenderID, COUNT(*) AS PendingCount
+                    FROM PendingChatMessages
+                    WHERE ReceiverID = @ReceiverID AND IsDelivered = 0
+                    GROUP BY SenderID
+                ) pc ON u.UserID = pc.SenderID
+                WHERE u.UserName <> @UserName
+                ORDER BY ISNULL(pc.PendingCount, 0) DESC, 
+                         CASE WHEN u.UserID IN (" + (connectedUserIDs.Any() ? string.Join(",", connectedUserIDs) : "0") + @") THEN 1 ELSE 0 END DESC, 
+                         u.FullName ASC";
+
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
-                        while (countReader.Read())
+                        cmd.Parameters.AddWithValue("@ReceiverID", loggedInUser.userID);
+                        cmd.Parameters.AddWithValue("@UserName", loggedInUser.UserName);
+
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                         {
-                            int senderId = Convert.ToInt32(countReader["SenderID"]);
-                            int count = Convert.ToInt32(countReader["PendingCount"]);
-                            pendingCounts[senderId] = count;
-                        }
-                    }
-                }
-
-                // Now get all users
-                string userQuery = @"
-            SELECT FullName, Department, Picture, UserID, isConnected
-            FROM Users
-            WHERE UserName <> @UserName
-            ORDER BY isConnected DESC, FullName ASC";
-
-                using (SqlCommand userCmd = new SqlCommand(userQuery, connection))
-                {
-                    userCmd.Parameters.AddWithValue("@UserName", loggedInUser.UserName);
-
-                    using (SqlDataReader userReader = userCmd.ExecuteReader())
-                    {
-                        while (userReader.Read())
-                        {
-                            int userId = Convert.ToInt32(userReader["UserID"]);
-
-                            var user = new User
+                            while (await reader.ReadAsync())
                             {
-                                FullName = userReader["FullName"].ToString(),
-                                Department = userReader["Department"].ToString(),
-                                userID = userId,
-                                isConnected = Convert.ToInt32(userReader["isConnected"]),
-                                Picture = userReader["Picture"] != DBNull.Value
-                                          ? Image.FromStream(new MemoryStream((byte[])userReader["Picture"]))
-                                          : Resources.pngegg,
-                                PendingMessageCount = pendingCounts.TryGetValue(userId, out var count) ? count : 0
-                            };
-
-                            connectedUsers.Add(user);
+                                int userId = reader.GetInt32(reader.GetOrdinal("UserID"));
+                                var user = new User
+                                {
+                                    userID = userId,
+                                    FullName = reader.GetString(reader.GetOrdinal("FullName")),
+                                    Department = reader.GetString(reader.GetOrdinal("Department")),
+                                    Picture = reader["Picture"] != DBNull.Value
+                                        ? Image.FromStream(new MemoryStream((byte[])reader["Picture"]))
+                                        : Resources.pngegg,
+                                    isConnected = connectedUserIDs.Contains(userId) ? 1 : 0,
+                                    PendingMessageCount = reader.GetInt32(reader.GetOrdinal("PendingMessageCount"))
+                                };
+                                users.Add(user);
+                            }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching users: {ex.Message}");
+                return new List<User>(); // Fallback to empty list on error
+            }
 
-            // Sort by pending messages, online status, then name
-            return connectedUsers
-                .OrderByDescending(u => u.PendingMessageCount)
-                .ThenByDescending(u => u.isConnected)
-                .ThenBy(u => u.FullName)
-                .ToList();
+            return users; // Sorting is handled in SQL
         }
-        private void displayConnectedUsers()
+        private async Task DisplayConnectedUsersAsync()
         {
-            // Get all users with pending message counts
-            List<User> connectedUsers = getAllUsers();
+            List<User> connectedUsers = await GetAllUsersAsync();
             int currentUserCount = connectedUsers.Count;
             int onlineCount = connectedUsers.Count(u => u.isConnected == 1);
 
-            // --- HEADER: Find or create the header label
+            // Ensure UI updates happen on the UI thread
+            if (InvokeRequired)
+            {
+                await InvokeAsync(async () => await DisplayConnectedUsersAsync()); // Recursive call on UI thread
+                return;
+            }
+
             Label headerLabel = usersPanel.Controls
                 .OfType<Label>()
                 .FirstOrDefault(ctrl => ctrl.Tag != null && ctrl.Tag.ToString() == "header");
@@ -954,8 +910,7 @@ namespace TDF.Net
             }
             headerLabel.Text = $"Online Users ({onlineCount})";
 
-            // --- FLOWLAYOUTPANEL: Find or create the FlowLayoutPanel
-            FlowLayoutPanel flowLayout = usersPanel.Controls
+            flowLayout = usersPanel.Controls
                 .OfType<FlowLayoutPanel>()
                 .FirstOrDefault(ctrl => ctrl.Name == "flowLayoutUsers");
             if (flowLayout == null)
@@ -977,25 +932,14 @@ namespace TDF.Net
                 flowLayout.Size = new Size(usersPanel.Width, 600);
             }
 
-            // Save current scroll position
             int savedScrollPos = flowLayout.VerticalScroll.Value;
-
-            // Order users by pending messages then online status
-            connectedUsers = connectedUsers
-                .OrderByDescending(u => u.PendingMessageCount)
-                .ThenByDescending(u => u.isConnected)
-                .ThenBy(u => u.FullName)
-                .ToList();
-
             bool needRebuild = flowLayout.Controls.Count != currentUserCount;
 
-            // Check if order needs updating
             if (!needRebuild)
             {
                 for (int i = 0; i < flowLayout.Controls.Count; i++)
                 {
-                    if (flowLayout.Controls[i] is Panel panel &&
-                        (int)panel.Tag != connectedUsers[i].userID)
+                    if (flowLayout.Controls[i] is Panel panel && (int)panel.Tag != connectedUsers[i].userID)
                     {
                         needRebuild = true;
                         break;
@@ -1019,7 +963,6 @@ namespace TDF.Net
                         Tag = user.userID
                     };
 
-                    // Profile Picture
                     CircularPictureBox pictureBox = new CircularPictureBox
                     {
                         Image = user.Picture,
@@ -1028,13 +971,13 @@ namespace TDF.Net
                         Location = new Point((userPanel.Width - 60) / 2, 10),
                         Cursor = Cursors.Hand
                     };
+                    pictureBox.Click += (s, e) => OpenChatForm(user.userID);
 
-                    // Message Counter
                     Label msgCounter = new Label
                     {
                         Text = user.PendingMessageCount > 0 ? user.PendingMessageCount.ToString() : "",
                         Size = new Size(20, 20),
-                        BackColor = Color.FromArgb(33, 150, 243), // Material Blue
+                        BackColor = Color.FromArgb(33, 150, 243),
                         ForeColor = Color.White,
                         Font = new Font("Segoe UI", 8, FontStyle.Bold),
                         TextAlign = ContentAlignment.MiddleCenter,
@@ -1044,35 +987,29 @@ namespace TDF.Net
                         Tag = user.userID
                     };
 
-                    // Make counter circular
+                    msgCounter.BringToFront();
+
                     using (var gp = new GraphicsPath())
                     {
                         gp.AddEllipse(0, 0, msgCounter.Width, msgCounter.Height);
                         msgCounter.Region = new Region(gp);
                     }
 
-                    // Click Handler
-                    pictureBox.Click += (s, e) => OpenChatForm(user.userID);
-
-                    // Online Indicator
                     Panel onlineIndicator = new Panel
                     {
                         Size = new Size(10, 10),
                         BackColor = Color.Green,
                         Visible = user.isConnected == 1,
                         Name = "onlineIndicator",
-                        Location = new Point(
-                            pictureBox.Right - 15,
-                            pictureBox.Bottom - 15
-                        )
+                        Location = new Point(pictureBox.Right - 10, pictureBox.Bottom - 10)
                     };
                     using (var gp = new GraphicsPath())
                     {
                         gp.AddEllipse(0, 0, onlineIndicator.Width, onlineIndicator.Height);
                         onlineIndicator.Region = new Region(gp);
                     }
+                    onlineIndicator.BringToFront();
 
-                    // Name Label
                     Label nameLabel = new Label
                     {
                         Text = $"{user.FullName.Split(' ')[0]} - {user.Department}",
@@ -1084,13 +1021,7 @@ namespace TDF.Net
                         Location = new Point(10, pictureBox.Bottom + 5)
                     };
 
-                    userPanel.Controls.AddRange(new Control[] {
-                pictureBox,
-                msgCounter,
-                onlineIndicator,
-                nameLabel
-            });
-
+                    userPanel.Controls.AddRange(new Control[] { pictureBox, msgCounter, onlineIndicator, nameLabel });
                     flowLayout.Controls.Add(userPanel);
                 }
 
@@ -1099,7 +1030,6 @@ namespace TDF.Net
             }
             else
             {
-                // Update existing panels
                 foreach (User user in connectedUsers)
                 {
                     var userPanel = flowLayout.Controls
@@ -1108,28 +1038,45 @@ namespace TDF.Net
 
                     if (userPanel != null)
                     {
-                        // Update online indicator
                         var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault();
                         if (onlineIndicator != null)
+                        {
                             onlineIndicator.Visible = user.isConnected == 1;
+                            onlineIndicator.BringToFront();
+                        }
 
-                        // Update message counter
                         var msgCounter = userPanel.Controls.Find("msgCounter", true).FirstOrDefault() as Label;
                         if (msgCounter != null)
                         {
                             msgCounter.Text = user.PendingMessageCount > 0 ? user.PendingMessageCount.ToString() : "";
                             msgCounter.Visible = user.PendingMessageCount > 0;
+                            msgCounter.BringToFront();
+
                         }
                     }
                 }
             }
 
-            // Restore scroll position
             try
             {
                 flowLayout.VerticalScroll.Value = Math.Min(savedScrollPos, flowLayout.VerticalScroll.Maximum);
             }
             catch { }
+        }
+        public static async Task triggerServerDisconnect()
+        {
+            if (SignalRManager.IsConnected && loggedInUser != null)
+            {
+                try
+                {
+                    await SignalRManager.HubProxy.Invoke("DisconnectUser", loggedInUser.userID);
+                    SignalRManager.Connection.Stop();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error stopping SignalR connection: {ex.Message}");
+                }
+            }
         }
 
         #endregion
@@ -1171,33 +1118,15 @@ namespace TDF.Net
             {
                 isFormClosing = true;
 
-                // Update the database to mark the user as disconnected.
-                makeUserDisconnected();
+                await triggerServerDisconnect();
 
-                // If connected via SignalR, gracefully disconnect.
-                if (SignalRManager.IsConnected)
-                {
-                    try
-                    {
-                        // Notify the hub that this user is disconnecting.
-                        await SignalRManager.HubProxy.Invoke("UserDisconnected", loggedInUser.UserName);
-                        // Stop the SignalR connection (Stop() is synchronous).
-                        SignalRManager.Connection.Stop();
-                    }
-                    catch (Exception ex)
-                    {
-                        // Log any error that occurs during disconnection.
-                        Console.WriteLine("Error while stopping SignalR connection: " + ex.Message);
-                    }
-                }
-
-                // Clear the logged-in user reference.
                 loggedInUser = null;
+                Close();
+                loginForm.Show();
             }
-
-            Close();
-            loginForm.Show();
         }
+
+
         #endregion
     }
 }

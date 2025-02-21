@@ -267,11 +267,6 @@ namespace TDF.Net
             base.OnMove(e);
             MaximizedBounds = Screen.FromControl(this).WorkingArea;
         }
-        private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            makeUserDisconnected();
-
-        }
         private void bunifuLabel_Paint(object sender, PaintEventArgs e)
         {
             // Define the parts of the text
@@ -533,7 +528,7 @@ namespace TDF.Net
         }
         private void logoutButton_Click(object sender, EventArgs e)
         {
-            makeUserDisconnected();
+            mainFormNewUI.triggerServerDisconnect();
             loggedInUser = null;
             Close();
             loginForm.Show();
