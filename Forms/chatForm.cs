@@ -123,6 +123,17 @@ namespace TDF.Net.Forms
         }
         public async Task AppendMessageAsync(int senderId, string messageText)
         {
+            // Ensure the update happens on the UI thread.
+            if (this.InvokeRequired)
+            {
+                if (this.InvokeRequired)
+                {
+                    await InvokeAsync(() => AppendMessageAsync(senderId, messageText));
+                    return;
+                }
+                return;
+            }
+
             messagesListBox.BeginUpdate();
             try
             {
@@ -131,13 +142,30 @@ namespace TDF.Net.Forms
                 scrollToBottom();
             }
             catch (Exception ex)
-            {
+            {   
                 Console.WriteLine($"Error appending message: {ex.Message}");
             }
             finally
             {
                 messagesListBox.EndUpdate();
             }
+        }
+        public Task InvokeAsync(Action action)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            this.BeginInvoke(new Action(() =>
+            {
+                try
+                {
+                    action();
+                    tcs.SetResult(true);
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+            }));
+            return tcs.Task;
         }
         private async Task SendMessageAsync(int receiverID, string messageText)
         {
@@ -167,8 +195,9 @@ namespace TDF.Net.Forms
                 Console.WriteLine($"Error sending message: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
 
-            await LoadMessagesAsync(true);
+            await AppendMessageAsync(currentUserID, messageText); // Replaced LoadMessagesAsync with AppendMessageAsync        }
         }
+
         private void scrollToBottom()
         {
             if (messagesListBox.Items.Count > 0)

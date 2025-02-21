@@ -61,6 +61,10 @@ namespace TDF.Net
         private int previousUserCount = -1; 
         private FlowLayoutPanel flowLayout;
         private Dictionary<int, Panel> userPanels = new Dictionary<int, Panel>();
+        private List<User> cachedUsers = new List<User>();
+        private IDisposable updateUserListSubscription;
+
+        private readonly object userCacheLock = new object();
         // Helper for async Invoke
         private Task InvokeAsync(Action action)
         {
@@ -76,17 +80,18 @@ namespace TDF.Net
             usersIconButton.BorderColor = darkColor;
             expandedHeight = usersPanel.Height;
 
-            SignalRManager.HubProxy.On("updateUserList", async () =>
+            updateUserListSubscription = SignalRManager.HubProxy.On("updateUserList", async () =>
             {
                 if (!IsDisposed && IsHandleCreated)
                 {
                     try
                     {
-                        await this.InvokeAsync(async () =>
+                        await InvokeAsync(async () =>
                         {
                             if (!IsDisposed)
                             {
                                 Console.WriteLine("Received updateUserList event");
+                                await GetAllUsersAsync(true); // Force refresh on update
                                 await DisplayConnectedUsersAsync();
                             }
                         });
@@ -192,7 +197,7 @@ namespace TDF.Net
             if (!isFormClosing)
             {
                 isFormClosing = true;
-
+                UnsubscribeFromEvents();  // Unsubscribe from SignalR events
                 await triggerServerDisconnect();
 
                 loggedInUser = null;
@@ -732,27 +737,49 @@ namespace TDF.Net
                     .Any(f => f.chatWithUserID == senderId);
         public async Task ShowMessageBalloons(int? senderId, Panel userPanel, List<string> messages)
         {
-            var panel = userPanel ?? flowLayout.Controls
-                .OfType<Panel>()
-                .FirstOrDefault(p => (int)p.Tag == senderId);
+            // If userPanel is not provided, find it by senderId.
+            var panel = userPanel
+                ?? flowLayout.Controls
+                    .OfType<Panel>()
+                    .FirstOrDefault(p => (int)p.Tag == senderId);
 
             if (panel != null)
             {
-                var pictureBox = panel.Controls.OfType<CircularPictureBox>().First();
-                var screenPos = pictureBox.PointToScreen(new Point(0, 0));
-                int offset = 0;
+                var pictureBox = panel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
+                if (pictureBox == null) return;
 
+                // We'll move 210px to the LEFT of the picture box's left edge.
+                // Adjust this offset as desired.
+                int offsetY = 0;
+                var balloonBasePoint = pictureBox.PointToScreen(
+                    new Point(pictureBox.Left - 100, pictureBox.Top)
+                );
+
+                // Show each message in a separate balloon, stacking them downward.
                 foreach (var message in messages)
                 {
+                    var balloonPosition = new Point(
+                        balloonBasePoint.X,
+                        balloonBasePoint.Y + offsetY
+                    );
+
                     BeginInvoke(new Action(() =>
                     {
-                        new MessageBalloon(new Point(screenPos.X - 210, screenPos.Y + offset), message).Show();
+                        new MessageBalloon(balloonPosition, message).Show();
                     }));
-                    offset += 65;
-                    await Task.Delay(500);
+
+                    offsetY += 65;  // Vertical spacing between balloons
+                    await Task.Delay(500); // Delay for effect
+                }
+
+                // After showing all balloons, reset the message counter for that user.
+                if (senderId.HasValue)
+                {
+                    UpdateMessageCounter(senderId.Value, 0);
                 }
             }
         }
+
 
         #region Updated Chat Form Integration
         private async void OpenChatForm(int userId)
@@ -783,10 +810,7 @@ namespace TDF.Net
                 if (userPanels.ContainsKey(userId))
                 {
                     UpdateMessageCounter(userId, 0);
-                    if (messages != null && messages.Count > 0)
-                    {
-                        await ShowMessageBalloons(null, userPanels[userId], messages);
-                    }
+
                 }
                 else
                 {
@@ -812,21 +836,27 @@ namespace TDF.Net
                 .OfType<Panel>()
                 .FirstOrDefault(p => (int)p.Tag == userId);
         }
-        public static async Task<List<User>> GetAllUsersAsync()
+        public async Task<List<User>> GetAllUsersAsync(bool forceRefresh = false)
         {
-            if (loggedInUser == null) return new List<User>();
+            // Return an empty list if there's no logged-in user.
+            if (loggedInUser == null)
+                return new List<User>();
+
+            lock (userCacheLock)
+            {
+                if (!forceRefresh && cachedUsers.Any())
+                {
+                    return new List<User>(cachedUsers); // Return a copy
+                }
+            }
 
             List<User> users = new List<User>();
             try
             {
-                // Get connected user IDs from SignalR
                 var connectedUserIDs = await SignalRManager.HubProxy.Invoke<List<int>>("GetConnectedUserIDs");
-
                 using (SqlConnection connection = Database.getConnection())
                 {
                     await connection.OpenAsync();
-
-                    // Single query combining user details and pending counts
                     string query = @"
                 SELECT 
                     u.UserID, 
@@ -872,25 +902,29 @@ namespace TDF.Net
                         }
                     }
                 }
+
+                lock (userCacheLock)
+                {
+                    cachedUsers = users; // Update cache
+                }
+                return new List<User>(users);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error fetching users: {ex.Message}");
-                return new List<User>(); // Fallback to empty list on error
+                return new List<User>();
             }
-
-            return users; // Sorting is handled in SQL
         }
+
         private async Task DisplayConnectedUsersAsync()
         {
             List<User> connectedUsers = await GetAllUsersAsync();
             int currentUserCount = connectedUsers.Count;
             int onlineCount = connectedUsers.Count(u => u.isConnected == 1);
 
-            // Ensure UI updates happen on the UI thread
             if (InvokeRequired)
             {
-                await InvokeAsync(async () => await DisplayConnectedUsersAsync()); // Recursive call on UI thread
+                await InvokeAsync(async () => await DisplayConnectedUsersAsync());
                 return;
             }
 
@@ -952,6 +986,7 @@ namespace TDF.Net
                 usersPanel.SuspendLayout();
                 flowLayout.SuspendLayout();
                 flowLayout.Controls.Clear();
+                userPanels.Clear(); // Reset dictionary when rebuilding
 
                 foreach (User user in connectedUsers)
                 {
@@ -986,14 +1021,27 @@ namespace TDF.Net
                         Name = "msgCounter",
                         Tag = user.userID
                     };
-
-                    msgCounter.BringToFront();
-
                     using (var gp = new GraphicsPath())
                     {
                         gp.AddEllipse(0, 0, msgCounter.Width, msgCounter.Height);
                         msgCounter.Region = new Region(gp);
                     }
+                    msgCounter.BringToFront();
+                    msgCounter.Paint += (s, e) =>
+                    {
+                        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+                        using (var brush = new SolidBrush(msgCounter.BackColor))
+                        {
+                            e.Graphics.FillEllipse(brush, 0, 0, msgCounter.Width - 1, msgCounter.Height - 1);
+                        }
+                        using (var pen = new Pen(Color.Black, 1))
+                        {
+                            e.Graphics.DrawEllipse(pen, 0, 0, msgCounter.Width - 1, msgCounter.Height - 1);
+                        }
+                        TextRenderer.DrawText(e.Graphics, msgCounter.Text, msgCounter.Font,
+                            new Rectangle(0, 0, msgCounter.Width, msgCounter.Height), msgCounter.ForeColor,
+                            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                    };
 
                     Panel onlineIndicator = new Panel
                     {
@@ -1023,6 +1071,7 @@ namespace TDF.Net
 
                     userPanel.Controls.AddRange(new Control[] { pictureBox, msgCounter, onlineIndicator, nameLabel });
                     flowLayout.Controls.Add(userPanel);
+                    userPanels[user.userID] = userPanel; // Store in dictionary
                 }
 
                 flowLayout.ResumeLayout();
@@ -1032,11 +1081,7 @@ namespace TDF.Net
             {
                 foreach (User user in connectedUsers)
                 {
-                    var userPanel = flowLayout.Controls
-                        .OfType<Panel>()
-                        .FirstOrDefault(p => (int)p.Tag == user.userID);
-
-                    if (userPanel != null)
+                    if (userPanels.TryGetValue(user.userID, out Panel userPanel))
                     {
                         var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault();
                         if (onlineIndicator != null)
@@ -1051,7 +1096,6 @@ namespace TDF.Net
                             msgCounter.Text = user.PendingMessageCount > 0 ? user.PendingMessageCount.ToString() : "";
                             msgCounter.Visible = user.PendingMessageCount > 0;
                             msgCounter.BringToFront();
-
                         }
                     }
                 }
@@ -1077,6 +1121,15 @@ namespace TDF.Net
                     Console.WriteLine($"Error stopping SignalR connection: {ex.Message}");
                 }
             }
+        }
+        private void UnsubscribeFromEvents()
+        {
+            if (updateUserListSubscription != null)
+            {
+                updateUserListSubscription.Dispose();
+                updateUserListSubscription = null;
+            }
+            // Dispose of other subscriptions similarly if you have them.
         }
 
         #endregion
@@ -1118,6 +1171,7 @@ namespace TDF.Net
             {
                 isFormClosing = true;
 
+                UnsubscribeFromEvents();
                 await triggerServerDisconnect();
 
                 loggedInUser = null;

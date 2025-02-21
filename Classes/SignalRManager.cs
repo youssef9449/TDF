@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDF.Net;
+using TDF.Net.Forms;
 
 public static class SignalRManager
 {
@@ -49,7 +50,7 @@ public static class SignalRManager
                     chatForm.BeginInvoke(new Action(async () =>
                     {
                         Console.WriteLine($"Refreshing chatForm for {chatForm.chatWithUserID}");
-                        await chatForm.AppendMessageAsync(true); // Assuming LoadMessagesAsync is public or accessible
+                        await chatForm.AppendMessageAsync(senderId, message); // Assuming LoadMessagesAsync is public or accessible
                     }));
                 }
                 else if (mainFormNewUI != null && !mainFormNewUI.IsChatOpen(senderId))
