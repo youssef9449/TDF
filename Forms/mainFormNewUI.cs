@@ -24,6 +24,8 @@ using Microsoft.AspNet.SignalR.Infrastructure;
 using static NotificationHub;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using Microsoft.AspNet.SignalR.Client.Hubs;
+using System.Media;
+using Bunifu.UI.WinForms.BunifuButton;
 
 namespace TDF.Net
 {
@@ -93,6 +95,7 @@ namespace TDF.Net
             usersIconButton.BorderColor = darkColor;
             expandedHeight = usersPanel.Height;
 
+
             updateUserListSubscription = SignalRManager.HubProxy.On("updateUserList", () =>
             {
                 if (!IsDisposed && IsHandleCreated)
@@ -108,10 +111,14 @@ namespace TDF.Net
             updateUserDataControls();
 
             // Force initial refresh
-            await GetAllUsersAsync(true);
-            await DisplayConnectedUsersAsync(true);
 
-            if (!IsDisposed && IsHandleCreated)
+            if (!isFormClosing) // Prevent initial load if closing
+            {
+                await GetAllUsersAsync(true);
+                DisplayConnectedUsersAsync(true);
+            }
+
+            if (!IsDisposed && IsHandleCreated && !isFormClosing)
             {
                 try
                 {
@@ -283,7 +290,7 @@ namespace TDF.Net
 
             if (confirmation == DialogResult.Yes)
             {
-                using (SqlConnection conn = Database.getConnection())
+                using (SqlConnection conn = getConnection())
                 {
                     conn.Open();
 
@@ -351,6 +358,11 @@ namespace TDF.Net
                 usersIconButton.Image = Resources.up;
                 isPanelExpanded = true;
             }
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            isFormClosing = true; // Ensure flag is set during close
+            base.OnFormClosing(e);
         }
         #endregion
 
@@ -554,7 +566,7 @@ namespace TDF.Net
 
             try
             {
-                using (SqlConnection conn = Database.getConnection())
+                using (SqlConnection conn = getConnection())
                 {
                     conn.Open();
                     string query = "UPDATE Users SET Picture = @Picture WHERE UserName = @UserName";
@@ -822,6 +834,10 @@ namespace TDF.Net
         }
         public async Task<List<User>> GetAllUsersAsync(bool forceRefresh = false)
         {
+            if (isFormClosing || IsDisposed)
+            {
+                return new List<User>();
+            }
             // Return an empty list if there's no logged-in user.
             if (loggedInUser == null)
                 return new List<User>();
@@ -838,7 +854,7 @@ namespace TDF.Net
             try
             {
                 var connectedUserIDs = await SignalRManager.HubProxy.Invoke<List<int>>("GetConnectedUserIDs");
-                using (SqlConnection connection = Database.getConnection())
+                using (SqlConnection connection = getConnection())
                 {
                     await connection.OpenAsync();
                     string query = @"
@@ -960,8 +976,8 @@ namespace TDF.Net
                         Location = new Point((userPanel.Width - 60) / 2, 10),
                         Cursor = Cursors.Hand
                     };
-                    pictureBox.Click += (s, e) => OpenChatForm(user.userID);
                     pictureBox.SendToBack();
+                    pictureBox.Click += (s, e) => OpenChatForm(user.userID);
 
                     Label msgCounter = new Label
                     {
@@ -1011,6 +1027,7 @@ namespace TDF.Net
 
                     int initialCount = pendingMessageCounts.ContainsKey(user.userID) ? pendingMessageCounts[user.userID] : user.PendingMessageCount;
                     UpdateMessageCounterUI(userPanel, initialCount);
+                    pictureBox.SendToBack();
                 }
 
                 flowLayout.ResumeLayout();
@@ -1077,9 +1094,9 @@ namespace TDF.Net
             }
             // Dispose of other subscriptions similarly if you have them.
         }
-        public async void LoadUnreadNotifications()
+        public void LoadUnreadNotifications()
         {
-            notificationsPanel.Controls.Clear(); // Assume notificationsPanel is a FlowLayoutPanel added to the form
+            notificationsPanel.Controls.Clear();
             using (SqlConnection conn = getConnection())
             {
                 conn.Open();
@@ -1100,7 +1117,6 @@ namespace TDF.Net
                             string userName = reader.GetString(3);
                             string department = reader.GetString(4);
 
-                            // Create notification control
                             Panel notifPanel = new Panel
                             {
                                 Width = notificationsPanel.Width - 20,
@@ -1113,12 +1129,33 @@ namespace TDF.Net
                                 AutoSize = true,
                                 Location = new Point(5, 5)
                             };
-                            Button btnMarkRead = new Button
+                            BunifuButton2 btnMarkRead = new BunifuButton2
                             {
                                 Text = "Mark as Read",
                                 Location = new Point(5, 25),
-                                Tag = notificationId
+                                Tag = notificationId,
+
                             };
+
+                            btnMarkRead.OnDisabledState.BorderColor = darkColor;
+                            btnMarkRead.OnDisabledState.FillColor = primaryColor;
+                            btnMarkRead.OnDisabledState.ForeColor = Color.White;
+
+                            btnMarkRead.onHoverState.BorderColor = darkColor;
+                            btnMarkRead.onHoverState.FillColor = darkColor;
+                            btnMarkRead.onHoverState.ForeColor = Color.White;
+
+                            btnMarkRead.OnIdleState.BorderColor = darkColor;
+                            btnMarkRead.OnIdleState.FillColor = primaryColor;
+                            btnMarkRead.OnIdleState.ForeColor = Color.White;
+
+                            btnMarkRead.OnPressedState.BorderColor = darkColor;
+                            btnMarkRead.OnPressedState.FillColor = primaryColor;
+                            btnMarkRead.OnPressedState.ForeColor = Color.White;
+                            btnMarkRead.Font = new Font(btnMarkRead.Font, btnMarkRead.Font.Style | FontStyle.Bold);
+                            btnMarkRead.Cursor = Cursors.Hand;
+                            btnMarkRead.AutoRoundBorders = true;
+                            btnMarkRead.IdleBorderRadius = 25;
                             btnMarkRead.Click += BtnMarkRead_Click;
                             notifPanel.Controls.Add(lbl);
                             notifPanel.Controls.Add(btnMarkRead);
@@ -1128,18 +1165,12 @@ namespace TDF.Net
                 }
             }
 
-            // Show floating notification if new notifications arrived
             int currentCount = notificationsPanel.Controls.Count;
             if (currentCount > lastNotificationCount)
             {
-                ShowNotificationToast("You have new request notifications.");
+                ShowNotificationSnackbar("You have new request(s).");
             }
             lastNotificationCount = currentCount;
-        }
-        private void ShowNotificationToast(string message)
-        {
-            ToolTip tt = new ToolTip();
-            tt.Show(message, this, 10, 10, 3000); // Display for 3 seconds near top-left
         }
         private void BtnMarkRead_Click(object sender, EventArgs e)
         {
@@ -1148,10 +1179,9 @@ namespace TDF.Net
         }
         private void MarkNotificationAsRead(int notificationId)
         {
-            using (SqlConnection conn = Database.getConnection())
+            using (SqlConnection conn = getConnection())
             {
                 conn.Open();
-                // Security check
                 string checkQuery = "SELECT COUNT(*) FROM RequestNotifications WHERE NotificationId = @NotificationId AND UserId = @UserId";
                 using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
                 {
@@ -1165,7 +1195,6 @@ namespace TDF.Net
                     }
                 }
 
-                // Mark as read
                 string query = "UPDATE RequestNotifications SET IsRead = 1 WHERE NotificationId = @NotificationId";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
@@ -1173,7 +1202,39 @@ namespace TDF.Net
                     cmd.ExecuteNonQuery();
                 }
             }
-            LoadUnreadNotifications(); // Refresh the panel
+            LoadUnreadNotifications();
+        }
+        private void ShowNotificationSnackbar(string message)
+        {
+            // Show Bunifu Snackbar
+            notificationsSnackbar.Show(this, message, BunifuSnackbar.MessageTypes.Information);
+            // Play notification sound
+
+            // Use a system sound (e.g., Windows chime)
+            // SystemSounds.Exclamation.Play();
+
+            // Play notification sound from Audio folder
+            try
+            {
+                string audioPath = Path.Combine(Application.StartupPath, "Audio", "Request Notification.wav");
+                if (File.Exists(audioPath))
+                {
+                    using (var soundPlayer = new SoundPlayer(audioPath))
+                    {
+                        soundPlayer.Play();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Audio file not found at: {audioPath}");
+                    SystemSounds.Exclamation.Play(); // Fallback to system sound
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error playing notification sound: {ex.Message}");
+                SystemSounds.Exclamation.Play(); // Fallback on error
+            }
         }
         private void AddUserPanel(int userId, bool isConnected)
         {
@@ -1254,7 +1315,7 @@ namespace TDF.Net
         {
             try
             {
-                using (SqlConnection connection = Database.getConnection())
+                using (SqlConnection connection = getConnection())
                 {
                     connection.Open();
                     string query = @"

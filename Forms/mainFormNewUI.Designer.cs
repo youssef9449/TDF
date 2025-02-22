@@ -31,7 +31,7 @@ namespace TDF.Net
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainFormNewUI));
-            Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderEdges borderEdges3 = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderEdges();
             this.bunifuLabel4 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel3 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel2 = new Bunifu.UI.WinForms.BunifuLabel();
@@ -55,19 +55,22 @@ namespace TDF.Net
             this.bunifuLabel6 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel5 = new Bunifu.UI.WinForms.BunifuLabel();
             this.usernameLabel = new Bunifu.UI.WinForms.BunifuLabel();
-            this.circularPictureBox = new TDF.Classes.CircularPictureBox();
             this.bunifuLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.usersPanel = new System.Windows.Forms.Panel();
             this.usersIconButton = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton();
             this.notificationsSnackbar = new Bunifu.UI.WinForms.BunifuSnackbar(this.components);
+            this.circularPictureBox = new TDF.Classes.CircularPictureBox();
+            this.notificationsShadowPanel = new Bunifu.UI.WinForms.BunifuShadowPanel();
+            this.bunifuLabel9 = new Bunifu.UI.WinForms.BunifuLabel();
             this.panelTitleBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeImg)).BeginInit();
             this.formPanel.SuspendLayout();
             this.shadowPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).BeginInit();
             this.usersPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).BeginInit();
+            this.notificationsShadowPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // bunifuLabel4
@@ -217,7 +220,7 @@ namespace TDF.Net
             this.formPanel.BackColor = System.Drawing.Color.Transparent;
             this.formPanel.BackgroundImage = global::TDF.Properties.Resources.TDF_Logo;
             this.formPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.formPanel.Controls.Add(this.notificationsPanel);
+            this.formPanel.Controls.Add(this.notificationsShadowPanel);
             this.formPanel.Controls.Add(this.teamImageButton);
             this.formPanel.Controls.Add(this.requestsImageButton);
             this.formPanel.Controls.Add(this.reportsImageButton);
@@ -237,9 +240,9 @@ namespace TDF.Net
             // 
             // notificationsPanel
             // 
-            this.notificationsPanel.Location = new System.Drawing.Point(12, 198);
+            this.notificationsPanel.Location = new System.Drawing.Point(13, 11);
             this.notificationsPanel.Name = "notificationsPanel";
-            this.notificationsPanel.Size = new System.Drawing.Size(196, 347);
+            this.notificationsPanel.Size = new System.Drawing.Size(179, 329);
             this.notificationsPanel.TabIndex = 15;
             // 
             // teamImageButton
@@ -567,20 +570,6 @@ namespace TDF.Net
             this.usernameLabel.TextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             this.usernameLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
-            // circularPictureBox
-            // 
-            this.circularPictureBox.BackColor = System.Drawing.Color.White;
-            this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
-            this.circularPictureBox.Location = new System.Drawing.Point(38, 4);
-            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
-            this.circularPictureBox.Name = "circularPictureBox";
-            this.circularPictureBox.Size = new System.Drawing.Size(140, 134);
-            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.circularPictureBox.TabIndex = 13;
-            this.circularPictureBox.TabStop = false;
-            this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);
-            // 
             // bunifuLabel
             // 
             this.bunifuLabel.AllowParentOverrides = false;
@@ -628,11 +617,11 @@ namespace TDF.Net
             this.usersIconButton.ColorContrastOnClick = 30;
             this.usersIconButton.ColorContrastOnHover = 30;
             this.usersIconButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.usersIconButton.CustomizableEdges = borderEdges1;
+            borderEdges3.BottomLeft = true;
+            borderEdges3.BottomRight = true;
+            borderEdges3.TopLeft = true;
+            borderEdges3.TopRight = true;
+            this.usersIconButton.CustomizableEdges = borderEdges3;
             this.usersIconButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.usersIconButton.Image = global::TDF.Properties.Resources.up;
             this.usersIconButton.ImageMargin = new System.Windows.Forms.Padding(0);
@@ -664,7 +653,7 @@ namespace TDF.Net
             this.notificationsSnackbar.ErrorOptions.ForeColor = System.Drawing.Color.Black;
             this.notificationsSnackbar.ErrorOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon")));
             this.notificationsSnackbar.ErrorOptions.IconLeftMargin = 12;
-            this.notificationsSnackbar.FadeCloseIcon = false;
+            this.notificationsSnackbar.FadeCloseIcon = true;
             this.notificationsSnackbar.Host = Bunifu.UI.WinForms.BunifuSnackbar.Hosts.FormOwner;
             this.notificationsSnackbar.InformationOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.notificationsSnackbar.InformationOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
@@ -685,7 +674,7 @@ namespace TDF.Net
             this.notificationsSnackbar.MessageTopMargin = 0;
             this.notificationsSnackbar.MinimumSize = new System.Drawing.Size(0, 0);
             this.notificationsSnackbar.ShowBorders = true;
-            this.notificationsSnackbar.ShowCloseIcon = false;
+            this.notificationsSnackbar.ShowCloseIcon = true;
             this.notificationsSnackbar.ShowIcon = false;
             this.notificationsSnackbar.ShowShadows = true;
             this.notificationsSnackbar.SuccessOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
@@ -715,6 +704,61 @@ namespace TDF.Net
             this.notificationsSnackbar.WarningOptions.IconLeftMargin = 12;
             this.notificationsSnackbar.ZoomCloseIcon = true;
             // 
+            // circularPictureBox
+            // 
+            this.circularPictureBox.BackColor = System.Drawing.Color.White;
+            this.circularPictureBox.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.circularPictureBox.Image = global::TDF.Properties.Resources.pngegg;
+            this.circularPictureBox.Location = new System.Drawing.Point(38, 4);
+            this.circularPictureBox.Margin = new System.Windows.Forms.Padding(4);
+            this.circularPictureBox.Name = "circularPictureBox";
+            this.circularPictureBox.Size = new System.Drawing.Size(140, 134);
+            this.circularPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.circularPictureBox.TabIndex = 13;
+            this.circularPictureBox.TabStop = false;
+            this.circularPictureBox.Click += new System.EventHandler(this.circularPictureBox_Click);
+            // 
+            // notificationsShadowPanel
+            // 
+            this.notificationsShadowPanel.BackColor = System.Drawing.Color.Transparent;
+            this.notificationsShadowPanel.BorderColor = System.Drawing.Color.Black;
+            this.notificationsShadowPanel.BorderRadius = 5;
+            this.notificationsShadowPanel.BorderThickness = 1;
+            this.notificationsShadowPanel.Controls.Add(this.bunifuLabel9);
+            this.notificationsShadowPanel.Controls.Add(this.notificationsPanel);
+            this.notificationsShadowPanel.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
+            this.notificationsShadowPanel.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
+            this.notificationsShadowPanel.Location = new System.Drawing.Point(12, 210);
+            this.notificationsShadowPanel.Name = "notificationsShadowPanel";
+            this.notificationsShadowPanel.PanelColor = System.Drawing.Color.White;
+            this.notificationsShadowPanel.PanelColor2 = System.Drawing.Color.White;
+            this.notificationsShadowPanel.ShadowColor = System.Drawing.Color.DarkGray;
+            this.notificationsShadowPanel.ShadowDept = 2;
+            this.notificationsShadowPanel.ShadowDepth = 5;
+            this.notificationsShadowPanel.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
+            this.notificationsShadowPanel.ShadowTopLeftVisible = false;
+            this.notificationsShadowPanel.Size = new System.Drawing.Size(208, 350);
+            this.notificationsShadowPanel.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
+            this.notificationsShadowPanel.TabIndex = 16;
+            // 
+            // bunifuLabel9
+            // 
+            this.bunifuLabel9.AllowParentOverrides = false;
+            this.bunifuLabel9.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.bunifuLabel9.AutoEllipsis = false;
+            this.bunifuLabel9.Cursor = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel9.CursorType = System.Windows.Forms.Cursors.Default;
+            this.bunifuLabel9.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
+            this.bunifuLabel9.Location = new System.Drawing.Point(415, 174);
+            this.bunifuLabel9.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.bunifuLabel9.Name = "bunifuLabel9";
+            this.bunifuLabel9.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.bunifuLabel9.Size = new System.Drawing.Size(94, 20);
+            this.bunifuLabel9.TabIndex = 4;
+            this.bunifuLabel9.Text = "Control Panel";
+            this.bunifuLabel9.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.bunifuLabel9.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
             // mainFormNewUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -743,8 +787,10 @@ namespace TDF.Net
             this.formPanel.ResumeLayout(false);
             this.shadowPanel.ResumeLayout(false);
             this.shadowPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).EndInit();
             this.usersPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).EndInit();
+            this.notificationsShadowPanel.ResumeLayout(false);
+            this.notificationsShadowPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -779,5 +825,7 @@ namespace TDF.Net
         private Bunifu.UI.WinForms.BunifuSnackbar notificationsSnackbar;
         private System.Windows.Forms.Panel usersPanel;
         private System.Windows.Forms.FlowLayoutPanel notificationsPanel;
+        private Bunifu.UI.WinForms.BunifuShadowPanel notificationsShadowPanel;
+        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel9;
     }
 }

@@ -46,31 +46,29 @@ namespace TDF.Net.Forms
 
         }
 
-        private Timer requestsRefreshTimer;
         private bool requestNoteEdited = false;
         public static Request selectedRequest = null;
+        private bool refreshPending = false; // Flag to queue refresh
 
         #region Events
         private void requestsForm_Load(object sender, EventArgs e)
         {
-           applyButton.Visible = hasManagerRole || hasAdminRole || hasHRRole;
+            applyButton.Visible = hasManagerRole || hasAdminRole || hasHRRole;
 
             SignalRManager.HubProxy.On("RefreshRequests", () =>
             {
                 if (this.InvokeRequired)
                 {
-                    this.Invoke(new System.Action(() => refreshRequestsTable()));
+                    this.Invoke(new System.Action(() => HandleRefreshRequest()));
                 }
                 else
                 {
-                    refreshRequestsTable();
+                    HandleRefreshRequest();
                 }
             });
 
             SignalRManager.RegisterUser(loggedInUser.userID);
-
-            // Initial load
-            refreshRequestsTable();
+            refreshRequestsTablePreserveState();
         }
         private void requestsDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
@@ -319,53 +317,9 @@ namespace TDF.Net.Forms
 
             ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
-        private void requestsRefreshTimer_Tick(object sender, EventArgs e)
-        {
-            bool anyChecked = false;
-
-            // Loop through each row to see if any "Approve" or "Reject" checkbox is checked.
-            foreach (DataGridViewRow row in requestsDataGridView.Rows)
-            {
-                // Check the "Approve" checkbox.
-                if (row.Cells["Approve"].Value is bool approveValue && approveValue)
-                {
-                    anyChecked = true;
-                    break;
-                }
-
-                // Check the "Reject" checkbox.
-                if (row.Cells["Reject"].Value is bool rejectValue && rejectValue)
-                {
-                    anyChecked = true;
-                    break;
-                }
-            }
-
-            // Check if the current cell is in edit mode in the "RequestRejectReason" column.
-            bool editingNotes = false;
-            if (requestsDataGridView.IsCurrentCellInEditMode &&
-                requestsDataGridView.CurrentCell != null &&
-                requestsDataGridView.CurrentCell.OwningColumn.Name == "RequestRejectReason")
-            {
-                editingNotes = true;
-            }
-
-            // Only refresh if:
-            // 1. No "Approve" or "Reject" checkboxes are checked.
-            // 2. The user is not currently editing the "RequestRejectReason" column.
-            // 3. No "RequestRejectReason" cell has been edited (and remains unsaved) as per our flag.
-            if (!anyChecked && !editingNotes && !requestNoteEdited)
-            {
-                refreshRequestsTablePreserveState();
-            }
-        }
         private void requestsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (requestsRefreshTimer != null)
-            {
-                requestsRefreshTimer.Stop();
-                requestsRefreshTimer.Dispose();
-            }
+
         }
         private void requestsDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
@@ -987,38 +941,31 @@ namespace TDF.Net.Forms
                 Marshal.ReleaseComObject(excelApp);
             }
         }
-        private void refreshRequestsTablePreserveState()
+        public void refreshRequestsTablePreserveState()
         {
-            // 1. Save the current scroll position.
             int firstDisplayedIndex = requestsDataGridView.FirstDisplayedScrollingRowIndex;
-
-            // 2. Save sorting information.
             DataGridViewColumn sortedColumn = requestsDataGridView.SortedColumn;
-            ListSortDirection sortDirection = ListSortDirection.Ascending;
-            string sortColumnName = string.Empty;
-            if (sortedColumn != null)
-            {
-                sortDirection = (requestsDataGridView.SortOrder == SortOrder.Ascending)
-                                    ? ListSortDirection.Ascending
-                                    : ListSortDirection.Descending;
-                // Save the column's Name.
-                sortColumnName = sortedColumn.Name;
-            }
+            ListSortDirection sortDirection = sortedColumn != null
+                ? (requestsDataGridView.SortOrder == SortOrder.Ascending ? ListSortDirection.Ascending : ListSortDirection.Descending)
+                : ListSortDirection.Ascending;
+            string sortColumnName = sortedColumn?.Name;
 
-            // 3. Save selected rows.
-            List<int> selectedRowIds = new List<int>();
-            foreach (DataGridViewRow row in requestsDataGridView.SelectedRows)
-            {
-                if (row.Cells["RequestID"].Value != null)
-                {
-                    selectedRowIds.Add(Convert.ToInt32(row.Cells["RequestID"].Value));
-                }
-            }
+            List<int> selectedRowIds = requestsDataGridView.SelectedRows
+                .Cast<DataGridViewRow>()
+                .Where(row => row.Cells["RequestID"].Value != null)
+                .Select(row => Convert.ToInt32(row.Cells["RequestID"].Value))
+                .ToList();
 
-            // 4. Refresh the grid's data.
+            // Preserve edited values
+            var editedValues = PreserveEditedValues();
+
+            // Refresh the grid's data
             refreshRequestsTable();
 
-            // 5. Reapply the sort order.
+            // Restore edited values
+            RestoreEditedValues(editedValues);
+
+            // Reapply sort order
             if (!string.IsNullOrEmpty(sortColumnName))
             {
                 DataGridViewColumn newSortedColumn = requestsDataGridView.Columns[sortColumnName];
@@ -1028,18 +975,66 @@ namespace TDF.Net.Forms
                 }
             }
 
-            // 6. Restore the scroll position if it's still valid.
-            if (firstDisplayedIndex >= 0 && firstDisplayedIndex < requestsDataGridView.Rows.Count)
+            // Restore scroll position
+            if (firstDisplayedIndex >= 0 && firstDisplayedIndex < requestsDataGridView.RowCount)
             {
                 requestsDataGridView.FirstDisplayedScrollingRowIndex = firstDisplayedIndex;
             }
 
-            // 7. Restore selected rows.
+            // Restore selected rows
             foreach (DataGridViewRow row in requestsDataGridView.Rows)
             {
                 if (row.Cells["RequestID"].Value != null && selectedRowIds.Contains(Convert.ToInt32(row.Cells["RequestID"].Value)))
                 {
                     row.Selected = true;
+                }
+            }
+        }
+
+        private Dictionary<int, Dictionary<string, object>> PreserveEditedValues()
+        {
+            var editedValues = new Dictionary<int, Dictionary<string, object>>();
+            foreach (DataGridViewRow row in requestsDataGridView.Rows)
+            {
+                if (!row.IsNewRow && row.DataBoundItem != null) // Ensure row is bound
+                {
+                    DataRowView drv = row.DataBoundItem as DataRowView;
+                    if (drv != null && row.Cells.Cast<DataGridViewCell>()
+                        .Any(cell => cell.OwningColumn.DataPropertyName != null && // Check if column is bound to data
+                                     drv.Row.Table.Columns.Contains(cell.OwningColumn.DataPropertyName) && // Column exists in DataTable
+                                     (cell.IsInEditMode || !Equals(cell.Value, drv.Row[cell.OwningColumn.DataPropertyName]))))
+                    {
+                        int requestId = Convert.ToInt32(row.Cells["RequestID"].Value);
+                        var cellValues = new Dictionary<string, object>();
+                        foreach (DataGridViewCell cell in row.Cells)
+                        {
+                            string columnName = cell.OwningColumn.DataPropertyName;
+                            if (columnName != null && drv.Row.Table.Columns.Contains(columnName) &&
+                                (cell.IsInEditMode || !Equals(cell.Value, drv.Row[columnName])))
+                            {
+                                cellValues[cell.OwningColumn.Name] = cell.Value;
+                            }
+                        }
+                        if (cellValues.Count > 0)
+                        {
+                            editedValues[requestId] = cellValues;
+                        }
+                    }
+                }
+            }
+            return editedValues;
+        }
+        private void RestoreEditedValues(Dictionary<int, Dictionary<string, object>> editedValues)
+        {
+            foreach (DataGridViewRow row in requestsDataGridView.Rows)
+            {
+                int requestId = Convert.ToInt32(row.Cells["RequestID"].Value);
+                if (editedValues.ContainsKey(requestId))
+                {
+                    foreach (var kvp in editedValues[requestId])
+                    {
+                        row.Cells[kvp.Key].Value = kvp.Value;
+                    }
                 }
             }
         }
@@ -1187,6 +1182,50 @@ namespace TDF.Net.Forms
                 reorderDataGridViewColumns();
             }
         }
+        private void HandleRefreshRequest()
+        {
+            bool anyChecked = false;
+
+            foreach (DataGridViewRow row in requestsDataGridView.Rows)
+            {
+                if (row.Cells["Approve"].Value is bool approveValue && approveValue)
+                {
+                    anyChecked = true;
+                    break;
+                }
+                if (row.Cells["Reject"].Value is bool rejectValue && rejectValue)
+                {
+                    anyChecked = true;
+                    break;
+                }
+            }
+
+            bool editingNotes = requestsDataGridView.IsCurrentCellInEditMode &&
+                                requestsDataGridView.CurrentCell != null &&
+                                requestsDataGridView.CurrentCell.OwningColumn.Name == "RequestRejectReason";
+
+            if (!anyChecked && !editingNotes && !requestNoteEdited)
+            {
+                Console.WriteLine("Refreshing DataGridView as no edits or checks are pending.");
+                refreshRequestsTablePreserveState();
+                refreshPending = false;
+            }
+            else
+            {
+                Console.WriteLine("Refresh blocked due to editing or checked states. Queuing refresh.");
+                refreshPending = true;
+            }
+        }
+        private int GetRequestUserID(int requestId, SqlConnection conn)
+        {
+            string query = "SELECT RequestUserID FROM Requests WHERE RequestID = @RequestID";
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@RequestID", requestId);
+                object result = cmd.ExecuteScalar();
+                return result != null ? Convert.ToInt32(result) : -1; // Return -1 if not found
+            }
+        }
 
 
         #endregion
@@ -1195,18 +1234,18 @@ namespace TDF.Net.Forms
         private void addRequestButton_Click(object sender, EventArgs e)
         {
             addRequestForm addRequestForm = new addRequestForm();
-            addRequestForm.requestAddedOrUpdatedEvent += refreshRequestsTable;
+            addRequestForm.requestAddedOrUpdatedEvent += refreshRequestsTablePreserveState;
             addRequestForm.ShowDialog();
 
             if (requestAddedOrUpdated)
             {
-                refreshRequestsTable();
+                refreshRequestsTablePreserveState();
             }
 
         }
         private void refreshButton_Click(object sender, EventArgs e)
         {
-            refreshRequestsTable();
+            refreshRequestsTablePreserveState();
         }
         private void applyButton_Click(object sender, EventArgs e)
         {
@@ -1215,6 +1254,7 @@ namespace TDF.Net.Forms
                 using (SqlConnection conn = Database.getConnection())
                 {
                     conn.Open();
+                    List<int> affectedUserIds = new List<int>(); // Track affected users
 
                     foreach (DataGridViewRow row in requestsDataGridView.Rows)
                     {
@@ -1242,39 +1282,37 @@ namespace TDF.Net.Forms
                             string userFullName = row.Cells["RequestUserFullName"].Value?.ToString();
                             string currentHRStatus = row.Cells["RequestHRStatus"].Value?.ToString();
                             string currentManagerStatus = row.Cells["RequestStatus"].Value?.ToString();
+                            int requestUserId = GetRequestUserID(requestId, conn); // Fetch RequestUserID
 
-                            // Check if the user is "HR Director" and the request user is in the "HR" department
                             bool isHRDirector = loggedInUser.Role == "HR Director";
                             bool isHRRequestUser = isHRDepartmentUser(conn, userFullName);
 
-                            // Construct update query
                             string query = null;
                             if (hasHRRole)
                             {
                                 query = isHRDirector && isHRRequestUser
                                     ? @"UPDATE Requests 
-                                 SET RequestHRStatus = @RequestStatus, 
-                                     RequestStatus = @RequestStatus, 
-                                     RequestRejectReason = @RequestRejectReason, 
-                                     RequestHRCloser = @RequestCloser, 
-                                     RequestCloser = @RequestCloser 
-                                 WHERE RequestID = @RequestID"
+                                    SET RequestHRStatus = @RequestStatus, 
+                                        RequestStatus = @RequestStatus, 
+                                        RequestRejectReason = @RequestRejectReason, 
+                                        RequestHRCloser = @RequestCloser, 
+                                        RequestCloser = @RequestCloser 
+                                    WHERE RequestID = @RequestID"
                                     : @"UPDATE Requests 
-                                 SET RequestHRStatus = @RequestStatus, 
-                                     RequestRejectReason = @RequestRejectReason, 
-                                     RequestHRCloser = @RequestCloser 
-                                 WHERE RequestID = @RequestID";
+                                    SET RequestHRStatus = @RequestStatus, 
+                                        RequestRejectReason = @RequestRejectReason, 
+                                        RequestHRCloser = @RequestCloser 
+                                    WHERE RequestID = @RequestID";
                             }
                             else if (hasManagerRole)
                             {
                                 query = @"UPDATE Requests 
-                                 SET RequestStatus = @RequestStatus, 
-                                     RequestRejectReason = @RequestRejectReason, 
-                                     RequestCloser = @RequestCloser 
-                                 WHERE RequestID = @RequestID";
+                                     SET RequestStatus = @RequestStatus, 
+                                         RequestRejectReason = @RequestRejectReason, 
+                                         RequestCloser = @RequestCloser 
+                                     WHERE RequestID = @RequestID";
                             }
 
-                            // Execute update query
                             if (!string.IsNullOrEmpty(query))
                             {
                                 using (SqlCommand cmd = new SqlCommand(query, conn))
@@ -1283,19 +1321,39 @@ namespace TDF.Net.Forms
                                     cmd.Parameters.AddWithValue("@RequestRejectReason", rejectReason);
                                     cmd.Parameters.AddWithValue("@RequestCloser", loggedInUser.FullName);
                                     cmd.Parameters.AddWithValue("@RequestID", requestId);
-
                                     cmd.ExecuteNonQuery();
                                 }
-                            }
 
-                            // Call HandleBalanceUpdate only once per request
-                            string effectiveRole = isHRDirector ? "HR Director" : hasHRRole ? "HR" : "Manager";
-                            handleBalanceUpdate(conn, currentHRStatus, currentManagerStatus, newStatus, effectiveRole, requestType, numberOfDays, userFullName);
+                                string effectiveRole = isHRDirector ? "HR Director" : hasHRRole ? "HR" : "Manager";
+                                handleBalanceUpdate(conn, currentHRStatus, currentManagerStatus, newStatus, effectiveRole, requestType, numberOfDays, userFullName);
+
+                                affectedUserIds.Add(requestUserId); // Add affected user
+                            }
                         }
                     }
+
                     requestNoteEdited = false;
                     MessageBox.Show("Requests updated successfully.");
-                    refreshRequestsTable();
+                    refreshRequestsTablePreserveState();
+
+                    if (refreshPending)
+                    {
+                        refreshRequestsTablePreserveState();
+                        refreshPending = false;
+                    }
+
+                    // Notify affected users via SignalR
+                    if (affectedUserIds.Any())
+                    {
+                        try
+                        {
+                            SignalRManager.HubProxy.Invoke("NotifyAffectedUsers", affectedUserIds.Distinct().ToList()).Wait();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Error notifying affected users: {ex.Message}");
+                        }
+                    }
                 }
             }
         }

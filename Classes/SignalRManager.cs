@@ -85,15 +85,6 @@ public static class SignalRManager
                     mainFormNewUI.UpdateMessageCounter(senderId, count)));
             });
 
-            // New handlers for requests system
-            HubProxy.On("RefreshRequests", () =>
-            {
-                var requestsForm = Application.OpenForms.OfType<requestsForm>().FirstOrDefault();
-                if (requestsForm != null && !requestsForm.IsDisposed && requestsForm.IsHandleCreated)
-                {
-                    requestsForm.BeginInvoke(new Action(() => requestsForm.refreshRequestsTable()));
-                }
-            });
             HubProxy.On<int, string, string, string, string>("AddNewRequest", (requestId, userFullName, requestType, requestFromDay, requestStatus) =>
             {
                 var requestsForm = Application.OpenForms.OfType<requestsForm>().FirstOrDefault();

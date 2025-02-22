@@ -25,7 +25,7 @@ namespace TDF.Net
 
         private bool signingup = false;
         private bool changingPassword = false;
-        public static User loggedInUser;
+        public static User loggedInUser; // Ensure this is a public field
         public static List<string> departments = new List<string>();
         public static List<string> titles = new List<string>();
         private static Form oldSessionForm = null;
