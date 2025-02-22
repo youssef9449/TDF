@@ -1,4 +1,5 @@
 ﻿using Bunifu.UI.WinForms;
+using Microsoft.AspNet.SignalR.Client;
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
@@ -24,10 +25,10 @@ namespace TDF.Net.Forms
 {
     public partial class requestsForm : Form
     {
-        public requestsForm(bool isModern)
+        public requestsForm(bool isModern, User user)
         {
             InitializeComponent();
-
+            loggedInUser = user;
             Program.applyTheme(this);
             StartPosition = FormStartPosition.CenterScreen;
 
@@ -42,6 +43,7 @@ namespace TDF.Net.Forms
             {
                 panel.Visible = isModern;
             }
+
         }
 
         private Timer requestsRefreshTimer;
@@ -53,12 +55,22 @@ namespace TDF.Net.Forms
         {
            applyButton.Visible = hasManagerRole || hasAdminRole || hasHRRole;
 
-            refreshRequestsTable();
+            SignalRManager.HubProxy.On("RefreshRequests", () =>
+            {
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new System.Action(() => refreshRequestsTable()));
+                }
+                else
+                {
+                    refreshRequestsTable();
+                }
+            });
 
-            requestsRefreshTimer = new Timer();
-            requestsRefreshTimer.Interval = 15000; // 15 seconds
-            requestsRefreshTimer.Tick += requestsRefreshTimer_Tick;
-            requestsRefreshTimer.Start();
+            SignalRManager.RegisterUser(loggedInUser.userID);
+
+            // Initial load
+            refreshRequestsTable();
         }
         private void requestsDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)
         {
@@ -796,19 +808,6 @@ namespace TDF.Net.Forms
                 return (int?)cmd.ExecuteScalar() ?? 0;
             }
         }
-        public int getSelectedRequestUserID()
-        {
-            string query = "SELECT RequestUserID FROM Requests WHERE RequestID = @RequestID";
-
-            using (var conn = Database.getConnection())
-            using (var cmd = new SqlCommand(query, conn))
-            {
-                cmd.Parameters.AddWithValue("@RequestID", selectedRequest.RequestID);
-                conn.Open();
-
-                return (int?)cmd.ExecuteScalar() ?? 0;
-            }
-        }
         private void createPDF(string requestType, DateTime? beginningDate, DateTime? endingDate, int numberOfDays, int availableBalance, string reason, string beginningTime, string endingTime, string status, string hrStatus)
         {
             string filePath = string.Empty;
@@ -1149,6 +1148,47 @@ namespace TDF.Net.Forms
                 }
             }
         }
+        // New method to append a single row
+        public void AddRequestRow(int requestId, string userFullName, string requestType, string requestFromDay, string requestStatus)
+        {
+            DataTable dt = (DataTable)requestsDataGridView.DataSource;
+            if (dt == null)
+            {
+                dt = new DataTable();
+                dt.Columns.Add("RequestID", typeof(int));
+                dt.Columns.Add("RequestUserFullName", typeof(string));
+                dt.Columns.Add("RequestType", typeof(string));
+                dt.Columns.Add("RequestFromDay", typeof(string));
+                dt.Columns.Add("RequestStatus", typeof(string));
+                // Add other columns as needed
+                requestsDataGridView.DataSource = dt;
+            }
+
+            // Check if the request already exists to avoid duplicates
+            if (!dt.AsEnumerable().Any(row => row.Field<int>("RequestID") == requestId))
+            {
+                DataRow newRow = dt.NewRow();
+                newRow["RequestID"] = requestId;
+                newRow["RequestUserFullName"] = userFullName;
+                newRow["RequestType"] = requestType;
+                newRow["RequestFromDay"] = requestFromDay;
+                newRow["RequestStatus"] = requestStatus;
+                dt.Rows.Add(newRow);
+
+                // Reapply configuration without resetting the entire table
+                if (hasManagerRole || hasAdminRole || hasHRRole)
+                {
+                    configureDataGridViewForManagerOrAdminOrHR();
+                }
+                else
+                {
+                    configureDataGridViewForUser();
+                }
+                reorderDataGridViewColumns();
+            }
+        }
+
+
         #endregion
 
         #region Buttons

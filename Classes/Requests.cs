@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace TDF.Net.Classes
@@ -45,24 +47,18 @@ namespace TDF.Net.Classes
 
         #region Methods
 
-        public void add()
+        public bool add()
         {
-            // Define the request types that require conflict checking
             string[] requestTypesToCheck = { "Annual", "Work From Home", "Unpaid", "Emergency" };
-
-            // Check if the request type requires conflict checking
             if (Array.IndexOf(requestTypesToCheck, RequestType) >= 0)
             {
-                // Check for conflicting requests
                 if (hasConflictingRequests())
                 {
                     MessageBox.Show("This request conflicts with existing requests. Please check your dates.", "Request Conflict", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    return false;
                 }
             }
-
-            // Proceed with adding the request if no conflicts are found or conflict check is not required
-            insertRequest();
+            return insertRequest(); // Return success of insertion
         }
 
         private bool hasConflictingRequests()
@@ -101,63 +97,68 @@ namespace TDF.Net.Classes
                 return true; // Assume conflict to prevent potential data corruption
             }
         }
-        private void insertRequest()
+        private bool insertRequest()
         {
             string query = @"
-        INSERT INTO Requests (
-            RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay,
-            RequestUserID, RequestBeginningTime, RequestEndingTime, RequestDepartment, RequestNumberOfDays, RequestHRStatus
-        )
-        VALUES (
-            @RequestUserFullName, @RequestType, @RequestReason, @RequestFromDay, @RequestToDay,
-            @RequestUserID, @RequestBeginningTime, @RequestEndingTime, @RequestDepartment, @RequestNumberOfDays, @RequestHRStatus
-        )";
+            INSERT INTO Requests (
+                RequestUserFullName, RequestType, RequestReason, RequestFromDay, RequestToDay,
+                RequestUserID, RequestBeginningTime, RequestEndingTime, RequestDepartment, RequestNumberOfDays, RequestHRStatus
+            )
+            OUTPUT INSERTED.RequestID
+            VALUES (
+                @RequestUserFullName, @RequestType, @RequestReason, @RequestFromDay, @RequestToDay,
+                @RequestUserID, @RequestBeginningTime, @RequestEndingTime, @RequestDepartment, @RequestNumberOfDays, @RequestHRStatus
+            )";
 
             try
             {
                 using (SqlConnection conn = Database.getConnection())
-                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     conn.Open();
-
-                    // Add common parameters
-                    cmd.Parameters.AddWithValue("@RequestUserFullName", RequestUserFullName);
-                    cmd.Parameters.AddWithValue("@RequestType", RequestType);
-                    cmd.Parameters.AddWithValue("@RequestReason", RequestReason);
-                    cmd.Parameters.AddWithValue("@RequestFromDay", RequestFromDay);
-                    cmd.Parameters.AddWithValue("@RequestToDay", RequestType == "Permission" || RequestType == "External Assignment" ? (object)DBNull.Value : RequestToDay);
-                    cmd.Parameters.AddWithValue("@RequestUserID", RequestUserID);
-                    cmd.Parameters.AddWithValue("@RequestDepartment", RequestDepartment);
-                    cmd.Parameters.AddWithValue("@RequestNumberOfDays", RequestNumberOfDays);
-                    cmd.Parameters.AddWithValue("@RequestHRStatus", "Pending");
-
-                    if (RequestType == "Permission" || RequestType == "External Assignment")
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        cmd.Parameters.AddWithValue("@RequestBeginningTime", RequestBeginningTime ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@RequestEndingTime", RequestEndingTime ?? (object)DBNull.Value);
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@RequestBeginningTime", DBNull.Value);
-                        cmd.Parameters.AddWithValue("@RequestEndingTime", DBNull.Value);
-                    }
+                        // Add common parameters
+                        cmd.Parameters.AddWithValue("@RequestUserFullName", RequestUserFullName);
+                        cmd.Parameters.AddWithValue("@RequestType", RequestType);
+                        cmd.Parameters.AddWithValue("@RequestReason", RequestReason ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@RequestFromDay", RequestFromDay);
+                        cmd.Parameters.AddWithValue("@RequestToDay", RequestType == "Permission" || RequestType == "External Assignment" ? (object)DBNull.Value : RequestToDay);
+                        cmd.Parameters.AddWithValue("@RequestUserID", RequestUserID);
+                        cmd.Parameters.AddWithValue("@RequestDepartment", RequestDepartment);
+                        cmd.Parameters.AddWithValue("@RequestNumberOfDays", RequestNumberOfDays);
+                        cmd.Parameters.AddWithValue("@RequestHRStatus", "Pending");
 
-                    // Execute query and show result
-                    bool success = cmd.ExecuteNonQuery() > 0;
-                    Forms.addRequestForm.requestAddedOrUpdated = success;
-                    MessageBox.Show(success ? "Request added successfully." : "Failed to add request.", "Add Request", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        if (RequestType == "Permission" || RequestType == "External Assignment")
+                        {
+                            cmd.Parameters.AddWithValue("@RequestBeginningTime", RequestBeginningTime ?? (object)DBNull.Value);
+                            cmd.Parameters.AddWithValue("@RequestEndingTime", RequestEndingTime ?? (object)DBNull.Value);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@RequestBeginningTime", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@RequestEndingTime", DBNull.Value);
+                        }
+
+                        // Execute query and get the inserted RequestID
+                        RequestID = (int)cmd.ExecuteScalar(); // Sets RequestID
+                        bool success = RequestID > 0;
+                        Forms.addRequestForm.requestAddedOrUpdated = success;
+                        MessageBox.Show(success ? "Request added successfully." : "Failed to add request.", "Add Request", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return success;
+                    }
                 }
             }
             catch (SqlException ex)
             {
                 MessageBox.Show($"A database error occurred: {ex.Message}");
+                return false;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An unexpected error occurred: {ex.Message}");
+                return false;
             }
         }
-
         public void update()
         {
             try
@@ -223,7 +224,56 @@ namespace TDF.Net.Classes
                 MessageBox.Show("An unexpected error occurred: " + ex.Message);
             }
         }
+        public void InsertNotificationsForNewRequest()
+        {
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+                // Find HR users
+                string hrRoles = string.Join(",", new[] { "HR" }.Select(r => $"'{r}'"));
+                string queryHR = $"SELECT UserID FROM Users WHERE Role IN ({hrRoles})";
+                List<int> hrUserIds = new List<int>();
+                using (SqlCommand cmd = new SqlCommand(queryHR, conn))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            hrUserIds.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
 
+                // Find managers for the department
+                string department = RequestDepartment;
+                string queryManagers = "SELECT UserID FROM Users WHERE Role IN ('Manager', 'Team Leader') AND Department LIKE @Department";
+                List<int> managerUserIds = new List<int>();
+                using (SqlCommand cmd = new SqlCommand(queryManagers, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Department", "%" + department + "%");
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            managerUserIds.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+
+                // Insert notifications
+                string insertQuery = "INSERT INTO RequestNotifications (RequestId, UserId, IsRead, CreatedAt) VALUES (@RequestId, @UserId, 0, @CreatedAt)";
+                foreach (int userId in hrUserIds.Union(managerUserIds))
+                {
+                    using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@RequestId", RequestID);
+                        cmd.Parameters.AddWithValue("@UserId", userId);
+                        cmd.Parameters.AddWithValue("@CreatedAt", DateTime.Now);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
         public void delete()
         {
             using (SqlConnection conn = Database.getConnection())

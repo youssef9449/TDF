@@ -7,6 +7,8 @@ using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Forms.requestsForm;
 using System.Drawing;
+using System.Threading.Tasks;
+using System.Net;
 
 
 namespace TDF.Net.Forms
@@ -617,7 +619,7 @@ namespace TDF.Net.Forms
 
             return true;
         }
-        private void addNewRequest(string requestType)
+        private async void addNewRequestAsync(string requestType)
         {
             DateTime? fromTime = (requestType == "Permission" || requestType == "External Assignment")
                 ? Convert.ToDateTime(fromTimeTextBox.Text)
@@ -643,6 +645,12 @@ namespace TDF.Net.Forms
             );
 
             newRequest.add();
+            newRequest.InsertNotificationsForNewRequest();
+            await SignalRManager.HubProxy.Invoke("NotifyNewRequest", newRequest.RequestDepartment);
+
+            //await SignalRManager.HubProxy.Invoke("NotifyNewRequestWithDetails", newRequest.RequestDepartment, newRequest.RequestID, newRequest.RequestUserFullName, newRequest.RequestType, newRequest.RequestFromDay.ToString("yyyy-MM-dd"), newRequest.RequestStatus);
+
+            // Notify via SignalR
         }
         private void updateExistingRequest(string requestType)
         {
@@ -668,7 +676,7 @@ namespace TDF.Net.Forms
         #endregion
 
         #region Buttons
-        private void submitButton_Click(object sender, EventArgs e)
+        private async void submitButton_Click(object sender, EventArgs e)
         {
             
             int remainingBalance = int.TryParse(remainingBalanceLabel.Text, out int rBalance) ? rBalance : 0;
@@ -756,7 +764,8 @@ namespace TDF.Net.Forms
             // Create or update request
             if (requestToEdit == null)
             {
-                addNewRequest(requestType);
+                addNewRequestAsync(requestType);
+
             }
             else
             {

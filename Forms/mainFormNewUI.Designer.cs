@@ -42,6 +42,7 @@ namespace TDF.Net
             this.minImg = new System.Windows.Forms.PictureBox();
             this.closeImg = new System.Windows.Forms.PictureBox();
             this.formPanel = new System.Windows.Forms.Panel();
+            this.notificationsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.teamImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
             this.requestsImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
             this.reportsImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
@@ -216,6 +217,7 @@ namespace TDF.Net
             this.formPanel.BackColor = System.Drawing.Color.Transparent;
             this.formPanel.BackgroundImage = global::TDF.Properties.Resources.TDF_Logo;
             this.formPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.formPanel.Controls.Add(this.notificationsPanel);
             this.formPanel.Controls.Add(this.teamImageButton);
             this.formPanel.Controls.Add(this.requestsImageButton);
             this.formPanel.Controls.Add(this.reportsImageButton);
@@ -232,6 +234,13 @@ namespace TDF.Net
             this.formPanel.Size = new System.Drawing.Size(1280, 654);
             this.formPanel.TabIndex = 11;
             this.formPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.formPanel_Paint);
+            // 
+            // notificationsPanel
+            // 
+            this.notificationsPanel.Location = new System.Drawing.Point(12, 198);
+            this.notificationsPanel.Name = "notificationsPanel";
+            this.notificationsPanel.Size = new System.Drawing.Size(196, 347);
+            this.notificationsPanel.TabIndex = 15;
             // 
             // teamImageButton
             // 
@@ -769,5 +778,6 @@ namespace TDF.Net
         private Bunifu.UI.WinForms.BunifuButton.BunifuIconButton usersIconButton;
         private Bunifu.UI.WinForms.BunifuSnackbar notificationsSnackbar;
         private System.Windows.Forms.Panel usersPanel;
+        private System.Windows.Forms.FlowLayoutPanel notificationsPanel;
     }
 }

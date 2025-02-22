@@ -507,7 +507,7 @@ namespace TDF.Net
         #region Buttons
         private void requestsButton_Click(object sender, EventArgs e)
         {
-            showFormInPanel(new requestsForm(false));
+            showFormInPanel(new requestsForm(false, loggedInUser));
         }
         private void reportButton_Click(object sender, EventArgs e)
         {
