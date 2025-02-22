@@ -3,83 +3,144 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Forms;
 using TDF.Net.Classes;
 using TDF.Net.Forms;
 using TDF.Properties;
+using Bunifu.UI.WinForms;
 using static TDF.Net.Classes.ThemeColor;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Program;
-using Timer = System.Windows.Forms.Timer;
+using static TDF.Net.Database;
+using Microsoft.AspNet.SignalR.Client;
+using System.Drawing.Drawing2D;
+using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR.Infrastructure;
+using static NotificationHub;
+using Microsoft.AspNet.SignalR.Client.Hubs;
+using System.Media;
+using Bunifu.UI.WinForms.BunifuButton;
 
 namespace TDF.Net
 {
     public partial class mainFormNewUI : Form
     {
-        public mainFormNewUI()
-        {
-            InitializeComponent();
-        }
 
         public mainFormNewUI(loginForm loginForm)
         {
             InitializeComponent();
 
             applyTheme(this);
+            //notificationsSnackbar.InformationOptions.BackColor = Color.Black;
+            //notificationsSnackbar.InformationOptions.ForeColor = Color.White;
+            //notificationsSnackbar.InformationOptions.BorderColor = darkColor;
+            //notificationsSnackbar.InformationOptions.ActionBackColor = lightColor;
             formPanel.BackColor = Color.White;
-            this.loginForm = loginForm; // Store a reference to the login form
-        }
+            this.loginForm = loginForm; // Store a reference to the login form  
+
+            SignalRManager.HubProxy.On<int, int>("UpdateMessageCount", UpdateMessageCounter);
+            SignalRManager.HubProxy.On<int, string>("receivePendingMessage", HandlePendingMessage);
+
+            flowLayout = new FlowLayoutPanel
+            {
+                Name = "flowLayoutUsers",
+                Location = new Point(0, 30),
+                Size = new Size(usersPanel.Width, 600),
+                AutoScroll = true,
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right
+            };
+            usersPanel.Controls.Add(flowLayout);
+        }   
 
         private ContextMenuStrip contextMenu;
 
         private loginForm loginForm;
 
-        private Timer connectedUsersTimer;
-        private bool isPanelExpanded = false;
+        private bool isPanelExpanded = true;
+        private bool isFormClosing = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
         private int contractedHeight = 50; // Height of the panel to show only the header
-        private CancellationTokenSource _pipeCts = new CancellationTokenSource();
+        public int previousUserCount = -1; 
+        private FlowLayoutPanel flowLayout;
+        private Dictionary<int, Panel> userPanels = new Dictionary<int, Panel>();
+        private List<User> cachedUsers = new List<User>();
+        private IDisposable updateUserListSubscription;
+        private Dictionary<int, int> pendingMessageCounts = new Dictionary<int, int>();
+        private int lastNotificationCount = 0;
+        private readonly object userCacheLock = new object();
+        private Label notificationHeader; // Fixed header
+        // Helper for async Invoke
+        private Task InvokeAsync(Action action)
+        {
+            return Task.Run(() => this.Invoke(action));
+        }
+
 
         #region Events
-        private void mainFormNewUI_Load(object sender, EventArgs e)
+        private async void mainFormNewUI_Load(object sender, EventArgs e)
         {
             MaximizedBounds = Screen.FromControl(this).WorkingArea;
-
             usersIconButton.BackgroundColor = primaryColor;
             usersIconButton.BorderColor = darkColor;
-            expandedHeight = usersShadowPanel.Height; // Store the original height when expanded
-            usersShadowPanel.Height = contractedHeight; // Set the initial height to contracted
-            usersShadowPanel.AutoScroll = false; // Disable auto-scroll for contracted state
+            expandedHeight = usersPanel.Height;
 
-            //startPipeListener(); // Start listening for messages
+
+            updateUserListSubscription = SignalRManager.HubProxy.On("updateUserList", () =>
+            {
+                if (!IsDisposed && IsHandleCreated)
+                {
+                    BeginInvoke(new Action(() => DisplayConnectedUsersAsync(true)));
+                }
+            });
+
+
             updateRoleStatus();
             setImageButtonVisibility();
             adjustShadowPanelAndImageButtons();
             updateUserDataControls();
 
-            displayConnectedUsers();
 
-            connectedUsersTimer = new Timer();
-            connectedUsersTimer.Interval = 10000; // 10 seconds
-            connectedUsersTimer.Tick += ConnectedUsersTimer_Tick;
-            connectedUsersTimer.Start();
-            _ = StartListeningAsync(_pipeCts.Token);
+            notificationHeader = new Label
+            {
+                Text = "Number of Notifications: (0)",
+                Dock = DockStyle.Top,
+                Height = 30,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
+            notificationsShadowPanel.Visible = hasHRRole || hasManagerRole;
+
+            notificationsShadowPanel.Controls.Add(notificationsPanel);
+            notificationsShadowPanel.Controls.Add(notificationHeader);
+            notificationHeader.BringToFront();
+
+
+            // Force initial refresh
+
+            if (!IsDisposed && IsHandleCreated && !isFormClosing)
+            {
+                try
+                {
+                    await GetAllUsersAsync(true);
+                    DisplayConnectedUsersAsync(true);
+                    await LoadPendingMessages();
+                          LoadUnreadNotifications();
+                }
+                catch (ObjectDisposedException) { }
+            }
 
         }
         protected override void OnMove(EventArgs e)
         {
             base.OnMove(e);
             MaximizedBounds = Screen.FromControl(this).WorkingArea;
-        }
-        private void ConnectedUsersTimer_Tick(object sender, EventArgs e)
-        {
-            displayConnectedUsers();
         }
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -115,23 +176,23 @@ namespace TDF.Net
         }
         private void closeImg_MouseEnter(object sender, EventArgs e)
         {
-            closeImg.Image = Properties.Resources.close_hover;
+            closeImg.Image = Resources.close_hover;
         }
         private void closeImg_MouseLeave(object sender, EventArgs e)
         {
-            closeImg.Image = Properties.Resources.close_nofocus;
+            closeImg.Image = Resources.close_nofocus;
         }
         private void closeImg_MouseDown(object sender, MouseEventArgs e)
         {
-            closeImg.Image = Properties.Resources.close_press;
+            closeImg.Image = Resources.close_press;
         }
         private void maxImage_MouseEnter(object sender, EventArgs e)
         {
-            maxImage.Image = Properties.Resources.max_hover;
+            maxImage.Image = Resources.max_hover;
         }
         private void maxImage_MouseLeave(object sender, EventArgs e)
         {
-            maxImage.Image = Properties.Resources.close_nofocus;
+            maxImage.Image = Resources.close_nofocus;
         }
         private void maxImage_MouseDown(object sender, MouseEventArgs e)
         {
@@ -139,19 +200,27 @@ namespace TDF.Net
         }
         private void minImg_MouseEnter(object sender, EventArgs e)
         {
-            minImg.Image = Properties.Resources.min_hover;
+            minImg.Image = Resources.min_hover;
         }
         private void minImg_MouseLeave(object sender, EventArgs e)
         {
-            minImg.Image = Properties.Resources.close_nofocus;
+            minImg.Image = Resources.close_nofocus;
         }
         private void minImg_MouseDown(object sender, MouseEventArgs e)
         {
-            minImg.Image = Properties.Resources.min_press;
+            minImg.Image = Resources.min_press;
         }
-        private void closeImg_MouseClick(object sender, MouseEventArgs e)
+        private async void closeImg_MouseClick(object sender, MouseEventArgs e)
         {
-            Application.Exit();
+            if (!isFormClosing)
+            {
+                isFormClosing = true;
+                UnsubscribeFromEvents();  // Unsubscribe from SignalR events
+                await triggerServerDisconnect();
+
+                loggedInUser = null;
+                Application.Exit();
+            }
         }
         private void maxImage_MouseClick(object sender, MouseEventArgs e)
         {
@@ -167,12 +236,12 @@ namespace TDF.Net
 
             if (WindowState == FormWindowState.Normal)
             {
-                usersShadowPanel.MinimumSize = new Size(usersShadowPanel.Width, contractedHeight);
+                usersPanel.MinimumSize = new Size(usersPanel.Width, contractedHeight);
             }
         }
         private void formPanel_Paint(object sender, PaintEventArgs e)
         {
-            base.OnPaint(e);
+            /*base.OnPaint(e);
 
             // Get the form's scroll position
             var scrollPos = AutoScrollPosition;
@@ -180,7 +249,7 @@ namespace TDF.Net
             // Adjust for scroll position when drawing the border
             var rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
 
-            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);
+            ControlPaint.DrawBorder(e.Graphics, rect, darkColor, ButtonBorderStyle.Solid);*/
         }
         private void bunifuLabel_Paint(object sender, PaintEventArgs e)
         {
@@ -230,7 +299,7 @@ namespace TDF.Net
 
             if (confirmation == DialogResult.Yes)
             {
-                using (SqlConnection conn = Database.getConnection())
+                using (SqlConnection conn = getConnection())
                 {
                     conn.Open();
 
@@ -248,7 +317,7 @@ namespace TDF.Net
                         if (rowsAffected > 0)
                         {
                             loggedInUser.Picture = null;
-                            circularPictureBox.Image = Properties.Resources.pngegg;
+                            circularPictureBox.Image = Resources.pngegg;
                         }
                         else
                         {
@@ -261,17 +330,6 @@ namespace TDF.Net
             {
                 return;
             }
-        }
-        private void mainFormNewUI_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            makeUserDisconnected();
-            connectedUsersTimer.Stop();
-            connectedUsersTimer.Dispose();
-
-            _pipeCts.Cancel();
-            closePipeConnection();
-
-            loggedInUser = null;
         }
         private void circularPictureBox_Click(object sender, EventArgs e)
         {
@@ -295,29 +353,25 @@ namespace TDF.Net
 
             contextMenu.Show(Cursor.Position);
         }
-        private void usersShadowPanel_Scroll(object sender, ScrollEventArgs e)
-        {
-            usersShadowPanel.Invalidate();
-        }
-        private void usersIconButton_Click(object sender, EventArgs e)
+        private async void usersIconButton_Click(object sender, EventArgs e)
         {
             if (isPanelExpanded)
             {
-                // Contract the panel
-                usersShadowPanel.Height = contractedHeight; // Set the height to contracted
-                usersShadowPanel.AutoScroll = false; // Disable auto-scroll
-                usersIconButton.Image = Resources.down; // Change the icon to "down"
-                isPanelExpanded = false; // Update the state
+                usersPanel.Height = contractedHeight;
+                usersIconButton.Image = Resources.down;
+                isPanelExpanded = false;
             }
             else
             {
-                // Expand the panel
-                usersShadowPanel.Height = expandedHeight; // Set the height to expanded
-                usersShadowPanel.AutoScroll = true; // Enable auto-scroll
-                usersIconButton.Image = Resources.up; // Change the icon to "up"
-                displayConnectedUsers(); // Populate the panel with connected users
-                isPanelExpanded = true; // Update the state
+                usersPanel.Height = expandedHeight;
+                usersIconButton.Image = Resources.up;
+                isPanelExpanded = true;
             }
+        }
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            isFormClosing = true; // Ensure flag is set during close
+            base.OnFormClosing(e);
         }
         #endregion
 
@@ -332,7 +386,7 @@ namespace TDF.Net
         }
         public void updateUserDataControls()
         {
-            circularPictureBox.Image = loggedInUser.Picture != null ? loggedInUser.Picture : Properties.Resources.pngegg;
+            circularPictureBox.Image = loggedInUser.Picture ?? Resources.pngegg;
 
             usernameLabel.Text = $"Welcome, {loggedInUser.FullName.Split(' ')[0]}!";
         }
@@ -392,31 +446,6 @@ namespace TDF.Net
                     shadowPanel.Controls.Remove(controlPanelLabel);
                 }
             }
-        }
-        private void showFormInPanel(Form form)
-        {
-            form.TopLevel = false; // Make it a child control rather than a top-level form
-            form.Dock = DockStyle.Fill;
-
-            foreach (Control control in formPanel.Controls)
-            {
-                control.Hide();
-            }
-
-            formPanel.Controls.Add(form);
-
-
-            // Restore hidden controls when the form is closed
-            form.FormClosed += (s, e) =>
-            {
-                foreach (Control control in formPanel.Controls)
-                {
-                    control.Show();
-                }
-                setImageButtonVisibility();
-            };
-
-            form.Show();
         }
         private void adjustShadowPanelAndImageButtons()
         {
@@ -546,7 +575,7 @@ namespace TDF.Net
 
             try
             {
-                using (SqlConnection conn = Database.getConnection())
+                using (SqlConnection conn = getConnection())
                 {
                     conn.Open();
                     string query = "UPDATE Users SET Picture = @Picture WHERE UserName = @UserName";
@@ -584,170 +613,874 @@ namespace TDF.Net
                 MessageBox.Show("An error occurred while saving the image: " + ex.Message);
             }
         }
-        public static List<User> getConnectedUsers()
-        {
-            List<User> connectedUsers = new List<User>();
 
-            // Ensure loggedInUser is not null before proceeding.
-            if (loggedInUser == null)
+        #region Message Handling Methods
+        private async void HandlePendingMessage(int senderId, string message)
+        {
+            Console.WriteLine($"HandlePendingMessage for user {loggedInUser.userID} from sender {senderId}: {message}");
+            // Prevent processing messages sent by the current user
+            if (senderId == loggedInUser.userID)
             {
-                throw new InvalidOperationException("loggedInUser is null.");
+                Console.WriteLine("Ignoring message from self.");
+                return;
+            }
+            // Existing code...
+            if (IsChatOpen(senderId))
+            {
+                var chatForm = Application.OpenForms
+                    .OfType<chatForm>()
+                    .FirstOrDefault(f => f.chatWithUserID == senderId);
+                if (chatForm != null && !chatForm.IsDisposed && chatForm.IsHandleCreated)
+                {
+                    chatForm.BeginInvoke(new Action(async () =>
+                    {
+                        await chatForm.AppendMessageAsync(senderId, message);
+                    }));
+                }
+            }
+            else
+            {
+                if (!pendingMessageCounts.ContainsKey(senderId))
+                {
+                    pendingMessageCounts[senderId] = 0;
+                }
+                pendingMessageCounts[senderId]++;
+                int newCount = pendingMessageCounts[senderId];
+                UpdateMessageCounter(senderId, newCount);
+
+                if (userPanels.TryGetValue(senderId, out Panel userPanel))
+                {
+                    var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
+                    if (pictureBox != null)
+                    {
+                        pictureBox.Invoke(new Action(() =>
+                        {
+                            var balloonBasePoint = pictureBox.PointToScreen(
+                                new Point(pictureBox.Left - 210, pictureBox.Top)
+                            );
+                            new MessageBalloon(balloonBasePoint, message).Show();
+                        }));
+                    }
+                }
+            }
+        }
+
+        private async Task LoadPendingMessages()
+        {
+            try
+            {
+                var pendingData = await SignalRManager.HubProxy.Invoke<Dictionary<int, PendingMessageData>>(
+                    "GetPendingMessageCounts",
+                    loggedInUser.userID
+                );
+
+                foreach (var entry in pendingData)
+                {
+                    var userPanel = GetUserPanel(entry.Key);
+                    if (userPanel != null)
+                    {
+                        UpdateMessageCounter(entry.Key, entry.Value.Count);
+                        if (entry.Value.Messages.Count > 0 && !IsChatOpen(entry.Key))
+                        {
+                           // await ShowMessageBalloons(null, userPanel, entry.Value.Messages);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading pending messages: {ex.Message}");
+            }
+        }
+        #endregion
+
+        #region Updated UI Methods
+        public void UpdateMessageCounter(int senderId, int count)
+        {
+            if (userPanels.TryGetValue(senderId, out Panel panel))
+            {
+                if (panel.InvokeRequired)
+                {
+                    panel.Invoke((MethodInvoker)delegate {
+                        UpdateMessageCounterUI(panel, count);
+                    });
+                }
+                else
+                {
+                    UpdateMessageCounterUI(panel, count);
+                }
+            }
+        }
+        private void UpdateMessageCounterUI(Panel panel, int count)
+        {
+            var pictureBox = panel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
+            if (pictureBox == null) return;
+
+            Label counter = panel.Controls.Find("msgCounter", true).FirstOrDefault() as Label;
+            if (counter == null)
+            {
+                counter = new Label
+                {
+                    Name = "msgCounter",
+                    Size = new Size(20, 20),
+                    BackColor = Color.FromArgb(33, 150, 243),
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 8, FontStyle.Bold),
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Location = new Point(pictureBox.Right - 15, pictureBox.Top - 5),
+                    Visible = false
+                };
+                using (var gp = new GraphicsPath())
+                {
+                    gp.AddEllipse(0, 0, counter.Width, counter.Height);
+                    counter.Region = new Region(gp);
+                }
+                panel.Controls.Add(counter);
             }
 
-            using (SqlConnection connection = Database.getConnection())
+            counter.Text = count > 0 ? count.ToString() : "";
+            counter.Visible = count > 0;
+            counter.Invalidate(); // Force redraw
+            counter.BringToFront();
+        }
+        #endregion
+
+
+        public bool IsChatOpen(int senderId) =>
+                Application.OpenForms.OfType<chatForm>()
+                    .Any(f => f.chatWithUserID == senderId);
+        public async Task ShowMessageBalloons(int? senderId, Panel userPanel, List<string> messages)
+        {
+            // Prevent showing balloons for the current user's own messages
+            if (senderId.HasValue && senderId.Value == loggedInUser.userID)
             {
-                connection.Open();
-
-                // Use parameterized query for safety and clarity.
-                string query = "SELECT FullName, Department, Picture " +
-                               "FROM Users " +
-                               "WHERE IsConnected = 1 AND UserName <> @UserName;";
-
-                using (SqlCommand cmd = new SqlCommand(query, connection))
+                Console.WriteLine("Skipping balloons for self.");
+                return;
+            }
+            // Existing code to display balloons...
+            if (senderId.HasValue && userPanels.TryGetValue(senderId.Value, out userPanel))
+            {
+                var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
+                if (pictureBox != null)
                 {
-                    // Add parameter value.
-                    cmd.Parameters.AddWithValue("@UserName", loggedInUser.UserName);
-
-                    // Use a using block for the reader.
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    var balloonBasePoint = pictureBox.PointToScreen(
+                        new Point(pictureBox.Left - 210, pictureBox.Top)
+                    );
+                    foreach (var message in messages)
                     {
-                        while (reader.Read())
-                        {
-                            var user = new User
-                            {
-                                FullName = reader["FullName"].ToString(),
-                                Department = reader["Department"].ToString(),
-                                Picture = reader["Picture"] != DBNull.Value
-                                          ? Image.FromStream(new MemoryStream((byte[])reader["Picture"]))
-                                          : null // Default to null if no image.
-                            };
+                        new MessageBalloon(balloonBasePoint, message).Show();
+                    }
+                }
+            }
+        }
 
-                            connectedUsers.Add(user);
+
+        #region Updated Chat Form Integration
+        private async void OpenChatForm(int userId)
+        {
+            var user = (await GetAllUsersAsync()).FirstOrDefault(u => u.userID == userId);
+            if (user == null) return;
+
+            var existingChat = Application.OpenForms.OfType<chatForm>().FirstOrDefault(f => f.chatWithUserID == userId);
+            if (existingChat != null)
+            {
+                existingChat.BringToFront();
+                return;
+            }
+                
+            try
+            {
+                if (!SignalRManager.IsConnected)
+                {
+                    Console.WriteLine("SignalR not connected. Cannot open chat.");
+                    MessageBox.Show("Cannot open chat: connection lost.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Get pending messages before updating UI
+                var messages = await SignalRManager.HubProxy.Invoke<List<string>>("GetPendingMessages", loggedInUser.userID, userId);
+
+                // Clear the pending count for this sender when the user opens the chat.
+                if (pendingMessageCounts.ContainsKey(userId))
+                {
+                    pendingMessageCounts.Remove(userId);
+                    UpdateMessageCounter(userId, 0);
+                }
+
+
+                // Safely update UI components
+                if (userPanels.ContainsKey(userId))
+                {
+                    UpdateMessageCounter(userId, 0);
+
+                }
+                else
+                {
+                    Console.WriteLine($"Warning: User panel not found for userId: {userId}");
+                }
+
+                // Possibly mark messages as delivered in the DB
+                //UpdateMessageCounter(userId, 0);
+
+                // Open new chat form
+                new chatForm(loggedInUser.userID, userId, user.FullName, user.Picture).Show();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in OpenChatForm: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                if (ex.InnerException != null)
+                    Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                MessageBox.Show("Failed to open chat. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        #endregion
+
+        private Panel GetUserPanel(int userId)
+        {
+            return flowLayout.Controls
+                .OfType<Panel>()
+                .FirstOrDefault(p => (int)p.Tag == userId);
+        }
+        public async Task<List<User>> GetAllUsersAsync(bool forceRefresh = false)
+        {
+            if (isFormClosing || IsDisposed)
+            {
+                return new List<User>();
+            }
+            // Return an empty list if there's no logged-in user.
+            if (loggedInUser == null)
+                return new List<User>();
+
+            lock (userCacheLock)
+            {
+                if (!forceRefresh && cachedUsers.Any())
+                {
+                    return new List<User>(cachedUsers); // Return a copy
+                }
+            }
+
+            List<User> users = new List<User>();
+            try
+            {
+                var connectedUserIDs = await SignalRManager.HubProxy.Invoke<List<int>>("GetConnectedUserIDs");
+                using (SqlConnection connection = getConnection())
+                {
+                    await connection.OpenAsync();
+                    string query = @"
+                SELECT 
+                    u.UserID, 
+                    u.FullName, 
+                    u.Department, 
+                    u.Picture, 
+                    ISNULL(pc.PendingCount, 0) AS PendingMessageCount
+                FROM Users u
+                LEFT JOIN (
+                    SELECT SenderID, COUNT(*) AS PendingCount
+                    FROM PendingChatMessages
+                    WHERE ReceiverID = @ReceiverID AND IsDelivered = 0
+                    GROUP BY SenderID
+                ) pc ON u.UserID = pc.SenderID
+                WHERE u.UserName <> @UserName
+                ORDER BY ISNULL(pc.PendingCount, 0) DESC, 
+                         CASE WHEN u.UserID IN (" + (connectedUserIDs.Any() ? string.Join(",", connectedUserIDs) : "0") + @") THEN 1 ELSE 0 END DESC, 
+                         u.FullName ASC";
+
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@ReceiverID", loggedInUser.userID);
+                        cmd.Parameters.AddWithValue("@UserName", loggedInUser.UserName);
+
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                int userId = reader.GetInt32(reader.GetOrdinal("UserID"));
+                                var user = new User
+                                {
+                                    userID = userId,
+                                    FullName = reader.GetString(reader.GetOrdinal("FullName")),
+                                    Department = reader.GetString(reader.GetOrdinal("Department")),
+                                    Picture = reader["Picture"] != DBNull.Value
+                                        ? Image.FromStream(new MemoryStream((byte[])reader["Picture"]))
+                                        : Resources.pngegg,
+                                    isConnected = connectedUserIDs.Contains(userId) ? 1 : 0,
+                                    PendingMessageCount = reader.GetInt32(reader.GetOrdinal("PendingMessageCount"))
+                                };
+                                users.Add(user);
+                            }
+                        }
+                    }
+                }
+
+                lock (userCacheLock)
+                {
+                    cachedUsers = users; // Update cache
+                }
+                return new List<User>(users);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching users: {ex.Message}");
+                return new List<User>();
+            }
+        }
+        public async Task DisplayConnectedUsersAsync(bool forceFullRefresh = false)
+        {
+            List<User> connectedUsers = await GetAllUsersAsync(forceFullRefresh);
+            int currentUserCount = connectedUsers.Count;
+            int onlineCount = connectedUsers.Count(u => u.isConnected == 1);
+
+            if (InvokeRequired)
+            {
+                await InvokeAsync(async () => await DisplayConnectedUsersAsync(forceFullRefresh));
+                return;
+            }
+
+            // Update header label
+            Label headerLabel = usersPanel.Controls
+                .OfType<Label>()
+                .FirstOrDefault(ctrl => ctrl.Tag != null && ctrl.Tag.ToString() == "header");
+            if (headerLabel == null)
+            {
+                headerLabel = new Label
+                {
+                    Tag = "header",
+                    Location = new Point(10, 10),
+                    AutoSize = true,
+                    Font = new Font("Segoe UI", 12, FontStyle.Bold)
+                };
+                usersPanel.Controls.Add(headerLabel);
+            }
+            headerLabel.Text = $"Online Users ({onlineCount})";
+
+            flowLayout.Size = new Size(usersPanel.Width, 600); // Ensure size updates with form resize
+
+            int savedScrollPos = flowLayout.VerticalScroll.Value;
+
+            // Determine if a full rebuild is needed
+            bool needRebuild = forceFullRefresh || flowLayout.Controls.Count != currentUserCount || !UserPanelsMatch(connectedUsers);
+
+            if (needRebuild)
+            {
+                usersPanel.SuspendLayout();
+                flowLayout.SuspendLayout();
+                flowLayout.Controls.Clear();
+                userPanels.Clear();
+
+                foreach (User user in connectedUsers)
+                {
+                    Panel userPanel = new Panel
+                    {
+                        Size = new Size(flowLayout.Width - 25, 120),
+                        Margin = new Padding(5),
+                        BorderStyle = BorderStyle.None,
+                        Tag = user.userID
+                    };
+
+                    CircularPictureBox pictureBox = new CircularPictureBox
+                    {
+                        Image = user.Picture,
+                        SizeMode = PictureBoxSizeMode.Zoom,
+                        Size = new Size(60, 60),
+                        Location = new Point((userPanel.Width - 60) / 2, 10),
+                        Cursor = Cursors.Hand
+                    };
+                    pictureBox.SendToBack();
+                    pictureBox.Click += (s, e) => OpenChatForm(user.userID);
+
+                    Label msgCounter = new Label
+                    {
+                        Name = "msgCounter",
+                        Size = new Size(20, 20),
+                        BackColor = Color.FromArgb(33, 150, 243),
+                        ForeColor = Color.White,
+                        Font = new Font("Segoe UI", 8, FontStyle.Bold),
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        Location = new Point(pictureBox.Left - 25, pictureBox.Top - 5),
+                        Visible = false
+                    };
+                    using (var gp = new GraphicsPath())
+                    {
+                        gp.AddEllipse(0, 0, msgCounter.Width, msgCounter.Height);
+                        msgCounter.Region = new Region(gp);
+                    }
+
+                    Label onlineIndicator = new Label
+                    {
+                        Name = "onlineIndicator",
+                        Size = new Size(10, 10),
+                        BackColor = user.isConnected == 1 ? Color.LimeGreen : Color.Red,
+                        Location = new Point(pictureBox.Right - 10, pictureBox.Top + 5),
+                        Visible = true
+                    };
+                    using (var gp = new GraphicsPath())
+                    {
+                        gp.AddEllipse(0, 0, onlineIndicator.Width, onlineIndicator.Height);
+                        onlineIndicator.Region = new Region(gp);
+                    }
+
+                    Label nameLabel = new Label
+                    {
+                        Text = $"{user.FullName.Split(' ')[0]} - {user.Department}",
+                        Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                        ForeColor = Color.Black,
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        AutoSize = true,
+                        MaximumSize = new Size(userPanel.Width - 20, 0),
+                        Location = new Point(10, pictureBox.Bottom + 5)
+                    };
+
+                    userPanel.Controls.AddRange(new Control[] { pictureBox, msgCounter, onlineIndicator, nameLabel });
+                    flowLayout.Controls.Add(userPanel);
+                    userPanels[user.userID] = userPanel;
+
+                    int initialCount = pendingMessageCounts.ContainsKey(user.userID) ? pendingMessageCounts[user.userID] : user.PendingMessageCount;
+                    UpdateMessageCounterUI(userPanel, initialCount);
+                    pictureBox.SendToBack();
+                }
+
+                flowLayout.ResumeLayout();
+                usersPanel.ResumeLayout();
+            }
+            else
+            {
+                // Update only online indicators
+                foreach (User user in connectedUsers)
+                {
+                    if (userPanels.TryGetValue(user.userID, out Panel userPanel))
+                    {
+                        var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault() as Label;
+                        if (onlineIndicator != null)
+                        {
+                            onlineIndicator.BackColor = user.isConnected == 1 ? Color.LimeGreen : Color.Red;
+                            onlineIndicator.Visible = true;
+                            onlineIndicator.Invalidate(); // Force repaint
                         }
                     }
                 }
             }
 
-            return connectedUsers;
+            // Restore scroll position
+            try
+            {
+                flowLayout.VerticalScroll.Value = Math.Min(savedScrollPos, flowLayout.VerticalScroll.Maximum);
+            }
+            catch { }
         }
-        private void displayConnectedUsers()
+        private bool UserPanelsMatch(List<User> connectedUsers)
         {
-            List<User> connectedUsers = getConnectedUsers();
-
-            // Clear the panel before adding new items
-            usersShadowPanel.Controls.Clear();
-
-            // Add the icon button back to the panel
-            usersShadowPanel.Controls.Add(usersIconButton);
-
-            int yOffset = 10; // Initial vertical spacing
-
-            // Add a label at the top with the number of online users
-            Label headerLabel = new Label
+            if (flowLayout == null || flowLayout.Controls.Count != connectedUsers.Count) return false;
+            for (int i = 0; i < flowLayout.Controls.Count; i++)
             {
-                Text = $"Online Users ({connectedUsers.Count})", // Display the count of online users
-                Location = new Point(10, yOffset + 3), // At the top
-              //  Location = new Point((usersShadowPanel.Width - TextRenderer.MeasureText($"Online Users ({connectedUsers.Count})", new Font("Segoe UI", 12, FontStyle.Bold)).Width) / 2, yOffset), // Center the header horizontally
-                AutoSize = true,
-                Font = new Font("Segoe UI", 12, FontStyle.Bold)
-            };
-
-            usersShadowPanel.Controls.Add(headerLabel);
-            yOffset += headerLabel.Height + 20; // Add space for the header label
-
-            foreach (User user in connectedUsers)
+                if (flowLayout.Controls[i] is Panel panel && (int)panel.Tag != connectedUsers[i].userID)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public static async Task triggerServerDisconnect()
+        {
+            if (SignalRManager.IsConnected && loggedInUser != null)
             {
-                // Calculate the X position to center the PictureBox in the panel
-                int pictureBoxX = (usersShadowPanel.Width - 75) / 2; // Center the 75px image
-
-                // Create PictureBox for the user's image
-                CircularPictureBox pictureBox = new CircularPictureBox
+                try
                 {
-                    Image = user.Picture ?? Resources.pngegg, // Fallback image
-                    SizeMode = PictureBoxSizeMode.Zoom,
-                    Size = new Size(75, 75), // Set size
-                    Location = new Point(pictureBoxX, yOffset) // Center horizontally and adjust vertically
-                };
-
-                // Set the label width within panel constraints
-                int nameLabelWidth = usersShadowPanel.Width - 20;
-                int nameLabelX = (usersShadowPanel.Width - nameLabelWidth) / 2;
-
-                // Create Label for the user's name (below the picture)
-                Label nameLabel = new Label
+                    await SignalRManager.HubProxy.Invoke("DisconnectUser", loggedInUser.userID);
+                    SignalRManager.Connection.Stop();
+                }
+                catch (Exception ex)
                 {
-                    Text = $"{user.FullName.Split(' ')[0]} - {user.Department}", // "Name - Department"
-                    Location = new Point(nameLabelX, yOffset + pictureBox.Height + 5), // Position below picture
-                    AutoSize = true, // Allow dynamic height
-                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                    ForeColor = darkColor,
-                    MaximumSize = new Size(nameLabelWidth, 0), // Wrap text within the panel width
-                    TextAlign = ContentAlignment.MiddleCenter // Ensure proper text alignment
-                };
-
-
-                // Add controls to the panel
-                usersShadowPanel.Controls.Add(pictureBox);
-                usersShadowPanel.Controls.Add(nameLabel);
-
-                // Update vertical offset for the next user
-                yOffset += pictureBox.Height + nameLabel.Height + 20; // Add space between users
+                    Console.WriteLine($"Error stopping SignalR connection: {ex.Message}");
+                }
             }
         }
-        /* private void startPipeListener()
-         {
-             Thread pipeListenerThread = new Thread(new ThreadStart(ListenForMessages));
-             pipeListenerThread.IsBackground = true;
-             pipeListenerThread.Start();
-         }
-         private void ListenForMessages()
-         {
-             using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("UserLogoutPipe", PipeDirection.In))
-             {
-                 // Wait for a connection from a client (new session)
-                 pipeServer.WaitForConnection();
+        private void UnsubscribeFromEvents()
+        {
+            if (updateUserListSubscription != null)
+            {
+                updateUserListSubscription.Dispose();
+                updateUserListSubscription = null;
+            }
+            // Dispose of other subscriptions similarly if you have them.
+        }
+        public void LoadUnreadNotifications()
+        {
+            // Clear existing notifications
+            notificationsPanel.Controls.Clear();
 
-                 using (StreamReader reader = new StreamReader(pipeServer))
-                 {
-                     // Read the message from the new session
-                     string message = reader.ReadLine();
-                     if (message == "UserLoggedOut")
-                     {
-                         // Use a valid control on the UI thread for invoking the action
-                         Invoke((Action)(() =>
-                         {
-                             MessageBox.Show("You have been logged out because the user is opened on another PC.");
-                             Close(); // Close the old session (form)
+            using (SqlConnection conn = getConnection())
+            {
+                conn.Open();
+                string query = @"
+                SELECT rn.NotificationId, r.RequestID, r.RequestType, r.RequestUserFullName, r.RequestDepartment, r.RequestUserID
+                FROM RequestNotifications rn
+                JOIN Requests r ON rn.RequestId = r.RequestID
+                WHERE rn.UserId = @UserId AND rn.IsRead = 0";
 
-                             // Show the login form on the main thread
-                             if (loginForm != null)
-                             {
-                                 loginForm.Show();
-                             }
-                         }));
-                     }
-                 }
-             }
-         }*/
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", loggedInUser.userID);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        int notificationCount = 0;
+                        while (reader.Read())
+                        {
+                            int notificationId = reader.GetInt32(0);
+                            string requestType = reader.GetString(2);
+                            string userName = reader.GetString(3);
+                            string department = reader.GetString(4);
+                            int requestUserId = reader.GetInt32(5);
+
+                            // Skip notification if the logged-in user is the request owner and has a manager or HR role.
+                            if (loggedInUser.userID == requestUserId && (hasManagerRole || hasHRRole))
+                            {
+                                continue;
+                            }
+
+                            notificationCount++;
+
+                            // Create a container for the individual notification using a FlowLayoutPanel.
+                            FlowLayoutPanel notifContainer = new FlowLayoutPanel
+                            {
+                                FlowDirection = FlowDirection.TopDown,
+                                WrapContents = false,
+                                AutoSize = true,
+                                Width = notificationsPanel.Width - 20,
+                                BackColor = Color.White,
+                                Margin = new Padding(0, 5, 0, 5)
+                            };
+
+                            // Create the label displaying the notification details.
+                            Label lbl = new Label
+                            {
+                                Text = $"New {requestType} request from {userName} in {department}",
+                                Font = new Font("Segoe UI", 9, FontStyle.Regular),
+                                ForeColor = Color.Black,
+                                AutoSize = true,
+                                TextAlign = ContentAlignment.MiddleCenter,
+                                MaximumSize = new Size(notifContainer.Width - 20, 0)
+                            };
+
+                            int leftMargin = (notifContainer.Width - lbl.Width) / 2;
+                            lbl.Margin = new Padding(leftMargin, 5, 0, 0);
+
+                            notifContainer.Controls.Add(lbl);
+
+                            // Create the "Mark as Read" button.
+                            BunifuButton2 btnMarkRead = new BunifuButton2
+                            {
+                                Text = "Mark as Read",
+                                Size = new Size(90, 25),
+                                Tag = notificationId,
+                                Font = new Font("Segoe UI", 8, FontStyle.Bold),
+                                Cursor = Cursors.Hand
+                            };
+
+                            // Add custom styling for mouse events.
+                            btnMarkRead.OnDisabledState.BorderColor = darkColor;
+                            btnMarkRead.OnDisabledState.FillColor = primaryColor;
+                            btnMarkRead.OnDisabledState.ForeColor = Color.White;
+
+                            btnMarkRead.onHoverState.BorderColor = darkColor;
+                            btnMarkRead.onHoverState.FillColor = darkColor;
+                            btnMarkRead.onHoverState.ForeColor = Color.White;
+
+                            btnMarkRead.OnIdleState.BorderColor = darkColor;
+                            btnMarkRead.OnIdleState.FillColor = primaryColor;
+                            btnMarkRead.OnIdleState.ForeColor = Color.White;
+
+                            btnMarkRead.OnPressedState.BorderColor = darkColor;
+                            btnMarkRead.OnPressedState.FillColor = primaryColor;
+                            btnMarkRead.OnPressedState.ForeColor = Color.White;
+                            btnMarkRead.AutoRoundBorders = true;
+                            btnMarkRead.IdleBorderRadius = 15;
+
+                            leftMargin = (notifContainer.Width - btnMarkRead.Width) / 2;
+                            btnMarkRead.Margin = new Padding(leftMargin, 5, 0, 0);
+
+                            // Use a correct event handler that casts sender as a Button.
+                            btnMarkRead.Click += BtnMarkRead_Click;
+
+                            notifContainer.Controls.Add(btnMarkRead);
+
+                            // Add the individual notification container to the scrollable notifications panel.
+                            notificationsPanel.Controls.Add(notifContainer);
+                        }
+
+                        // Update the header with the current notification count.
+                        notificationHeader.Text = $"Number of Notifications: ({notificationCount})";
+                    }
+                }
+            }
+
+            // Check if there is an increase in notifications to show a snackbar.
+            int currentCount = notificationsPanel.Controls.Count;
+            if (currentCount > lastNotificationCount)
+            {
+                bool showNotification = false;
+                using (SqlConnection conn = getConnection())
+                {
+                    conn.Open();
+                    string query = @"
+                    SELECT r.RequestUserID
+                    FROM RequestNotifications rn
+                    JOIN Requests r ON rn.RequestId = r.RequestID
+                    WHERE rn.UserId = @UserId AND rn.IsRead = 0";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserId", loggedInUser.userID);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int requestUserId = reader.GetInt32(0);
+                                if (loggedInUser.userID != requestUserId || (!hasManagerRole && !hasHRRole))
+                                {
+                                    showNotification = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (showNotification)
+                {
+                    ShowNotificationSnackbar("You have new request(s).");
+                }
+            }
+            lastNotificationCount = currentCount;
+        }
+
+        private void BtnMarkRead_Click(object sender, EventArgs e)
+        {
+            int notificationId = (int)((BunifuButton2)sender).Tag;
+            MarkNotificationAsRead(notificationId);
+        }
+        private void MarkNotificationAsRead(int notificationId)
+        {
+            using (SqlConnection conn = getConnection())
+            {
+                conn.Open();
+                string checkQuery = "SELECT COUNT(*) FROM RequestNotifications WHERE NotificationId = @NotificationId AND UserId = @UserId";
+                using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
+                {
+                    checkCmd.Parameters.AddWithValue("@NotificationId", notificationId);
+                    checkCmd.Parameters.AddWithValue("@UserId", loggedInUser.userID);
+                    int count = (int)checkCmd.ExecuteScalar();
+                    if (count == 0)
+                    {
+                        MessageBox.Show("You are not authorized to mark this notification as read.");
+                        return;
+                    }
+                }
+
+                string query = "UPDATE RequestNotifications SET IsRead = 1 WHERE NotificationId = @NotificationId";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@NotificationId", notificationId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            LoadUnreadNotifications();
+        }
+        private void ShowNotificationSnackbar(string message)
+        {
+            // Show Bunifu Snackbar
+            notificationsSnackbar.Show(this, message, BunifuSnackbar.MessageTypes.Information);
+            // Play notification sound
+
+            // Use a system sound (e.g., Windows chime)
+            // SystemSounds.Exclamation.Play();
+
+            // Play notification sound from Audio folder
+            try
+            {
+                string audioPath = Path.Combine(Application.StartupPath, "Audio", "Request Notification.wav");
+                if (File.Exists(audioPath))
+                {
+                    using (var soundPlayer = new SoundPlayer(audioPath))
+                    {
+                        soundPlayer.Play();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Audio file not found at: {audioPath}");
+                    SystemSounds.Exclamation.Play(); // Fallback to system sound
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error playing notification sound: {ex.Message}");
+                SystemSounds.Exclamation.Play(); // Fallback on error
+            }
+        }
+        private void AddUserPanel(int userId, bool isConnected)
+        {
+            User newUser = GetUserDetails(userId);
+            if (newUser == null) return;
+
+            Panel userPanel = new Panel
+            {
+                Size = new Size(flowLayout.Width - 25, 120),
+                Margin = new Padding(5),
+                BorderStyle = BorderStyle.None,
+                Tag = userId
+            };
+
+            CircularPictureBox pictureBox = new CircularPictureBox
+            {
+                Image = newUser.Picture,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Size = new Size(60, 60),
+                Location = new Point((userPanel.Width - 60) / 2, 10),
+                Cursor = Cursors.Hand
+            };
+            pictureBox.Click += (s, e) => OpenChatForm(userId);
+            pictureBox.SendToBack();
+
+            Label msgCounter = new Label
+            {
+                Name = "msgCounter",
+                Size = new Size(20, 20),
+                BackColor = Color.FromArgb(33, 150, 243),
+                ForeColor = Color.White,
+                Font = new Font("Segoe UI", 8, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleCenter,
+                Location = new Point(pictureBox.Left - 25, pictureBox.Top - 5),
+                Visible = false
+            };
+            using (var gp = new GraphicsPath())
+            {
+                gp.AddEllipse(0, 0, msgCounter.Width, msgCounter.Height);
+                msgCounter.Region = new Region(gp);
+            }
+
+            Label onlineIndicator = new Label
+            {
+                Name = "onlineIndicator",
+                Size = new Size(10, 10),
+                BackColor = isConnected ? Color.LimeGreen : Color.Red,
+                Location = new Point(pictureBox.Right - 10, pictureBox.Top + 5),
+                Visible = true
+            };
+            using (var gp = new GraphicsPath())
+            {
+                gp.AddEllipse(0, 0, onlineIndicator.Width, onlineIndicator.Height);
+                onlineIndicator.Region = new Region(gp);
+            }
+
+            Label nameLabel = new Label
+            {
+                Text = $"{newUser.FullName.Split(' ')[0]} - {newUser.Department}",
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.Black,
+                TextAlign = ContentAlignment.MiddleCenter,
+                AutoSize = true,
+                MaximumSize = new Size(userPanel.Width - 20, 0),
+                Location = new Point(10, pictureBox.Bottom + 5)
+            };
+
+            userPanel.Controls.AddRange(new Control[] { pictureBox, msgCounter, onlineIndicator, nameLabel });
+            flowLayout.Controls.Add(userPanel);
+            flowLayout.Controls.SetChildIndex(userPanel, 0); // Insert at top
+            flowLayout.ScrollControlIntoView(userPanel); // Ensure visible
+            userPanels[userId] = userPanel;
+
+            int initialCount = pendingMessageCounts.ContainsKey(userId) ? pendingMessageCounts[userId] : newUser.PendingMessageCount;
+            UpdateMessageCounterUI(userPanel, initialCount);
+        }
+        private User GetUserDetails(int userId)
+        {
+            try
+            {
+                using (SqlConnection connection = getConnection())
+                {
+                    connection.Open();
+                    string query = @"
+                    SELECT UserID, FullName, Department, Picture, 0 AS PendingMessageCount
+                    FROM Users 
+                    WHERE UserID = @UserID";
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@UserID", userId);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new User
+                                {
+                                    userID = reader.GetInt32(0),
+                                    FullName = reader.GetString(1),
+                                    Department = reader.GetString(2),
+                                    Picture = reader["Picture"] != DBNull.Value
+                                        ? Image.FromStream(new MemoryStream((byte[])reader["Picture"]))
+                                        : Resources.pngegg,
+                                    isConnected = 1, // Assume connected since this is a new user
+                                    PendingMessageCount = reader.GetInt32(4)
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching user details: {ex.Message}");
+            }
+            return null;
+        }
+        public void UpdateUserStatus(int userId, bool isConnected)
+        {
+            if (userPanels.TryGetValue(userId, out Panel userPanel))
+            {
+                var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault() as Label;
+                if (onlineIndicator != null)
+                {
+                    onlineIndicator.BackColor = isConnected ? Color.LimeGreen : Color.Red;
+                    onlineIndicator.Visible = true;
+                    onlineIndicator.Invalidate();
+                    // Move reconnected user to top if connecting
+                    if (isConnected)
+                    {
+                        flowLayout.Controls.Remove(userPanel);
+                        flowLayout.Controls.Add(userPanel); // Add to bottom for now
+                        flowLayout.Controls.SetChildIndex(userPanel, 0); // Move to top
+                        flowLayout.ScrollControlIntoView(userPanel);
+                    }
+                }
+            }
+            else if (isConnected) // Only add new users when connecting, not disconnecting
+            {
+                AddUserPanel(userId, isConnected);
+            }
+
+            // Update online count
+            int onlineCount = userPanels.Count(p => p.Value.Controls.Find("onlineIndicator", true).FirstOrDefault()?.BackColor == Color.LimeGreen);
+            var headerLabel = usersPanel.Controls.OfType<Label>().FirstOrDefault(ctrl => ctrl.Tag?.ToString() == "header");
+            if (headerLabel != null) headerLabel.Text = $"Online Users ({onlineCount})";
+        }
+
         #endregion
 
         #region Buttons
         private void requestsImageButton_Click(object sender, EventArgs e)
         {
             //  showFormInPanel(new requestsForm(false));
-            requestsForm requestsForm = new requestsForm(true);
-            requestsForm.Show();
+            requestsForm requestsForm = new requestsForm(true, loggedInUser);
+            requestsForm.ShowDialog();
         }
         private void reportsImageButton_Click(object sender, EventArgs e)
         {
            // showFormInPanel(new reportsForm(false));
             reportsForm reportsForm = new reportsForm(true);
-            reportsForm.Show();
+            reportsForm.ShowDialog();
         }
         private void teamImageButton_Click(object sender, EventArgs e)
         {
             myTeamForm balanceForm = new myTeamForm(true);
-            balanceForm.Show();
+            balanceForm.ShowDialog();
             //showFormInPanel(new balanceForm(false));
         }
         private void controlPanelImageButton_Click(object sender, EventArgs e)
@@ -762,17 +1495,22 @@ namespace TDF.Net
             //showFormInPanel(controlPanelForm);
             controlPanelForm.ShowDialog();
         }
-        private void logoutImageButton_Click(object sender, EventArgs e)
+        private async void logoutImageButton_Click(object sender, EventArgs e)
         {
-            makeUserDisconnected();
+            if (!isFormClosing)
+            {
+                isFormClosing = true;
 
-            _pipeCts.Cancel();
-            closePipeConnection(); 
-
-            loggedInUser = null;
-            Close();
-            loginForm.Show();
+                UnsubscribeFromEvents();
+                await triggerServerDisconnect();
+                SignalRManager.ResetConnection(); // Reset SignalR state
+                loggedInUser = null;
+                Close();
+                loginForm.Show();
+            }
         }
+
+
         #endregion
     }
 }

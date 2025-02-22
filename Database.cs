@@ -23,6 +23,7 @@ namespace TDF.Net
         static int startIP = 1;
         static int endIP = 255;
         static int Port = 1433;
+        public static string serverIPAddress;
 
 
         public static string buildConnectionString()
@@ -44,7 +45,7 @@ namespace TDF.Net
                                 "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
-
+            serverIPAddress = serverIP;
             // Check for database name
             string databaseName = iniFile.Read("Database", "Database", "");
             if (string.IsNullOrWhiteSpace(databaseName))

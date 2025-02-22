@@ -15,6 +15,8 @@ namespace TDF.Net.Classes
         public string Department { get; set; }
         public Image Picture { get; set; }
         public string Title { get; set; }
+        public int isConnected { get; set; }
+        public int PendingMessageCount { get; set; }
 
 
         public User()
@@ -68,11 +70,11 @@ namespace TDF.Net.Classes
                 {
                     cmd.Parameters.AddWithValue("@UserID", userId);  // Add the retrieved UserID
                     cmd.Parameters.AddWithValue("@FullName", FullName);
-                    cmd.Parameters.AddWithValue("@Annual", 14); // Set default Annual leave balance
-                    cmd.Parameters.AddWithValue("@CasualLeave", 7); // Set default Casual leave balance
+                    cmd.Parameters.AddWithValue("@Annual", 15); // Set default Annual leave balance
+                    cmd.Parameters.AddWithValue("@CasualLeave", 6); // Set default Casual leave balance
                     cmd.Parameters.AddWithValue("@AnnualUsed", 0); // Set default Annual used
                     cmd.Parameters.AddWithValue("@CasualUsed", 0); // Set default Casual used
-                    cmd.Parameters.AddWithValue("@Permissions", 2); // Set default Permissions used
+                    cmd.Parameters.AddWithValue("@Permissions", 24); // Set default Permissions balance
                     cmd.Parameters.AddWithValue("@PermissionsUsed", 0); // Set default Permissions used
                     cmd.Parameters.AddWithValue("@UnpaidUsed", 0); // Set default Unpaid used
                     cmd.ExecuteNonQuery();

@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using TDF.Classes;
@@ -24,11 +23,11 @@ namespace TDF.Net
         {
             // Check if the application is already running
             string appName = Process.GetCurrentProcess().ProcessName;
-            if (Process.GetProcessesByName(appName).Length > 1)
+         /*   if (Process.GetProcessesByName(appName).Length > 1)
             {
                 MessageBox.Show("Another instance of the TDF app is already running.","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
+            }*/
 
             //setProcessDpiAwareness(); // Enable DPI scaling
 
@@ -69,7 +68,8 @@ namespace TDF.Net
                 CrashLogger.LogException(e.Exception);
 
                 // Call your method to update the user's status to "disconnected"
-                makeUserDisconnected(); // Ensure this method is accessible in this context
+                mainFormNewUI.triggerServerDisconnect();
+                // Ensure this method is accessible in this context
             }
             catch (Exception ex2)
             {
@@ -97,7 +97,7 @@ namespace TDF.Net
                 }
 
                 // Call your disconnect method here as well
-                makeUserDisconnected();
+                mainFormNewUI.triggerServerDisconnect();
             }
             catch (Exception ex2)
             {
@@ -107,7 +107,8 @@ namespace TDF.Net
             Environment.Exit(1);
         }
 
-        // static bool roundCorners = true;
+        static bool roundCorners = true;
+        static int borderRadius = 25;
 
         public static void applyTheme(Form form)
         {
@@ -164,9 +165,9 @@ namespace TDF.Net
                             BunifuButton.OnPressedState.FillColor = ThemeColor.primaryColor;
                             BunifuButton.OnPressedState.ForeColor = Color.White;
                             BunifuButton.Font = new Font(BunifuButton.Font, BunifuButton.Font.Style | FontStyle.Bold);
-                            // BunifuButton.AutoRoundBorders = true;
+                            BunifuButton.AutoRoundBorders = roundCorners;
                             //BunifuButton.AutoGenerateColors = true;
-                            //BunifuButton.IdleBorderRadius = 12;
+                            BunifuButton.IdleBorderRadius = borderRadius;
 
                             BunifuButton.Cursor = Cursors.Hand;
                             BunifuButton.Invalidate();
@@ -190,25 +191,28 @@ namespace TDF.Net
                             {
                                 if (ct.GetType() == typeof(BunifuButton))
                                 {
-                                    BunifuButton btn = (BunifuButton)ct;
-                                    btn.OnDisabledState.BorderColor = ThemeColor.darkColor;
-                                    btn.OnDisabledState.FillColor = ThemeColor.primaryColor;
-                                    btn.OnDisabledState.ForeColor = Color.White;
+                                    BunifuButton BunifuButton = (BunifuButton)ct;
+                                    BunifuButton.OnDisabledState.BorderColor = ThemeColor.darkColor;
+                                    BunifuButton.OnDisabledState.FillColor = ThemeColor.primaryColor;
+                                    BunifuButton.OnDisabledState.ForeColor = Color.White;
 
-                                    btn.onHoverState.BorderColor = ThemeColor.darkColor;
-                                    btn.onHoverState.FillColor = ThemeColor.darkColor;
-                                    btn.onHoverState.ForeColor = Color.White;
+                                    BunifuButton.onHoverState.BorderColor = ThemeColor.darkColor;
+                                    BunifuButton.onHoverState.FillColor = ThemeColor.darkColor;
+                                    BunifuButton.onHoverState.ForeColor = Color.White;
 
-                                    btn.OnIdleState.BorderColor = ThemeColor.darkColor;
-                                    btn.OnIdleState.FillColor = ThemeColor.primaryColor;
-                                    btn.OnIdleState.ForeColor = Color.White;
+                                    BunifuButton.OnIdleState.BorderColor = ThemeColor.darkColor;
+                                    BunifuButton.OnIdleState.FillColor = ThemeColor.primaryColor;
+                                    BunifuButton.OnIdleState.ForeColor = Color.White;
 
-                                    btn.OnPressedState.BorderColor = ThemeColor.darkColor;
-                                    btn.OnPressedState.FillColor = ThemeColor.primaryColor;
-                                    btn.OnPressedState.ForeColor = Color.White;
-                                    btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
+                                    BunifuButton.OnPressedState.BorderColor = ThemeColor.darkColor;
+                                    BunifuButton.OnPressedState.FillColor = ThemeColor.primaryColor;
+                                    BunifuButton.OnPressedState.ForeColor = Color.White;
+                                    BunifuButton.AutoRoundBorders = roundCorners;
+                                    //BunifuButton.AutoGenerateColors = true;
+                                    BunifuButton.IdleBorderRadius = borderRadius;
+                                    BunifuButton.Font = new Font(BunifuButton.Font, BunifuButton.Font.Style | FontStyle.Bold);
 
-                                    btn.Refresh();
+                                    BunifuButton.Refresh();
                                 }
                                 if (ct.GetType() == typeof(Label))
                                 {
@@ -256,10 +260,9 @@ namespace TDF.Net
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
                     btn.Cursor = Cursors.Hand;
-                    // btn.IdleBorderRadius = 12;
-
-                    // btn.AutoRoundBorders = true;
+                    btn.AutoRoundBorders = roundCorners;
                     //btn.AutoGenerateColors = true;
+                    btn.IdleBorderRadius = borderRadius;
                     btn.Invalidate();
                     btn.Refresh();
                 }
@@ -284,10 +287,9 @@ namespace TDF.Net
                     btn.OnPressedState.ForeColor = Color.White;
                     btn.Font = new Font(btn.Font, btn.Font.Style | FontStyle.Bold);
                     btn.Cursor = Cursors.Hand;
-                    //btn.IdleBorderRadius = 12;
-
-                    // btn.AutoRoundBorders = true;
+                    btn.AutoRoundBorders = roundCorners;
                     //btn.AutoGenerateColors = true;
+                    btn.IdleBorderRadius = borderRadius;
                     btn.Invalidate();
                     btn.Refresh();
                 }
@@ -540,7 +542,8 @@ namespace TDF.Net
                 }
             }
         }
-        private static void setProcessDpiAwareness()
+
+        /*  private static void setProcessDpiAwareness()
         {
             try
             {
@@ -550,10 +553,11 @@ namespace TDF.Net
                     SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.PROCESS_PER_MONITOR_DPI_AWARE);
                 }
             }
-            catch { /* Ignore exceptions */ }
-        }
+            catch { /* Ignore exceptions 
+    }
+}
 
-        [DllImport("user32.dll")]
+      [DllImport("user32.dll")]
         private static extern bool SetProcessDPIAware();
 
         [DllImport("shcore.dll")]
@@ -564,6 +568,6 @@ namespace TDF.Net
             PROCESS_DPI_UNAWARE = 0,
             PROCESS_SYSTEM_DPI_AWARE = 1,
             PROCESS_PER_MONITOR_DPI_AWARE = 2
-        }
+        }*/
     }
 }

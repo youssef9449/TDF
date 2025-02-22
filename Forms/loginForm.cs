@@ -25,88 +25,78 @@ namespace TDF.Net
 
         private bool signingup = false;
         private bool changingPassword = false;
-        public static User loggedInUser;
+        public static User loggedInUser; // Ensure this is a public field
         public static List<string> departments = new List<string>();
         public static List<string> titles = new List<string>();
         private static Form oldSessionForm = null;
-        public static NamedPipeClientStream namedPipeClientStream;
-
+        private bool isLoggingIn = false;
 
         #region Methods
-        private void startLoggingIn()
+        private async void startLoggingIn()
         {
-            closePipeConnection();
+            if (isLoggingIn) return;
+            isLoggingIn = true;
 
-            string username = txtUsername.Text;
-            string password = txtPassword.Text;
-
-            // Check for an outdated version
-            string appVersion = Application.ProductVersion;
-            using (SqlConnection conn = Database.getConnection())
+            try
             {
-                conn.Open();
-                string versionQuery = "SELECT LatestVersion FROM AppVersion";
-                using (SqlCommand versionCmd = new SqlCommand(versionQuery, conn))
+                string username = txtUsername.Text;
+                string password = txtPassword.Text;
+
+                // Check for an outdated version
+                string appVersion = Application.ProductVersion;
+                using (SqlConnection conn = Database.getConnection())
                 {
-                    string latestVersion = versionCmd.ExecuteScalar()?.ToString();
-                    if (latestVersion != null && latestVersion != appVersion)
+                    conn.Open();
+                    string versionQuery = "SELECT LatestVersion FROM AppVersion";
+                    using (SqlCommand versionCmd = new SqlCommand(versionQuery, conn))
                     {
-                        MessageBox.Show("You are using an old version. Please use the latest version from the Taxi Partition to continue.", "Update Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return; // Stop execution here
+                        string latestVersion = versionCmd.ExecuteScalar()?.ToString();
+                        if (latestVersion != null && latestVersion != appVersion)
+                        {
+                            MessageBox.Show("You are using an old version. Please use the latest version from the Taxi Partition to continue.", "Update Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
                     }
                 }
-            }
 
-            // Proceed with login validation
-            bool isValidLogin = validateLogin(username, password);
+                // Proceed with login validation
+                bool isValidLogin = validateLogin(username, password);
 
-            if (isValidLogin)
-            {
-                // Log in the user and track the session
-                loggedInUser = getCurrentUserDetails(username);
-                makeUserConnected();
-                updateMachineName();
-
-                // Open the appropriate UI
-                if (guiDropdown.Text == "Classic")
+                if (isValidLogin)
                 {
-                    oldSessionForm = new mainForm(this);
+                    // Log in the user and track the session
+                    loggedInUser = getCurrentUserDetails(username);
+                    makeUserConnected();
+                    updateMachineName();
+
+                    // Initialize SignalR and register this user
+                    string serverUrl = "http://localhost:8080"; // Replace with your actual URL
+                    await SignalRManager.InitializeAsync(serverUrl, loggedInUser.userID);
+
+                    // Open the appropriate UI
+                    if (guiDropdown.Text == "Classic")
+                    {
+                        oldSessionForm = new mainForm(this);
+                    }
+                    else
+                    {
+                        oldSessionForm = new mainFormNewUI(this);
+                    }
+
+                    oldSessionForm.Show();
+
+                    // Hide the login form and clear fields
+                    clearFormFields();
+                    Hide();
                 }
                 else
                 {
-                    oldSessionForm = new mainFormNewUI(this);
+                    MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-
-                oldSessionForm.Show();
-
-                // Hide the login form and clear fields
-                clearFormFields();
-                Hide();
             }
-            else
+            finally
             {
-                MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        public static List<string> getConnectedUsers()
-        {
-            using (SqlConnection connection = Database.getConnection())
-            {
-                connection.Open();
-                string query = "SELECT FullName FROM Users WHERE IsConnected = 1";
-
-                List<string> connectedUsers = new List<string>();
-
-                using (SqlCommand cmd = new SqlCommand(query, connection))
-                {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        connectedUsers.Add(reader["FullName"].ToString());
-                    }
-                }
-                connectedUsers.Sort();
-                return connectedUsers;
+                isLoggingIn = false;
             }
         }
         private void makeUserConnected()
@@ -120,22 +110,6 @@ namespace TDF.Net
                 {
                     cmd.Parameters.AddWithValue("@userName", loggedInUser.UserName);
                     cmd.ExecuteNonQuery();
-                }
-            }
-        }
-        public static void makeUserDisconnected()
-        {
-            if (loggedInUser != null)
-            {
-                using (SqlConnection connection = Database.getConnection())
-                {
-                    connection.Open();
-                    string query = "UPDATE Users SET IsConnected = 0 WHERE UserName = @userName";
-                    using (SqlCommand cmd = new SqlCommand(query, connection))
-                    {
-                        cmd.Parameters.AddWithValue("@userName", loggedInUser.UserName);
-                        cmd.ExecuteNonQuery();
-                    }
                 }
             }
         }
@@ -429,23 +403,6 @@ namespace TDF.Net
                 }
             }
         }
-        public static void closePipeConnection()
-        {
-            try
-            {
-                // If you have a named pipe client, close it
-                if (namedPipeClientStream != null)
-                {
-                    namedPipeClientStream.Close();
-                    namedPipeClientStream.Dispose();
-                    namedPipeClientStream = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error closing pipe: " + ex.Message, "Pipe Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
         public static async Task StartListeningAsync(CancellationToken cancellationToken = default)
         {
             while (!cancellationToken.IsCancellationRequested)
@@ -528,7 +485,7 @@ namespace TDF.Net
             {
                 if (!signingup && !changingPassword)
                 {
-                    startLoggingIn();
+                     startLoggingIn();
 
                     // Optionally suppress the beep sound on Enter key press
                     e.Handled = true;

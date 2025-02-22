@@ -10,8 +10,12 @@ using TDF.Net.Classes;
 using Bunifu.UI.WinForms;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
+using static TDF.Net.mainFormNewUI;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.IO.Pipes;
+using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
+using TDF.Net.Forms;
 
 namespace TDF.Forms
 {
@@ -236,8 +240,6 @@ namespace TDF.Forms
             spoofButton.Visible = hasAdminRole;
             importButton.Visible = hasAdminRole;
             deleteButton.Visible = hasAdminRole;
-            killButton.Visible = hasAdminRole;
-
         }
         private void searchTextBox_TextChange(object sender, EventArgs e)
         {
@@ -998,7 +1000,7 @@ namespace TDF.Forms
 
             if (result == DialogResult.Yes)
             {
-                makeUserDisconnected();
+                triggerServerDisconnect();
                 string userFullName = usersCheckedListBox.CheckedItems[0].ToString().Split('-')[0].Trim();
 
                 using (SqlConnection conn = Database.getConnection())
@@ -1052,14 +1054,6 @@ namespace TDF.Forms
                 return;
             }
 
-            // Validate removedAmountTextBox
-           /* if (!decimal.TryParse(removedAmountTextBox.Text, out decimal removedAmount) || removedAmount <= 0)
-            {
-                MessageBox.Show("Please enter a valid positive number in the removed amount field.");
-                removedAmountTextBox.Focus();
-                return;
-            }*/
-
             // Validate reasonTextBox
             if (string.IsNullOrWhiteSpace(reasonTextBox.Text))
             {
@@ -1071,8 +1065,25 @@ namespace TDF.Forms
             string requestReason = reasonTextBox.Text.Trim();
             string requestType = removeBalanceDropdown.Text;
             string loggedInUserFullName = loggedInUser.FullName;
+            int numberOfDaysRequested, balance = 0;
+            bool atLeastOneProcessed = false;
 
-            DateTime fromdate = Convert.ToDateTime(fromDayDatePicker.Text);
+            DateTime fromDay = Convert.ToDateTime(fromDayDatePicker.Text);
+            DateTime toDay = Convert.ToDateTime(toDayDatePicker.Text);
+
+            numberOfDaysRequested = addRequestForm.getWorkingDays(fromDay, toDay);
+
+            if (fromDay > toDay)
+            {
+                MessageBox.Show("Ending date can't be earlier than the beginning date.", "Invalid Request");
+                return;
+            }
+            else if (numberOfDaysRequested <= 0)
+            {
+                MessageBox.Show("You cannot apply for leave on Friday or Saturday.", "Invalid Request");
+                return;
+            }
+
 
             // Determine the column to update
             string columnToUpdate;
@@ -1089,6 +1100,7 @@ namespace TDF.Forms
                 columnToUpdate = "Work From Home";
             }
 
+
             using (SqlConnection connection = Database.getConnection())
             {
                 connection.Open();
@@ -1099,6 +1111,19 @@ namespace TDF.Forms
                     string[] userParts = selectedUser.ToString().Split('-');
                     string fullName = userParts[0].Trim();
                     string departmentName = userParts[1].Trim();
+
+                    if (removeBalanceDropdown.Text == "Annual")
+                    {
+                        balance = addRequestForm.getLeaveDays("AnnualBalance", userName: fullName);
+                    }
+                    else if (removeBalanceDropdown.Text == "Emergency")
+                    {
+                        balance = addRequestForm.getLeaveDays("CasualBalance", userName: fullName);
+                    }
+                    else
+                    {
+                        balance = 0;
+                    }
 
                     // Fetch UserID from AnnualLeave table
                     string getUserIdQuery = "SELECT UserID FROM AnnualLeave WHERE FullName = @FullName";
@@ -1114,6 +1139,24 @@ namespace TDF.Forms
                         }
                         userId = Convert.ToInt32(result);
                     }
+                    
+                    if (removeBalanceDropdown.Text == "Annual")
+                    {
+                        if (numberOfDaysRequested > balance)
+                        {
+                            MessageBox.Show($"{fullName} doesn't have enough Annual leave balance; they were not affected.", "Insufficient Balance");
+                            continue;
+                        }
+                    }
+
+                    else if (removeBalanceDropdown.Text == "Emergency")
+                    {
+                        if (numberOfDaysRequested > balance)
+                        {
+                            MessageBox.Show($"{fullName} doesn't have enough Emergency leave balance; they were not affected.", "Insufficient Balance");
+                            continue;
+                        }
+                    }
 
                     if (columnToUpdate != "Work From Home")
                     {
@@ -1124,7 +1167,7 @@ namespace TDF.Forms
 
                         using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                         {
-                            updateCommand.Parameters.AddWithValue("@RemovedAmount", 1);
+                            updateCommand.Parameters.AddWithValue("@RemovedAmount", numberOfDaysRequested);
                             updateCommand.Parameters.AddWithValue("@FullName", fullName);
                             updateCommand.ExecuteNonQuery();
                         }
@@ -1151,23 +1194,31 @@ namespace TDF.Forms
                     {
                         insertCommand.Parameters.AddWithValue("@RequestUserID", userId);
                         insertCommand.Parameters.AddWithValue("@RequestUserFullName", fullName);
-                        insertCommand.Parameters.AddWithValue("@RequestFromDay", fromdate);
-                        insertCommand.Parameters.AddWithValue("@RequestToDay", fromdate);
+                        insertCommand.Parameters.AddWithValue("@RequestFromDay", fromDay);
+                        insertCommand.Parameters.AddWithValue("@RequestToDay", toDay);
                         insertCommand.Parameters.AddWithValue("@RequestReason", requestReason);
                         insertCommand.Parameters.AddWithValue("@RequestStatus", "Approved");
                         insertCommand.Parameters.AddWithValue("@RequestType", requestType);
                         insertCommand.Parameters.AddWithValue("@RequestCloser", loggedInUserFullName);
                         insertCommand.Parameters.AddWithValue("@RequestDepartment", departmentName);
-                        insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", 1);
+                        insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", numberOfDaysRequested);
                         insertCommand.Parameters.AddWithValue("@RequestHRStatus", "Approved");
                         insertCommand.Parameters.AddWithValue("@RequestHRCloser", loggedInUserFullName);
                         insertCommand.ExecuteNonQuery();
                     }
+                    atLeastOneProcessed = true;
                 }
 
                 connection.Close();
             }
-            MessageBox.Show("Request added successfully.");
+            if (atLeastOneProcessed)
+            {
+                MessageBox.Show("Leave days have been successfully added.", "Add Leave Day(s)");
+            }
+            else
+            {
+                MessageBox.Show("No leave days were added due to insufficient balance.", "Add Leave Day(s)");
+            }
         }
         private void addTitleButton_Click(object sender, EventArgs e)
         {
@@ -1219,58 +1270,86 @@ namespace TDF.Forms
                 MessageBox.Show($"The title '{newTitleName}' has been added successfully to the {selectedDepartment} department.");
             }
         }
-        private void killButton_Click(object sender, EventArgs e)
+
+        private async void broadcastButton_Click(object sender, EventArgs e)
         {
-            if (!userSelected())
-            {
-                return;
-            }
+            string message = messageTextBox.Text;
 
-            using (SqlConnection conn = Database.getConnection())
-            {
-                conn.Open();
+            if (string.IsNullOrEmpty(message)) return;
+            DialogResult confirmation = MessageBox.Show($"Are you sure you want to broadcast this message? '{message}'",
+                               "Confirm Broadcasting",
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
-                foreach (object selectedItem in usersCheckedListBox.CheckedItems)
+            if (confirmation == DialogResult.Yes)
+            {
+                int? senderID = loggedInUser?.userID; // Assume loggedInUser is available
+                var selectedUserIDs = new List<int>();
+
+                // Use the existing database connection or open a new one
+                using (SqlConnection conn = Database.getConnection())
                 {
-                    // Extract user name
-                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+                    conn.Open();
 
-                    // Get the machine name of the user
-                    string query = "SELECT MachineName FROM Users WHERE FullName = @FullName";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    // Loop through all checked items in usersCheckedListBox
+                    if (usersCheckedListBox.CheckedItems.Count > 0)
                     {
-                        cmd.Parameters.AddWithValue("@FullName", userFullName);
-                        object machineName = cmd.ExecuteScalar();
-
-                        if (machineName != null)
+                        foreach (var item in usersCheckedListBox.CheckedItems)
                         {
-                            SendKillSignal(machineName.ToString()); // Send signal to that PC
+                            if (item is string userString)
+                            {
+                                // Extract the full name (e.g., "Youssef Samir") from "name - dep"
+                                string userFullName = userString.Split('-')[0].Trim();
+                                //Console.WriteLine($"Processing user: {userFullName}");
+
+                                // Fetch userID directly from the database
+                                string getUserIdQuery = "SELECT UserID FROM Users WHERE FullName = @FullName";
+                                int userId;
+
+                                using (SqlCommand getUserIdCmd = new SqlCommand(getUserIdQuery, conn))
+                                {
+                                    getUserIdCmd.Parameters.AddWithValue("@FullName", userFullName);
+                                    var result = getUserIdCmd.ExecuteScalar();
+                                    if (result != null && result != DBNull.Value)
+                                    {
+                                        userId = Convert.ToInt32(result);
+                                        selectedUserIDs.Add(userId);
+                                    //    Console.WriteLine($"Found userID: {userId} for {userFullName}");
+                                    }
+                                    else
+                                    {
+                                     //   Console.WriteLine($"User not found for name: {userFullName}");
+                                    }
+                                }
+                            }
+                        }
+
+                        if (selectedUserIDs.Any())
+                        {
+                            await SignalRManager.HubProxy.Invoke("SendNotification", selectedUserIDs, $"{message}", senderID, false, false);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No valid users selected for broadcasting. Please check user names.", "Broadcast Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
-                }
-
-                MessageBox.Show("Selected users have been disconnected.");
-            }
-        }
-        private static void SendKillSignal(string targetPC)
-        {
-            try
-            {
-                using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(targetPC, "KillPipe", PipeDirection.Out))
-                {
-                    pipeClient.Connect(2000); // Wait 2 seconds for connection
-                    using (StreamWriter writer = new StreamWriter(pipeClient))
+                    else
                     {
-                        writer.WriteLine("KILL");
-                        writer.Flush();
+                        // Broadcast to all online users if no selection (as per your previous request)
+                        await SignalRManager.HubProxy.Invoke("SendNotification", null, $"{message}", senderID, false, false);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error sending kill signal to {targetPC}: {ex.Message}");
-            }
         }
+
+        #endregion
+
+        #region Send chat message to selected users
+        /*// Example: Send chat message to selected users
+    var selectedUserIDs = listBoxUsers.SelectedItems.Cast<User>().Select(u => u.userID).ToList();
+    if (selectedUserIDs.Any())
+    {
+        await SignalRManager.HubProxy.Invoke("SendNotification", selectedUserIDs, "Group chat message", loggedInUser.userID, true, true);
+    }*/
         #endregion
 
         /* private void bunifuButton1_Click(object sender, EventArgs e)

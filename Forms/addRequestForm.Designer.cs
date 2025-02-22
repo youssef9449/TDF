@@ -69,6 +69,8 @@
             this.unpaidLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.unpaidRadioButton = new Bunifu.UI.WinForms.BunifuRadioButton();
             this.toDayDatePicker = new Bunifu.UI.WinForms.BunifuDatePicker();
+            this.pendingDaysLabel = new Bunifu.UI.WinForms.BunifuLabel();
+            this.pendingLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.panel.SuspendLayout();
             this.bunifuGroupBox1.SuspendLayout();
             this.leaveGroupBox.SuspendLayout();
@@ -214,7 +216,7 @@
             this.reasonTextBox.IconRight = null;
             this.reasonTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.reasonTextBox.Lines = new string[0];
-            this.reasonTextBox.Location = new System.Drawing.Point(73, 368);
+            this.reasonTextBox.Location = new System.Drawing.Point(74, 398);
             this.reasonTextBox.MaxLength = 32767;
             this.reasonTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.reasonTextBox.Modified = false;
@@ -268,7 +270,7 @@
             this.reasonLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.reasonLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.reasonLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.reasonLabel.Location = new System.Drawing.Point(9, 374);
+            this.reasonLabel.Location = new System.Drawing.Point(10, 404);
             this.reasonLabel.Name = "reasonLabel";
             this.reasonLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.reasonLabel.Size = new System.Drawing.Size(51, 20);
@@ -318,7 +320,7 @@
             this.submitButton.AllowToggling = false;
             this.submitButton.AnimationSpeed = 200;
             this.submitButton.AutoGenerateColors = false;
-            this.submitButton.AutoRoundBorders = false;
+            this.submitButton.AutoRoundBorders = true;
             this.submitButton.AutoSizeLeftIcon = true;
             this.submitButton.AutoSizeRightIcon = true;
             this.submitButton.BackColor = System.Drawing.Color.Transparent;
@@ -360,10 +362,10 @@
             this.submitButton.IdleIconLeftImage = null;
             this.submitButton.IdleIconRightImage = null;
             this.submitButton.IndicateFocus = false;
-            this.submitButton.Location = new System.Drawing.Point(262, 410);
+            this.submitButton.Location = new System.Drawing.Point(263, 440);
             this.submitButton.Name = "submitButton";
             this.submitButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
-            this.submitButton.OnDisabledState.BorderRadius = 1;
+            this.submitButton.OnDisabledState.BorderRadius = 30;
             this.submitButton.OnDisabledState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.submitButton.OnDisabledState.BorderThickness = 1;
             this.submitButton.OnDisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
@@ -371,7 +373,7 @@
             this.submitButton.OnDisabledState.IconLeftImage = null;
             this.submitButton.OnDisabledState.IconRightImage = null;
             this.submitButton.onHoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
-            this.submitButton.onHoverState.BorderRadius = 1;
+            this.submitButton.onHoverState.BorderRadius = 30;
             this.submitButton.onHoverState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.submitButton.onHoverState.BorderThickness = 1;
             this.submitButton.onHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(150)))), ((int)(((byte)(255)))));
@@ -379,7 +381,7 @@
             this.submitButton.onHoverState.IconLeftImage = null;
             this.submitButton.onHoverState.IconRightImage = null;
             this.submitButton.OnIdleState.BorderColor = System.Drawing.Color.DodgerBlue;
-            this.submitButton.OnIdleState.BorderRadius = 1;
+            this.submitButton.OnIdleState.BorderRadius = 30;
             this.submitButton.OnIdleState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.submitButton.OnIdleState.BorderThickness = 1;
             this.submitButton.OnIdleState.FillColor = System.Drawing.Color.DodgerBlue;
@@ -387,7 +389,7 @@
             this.submitButton.OnIdleState.IconLeftImage = null;
             this.submitButton.OnIdleState.IconRightImage = null;
             this.submitButton.OnPressedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
-            this.submitButton.OnPressedState.BorderRadius = 1;
+            this.submitButton.OnPressedState.BorderRadius = 30;
             this.submitButton.OnPressedState.BorderStyle = Bunifu.UI.WinForms.BunifuButton.BunifuButton.BorderStyles.Solid;
             this.submitButton.OnPressedState.BorderThickness = 1;
             this.submitButton.OnPressedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(96)))), ((int)(((byte)(144)))));
@@ -524,7 +526,7 @@
             this.daysLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.daysLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.daysLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.daysLabel.Location = new System.Drawing.Point(40, 307);
+            this.daysLabel.Location = new System.Drawing.Point(40, 350);
             this.daysLabel.Name = "daysLabel";
             this.daysLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.daysLabel.Size = new System.Drawing.Size(105, 20);
@@ -556,7 +558,7 @@
             this.remainingLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.remainingLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.remainingLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.remainingLabel.Location = new System.Drawing.Point(15, 333);
+            this.remainingLabel.Location = new System.Drawing.Point(15, 327);
             this.remainingLabel.Name = "remainingLabel";
             this.remainingLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.remainingLabel.Size = new System.Drawing.Size(130, 20);
@@ -588,7 +590,7 @@
             this.daysRequestedLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.daysRequestedLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.daysRequestedLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.daysRequestedLabel.Location = new System.Drawing.Point(156, 307);
+            this.daysRequestedLabel.Location = new System.Drawing.Point(156, 350);
             this.daysRequestedLabel.Name = "daysRequestedLabel";
             this.daysRequestedLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.daysRequestedLabel.Size = new System.Drawing.Size(36, 20);
@@ -604,7 +606,7 @@
             this.remainingBalanceLabel.Cursor = System.Windows.Forms.Cursors.Default;
             this.remainingBalanceLabel.CursorType = System.Windows.Forms.Cursors.Default;
             this.remainingBalanceLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.remainingBalanceLabel.Location = new System.Drawing.Point(156, 333);
+            this.remainingBalanceLabel.Location = new System.Drawing.Point(156, 327);
             this.remainingBalanceLabel.Name = "remainingBalanceLabel";
             this.remainingBalanceLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.remainingBalanceLabel.Size = new System.Drawing.Size(36, 20);
@@ -622,9 +624,9 @@
             this.workFromHomeLabel.Location = new System.Drawing.Point(340, 15);
             this.workFromHomeLabel.Name = "workFromHomeLabel";
             this.workFromHomeLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.workFromHomeLabel.Size = new System.Drawing.Size(113, 20);
+            this.workFromHomeLabel.Size = new System.Drawing.Size(116, 20);
             this.workFromHomeLabel.TabIndex = 32;
-            this.workFromHomeLabel.Text = "Work from home";
+            this.workFromHomeLabel.Text = "Work from Home";
             this.workFromHomeLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
             this.workFromHomeLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
@@ -789,7 +791,7 @@
             this.leaveGroupBox.LabelAlign = System.Windows.Forms.HorizontalAlignment.Left;
             this.leaveGroupBox.LabelIndent = 10;
             this.leaveGroupBox.LineStyle = Bunifu.UI.WinForms.BunifuGroupBox.LineStyles.Solid;
-            this.leaveGroupBox.Location = new System.Drawing.Point(12, 217);
+            this.leaveGroupBox.Location = new System.Drawing.Point(10, 222);
             this.leaveGroupBox.Name = "leaveGroupBox";
             this.leaveGroupBox.Size = new System.Drawing.Size(273, 48);
             this.leaveGroupBox.TabIndex = 40;
@@ -857,12 +859,46 @@
             this.toDayDatePicker.TabIndex = 41;
             this.toDayDatePicker.ValueChanged += new System.EventHandler(this.toDayDatePicker_ValueChanged);
             // 
+            // pendingDaysLabel
+            // 
+            this.pendingDaysLabel.AllowParentOverrides = false;
+            this.pendingDaysLabel.AutoEllipsis = false;
+            this.pendingDaysLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.pendingDaysLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.pendingDaysLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.pendingDaysLabel.Location = new System.Drawing.Point(156, 304);
+            this.pendingDaysLabel.Name = "pendingDaysLabel";
+            this.pendingDaysLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.pendingDaysLabel.Size = new System.Drawing.Size(36, 20);
+            this.pendingDaysLabel.TabIndex = 43;
+            this.pendingDaysLabel.Text = "------";
+            this.pendingDaysLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.pendingDaysLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // pendingLabel
+            // 
+            this.pendingLabel.AllowParentOverrides = false;
+            this.pendingLabel.AutoEllipsis = false;
+            this.pendingLabel.Cursor = System.Windows.Forms.Cursors.Default;
+            this.pendingLabel.CursorType = System.Windows.Forms.Cursors.Default;
+            this.pendingLabel.Font = new System.Drawing.Font("Segoe UI", 11F);
+            this.pendingLabel.Location = new System.Drawing.Point(48, 304);
+            this.pendingLabel.Name = "pendingLabel";
+            this.pendingLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.pendingLabel.Size = new System.Drawing.Size(93, 20);
+            this.pendingLabel.TabIndex = 42;
+            this.pendingLabel.Text = "Pending Days:";
+            this.pendingLabel.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.pendingLabel.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
             // addRequestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(654, 452);
+            this.ClientSize = new System.Drawing.Size(654, 485);
+            this.Controls.Add(this.pendingDaysLabel);
+            this.Controls.Add(this.pendingLabel);
             this.Controls.Add(this.toDayDatePicker);
             this.Controls.Add(this.remainingBalanceLabel);
             this.Controls.Add(this.daysRequestedLabel);
@@ -935,5 +971,7 @@
         private Bunifu.UI.WinForms.BunifuDatePicker toDayDatePicker;
         private Bunifu.UI.WinForms.BunifuLabel unpaidLabel;
         private Bunifu.UI.WinForms.BunifuRadioButton unpaidRadioButton;
+        private Bunifu.UI.WinForms.BunifuLabel pendingDaysLabel;
+        private Bunifu.UI.WinForms.BunifuLabel pendingLabel;
     }
 }
