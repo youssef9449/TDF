@@ -1000,7 +1000,7 @@ namespace TDF.Forms
 
             if (result == DialogResult.Yes)
             {
-                mainFormNewUI.triggerServerDisconnect();
+                triggerServerDisconnect();
                 string userFullName = usersCheckedListBox.CheckedItems[0].ToString().Split('-')[0].Trim();
 
                 using (SqlConnection conn = Database.getConnection())
@@ -1276,26 +1276,70 @@ namespace TDF.Forms
             string message = messageTextBox.Text;
 
             if (string.IsNullOrEmpty(message)) return;
-            DialogResult confirmation = MessageBox.Show($"Are you sure you want to broadcat this message? '{message}'",
-                           "Confirm Broadcasting",
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult confirmation = MessageBox.Show($"Are you sure you want to broadcast this message? '{message}'",
+                               "Confirm Broadcasting",
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
             if (confirmation == DialogResult.Yes)
             {
-                // Example: Send notification to selected users in a ListBox
-                var selectedUserIDs = usersCheckedListBox.SelectedItems.Cast<User>().Select(u => u.userID).ToList();
-                if (selectedUserIDs.Any())
+                int? senderID = loggedInUser?.userID; // Assume loggedInUser is available
+                var selectedUserIDs = new List<int>();
+
+                // Use the existing database connection or open a new one
+                using (SqlConnection conn = Database.getConnection())
                 {
-                    await SignalRManager.HubProxy.Invoke("SendNotification", selectedUserIDs, $"{message}", null, false, false);
-                }
-                else
-                {
-                    // Send to all if no selection
-                    await SignalRManager.HubProxy.Invoke("SendNotification", null, $"{message}", null, false, false);
+                    conn.Open();
+
+                    // Loop through all checked items in usersCheckedListBox
+                    if (usersCheckedListBox.CheckedItems.Count > 0)
+                    {
+                        foreach (var item in usersCheckedListBox.CheckedItems)
+                        {
+                            if (item is string userString)
+                            {
+                                // Extract the full name (e.g., "Youssef Samir") from "name - dep"
+                                string userFullName = userString.Split('-')[0].Trim();
+                                //Console.WriteLine($"Processing user: {userFullName}");
+
+                                // Fetch userID directly from the database
+                                string getUserIdQuery = "SELECT UserID FROM Users WHERE FullName = @FullName";
+                                int userId;
+
+                                using (SqlCommand getUserIdCmd = new SqlCommand(getUserIdQuery, conn))
+                                {
+                                    getUserIdCmd.Parameters.AddWithValue("@FullName", userFullName);
+                                    var result = getUserIdCmd.ExecuteScalar();
+                                    if (result != null && result != DBNull.Value)
+                                    {
+                                        userId = Convert.ToInt32(result);
+                                        selectedUserIDs.Add(userId);
+                                    //    Console.WriteLine($"Found userID: {userId} for {userFullName}");
+                                    }
+                                    else
+                                    {
+                                     //   Console.WriteLine($"User not found for name: {userFullName}");
+                                    }
+                                }
+                            }
+                        }
+
+                        if (selectedUserIDs.Any())
+                        {
+                            await SignalRManager.HubProxy.Invoke("SendNotification", selectedUserIDs, $"{message}", senderID, false, false);
+                        }
+                        else
+                        {
+                            MessageBox.Show("No valid users selected for broadcasting. Please check user names.", "Broadcast Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                    else
+                    {
+                        // Broadcast to all online users if no selection (as per your previous request)
+                        await SignalRManager.HubProxy.Invoke("SendNotification", null, $"{message}", senderID, false, false);
+                    }
                 }
             }
         }
-
 
         #endregion
 

@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Media;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDF.Net;
@@ -22,9 +24,9 @@ public static class SignalRManager
             HubProxy = Connection.CreateHubProxy("NotificationHub");
 
             // Handle general notifications with MessageBox
-            HubProxy.On<string>("receiveGeneralNotification", message =>
+            HubProxy.On<int, string>("receiveGeneralNotification", (senderId, message) =>
             {
-                Console.WriteLine($"Received general notification: {message}");
+                Console.WriteLine($"Received general notification from {senderId}: {message}");
                 if (!string.IsNullOrEmpty(message))
                 {
                     var mainForm = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
@@ -32,7 +34,38 @@ public static class SignalRManager
                     {
                         mainForm.BeginInvoke(new Action(() =>
                         {
-                            MessageBox.Show(message, "System Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            // Skip if this is the sender's own broadcast
+                            if (loginForm.loggedInUser != null && loginForm.loggedInUser.userID == senderId)
+                            {
+                                //Console.WriteLine($"Skipping notification for sender {senderId}");
+                                return;
+                            }
+
+                            // Play notification sound first
+                            try
+                            {
+                                string audioPath = Path.Combine(Application.StartupPath, "Audio", "Notification.wav");
+                                if (File.Exists(audioPath))
+                                {
+                                    using (var soundPlayer = new SoundPlayer(audioPath))
+                                    {
+                                        soundPlayer.Play(); // Synchronous, blocks until sound finishes
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"Audio file not found at: {audioPath}");
+                                    SystemSounds.Exclamation.Play(); // Also synchronous
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error playing notification sound: {ex.Message}");
+                                SystemSounds.Exclamation.Play(); // Fallback, synchronous
+                            }
+
+                            // Show MessageBox after sound completes
+                            MessageBox.Show(message, "Announcement", MessageBoxButtons.OK);
                         }));
                     }
                 }
@@ -57,7 +90,7 @@ public static class SignalRManager
                 {
                     mainFormNewUI.BeginInvoke(new Action(async () =>
                     {
-                        await mainFormNewUI.ShowMessageBalloons(senderId, null, new List<string> { message });
+                     //   await mainFormNewUI.ShowMessageBalloons(senderId, null, new List<string> { message });
                         mainFormNewUI.UpdateMessageCounter(senderId, 1);
                     }));
                 }

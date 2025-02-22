@@ -682,7 +682,7 @@ namespace TDF.Net
                         UpdateMessageCounter(entry.Key, entry.Value.Count);
                         if (entry.Value.Messages.Count > 0 && !IsChatOpen(entry.Key))
                         {
-                            await ShowMessageBalloons(null, userPanel, entry.Value.Messages);
+                           // await ShowMessageBalloons(null, userPanel, entry.Value.Messages);
                         }
                     }
                 }
