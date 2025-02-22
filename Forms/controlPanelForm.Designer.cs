@@ -135,6 +135,9 @@
             this.messageTextBox = new Bunifu.UI.WinForms.BunifuTextBox();
             this.broadcastButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton();
             this.bunifuLabel14 = new Bunifu.UI.WinForms.BunifuLabel();
+            this.toDayDatePicker = new Bunifu.UI.WinForms.BunifuDatePicker();
+            this.bunifuLabel15 = new Bunifu.UI.WinForms.BunifuLabel();
+            this.bunifuLabel16 = new Bunifu.UI.WinForms.BunifuLabel();
             this.panel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -2342,7 +2345,7 @@
             "Emergency",
             "Work From Home"});
             this.removeBalanceDropdown.ItemTopMargin = 3;
-            this.removeBalanceDropdown.Location = new System.Drawing.Point(474, 589);
+            this.removeBalanceDropdown.Location = new System.Drawing.Point(473, 528);
             this.removeBalanceDropdown.Name = "removeBalanceDropdown";
             this.removeBalanceDropdown.Size = new System.Drawing.Size(138, 32);
             this.removeBalanceDropdown.TabIndex = 61;
@@ -2448,12 +2451,12 @@
             this.bunifuLabel1.AutoEllipsis = false;
             this.bunifuLabel1.CursorType = null;
             this.bunifuLabel1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.bunifuLabel1.Location = new System.Drawing.Point(639, 567);
+            this.bunifuLabel1.Location = new System.Drawing.Point(473, 566);
             this.bunifuLabel1.Name = "bunifuLabel1";
             this.bunifuLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel1.Size = new System.Drawing.Size(27, 15);
+            this.bunifuLabel1.Size = new System.Drawing.Size(31, 15);
             this.bunifuLabel1.TabIndex = 63;
-            this.bunifuLabel1.Text = "Date:";
+            this.bunifuLabel1.Text = "From:";
             this.bunifuLabel1.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
             this.bunifuLabel1.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
@@ -2532,7 +2535,7 @@
             this.bunifuLabel12.AutoEllipsis = false;
             this.bunifuLabel12.CursorType = null;
             this.bunifuLabel12.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel12.Location = new System.Drawing.Point(474, 563);
+            this.bunifuLabel12.Location = new System.Drawing.Point(473, 484);
             this.bunifuLabel12.Name = "bunifuLabel12";
             this.bunifuLabel12.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel12.Size = new System.Drawing.Size(88, 20);
@@ -2651,7 +2654,7 @@
             this.fromDayDatePicker.IconColor = System.Drawing.Color.Gray;
             this.fromDayDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.Right;
             this.fromDayDatePicker.LeftTextMargin = 5;
-            this.fromDayDatePicker.Location = new System.Drawing.Point(639, 589);
+            this.fromDayDatePicker.Location = new System.Drawing.Point(473, 588);
             this.fromDayDatePicker.MinimumSize = new System.Drawing.Size(4, 32);
             this.fromDayDatePicker.Name = "fromDayDatePicker";
             this.fromDayDatePicker.Size = new System.Drawing.Size(220, 32);
@@ -2869,7 +2872,7 @@
             this.messageTextBox.IconRight = null;
             this.messageTextBox.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.messageTextBox.Lines = new string[0];
-            this.messageTextBox.Location = new System.Drawing.Point(474, 495);
+            this.messageTextBox.Location = new System.Drawing.Point(473, 439);
             this.messageTextBox.MaxLength = 32767;
             this.messageTextBox.MinimumSize = new System.Drawing.Size(1, 1);
             this.messageTextBox.Modified = false;
@@ -2965,7 +2968,7 @@
             this.broadcastButton.IdleIconLeftImage = null;
             this.broadcastButton.IdleIconRightImage = null;
             this.broadcastButton.IndicateFocus = false;
-            this.broadcastButton.Location = new System.Drawing.Point(706, 495);
+            this.broadcastButton.Location = new System.Drawing.Point(705, 439);
             this.broadcastButton.Name = "broadcastButton";
             this.broadcastButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.broadcastButton.OnDisabledState.BorderRadius = 1;
@@ -3014,7 +3017,7 @@
             this.bunifuLabel14.AutoEllipsis = false;
             this.bunifuLabel14.CursorType = null;
             this.bunifuLabel14.Font = new System.Drawing.Font("Segoe UI", 11F);
-            this.bunifuLabel14.Location = new System.Drawing.Point(474, 469);
+            this.bunifuLabel14.Location = new System.Drawing.Point(473, 413);
             this.bunifuLabel14.Name = "bunifuLabel14";
             this.bunifuLabel14.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.bunifuLabel14.Size = new System.Drawing.Size(143, 20);
@@ -3023,6 +3026,61 @@
             this.bunifuLabel14.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
             this.bunifuLabel14.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
+            // toDayDatePicker
+            // 
+            this.toDayDatePicker.BackColor = System.Drawing.Color.Transparent;
+            this.toDayDatePicker.BorderColor = System.Drawing.Color.Silver;
+            this.toDayDatePicker.BorderRadius = 1;
+            this.toDayDatePicker.Color = System.Drawing.Color.Silver;
+            this.toDayDatePicker.DateBorderThickness = Bunifu.UI.WinForms.BunifuDatePicker.BorderThickness.Thin;
+            this.toDayDatePicker.DateTextAlign = Bunifu.UI.WinForms.BunifuDatePicker.TextAlign.Left;
+            this.toDayDatePicker.DisabledColor = System.Drawing.Color.Gray;
+            this.toDayDatePicker.DisplayWeekNumbers = false;
+            this.toDayDatePicker.DPHeight = 0;
+            this.toDayDatePicker.DropDownAlign = System.Windows.Forms.LeftRightAlignment.Right;
+            this.toDayDatePicker.FillDatePicker = false;
+            this.toDayDatePicker.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.toDayDatePicker.ForeColor = System.Drawing.Color.Black;
+            this.toDayDatePicker.Icon = ((System.Drawing.Image)(resources.GetObject("toDayDatePicker.Icon")));
+            this.toDayDatePicker.IconColor = System.Drawing.Color.Gray;
+            this.toDayDatePicker.IconLocation = Bunifu.UI.WinForms.BunifuDatePicker.Indicator.Right;
+            this.toDayDatePicker.LeftTextMargin = 5;
+            this.toDayDatePicker.Location = new System.Drawing.Point(708, 588);
+            this.toDayDatePicker.MinimumSize = new System.Drawing.Size(4, 32);
+            this.toDayDatePicker.Name = "toDayDatePicker";
+            this.toDayDatePicker.Size = new System.Drawing.Size(220, 32);
+            this.toDayDatePicker.TabIndex = 78;
+            // 
+            // bunifuLabel15
+            // 
+            this.bunifuLabel15.AllowParentOverrides = false;
+            this.bunifuLabel15.AutoEllipsis = false;
+            this.bunifuLabel15.CursorType = null;
+            this.bunifuLabel15.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.bunifuLabel15.Location = new System.Drawing.Point(708, 566);
+            this.bunifuLabel15.Name = "bunifuLabel15";
+            this.bunifuLabel15.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.bunifuLabel15.Size = new System.Drawing.Size(17, 15);
+            this.bunifuLabel15.TabIndex = 77;
+            this.bunifuLabel15.Text = "To:";
+            this.bunifuLabel15.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.bunifuLabel15.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
+            // bunifuLabel16
+            // 
+            this.bunifuLabel16.AllowParentOverrides = false;
+            this.bunifuLabel16.AutoEllipsis = false;
+            this.bunifuLabel16.CursorType = null;
+            this.bunifuLabel16.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.bunifuLabel16.Location = new System.Drawing.Point(474, 510);
+            this.bunifuLabel16.Name = "bunifuLabel16";
+            this.bunifuLabel16.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.bunifuLabel16.Size = new System.Drawing.Size(71, 15);
+            this.bunifuLabel16.TabIndex = 79;
+            this.bunifuLabel16.Text = "Request type:";
+            this.bunifuLabel16.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
+            this.bunifuLabel16.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            // 
             // controlPanelForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -3030,6 +3088,9 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.Controls.Add(this.bunifuLabel16);
+            this.Controls.Add(this.toDayDatePicker);
+            this.Controls.Add(this.bunifuLabel15);
             this.Controls.Add(this.bunifuLabel14);
             this.Controls.Add(this.broadcastButton);
             this.Controls.Add(this.messageTextBox);
@@ -3151,5 +3212,8 @@
         private Bunifu.UI.WinForms.BunifuTextBox messageTextBox;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton broadcastButton;
         private Bunifu.UI.WinForms.BunifuLabel bunifuLabel14;
+        private Bunifu.UI.WinForms.BunifuDatePicker toDayDatePicker;
+        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel15;
+        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel16;
     }
 }

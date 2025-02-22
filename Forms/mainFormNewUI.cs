@@ -16,13 +16,11 @@ using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Program;
 using static TDF.Net.Database;
-using Timer = System.Windows.Forms.Timer;
 using Microsoft.AspNet.SignalR.Client;
 using System.Drawing.Drawing2D;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Infrastructure;
 using static NotificationHub;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using Microsoft.AspNet.SignalR.Client.Hubs;
 using System.Media;
 using Bunifu.UI.WinForms.BunifuButton;
@@ -31,10 +29,6 @@ namespace TDF.Net
 {
     public partial class mainFormNewUI : Form
     {
-        public mainFormNewUI()
-        {
-            InitializeComponent();
-        }
 
         public mainFormNewUI(loginForm loginForm)
         {
@@ -80,6 +74,7 @@ namespace TDF.Net
         private Dictionary<int, int> pendingMessageCounts = new Dictionary<int, int>();
         private int lastNotificationCount = 0;
         private readonly object userCacheLock = new object();
+        private Label notificationHeader; // Fixed header
         // Helper for async Invoke
         private Task InvokeAsync(Action action)
         {
@@ -110,23 +105,37 @@ namespace TDF.Net
             adjustShadowPanelAndImageButtons();
             updateUserDataControls();
 
-            // Force initial refresh
 
-            if (!isFormClosing) // Prevent initial load if closing
+            notificationHeader = new Label
             {
-                await GetAllUsersAsync(true);
-                DisplayConnectedUsersAsync(true);
-            }
+                Text = "Number of Notifications: (0)",
+                Dock = DockStyle.Top,
+                Height = 30,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+
+            notificationsShadowPanel.Visible = hasHRRole || hasManagerRole;
+
+            notificationsShadowPanel.Controls.Add(notificationsPanel);
+            notificationsShadowPanel.Controls.Add(notificationHeader);
+            notificationHeader.BringToFront();
+
+
+            // Force initial refresh
 
             if (!IsDisposed && IsHandleCreated && !isFormClosing)
             {
                 try
                 {
+                    await GetAllUsersAsync(true);
+                    DisplayConnectedUsersAsync(true);
                     await LoadPendingMessages();
                           LoadUnreadNotifications();
                 }
                 catch (ObjectDisposedException) { }
             }
+
         }
         protected override void OnMove(EventArgs e)
         {
@@ -1096,47 +1105,78 @@ namespace TDF.Net
         }
         public void LoadUnreadNotifications()
         {
+            // Clear existing notifications
             notificationsPanel.Controls.Clear();
+
             using (SqlConnection conn = getConnection())
             {
                 conn.Open();
                 string query = @"
-                SELECT rn.NotificationId, r.RequestID, r.RequestType, r.RequestUserFullName, r.RequestDepartment
+                SELECT rn.NotificationId, r.RequestID, r.RequestType, r.RequestUserFullName, r.RequestDepartment, r.RequestUserID
                 FROM RequestNotifications rn
                 JOIN Requests r ON rn.RequestId = r.RequestID
                 WHERE rn.UserId = @UserId AND rn.IsRead = 0";
+
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", loggedInUser.userID);
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
+                        int notificationCount = 0;
                         while (reader.Read())
                         {
                             int notificationId = reader.GetInt32(0);
                             string requestType = reader.GetString(2);
                             string userName = reader.GetString(3);
                             string department = reader.GetString(4);
+                            int requestUserId = reader.GetInt32(5);
 
-                            Panel notifPanel = new Panel
+                            // Skip notification if the logged-in user is the request owner and has a manager or HR role.
+                            if (loggedInUser.userID == requestUserId && (hasManagerRole || hasHRRole))
                             {
+                                continue;
+                            }
+
+                            notificationCount++;
+
+                            // Create a container for the individual notification using a FlowLayoutPanel.
+                            FlowLayoutPanel notifContainer = new FlowLayoutPanel
+                            {
+                                FlowDirection = FlowDirection.TopDown,
+                                WrapContents = false,
+                                AutoSize = true,
                                 Width = notificationsPanel.Width - 20,
-                                Height = 50,
-                                BorderStyle = BorderStyle.FixedSingle
+                                BackColor = Color.White,
+                                Margin = new Padding(0, 5, 0, 5)
                             };
+
+                            // Create the label displaying the notification details.
                             Label lbl = new Label
                             {
                                 Text = $"New {requestType} request from {userName} in {department}",
+                                Font = new Font("Segoe UI", 9, FontStyle.Regular),
+                                ForeColor = Color.Black,
                                 AutoSize = true,
-                                Location = new Point(5, 5)
+                                TextAlign = ContentAlignment.MiddleCenter,
+                                MaximumSize = new Size(notifContainer.Width - 20, 0)
                             };
+
+                            int leftMargin = (notifContainer.Width - lbl.Width) / 2;
+                            lbl.Margin = new Padding(leftMargin, 5, 0, 0);
+
+                            notifContainer.Controls.Add(lbl);
+
+                            // Create the "Mark as Read" button.
                             BunifuButton2 btnMarkRead = new BunifuButton2
                             {
                                 Text = "Mark as Read",
-                                Location = new Point(5, 25),
+                                Size = new Size(90, 25),
                                 Tag = notificationId,
-
+                                Font = new Font("Segoe UI", 8, FontStyle.Bold),
+                                Cursor = Cursors.Hand
                             };
 
+                            // Add custom styling for mouse events.
                             btnMarkRead.OnDisabledState.BorderColor = darkColor;
                             btnMarkRead.OnDisabledState.FillColor = primaryColor;
                             btnMarkRead.OnDisabledState.ForeColor = Color.White;
@@ -1152,29 +1192,69 @@ namespace TDF.Net
                             btnMarkRead.OnPressedState.BorderColor = darkColor;
                             btnMarkRead.OnPressedState.FillColor = primaryColor;
                             btnMarkRead.OnPressedState.ForeColor = Color.White;
-                            btnMarkRead.Font = new Font(btnMarkRead.Font, btnMarkRead.Font.Style | FontStyle.Bold);
-                            btnMarkRead.Cursor = Cursors.Hand;
                             btnMarkRead.AutoRoundBorders = true;
-                            btnMarkRead.IdleBorderRadius = 25;
+                            btnMarkRead.IdleBorderRadius = 15;
+
+                            leftMargin = (notifContainer.Width - btnMarkRead.Width) / 2;
+                            btnMarkRead.Margin = new Padding(leftMargin, 5, 0, 0);
+
+                            // Use a correct event handler that casts sender as a Button.
                             btnMarkRead.Click += BtnMarkRead_Click;
-                            notifPanel.Controls.Add(lbl);
-                            notifPanel.Controls.Add(btnMarkRead);
-                            notificationsPanel.Controls.Add(notifPanel);
+
+                            notifContainer.Controls.Add(btnMarkRead);
+
+                            // Add the individual notification container to the scrollable notifications panel.
+                            notificationsPanel.Controls.Add(notifContainer);
                         }
+
+                        // Update the header with the current notification count.
+                        notificationHeader.Text = $"Number of Notifications: ({notificationCount})";
                     }
                 }
             }
 
+            // Check if there is an increase in notifications to show a snackbar.
             int currentCount = notificationsPanel.Controls.Count;
             if (currentCount > lastNotificationCount)
             {
-                ShowNotificationSnackbar("You have new request(s).");
+                bool showNotification = false;
+                using (SqlConnection conn = getConnection())
+                {
+                    conn.Open();
+                    string query = @"
+                    SELECT r.RequestUserID
+                    FROM RequestNotifications rn
+                    JOIN Requests r ON rn.RequestId = r.RequestID
+                    WHERE rn.UserId = @UserId AND rn.IsRead = 0";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@UserId", loggedInUser.userID);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int requestUserId = reader.GetInt32(0);
+                                if (loggedInUser.userID != requestUserId || (!hasManagerRole && !hasHRRole))
+                                {
+                                    showNotification = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (showNotification)
+                {
+                    ShowNotificationSnackbar("You have new request(s).");
+                }
             }
             lastNotificationCount = currentCount;
         }
+
         private void BtnMarkRead_Click(object sender, EventArgs e)
         {
-            int notificationId = (int)((Button)sender).Tag;
+            int notificationId = (int)((BunifuButton2)sender).Tag;
             MarkNotificationAsRead(notificationId);
         }
         private void MarkNotificationAsRead(int notificationId)

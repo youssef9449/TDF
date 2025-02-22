@@ -14,6 +14,8 @@ using static TDF.Net.mainFormNewUI;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.IO.Pipes;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
+using TDF.Net.Forms;
 
 namespace TDF.Forms
 {
@@ -1052,14 +1054,6 @@ namespace TDF.Forms
                 return;
             }
 
-            // Validate removedAmountTextBox
-           /* if (!decimal.TryParse(removedAmountTextBox.Text, out decimal removedAmount) || removedAmount <= 0)
-            {
-                MessageBox.Show("Please enter a valid positive number in the removed amount field.");
-                removedAmountTextBox.Focus();
-                return;
-            }*/
-
             // Validate reasonTextBox
             if (string.IsNullOrWhiteSpace(reasonTextBox.Text))
             {
@@ -1071,8 +1065,25 @@ namespace TDF.Forms
             string requestReason = reasonTextBox.Text.Trim();
             string requestType = removeBalanceDropdown.Text;
             string loggedInUserFullName = loggedInUser.FullName;
+            int numberOfDaysRequested, balance = 0;
+            bool atLeastOneProcessed = false;
 
-            DateTime fromdate = Convert.ToDateTime(fromDayDatePicker.Text);
+            DateTime fromDay = Convert.ToDateTime(fromDayDatePicker.Text);
+            DateTime toDay = Convert.ToDateTime(toDayDatePicker.Text);
+
+            numberOfDaysRequested = addRequestForm.getWorkingDays(fromDay, toDay);
+
+            if (fromDay > toDay)
+            {
+                MessageBox.Show("Ending date can't be earlier than the beginning date.", "Invalid Request");
+                return;
+            }
+            else if (numberOfDaysRequested <= 0)
+            {
+                MessageBox.Show("You cannot apply for leave on Friday or Saturday.", "Invalid Request");
+                return;
+            }
+
 
             // Determine the column to update
             string columnToUpdate;
@@ -1089,6 +1100,7 @@ namespace TDF.Forms
                 columnToUpdate = "Work From Home";
             }
 
+
             using (SqlConnection connection = Database.getConnection())
             {
                 connection.Open();
@@ -1099,6 +1111,19 @@ namespace TDF.Forms
                     string[] userParts = selectedUser.ToString().Split('-');
                     string fullName = userParts[0].Trim();
                     string departmentName = userParts[1].Trim();
+
+                    if (removeBalanceDropdown.Text == "Annual")
+                    {
+                        balance = addRequestForm.getLeaveDays("AnnualBalance", userName: fullName);
+                    }
+                    else if (removeBalanceDropdown.Text == "Emergency")
+                    {
+                        balance = addRequestForm.getLeaveDays("CasualBalance", userName: fullName);
+                    }
+                    else
+                    {
+                        balance = 0;
+                    }
 
                     // Fetch UserID from AnnualLeave table
                     string getUserIdQuery = "SELECT UserID FROM AnnualLeave WHERE FullName = @FullName";
@@ -1114,6 +1139,24 @@ namespace TDF.Forms
                         }
                         userId = Convert.ToInt32(result);
                     }
+                    
+                    if (removeBalanceDropdown.Text == "Annual")
+                    {
+                        if (numberOfDaysRequested > balance)
+                        {
+                            MessageBox.Show($"{fullName} doesn't have enough Annual leave balance; they were not affected.", "Insufficient Balance");
+                            continue;
+                        }
+                    }
+
+                    else if (removeBalanceDropdown.Text == "Emergency")
+                    {
+                        if (numberOfDaysRequested > balance)
+                        {
+                            MessageBox.Show($"{fullName} doesn't have enough Emergency leave balance; they were not affected.", "Insufficient Balance");
+                            continue;
+                        }
+                    }
 
                     if (columnToUpdate != "Work From Home")
                     {
@@ -1124,7 +1167,7 @@ namespace TDF.Forms
 
                         using (SqlCommand updateCommand = new SqlCommand(updateQuery, connection))
                         {
-                            updateCommand.Parameters.AddWithValue("@RemovedAmount", 1);
+                            updateCommand.Parameters.AddWithValue("@RemovedAmount", numberOfDaysRequested);
                             updateCommand.Parameters.AddWithValue("@FullName", fullName);
                             updateCommand.ExecuteNonQuery();
                         }
@@ -1151,23 +1194,31 @@ namespace TDF.Forms
                     {
                         insertCommand.Parameters.AddWithValue("@RequestUserID", userId);
                         insertCommand.Parameters.AddWithValue("@RequestUserFullName", fullName);
-                        insertCommand.Parameters.AddWithValue("@RequestFromDay", fromdate);
-                        insertCommand.Parameters.AddWithValue("@RequestToDay", fromdate);
+                        insertCommand.Parameters.AddWithValue("@RequestFromDay", fromDay);
+                        insertCommand.Parameters.AddWithValue("@RequestToDay", toDay);
                         insertCommand.Parameters.AddWithValue("@RequestReason", requestReason);
                         insertCommand.Parameters.AddWithValue("@RequestStatus", "Approved");
                         insertCommand.Parameters.AddWithValue("@RequestType", requestType);
                         insertCommand.Parameters.AddWithValue("@RequestCloser", loggedInUserFullName);
                         insertCommand.Parameters.AddWithValue("@RequestDepartment", departmentName);
-                        insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", 1);
+                        insertCommand.Parameters.AddWithValue("@RequestNumberOfDays", numberOfDaysRequested);
                         insertCommand.Parameters.AddWithValue("@RequestHRStatus", "Approved");
                         insertCommand.Parameters.AddWithValue("@RequestHRCloser", loggedInUserFullName);
                         insertCommand.ExecuteNonQuery();
                     }
+                    atLeastOneProcessed = true;
                 }
 
                 connection.Close();
             }
-            MessageBox.Show("Request added successfully.");
+            if (atLeastOneProcessed)
+            {
+                MessageBox.Show("Leave days have been successfully added.", "Add Leave Day(s)");
+            }
+            else
+            {
+                MessageBox.Show("No leave days were added due to insufficient balance.", "Add Leave Day(s)");
+            }
         }
         private void addTitleButton_Click(object sender, EventArgs e)
         {

@@ -230,7 +230,7 @@ namespace TDF.Net.Forms
             casualRadioButton.Enabled = isEditable;
             unpaidRadioButton.Enabled = isEditable;
         }
-        private int getWorkingDays(DateTime start, DateTime end)
+        public static int getWorkingDays(DateTime start, DateTime end)
         {
             int workingDays = 0;
             for (DateTime date = start; date <= end; date = date.AddDays(1))
@@ -744,7 +744,7 @@ namespace TDF.Net.Forms
                 {
                     if (requested > rBalance)
                     {
-                        MessageBox.Show("You don't have enough Annual balance.", "Insufficient Balance");
+                        MessageBox.Show("You don't have enough Annual leave balance.", "Insufficient Balance");
                         return;
                     }
                 }
@@ -753,7 +753,7 @@ namespace TDF.Net.Forms
                 {
                     if (requested > rBalance)
                     {
-                        MessageBox.Show("You don't have enough Emergency balance.", "Insufficient Balance");
+                        MessageBox.Show("You don't have enough Emergency leave balance.", "Insufficient Balance");
                         return;
                     }
                 }
