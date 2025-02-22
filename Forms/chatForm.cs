@@ -181,9 +181,9 @@ namespace TDF.Net.Forms
             {
                 if (SignalRManager.IsConnected)
                 {
-                    Console.WriteLine($"Sending message from {currentUserID} to {receiverID}: {messageText}");
+                  //  Console.WriteLine($"Sending message from {currentUserID} to {receiverID}: {messageText}");
                     await SignalRManager.HubProxy.Invoke("SendNotification", new List<int> { receiverID }, messageText, currentUserID, true, true);
-                    Console.WriteLine($"Message sent to {receiverID}");
+                 //   Console.WriteLine($"Message sent to {receiverID}");
                 }
                 else
                 {
@@ -195,7 +195,8 @@ namespace TDF.Net.Forms
                 Console.WriteLine($"Error sending message: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
 
-            await AppendMessageAsync(currentUserID, messageText); // Replaced LoadMessagesAsync with AppendMessageAsync        }
+            await AppendMessageAsync(currentUserID, messageText);
+            // Send the message via SignalR
         }
 
         private void scrollToBottom()

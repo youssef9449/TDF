@@ -99,27 +99,6 @@ namespace TDF.Net
                 isLoggingIn = false;
             }
         }
-        public static List<string> getConnectedUsers()
-        {
-            using (SqlConnection connection = Database.getConnection())
-            {
-                connection.Open();
-                string query = "SELECT FullName FROM Users WHERE IsConnected = 1";
-
-                List<string> connectedUsers = new List<string>();
-
-                using (SqlCommand cmd = new SqlCommand(query, connection))
-                {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        connectedUsers.Add(reader["FullName"].ToString());
-                    }
-                }
-                connectedUsers.Sort();
-                return connectedUsers;
-            }
-        }
         private void makeUserConnected()
         {
             using (SqlConnection connection = Database.getConnection())

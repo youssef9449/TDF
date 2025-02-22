@@ -63,6 +63,7 @@ namespace TDF.Net
         private Dictionary<int, Panel> userPanels = new Dictionary<int, Panel>();
         private List<User> cachedUsers = new List<User>();
         private IDisposable updateUserListSubscription;
+        private Dictionary<int, int> pendingMessageCounts = new Dictionary<int, int>();
 
         private readonly object userCacheLock = new object();
         // Helper for async Invoke
@@ -347,7 +348,6 @@ namespace TDF.Net
             {
                 usersPanel.Height = expandedHeight;
                 usersIconButton.Image = Resources.up;
-                await DisplayConnectedUsersAsync(); // Now async
                 isPanelExpanded = true;
             }
         }
@@ -595,40 +595,54 @@ namespace TDF.Net
         #region Message Handling Methods
         private async void HandlePendingMessage(int senderId, string message)
         {
-            if (IsChatOpen(senderId)) return;
-
-            try
+            Console.WriteLine($"HandlePendingMessage for user {loggedInUser.userID} from sender {senderId}: {message}");
+            // Prevent processing messages sent by the current user
+            if (senderId == loggedInUser.userID)
             {
-                // Perform async SignalR call
-                var pendingData = await SignalRManager.HubProxy.Invoke<Dictionary<int, PendingMessageData>>(
-                    "GetPendingMessageCounts",
-                    loggedInUser.userID
-                );
-
-                if (pendingData.TryGetValue(senderId, out var data) &&
-                    userPanels.TryGetValue(senderId, out Panel panel))
+                Console.WriteLine("Ignoring message from self.");
+                return;
+            }
+            // Existing code...
+            if (IsChatOpen(senderId))
+            {
+                var chatForm = Application.OpenForms
+                    .OfType<chatForm>()
+                    .FirstOrDefault(f => f.chatWithUserID == senderId);
+                if (chatForm != null && !chatForm.IsDisposed && chatForm.IsHandleCreated)
                 {
-                    // Update UI on the UI thread and await async balloon display
-                    if (InvokeRequired)
+                    chatForm.BeginInvoke(new Action(async () =>
                     {
-                        await InvokeAsync(async () =>
+                        await chatForm.AppendMessageAsync(senderId, message);
+                    }));
+                }
+            }
+            else
+            {
+                if (!pendingMessageCounts.ContainsKey(senderId))
+                {
+                    pendingMessageCounts[senderId] = 0;
+                }
+                pendingMessageCounts[senderId]++;
+                int newCount = pendingMessageCounts[senderId];
+                UpdateMessageCounter(senderId, newCount);
+
+                if (userPanels.TryGetValue(senderId, out Panel userPanel))
+                {
+                    var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
+                    if (pictureBox != null)
+                    {
+                        pictureBox.Invoke(new Action(() =>
                         {
-                            UpdateMessageCounter(senderId, 1);
-                            await ShowMessageBalloons(null, panel, data.Messages);
-                        });
-                    }
-                    else
-                    {
-                        UpdateMessageCounter(senderId, 1);
-                        await ShowMessageBalloons(null, panel, data.Messages);
+                            var balloonBasePoint = pictureBox.PointToScreen(
+                                new Point(pictureBox.Left - 210, pictureBox.Top)
+                            );
+                            new MessageBalloon(balloonBasePoint, message).Show();
+                        }));
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in HandlePendingMessage: {ex.Message}\nStackTrace: {ex.StackTrace}");
-            }
         }
+
         private async Task LoadPendingMessages()
         {
             try
@@ -704,30 +718,8 @@ namespace TDF.Net
 
             counter.Text = count > 0 ? count.ToString() : "";
             counter.Visible = count > 0;
-            counter.BringToFront(); // Ensure it’s on top
-
-            // Anti-aliasing for smoother edges
-            counter.Paint += (s, e) =>
-            {
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                using (var brush = new SolidBrush(counter.BackColor))
-                {
-                    e.Graphics.FillEllipse(brush, 0, 0, counter.Width - 1, counter.Height - 1);
-                }
-                using (var pen = new Pen(Color.Black, 1))
-                {
-                    e.Graphics.DrawEllipse(pen, 0, 0, counter.Width - 1, counter.Height - 1);
-                }
-                TextRenderer.DrawText(e.Graphics, counter.Text, counter.Font,
-                    new Rectangle(0, 0, counter.Width, counter.Height), counter.ForeColor,
-                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-            };
-
-            if (count > 0 && flowLayout != null && !flowLayout.IsDisposed)
-            {
-                flowLayout.Controls.SetChildIndex(panel, 0);
-                flowLayout.ScrollControlIntoView(panel);
-            }
+            counter.Invalidate(); // Force redraw
+            counter.BringToFront();
         }
         #endregion
 
@@ -737,45 +729,25 @@ namespace TDF.Net
                     .Any(f => f.chatWithUserID == senderId);
         public async Task ShowMessageBalloons(int? senderId, Panel userPanel, List<string> messages)
         {
-            // If userPanel is not provided, find it by senderId.
-            var panel = userPanel
-                ?? flowLayout.Controls
-                    .OfType<Panel>()
-                    .FirstOrDefault(p => (int)p.Tag == senderId);
-
-            if (panel != null)
+            // Prevent showing balloons for the current user's own messages
+            if (senderId.HasValue && senderId.Value == loggedInUser.userID)
             {
-                var pictureBox = panel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
-                if (pictureBox == null) return;
-
-                // We'll move 210px to the LEFT of the picture box's left edge.
-                // Adjust this offset as desired.
-                int offsetY = 0;
-                var balloonBasePoint = pictureBox.PointToScreen(
-                    new Point(pictureBox.Left - 100, pictureBox.Top)
-                );
-
-                // Show each message in a separate balloon, stacking them downward.
-                foreach (var message in messages)
+                Console.WriteLine("Skipping balloons for self.");
+                return;
+            }
+            // Existing code to display balloons...
+            if (senderId.HasValue && userPanels.TryGetValue(senderId.Value, out userPanel))
+            {
+                var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
+                if (pictureBox != null)
                 {
-                    var balloonPosition = new Point(
-                        balloonBasePoint.X,
-                        balloonBasePoint.Y + offsetY
+                    var balloonBasePoint = pictureBox.PointToScreen(
+                        new Point(pictureBox.Left - 210, pictureBox.Top)
                     );
-
-                    BeginInvoke(new Action(() =>
+                    foreach (var message in messages)
                     {
-                        new MessageBalloon(balloonPosition, message).Show();
-                    }));
-
-                    offsetY += 65;  // Vertical spacing between balloons
-                    await Task.Delay(500); // Delay for effect
-                }
-
-                // After showing all balloons, reset the message counter for that user.
-                if (senderId.HasValue)
-                {
-                    UpdateMessageCounter(senderId.Value, 0);
+                        new MessageBalloon(balloonBasePoint, message).Show();
+                    }
                 }
             }
         }
@@ -793,7 +765,7 @@ namespace TDF.Net
                 existingChat.BringToFront();
                 return;
             }
-
+                
             try
             {
                 if (!SignalRManager.IsConnected)
@@ -806,6 +778,14 @@ namespace TDF.Net
                 // Get pending messages before updating UI
                 var messages = await SignalRManager.HubProxy.Invoke<List<string>>("GetPendingMessages", loggedInUser.userID, userId);
 
+                // Clear the pending count for this sender when the user opens the chat.
+                if (pendingMessageCounts.ContainsKey(userId))
+                {
+                    pendingMessageCounts.Remove(userId);
+                    UpdateMessageCounter(userId, 0);
+                }
+
+
                 // Safely update UI components
                 if (userPanels.ContainsKey(userId))
                 {
@@ -816,6 +796,9 @@ namespace TDF.Net
                 {
                     Console.WriteLine($"Warning: User panel not found for userId: {userId}");
                 }
+
+                // Possibly mark messages as delivered in the DB
+                //UpdateMessageCounter(userId, 0);
 
                 // Open new chat form
                 new chatForm(loggedInUser.userID, userId, user.FullName, user.Picture).Show();
@@ -928,6 +911,7 @@ namespace TDF.Net
                 return;
             }
 
+            // Update header label
             Label headerLabel = usersPanel.Controls
                 .OfType<Label>()
                 .FirstOrDefault(ctrl => ctrl.Tag != null && ctrl.Tag.ToString() == "header");
@@ -944,7 +928,8 @@ namespace TDF.Net
             }
             headerLabel.Text = $"Online Users ({onlineCount})";
 
-            flowLayout = usersPanel.Controls
+            // Locate or create the flowLayout panel
+            FlowLayoutPanel flowLayout = usersPanel.Controls
                 .OfType<FlowLayoutPanel>()
                 .FirstOrDefault(ctrl => ctrl.Name == "flowLayoutUsers");
             if (flowLayout == null)
@@ -966,7 +951,10 @@ namespace TDF.Net
                 flowLayout.Size = new Size(usersPanel.Width, 600);
             }
 
+            // Save current scroll position
             int savedScrollPos = flowLayout.VerticalScroll.Value;
+
+            // Check if a rebuild is necessary
             bool needRebuild = flowLayout.Controls.Count != currentUserCount;
 
             if (!needRebuild)
@@ -983,6 +971,7 @@ namespace TDF.Net
 
             if (needRebuild)
             {
+                // Rebuild the user panels
                 usersPanel.SuspendLayout();
                 flowLayout.SuspendLayout();
                 flowLayout.Controls.Clear();
@@ -1007,62 +996,46 @@ namespace TDF.Net
                         Cursor = Cursors.Hand
                     };
                     pictureBox.Click += (s, e) => OpenChatForm(user.userID);
+                    pictureBox.SendToBack(); // Send picture to the back
 
+                    // Create the message counter label (positioned to the LEFT of the picture)
                     Label msgCounter = new Label
                     {
-                        Text = user.PendingMessageCount > 0 ? user.PendingMessageCount.ToString() : "",
+                        Name = "msgCounter",
                         Size = new Size(20, 20),
                         BackColor = Color.FromArgb(33, 150, 243),
                         ForeColor = Color.White,
                         Font = new Font("Segoe UI", 8, FontStyle.Bold),
                         TextAlign = ContentAlignment.MiddleCenter,
-                        Location = new Point(pictureBox.Right - 15, pictureBox.Top - 5),
-                        Visible = user.PendingMessageCount > 0,
-                        Name = "msgCounter",
-                        Tag = user.userID
+                        Location = new Point(pictureBox.Left - 25, pictureBox.Top - 5),
+                        Visible = false
                     };
                     using (var gp = new GraphicsPath())
                     {
                         gp.AddEllipse(0, 0, msgCounter.Width, msgCounter.Height);
                         msgCounter.Region = new Region(gp);
                     }
-                    msgCounter.BringToFront();
-                    msgCounter.Paint += (s, e) =>
-                    {
-                        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                        using (var brush = new SolidBrush(msgCounter.BackColor))
-                        {
-                            e.Graphics.FillEllipse(brush, 0, 0, msgCounter.Width - 1, msgCounter.Height - 1);
-                        }
-                        using (var pen = new Pen(Color.Black, 1))
-                        {
-                            e.Graphics.DrawEllipse(pen, 0, 0, msgCounter.Width - 1, msgCounter.Height - 1);
-                        }
-                        TextRenderer.DrawText(e.Graphics, msgCounter.Text, msgCounter.Font,
-                            new Rectangle(0, 0, msgCounter.Width, msgCounter.Height), msgCounter.ForeColor,
-                            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-                    };
 
-                    Panel onlineIndicator = new Panel
+                    // Create the online indicator (positioned to the RIGHT of the picture)
+                    Label onlineIndicator = new Label
                     {
-                        Size = new Size(10, 10),
-                        BackColor = Color.Green,
-                        Visible = user.isConnected == 1,
                         Name = "onlineIndicator",
-                        Location = new Point(pictureBox.Right - 10, pictureBox.Bottom - 10)
+                        Size = new Size(10, 10),
+                        BackColor = user.isConnected == 1 ? Color.LimeGreen : Color.Red,
+                        Location = new Point(pictureBox.Right - 10, pictureBox.Top + 5),
+                        Visible = true
                     };
                     using (var gp = new GraphicsPath())
                     {
                         gp.AddEllipse(0, 0, onlineIndicator.Width, onlineIndicator.Height);
                         onlineIndicator.Region = new Region(gp);
                     }
-                    onlineIndicator.BringToFront();
 
                     Label nameLabel = new Label
                     {
                         Text = $"{user.FullName.Split(' ')[0]} - {user.Department}",
                         Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                        ForeColor = darkColor,
+                        ForeColor = Color.Black,
                         TextAlign = ContentAlignment.MiddleCenter,
                         AutoSize = true,
                         MaximumSize = new Size(userPanel.Width - 20, 0),
@@ -1071,42 +1044,78 @@ namespace TDF.Net
 
                     userPanel.Controls.AddRange(new Control[] { pictureBox, msgCounter, onlineIndicator, nameLabel });
                     flowLayout.Controls.Add(userPanel);
-                    userPanels[user.userID] = userPanel; // Store in dictionary
+                    userPanels[user.userID] = userPanel;
+
+                    // Set initial message counter
+                    int initialCount = pendingMessageCounts.ContainsKey(user.userID) ? pendingMessageCounts[user.userID] : user.PendingMessageCount;
+                    UpdateMessageCounterUI(userPanel, initialCount);
+                    // Ensure picture stays at the back
+                    pictureBox.SendToBack();
                 }
 
                 flowLayout.ResumeLayout();
                 usersPanel.ResumeLayout();
+
             }
             else
             {
+                // Update existing panels without rebuilding
                 foreach (User user in connectedUsers)
                 {
                     if (userPanels.TryGetValue(user.userID, out Panel userPanel))
                     {
-                        var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault();
+                        var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
+                        if (pictureBox == null) continue;
+
+                        // Ensure picture stays at the back
+                        pictureBox.SendToBack();
+
+                        // Update online indicator
+                        var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault() as Label;
                         if (onlineIndicator != null)
                         {
-                            onlineIndicator.Visible = user.isConnected == 1;
-                            onlineIndicator.BringToFront();
+                            onlineIndicator.BackColor = user.isConnected == 1 ? Color.LimeGreen : Color.Red;
+                            onlineIndicator.Visible = true;
+                        }
+                        else
+                        {
+                            // Fallback: Create online indicator if missing
+                            onlineIndicator = new Label
+                            {
+                                Name = "onlineIndicator",
+                                Size = new Size(10, 10),
+                                BackColor = user.isConnected == 1 ? Color.LimeGreen : Color.Red,
+                                Location = new Point(pictureBox.Right - 10, pictureBox.Top + 5),
+                                Visible = true
+                            };
+                            using (var gp = new GraphicsPath())
+                            {
+                                gp.AddEllipse(0, 0, onlineIndicator.Width, onlineIndicator.Height);
+                                onlineIndicator.Region = new Region(gp);
+                            }
+                            userPanel.Controls.Add(onlineIndicator);
                         }
 
+                        // Update message counter using in-memory count
+                        int displayCount = pendingMessageCounts.ContainsKey(user.userID) ? pendingMessageCounts[user.userID] : user.PendingMessageCount;
                         var msgCounter = userPanel.Controls.Find("msgCounter", true).FirstOrDefault() as Label;
                         if (msgCounter != null)
                         {
-                            msgCounter.Text = user.PendingMessageCount > 0 ? user.PendingMessageCount.ToString() : "";
-                            msgCounter.Visible = user.PendingMessageCount > 0;
-                            msgCounter.BringToFront();
+                            msgCounter.Location = new Point(pictureBox.Left - 25, pictureBox.Top - 5);
+                            UpdateMessageCounterUI(userPanel, displayCount);
                         }
                     }
                 }
             }
 
+            // Restore scroll position
             try
             {
                 flowLayout.VerticalScroll.Value = Math.Min(savedScrollPos, flowLayout.VerticalScroll.Maximum);
             }
             catch { }
         }
+
         public static async Task triggerServerDisconnect()
         {
             if (SignalRManager.IsConnected && loggedInUser != null)
