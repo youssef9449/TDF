@@ -18,21 +18,7 @@ namespace TDF.Net.Forms
         private int currentUserID;
         public int chatWithUserID;
         private string chatWithUserName;
-        // Helper for async BeginInvoke
-        private Task BeginInvokeAsync(Func<Task> action)
-        {
-            return Task.Run(async () =>
-            {
-                if (InvokeRequired)
-                {
-                    Invoke(new Action(async () => await action()));
-                }
-                else
-                {
-                    await action();
-                }
-            });
-        }
+
         public chatForm(int currentUserID, int chatWithUserID, string chatWithUserName, Image chatWithUserImage)
         {
             InitializeComponent();

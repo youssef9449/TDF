@@ -1,29 +1,27 @@
-﻿using System;
+﻿using Bunifu.UI.WinForms;
+using Bunifu.UI.WinForms.BunifuButton;
+using Microsoft.AspNet.SignalR.Client;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Media;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Forms;
 using TDF.Net.Classes;
 using TDF.Net.Forms;
 using TDF.Properties;
-using Bunifu.UI.WinForms;
+using static NotificationHub;
 using static TDF.Net.Classes.ThemeColor;
+using static TDF.Net.Database;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Program;
-using static TDF.Net.Database;
-using Microsoft.AspNet.SignalR.Client;
-using System.Drawing.Drawing2D;
-using System.Threading.Tasks;
-using Microsoft.AspNet.SignalR.Infrastructure;
-using static NotificationHub;
-using Microsoft.AspNet.SignalR.Client.Hubs;
-using System.Media;
-using Bunifu.UI.WinForms.BunifuButton;
 
 namespace TDF.Net
 {
