@@ -1,27 +1,29 @@
-﻿using Bunifu.UI.WinForms;
-using Bunifu.UI.WinForms.BunifuButton;
-using Microsoft.AspNet.SignalR.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Media;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Forms;
 using TDF.Net.Classes;
 using TDF.Net.Forms;
 using TDF.Properties;
-using static NotificationHub;
+using Bunifu.UI.WinForms;
 using static TDF.Net.Classes.ThemeColor;
-using static TDF.Net.Database;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Program;
+using static TDF.Net.Database;
+using Microsoft.AspNet.SignalR.Client;
+using System.Drawing.Drawing2D;
+using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR.Infrastructure;
+using static NotificationHub;
+using Microsoft.AspNet.SignalR.Client.Hubs;
+using System.Media;
+using Bunifu.UI.WinForms.BunifuButton;
 
 namespace TDF.Net
 {
@@ -63,7 +65,7 @@ namespace TDF.Net
         private bool isPanelExpanded = true;
         private bool isFormClosing = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
-        private int contractedHeight = 37; // Height of the panel to show only the header
+        private int contractedHeight = 50; // Height of the panel to show only the header
         public int previousUserCount = -1; 
         private FlowLayoutPanel flowLayout;
         private Dictionary<int, Panel> userPanels = new Dictionary<int, Panel>();
@@ -615,53 +617,51 @@ namespace TDF.Net
         #region Message Handling Methods
         private async void HandlePendingMessage(int senderId, string message)
         {
-            try
+            Console.WriteLine($"HandlePendingMessage for user {loggedInUser.userID} from sender {senderId}: {message}");
+            // Prevent processing messages sent by the current user
+            if (senderId == loggedInUser.userID)
             {
-                Console.WriteLine($"HandlePendingMessage for user {loggedInUser.userID} from sender {senderId}: {message}");
-
-                // Prevent processing messages sent by the current user
-                if (senderId == loggedInUser.userID)
+                Console.WriteLine("Ignoring message from self.");
+                return;
+            }
+            // Existing code...
+            if (IsChatOpen(senderId))
+            {
+                var chatForm = Application.OpenForms
+                    .OfType<chatForm>()
+                    .FirstOrDefault(f => f.chatWithUserID == senderId);
+                if (chatForm != null && !chatForm.IsDisposed && chatForm.IsHandleCreated)
                 {
-                    Console.WriteLine($"Ignoring message from self (userID: {loggedInUser.userID})");
-                    return;
-                }
-
-                // Handle message for open chat window
-                if (IsChatOpen(senderId))
-                {
-                    var chatForm = Application.OpenForms
-                        .OfType<chatForm>()
-                        .FirstOrDefault(f => f.chatWithUserID == senderId);
-
-                    if (chatForm != null && !chatForm.IsDisposed && chatForm.IsHandleCreated)
+                    chatForm.BeginInvoke(new Action(async () =>
                     {
-                        chatForm.BeginInvoke(new Action(async () =>
+                        await chatForm.AppendMessageAsync(senderId, message);
+                    }));
+                }
+            }
+            else
+            {
+                if (!pendingMessageCounts.ContainsKey(senderId))
+                {
+                    pendingMessageCounts[senderId] = 0;
+                }
+                pendingMessageCounts[senderId]++;
+                int newCount = pendingMessageCounts[senderId];
+                UpdateMessageCounter(senderId, newCount);
+
+                if (userPanels.TryGetValue(senderId, out Panel userPanel))
+                {
+                    var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
+                    if (pictureBox != null)
+                    {
+                        pictureBox.Invoke(new Action(() =>
                         {
-                            await chatForm.AppendMessageAsync(senderId, message);
+                            var balloonBasePoint = pictureBox.PointToScreen(
+                                new Point(pictureBox.Left - 210, pictureBox.Top)
+                            );
+                            new MessageBalloon(balloonBasePoint, message).Show();
                         }));
                     }
                 }
-                // Handle message when chat is not open
-                else
-                {
-                    // Update message counter
-                    if (!pendingMessageCounts.ContainsKey(senderId))
-                    {
-                        pendingMessageCounts[senderId] = 0;
-                    }
-                    pendingMessageCounts[senderId]++;
-                    UpdateMessageCounter(senderId, pendingMessageCounts[senderId]);
-
-                    // Show balloon notification only for the receiver
-                    if (userPanels.TryGetValue(senderId, out Panel userPanel))
-                    {
-                        await ShowMessageBalloons(senderId, userPanel, new List<string> { message });
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error handling pending message: {ex.Message}");
             }
         }
 
@@ -682,7 +682,7 @@ namespace TDF.Net
                         UpdateMessageCounter(entry.Key, entry.Value.Count);
                         if (entry.Value.Messages.Count > 0 && !IsChatOpen(entry.Key))
                         {
-                            await ShowMessageBalloons(null, userPanel, entry.Value.Messages);
+                           // await ShowMessageBalloons(null, userPanel, entry.Value.Messages);
                         }
                     }
                 }
@@ -751,52 +751,29 @@ namespace TDF.Net
                     .Any(f => f.chatWithUserID == senderId);
         public async Task ShowMessageBalloons(int? senderId, Panel userPanel, List<string> messages)
         {
-            try
+            // Prevent showing balloons for the current user's own messages
+            if (senderId.HasValue && senderId.Value == loggedInUser.userID)
             {
-                Console.WriteLine($"[Balloon] Showing balloon for sender {senderId}, current user: {loggedInUser?.userID}");
-
-                // Double-check we're not showing balloons to the sender
-                if (senderId.HasValue && senderId.Value == loggedInUser?.userID)
-                {
-                    Console.WriteLine($"[Balloon] ⚠️ Prevented balloon for sender {senderId}");
-                    return;
-                }
-
-                var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
-                if (pictureBox == null)
-                {
-                    Console.WriteLine("[Balloon] ❌ No picture box found in panel");
-                    return;
-                }
-
-                pictureBox.Invoke(new Action(() =>
-                {
-                    try
-                    {
-                        var balloonBasePoint = pictureBox.PointToScreen(
-                            new Point(pictureBox.Left - 210, pictureBox.Top)
-                        );
-
-                        Console.WriteLine($"[Balloon] Displaying {messages.Count} message(s) at position {balloonBasePoint}");
-                        foreach (var message in messages)
-                        {
-                            if (!string.IsNullOrEmpty(message))
-                            {
-                                new MessageBalloon(balloonBasePoint, message).Show();
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"[Balloon] ❌ Error showing balloon: {ex.Message}");
-                    }
-                }));
+                Console.WriteLine("Skipping balloons for self.");
+                return;
             }
-            catch (Exception ex)
+            // Existing code to display balloons...
+            if (senderId.HasValue && userPanels.TryGetValue(senderId.Value, out userPanel))
             {
-                Console.WriteLine($"[Balloon] ❌ Error in ShowMessageBalloons: {ex.Message}");
+                var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
+                if (pictureBox != null)
+                {
+                    var balloonBasePoint = pictureBox.PointToScreen(
+                        new Point(pictureBox.Left - 210, pictureBox.Top)
+                    );
+                    foreach (var message in messages)
+                    {
+                        new MessageBalloon(balloonBasePoint, message).Show();
+                    }
+                }
             }
         }
+
 
         #region Updated Chat Form Integration
         private async void OpenChatForm(int userId)
@@ -858,12 +835,12 @@ namespace TDF.Net
         }
         #endregion
 
-       // private Panel GetUserPanel(int userId)
-        //{
-          //  return flowLayout.Controls
-            //    .OfType<Panel>()
-              //  .FirstOrDefault(p => (int)p.Tag == userId);
-        //}
+        private Panel GetUserPanel(int userId)
+        {
+            return flowLayout.Controls
+                .OfType<Panel>()
+                .FirstOrDefault(p => (int)p.Tag == userId);
+        }
         public async Task<List<User>> GetAllUsersAsync(bool forceRefresh = false)
         {
             if (isFormClosing || IsDisposed)
@@ -1484,14 +1461,7 @@ namespace TDF.Net
             var headerLabel = usersPanel.Controls.OfType<Label>().FirstOrDefault(ctrl => ctrl.Tag?.ToString() == "header");
             if (headerLabel != null) headerLabel.Text = $"Online Users ({onlineCount})";
         }
-        public Panel GetUserPanel(int userId)
-        {
-            if (userPanels.TryGetValue(userId, out Panel panel))
-            {
-                return panel;
-            }
-            return null;
-        }
+
         #endregion
 
         #region Buttons

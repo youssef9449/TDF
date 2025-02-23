@@ -13,16 +13,11 @@ public static class SignalRManager
 {
     public static HubConnection Connection { get; private set; }
     public static IHubProxy HubProxy { get; private set; }
-    private static int _currentUserID; // Add this to store the current user's ID
-
 
     public static bool IsConnected => Connection != null && Connection.State == ConnectionState.Connected;
 
     public static async Task InitializeAsync(string serverUrl, int currentUserID)
     {
-        _currentUserID = currentUserID; // Store the user ID
-        Console.WriteLine($"[SignalR] Initializing for user {_currentUserID}");
-
         if (Connection == null)
         {
             Connection = new HubConnection(serverUrl);
@@ -79,70 +74,41 @@ public static class SignalRManager
             // Handle pending chat messages
             HubProxy.On<int, string>("receivePendingMessage", (senderId, message) =>
             {
-                try
+                Console.WriteLine($"SignalRManager received message from {senderId}: {message}");
+                var mainFormNewUI = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
+                var chatForm = Application.OpenForms.OfType<chatForm>().FirstOrDefault(f => f.chatWithUserID == senderId);
+
+                if (chatForm != null && !chatForm.IsDisposed && chatForm.IsHandleCreated)
                 {
-                    Console.WriteLine($"[SignalR] Message received - From: {senderId}, To: {_currentUserID}");
-
-                    // Skip if this is our own message
-                    if (senderId == _currentUserID)
+                    chatForm.BeginInvoke(new Action(async () =>
                     {
-                        Console.WriteLine($"[SignalR] Skipping our own message (ID: {_currentUserID})");
-                        return;
-                    }
-
-                    var mainFormNewUI = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
-                    if (mainFormNewUI == null)
-                    {
-                        Console.WriteLine("[SignalR] Main form not found");
-                        return;
-                    }
-
-                    // Find existing chat form
-                    var chatForm = Application.OpenForms.OfType<chatForm>()
-                        .FirstOrDefault(f => f.chatWithUserID == senderId);
-
-                    if (chatForm != null && !chatForm.IsDisposed && chatForm.IsHandleCreated)
-                    {
-                        Console.WriteLine("[SignalR] Appending to existing chat");
-                        chatForm.BeginInvoke(new Action(async () =>
-                        {
-                            await chatForm.AppendMessageAsync(senderId, message, false); // false = not local message
-                        }));
-                    }
-                    else if (!mainFormNewUI.IsChatOpen(senderId))
-                    {
-                        Console.WriteLine("[SignalR] Showing balloon notification");
-                        mainFormNewUI.BeginInvoke(new Action(async () =>
-                        {
-                            Panel senderPanel = mainFormNewUI.GetUserPanel(senderId);
-                            if (senderPanel != null)
-                            {
-                                await mainFormNewUI.ShowMessageBalloons(senderId, senderPanel, new List<string> { message });
-                                mainFormNewUI.UpdateMessageCounter(senderId, 1);
-                            }
-                        }));
-                    }
+                        Console.WriteLine($"Refreshing chatForm for {chatForm.chatWithUserID}");
+                        await chatForm.AppendMessageAsync(senderId, message);
+                    }));
                 }
-                catch (Exception ex)
+                else if (mainFormNewUI != null && !mainFormNewUI.IsChatOpen(senderId))
                 {
-                    Console.WriteLine($"[SignalR] Error processing message: {ex.Message}");
+                    mainFormNewUI.BeginInvoke(new Action(async () =>
+                    {
+                     //   await mainFormNewUI.ShowMessageBalloons(senderId, null, new List<string> { message });
+                        mainFormNewUI.UpdateMessageCounter(senderId, 1);
+                    }));
                 }
             });
 
-
             // Subscribe to updateUserList
             HubProxy.On("updateUserList", () =>
+            {
+                var mainForm = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
+                if (mainForm != null && !mainForm.IsDisposed && mainForm.IsHandleCreated)
+                {
+                    mainForm.BeginInvoke(new Action(() =>
                     {
-                        var mainForm = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
-                        if (mainForm != null && !mainForm.IsDisposed && mainForm.IsHandleCreated)
-                        {
-                            mainForm.BeginInvoke(new Action(() =>
-                            {
-                                Console.WriteLine("User list update event received from SignalR.");
-                                mainForm.DisplayConnectedUsersAsync(true); // Sync call for compatibility
-                            }));
-                        }
-                    });
+                        Console.WriteLine("User list update event received from SignalR.");
+                        mainForm.DisplayConnectedUsersAsync(true); // Sync call for compatibility
+                    }));
+                }
+            });
 
             // Update message counts
             HubProxy.On<int, int, int>("updateMessageCounts", (receiverId, senderId, count) =>
@@ -160,7 +126,6 @@ public static class SignalRManager
                     requestsForm.BeginInvoke(new Action(() => requestsForm.AddRequestRow(requestId, userFullName, requestType, requestFromDay, requestStatus)));
                 }
             });
-
             HubProxy.On("RefreshNotifications", () =>
             {
                 var mainFormNewUI = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
@@ -169,7 +134,6 @@ public static class SignalRManager
                     mainFormNewUI.BeginInvoke(new Action(() => mainFormNewUI.LoadUnreadNotifications()));
                 }
             });
-
             // Updated handler for status updates
             HubProxy.On<int, bool>("updateUserStatus", (userId, isConnected) =>
             {
