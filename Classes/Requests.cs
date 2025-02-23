@@ -64,12 +64,8 @@ namespace TDF.Net.Classes
         private bool hasConflictingRequests()
         {
             // First check if the dates are valid
-            if (!areDatesValid())
-            {
-                return true;
-            }
 
-            string query = @"
+        string query = @"
         SELECT COUNT(*)
         FROM Requests
         WHERE RequestUserID = @RequestUserID
@@ -111,55 +107,6 @@ namespace TDF.Net.Classes
                 return true;
             }
         }
-
-        private bool areDatesValid()
-        {
-            // Check if ToDay is provided for request types that require it
-            if (Array.IndexOf(new[] { "Annual", "Work From Home", "Unpaid", "Emergency" }, RequestType) >= 0)
-            {
-                if (!RequestToDay.HasValue)
-                {
-                    MessageBox.Show("End date is required for this type of request.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
-                }
-            }
-
-            // Validate date ranges
-            if (RequestToDay.HasValue)
-            {
-                if (RequestFromDay > RequestToDay.Value)
-                {
-                    MessageBox.Show("Start date cannot be after end date.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
-                }
-
-                // Calculate the actual number of days
-                TimeSpan duration = RequestToDay.Value - RequestFromDay;
-                int actualDays = duration.Days + 1; // Including both start and end dates
-
-                if (actualDays != RequestNumberOfDays)
-                {
-                    MessageBox.Show("Number of days doesn't match the date range selected.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
-                }
-            }
-
-            // For Permission and External Assignment, validate time ranges if provided
-            if (RequestType == "Permission" || RequestType == "External Assignment")
-            {
-                if (RequestBeginningTime.HasValue && RequestEndingTime.HasValue)
-                {
-                    if (RequestBeginningTime.Value > RequestEndingTime.Value)
-                    {
-                        MessageBox.Show("Start time cannot be after end time.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
 
         private bool insertRequest()
         {
