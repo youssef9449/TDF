@@ -60,7 +60,7 @@ namespace TDF.Net
         private bool isPanelExpanded = true;
         private bool isFormClosing = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
-        private int contractedHeight = 38; // Height of the panel to show only the header
+        private int contractedHeight = 40; // Height of the panel to show only the header
         public int previousUserCount = -1; 
         private FlowLayoutPanel flowLayout;
         private Dictionary<int, Panel> userPanels = new Dictionary<int, Panel>();
@@ -1176,12 +1176,12 @@ namespace TDF.Net
                                 Font = new Font("Segoe UI", 9, FontStyle.Regular),
                                 ForeColor = Color.Black,
                                 AutoSize = true,
-                                TextAlign = ContentAlignment.MiddleCenter,
+                               // TextAlign = ContentAlignment.MiddleCenter,
                                 MaximumSize = new Size(notifContainer.Width - 20, 0)
                             };
 
-                            int leftMargin = (notifContainer.Width - lbl.Width) / 2;
-                            lbl.Margin = new Padding(leftMargin, 5, 0, 0);
+                           // int leftMargin = (notifContainer.Width - lbl.Width) / 2;
+                         //   lbl.Margin = new Padding(leftMargin, 5, 0, 0);
 
                             notifContainer.Controls.Add(lbl);
 

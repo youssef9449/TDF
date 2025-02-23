@@ -42,8 +42,6 @@ namespace TDF.Net
             this.minImg = new System.Windows.Forms.PictureBox();
             this.closeImg = new System.Windows.Forms.PictureBox();
             this.formPanel = new System.Windows.Forms.Panel();
-            this.notificationsShadowPanel = new Bunifu.UI.WinForms.BunifuShadowPanel();
-            this.bunifuLabel9 = new Bunifu.UI.WinForms.BunifuLabel();
             this.notificationsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.teamImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
             this.requestsImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
@@ -62,15 +60,16 @@ namespace TDF.Net
             this.usersPanel = new System.Windows.Forms.Panel();
             this.usersIconButton = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton();
             this.notificationsSnackbar = new Bunifu.UI.WinForms.BunifuSnackbar(this.components);
+            this.notificationsShadowPanel = new System.Windows.Forms.Panel();
             this.panelTitleBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeImg)).BeginInit();
             this.formPanel.SuspendLayout();
-            this.notificationsShadowPanel.SuspendLayout();
             this.shadowPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).BeginInit();
             this.usersPanel.SuspendLayout();
+            this.notificationsShadowPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // bunifuLabel4
@@ -237,49 +236,6 @@ namespace TDF.Net
             this.formPanel.Size = new System.Drawing.Size(1280, 654);
             this.formPanel.TabIndex = 11;
             this.formPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.formPanel_Paint);
-            // 
-            // notificationsShadowPanel
-            // 
-            this.notificationsShadowPanel.BackColor = System.Drawing.Color.Transparent;
-            this.notificationsShadowPanel.BorderColor = System.Drawing.Color.Black;
-            this.notificationsShadowPanel.BorderRadius = 5;
-            this.notificationsShadowPanel.BorderThickness = 1;
-            this.notificationsShadowPanel.Controls.Add(this.bunifuLabel9);
-            this.notificationsShadowPanel.Controls.Add(this.notificationsPanel);
-            this.notificationsShadowPanel.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
-            this.notificationsShadowPanel.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
-            this.notificationsShadowPanel.Location = new System.Drawing.Point(12, 210);
-            this.notificationsShadowPanel.Name = "notificationsShadowPanel";
-            this.notificationsShadowPanel.Padding = new System.Windows.Forms.Padding(0, 7, 0, 0);
-            this.notificationsShadowPanel.PanelColor = System.Drawing.Color.White;
-            this.notificationsShadowPanel.PanelColor2 = System.Drawing.Color.White;
-            this.notificationsShadowPanel.ShadowColor = System.Drawing.Color.DarkGray;
-            this.notificationsShadowPanel.ShadowDept = 2;
-            this.notificationsShadowPanel.ShadowDepth = 5;
-            this.notificationsShadowPanel.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
-            this.notificationsShadowPanel.ShadowTopLeftVisible = false;
-            this.notificationsShadowPanel.Size = new System.Drawing.Size(212, 350);
-            this.notificationsShadowPanel.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
-            this.notificationsShadowPanel.TabIndex = 16;
-            this.notificationsShadowPanel.Visible = false;
-            // 
-            // bunifuLabel9
-            // 
-            this.bunifuLabel9.AllowParentOverrides = false;
-            this.bunifuLabel9.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bunifuLabel9.AutoEllipsis = false;
-            this.bunifuLabel9.Cursor = System.Windows.Forms.Cursors.Default;
-            this.bunifuLabel9.CursorType = System.Windows.Forms.Cursors.Default;
-            this.bunifuLabel9.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.bunifuLabel9.Location = new System.Drawing.Point(417, 177);
-            this.bunifuLabel9.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.bunifuLabel9.Name = "bunifuLabel9";
-            this.bunifuLabel9.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel9.Size = new System.Drawing.Size(94, 20);
-            this.bunifuLabel9.TabIndex = 4;
-            this.bunifuLabel9.Text = "Control Panel";
-            this.bunifuLabel9.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
-            this.bunifuLabel9.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
             // 
             // notificationsPanel
             // 
@@ -764,6 +720,16 @@ namespace TDF.Net
             this.notificationsSnackbar.WarningOptions.IconLeftMargin = 12;
             this.notificationsSnackbar.ZoomCloseIcon = true;
             // 
+            // notificationsShadowPanel
+            // 
+            this.notificationsShadowPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.notificationsShadowPanel.Controls.Add(this.notificationsPanel);
+            this.notificationsShadowPanel.Location = new System.Drawing.Point(12, 210);
+            this.notificationsShadowPanel.Name = "notificationsShadowPanel";
+            this.notificationsShadowPanel.Padding = new System.Windows.Forms.Padding(0, 7, 0, 0);
+            this.notificationsShadowPanel.Size = new System.Drawing.Size(212, 350);
+            this.notificationsShadowPanel.TabIndex = 16;
+            // 
             // mainFormNewUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -790,12 +756,11 @@ namespace TDF.Net
             ((System.ComponentModel.ISupportInitialize)(this.minImg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.closeImg)).EndInit();
             this.formPanel.ResumeLayout(false);
-            this.notificationsShadowPanel.ResumeLayout(false);
-            this.notificationsShadowPanel.PerformLayout();
             this.shadowPanel.ResumeLayout(false);
             this.shadowPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).EndInit();
             this.usersPanel.ResumeLayout(false);
+            this.notificationsShadowPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -830,7 +795,6 @@ namespace TDF.Net
         private Bunifu.UI.WinForms.BunifuSnackbar notificationsSnackbar;
         private System.Windows.Forms.Panel usersPanel;
         private System.Windows.Forms.FlowLayoutPanel notificationsPanel;
-        private Bunifu.UI.WinForms.BunifuShadowPanel notificationsShadowPanel;
-        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel9;
+        private System.Windows.Forms.Panel notificationsShadowPanel;
     }
 }

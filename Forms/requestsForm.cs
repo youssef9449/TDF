@@ -57,9 +57,9 @@ namespace TDF.Net.Forms
 
             SignalRManager.HubProxy.On("RefreshRequests", () =>
             {
-                if (this.InvokeRequired)
+                if (InvokeRequired)
                 {
-                    this.Invoke(new System.Action(() => HandleRefreshRequest()));
+                    Invoke(new System.Action(() => HandleRefreshRequest()));
                 }
                 else
                 {
@@ -67,10 +67,8 @@ namespace TDF.Net.Forms
                 }
             });
 
-            if (!SignalRManager.HubProxy.Invoke<bool>("IsUserConnected", loggedInUser.userID).Result)
-            {
-                SignalRManager.RegisterUser(loggedInUser.userID);
-            }
+
+            SignalRManager.RegisterUser(loggedInUser.userID);
 
             refreshRequestsTablePreserveState();
         }

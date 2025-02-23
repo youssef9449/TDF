@@ -63,14 +63,22 @@ namespace TDF.Net.Classes
 
         private bool hasConflictingRequests()
         {
+            // First check if the dates are valid
+            if (!areDatesValid())
+            {
+                return true;
+            }
+
             string query = @"
-            SELECT COUNT(*)
-            FROM Requests
-            WHERE RequestUserID = @RequestUserID
-            AND (RequestType = 'Annual' OR RequestType = 'Work From Home' OR RequestType = 'Unpaid' OR RequestType = 'Emergency')
-            AND (
-                (RequestFromDay <= @RequestToDay AND RequestToDay >= @RequestFromDay)  -- Overlapping date ranges
-            )";
+        SELECT COUNT(*)
+        FROM Requests
+        WHERE RequestUserID = @RequestUserID
+        AND RequestID != @RequestID  -- Exclude current request when updating
+        AND (RequestType IN ('Annual', 'Work From Home', 'Unpaid', 'Emergency'))
+        AND RequestStatus != 'Rejected'  -- Ignore rejected requests
+        AND (
+            (RequestFromDay <= @RequestToDay AND RequestToDay >= @RequestFromDay)  -- Overlapping date ranges
+        )";
 
             try
             {
@@ -78,25 +86,81 @@ namespace TDF.Net.Classes
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     conn.Open();
+                    cmd.Parameters.AddWithValue("@RequestID", RequestID);  // Will be 0 for new requests
                     cmd.Parameters.AddWithValue("@RequestUserID", RequestUserID);
                     cmd.Parameters.AddWithValue("@RequestFromDay", RequestFromDay);
                     cmd.Parameters.AddWithValue("@RequestToDay", RequestToDay);
 
                     int conflictCount = (int)cmd.ExecuteScalar();
-                    return conflictCount > 0;
+                    if (conflictCount > 0)
+                    {
+                        MessageBox.Show("You already have a request for these dates.", "Date Conflict", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return true;
+                    }
+                    return false;
                 }
             }
             catch (SqlException ex)
             {
                 MessageBox.Show($"A database error occurred: {ex.Message}");
-                return true; // Assume conflict to prevent potential data corruption
+                return true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An unexpected error occurred: {ex.Message}");
-                return true; // Assume conflict to prevent potential data corruption
+                return true;
             }
         }
+
+        private bool areDatesValid()
+        {
+            // Check if ToDay is provided for request types that require it
+            if (Array.IndexOf(new[] { "Annual", "Work From Home", "Unpaid", "Emergency" }, RequestType) >= 0)
+            {
+                if (!RequestToDay.HasValue)
+                {
+                    MessageBox.Show("End date is required for this type of request.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+
+            // Validate date ranges
+            if (RequestToDay.HasValue)
+            {
+                if (RequestFromDay > RequestToDay.Value)
+                {
+                    MessageBox.Show("Start date cannot be after end date.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+
+                // Calculate the actual number of days
+                TimeSpan duration = RequestToDay.Value - RequestFromDay;
+                int actualDays = duration.Days + 1; // Including both start and end dates
+
+                if (actualDays != RequestNumberOfDays)
+                {
+                    MessageBox.Show("Number of days doesn't match the date range selected.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+            }
+
+            // For Permission and External Assignment, validate time ranges if provided
+            if (RequestType == "Permission" || RequestType == "External Assignment")
+            {
+                if (RequestBeginningTime.HasValue && RequestEndingTime.HasValue)
+                {
+                    if (RequestBeginningTime.Value > RequestEndingTime.Value)
+                    {
+                        MessageBox.Show("Start time cannot be after end time.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+
         private bool insertRequest()
         {
             string query = @"
@@ -159,6 +223,7 @@ namespace TDF.Net.Classes
                 return false;
             }
         }
+
         public void update()
         {
             try
@@ -169,16 +234,16 @@ namespace TDF.Net.Classes
 
                     // SQL query to update the request, allowing RequestBeginningTime and RequestEndingTime to be NULL
                     string query = @"UPDATE Requests
-                             SET 
-                                 RequestType = @RequestType,
-                                 RequestReason = @RequestReason,
-                                 RequestFromDay = @RequestFromDay,
-                                 RequestToDay = @RequestToDay,
-                                 RequestBeginningTime = @RequestBeginningTime,
-                                 RequestEndingTime = @RequestEndingTime,
-                                 RequestStatus = @RequestStatus,
-                                 RequestNumberOfDays = @RequestNumberOfDays
-                                 WHERE RequestID = @RequestID";
+                         SET 
+                             RequestType = @RequestType,
+                             RequestReason = @RequestReason,
+                             RequestFromDay = @RequestFromDay,
+                             RequestToDay = @RequestToDay,
+                             RequestBeginningTime = @RequestBeginningTime,
+                             RequestEndingTime = @RequestEndingTime,
+                             RequestStatus = @RequestStatus,
+                             RequestNumberOfDays = @RequestNumberOfDays
+                             WHERE RequestID = @RequestID";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -190,9 +255,9 @@ namespace TDF.Net.Classes
 
                         // Handling nullable RequestBeginningTime and RequestEndingTime
                         cmd.Parameters.AddWithValue("@RequestBeginningTime", RequestBeginningTime.HasValue ?
-                                                                (object)RequestBeginningTime.Value : DBNull.Value);
+                                                        (object)RequestBeginningTime.Value : DBNull.Value);
                         cmd.Parameters.AddWithValue("@RequestEndingTime", RequestEndingTime.HasValue ?
-                                                                (object)RequestEndingTime.Value : DBNull.Value);
+                                                        (object)RequestEndingTime.Value : DBNull.Value);
 
                         cmd.Parameters.AddWithValue("@RequestStatus", RequestStatus ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@RequestNumberOfDays", RequestType == "Permission" || RequestType == "External Assignment" ? 0 : RequestNumberOfDays);
@@ -224,16 +289,16 @@ namespace TDF.Net.Classes
                 MessageBox.Show("An unexpected error occurred: " + ex.Message);
             }
         }
+
         public void InsertNotificationsForNewRequest()
         {
             using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
-                // Find HR users
-                string hrRoles = string.Join(",", new[] { "HR" }.Select(r => $"'{r}'"));
-                string queryHR = $"SELECT UserID FROM Users WHERE Role IN ({hrRoles})";
+                // Find HR users and users in the Human Resources department
+                string hrRolesQuery = $"SELECT UserID FROM Users WHERE Role IN ('Human Resources')";
                 List<int> hrUserIds = new List<int>();
-                using (SqlCommand cmd = new SqlCommand(queryHR, conn))
+                using (SqlCommand cmd = new SqlCommand(hrRolesQuery, conn))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -244,13 +309,13 @@ namespace TDF.Net.Classes
                     }
                 }
 
-                // Find managers for the department
+                // Find managers and users in the Human Resources department
                 string department = RequestDepartment;
-                string queryManagers = "SELECT UserID FROM Users WHERE Role IN ('Manager', 'Team Leader') AND Department LIKE @Department";
+                string queryManagers = "SELECT UserID FROM Users WHERE (Role IN ('Manager', 'Team Leader') OR Department = @Department)";
                 List<int> managerUserIds = new List<int>();
                 using (SqlCommand cmd = new SqlCommand(queryManagers, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Department", "%" + department + "%");
+                    cmd.Parameters.AddWithValue("@Department", "Human Resources");
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -260,9 +325,10 @@ namespace TDF.Net.Classes
                     }
                 }
 
-                // Insert notifications
+                // Insert notifications for unique users (HR and managers in the department)
                 string insertQuery = "INSERT INTO RequestNotifications (RequestId, UserId, IsRead, CreatedAt) VALUES (@RequestId, @UserId, 0, @CreatedAt)";
-                foreach (int userId in hrUserIds.Union(managerUserIds))
+                var affectedUsers = hrUserIds.Union(managerUserIds).Distinct().ToList();
+                foreach (int userId in affectedUsers)
                 {
                     using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
                     {
@@ -274,6 +340,7 @@ namespace TDF.Net.Classes
                 }
             }
         }
+
         public void delete()
         {
             using (SqlConnection conn = Database.getConnection())
@@ -312,10 +379,9 @@ namespace TDF.Net.Classes
                 }
             }
         }
-
-        #endregion
-
     }
+
+    #endregion
 }
 
 
