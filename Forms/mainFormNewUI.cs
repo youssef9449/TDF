@@ -1,29 +1,27 @@
-﻿using System;
+﻿using Bunifu.UI.WinForms;
+using Bunifu.UI.WinForms.BunifuButton;
+using Microsoft.AspNet.SignalR.Client;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Media;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDF.Classes;
 using TDF.Forms;
 using TDF.Net.Classes;
 using TDF.Net.Forms;
 using TDF.Properties;
-using Bunifu.UI.WinForms;
+using static NotificationHub;
 using static TDF.Net.Classes.ThemeColor;
+using static TDF.Net.Database;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.Program;
-using static TDF.Net.Database;
-using Microsoft.AspNet.SignalR.Client;
-using System.Drawing.Drawing2D;
-using System.Threading.Tasks;
-using Microsoft.AspNet.SignalR.Infrastructure;
-using static NotificationHub;
-using Microsoft.AspNet.SignalR.Client.Hubs;
-using System.Media;
-using Bunifu.UI.WinForms.BunifuButton;
 
 namespace TDF.Net
 {
@@ -65,7 +63,7 @@ namespace TDF.Net
         private bool isPanelExpanded = true;
         private bool isFormClosing = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
-        private int contractedHeight = 50; // Height of the panel to show only the header
+        private int contractedHeight = 38; // Height of the panel to show only the header
         public int previousUserCount = -1; 
         private FlowLayoutPanel flowLayout;
         private Dictionary<int, Panel> userPanels = new Dictionary<int, Panel>();
@@ -105,22 +103,41 @@ namespace TDF.Net
             adjustShadowPanelAndImageButtons();
             updateUserDataControls();
 
-
-            notificationHeader = new Label
+            if (hasHRRole || hasManagerRole)
             {
-                Text = "Number of Notifications: (0)",
-                Dock = DockStyle.Top,
-                Height = 30,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleCenter
-            };
+                notificationHeader = new Label
+                {
+                    Text = "Number of Notifications: (0)",
+                    Dock = DockStyle.Top,
+                    Height = 30,
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
 
-            notificationsShadowPanel.Visible = hasHRRole || hasManagerRole;
+                notificationsShadowPanel.Visible = hasHRRole || hasManagerRole;
 
-            notificationsShadowPanel.Controls.Add(notificationsPanel);
-            notificationsShadowPanel.Controls.Add(notificationHeader);
-            notificationHeader.BringToFront();
+                notificationsShadowPanel.Controls.Add(notificationsPanel);
+                notificationsShadowPanel.Controls.Add(notificationHeader);
+                notificationHeader.BringToFront();
 
+                if (!IsDisposed && IsHandleCreated && !isFormClosing)
+                {
+                    try
+                    {
+                        await LoadUnreadNotifications(); // Fetch and display notifications
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle any errors (e.g., log them)
+                        Console.WriteLine($"Error loading notifications: {ex.Message}");
+                    }
+                }
+            }
+            else
+            {
+                // For non-HR/Manager users, hide the panel and skip loading
+                notificationsShadowPanel.Visible = false;
+            }
 
             // Force initial refresh
 
@@ -131,7 +148,7 @@ namespace TDF.Net
                     await GetAllUsersAsync(true);
                     DisplayConnectedUsersAsync(true);
                     await LoadPendingMessages();
-                          LoadUnreadNotifications();
+                       //   LoadUnreadNotifications();
                 }
                 catch (ObjectDisposedException) { }
             }
@@ -1103,8 +1120,13 @@ namespace TDF.Net
             }
             // Dispose of other subscriptions similarly if you have them.
         }
-        public void LoadUnreadNotifications()
+        public async Task LoadUnreadNotifications()
         {
+            if (!hasHRRole && !hasManagerRole)
+            {
+                return; // Skip loading for non-HR/Manager users
+            }
+
             // Clear existing notifications
             notificationsPanel.Controls.Clear();
 
@@ -1195,8 +1217,8 @@ namespace TDF.Net
                             btnMarkRead.AutoRoundBorders = true;
                             btnMarkRead.IdleBorderRadius = 15;
 
-                            leftMargin = (notifContainer.Width - btnMarkRead.Width) / 2;
-                            btnMarkRead.Margin = new Padding(leftMargin, 5, 0, 0);
+                          //  int leftMargin = (notifContainer.Width - btnMarkRead.Width) / 2;
+                            btnMarkRead.Margin = new Padding((notifContainer.Width - btnMarkRead.Width) / 2, 5, 0, 0);
 
                             // Use a correct event handler that casts sender as a Button.
                             btnMarkRead.Click += BtnMarkRead_Click;

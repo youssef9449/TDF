@@ -67,7 +67,11 @@ namespace TDF.Net.Forms
                 }
             });
 
-            SignalRManager.RegisterUser(loggedInUser.userID);
+            if (!SignalRManager.HubProxy.Invoke<bool>("IsUserConnected", loggedInUser.userID).Result)
+            {
+                SignalRManager.RegisterUser(loggedInUser.userID);
+            }
+
             refreshRequestsTablePreserveState();
         }
         private void requestsDataGridView_CellMouseEnter(object sender, DataGridViewCellEventArgs e)

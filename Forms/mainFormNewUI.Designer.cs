@@ -261,6 +261,7 @@ namespace TDF.Net
             this.notificationsShadowPanel.Size = new System.Drawing.Size(212, 350);
             this.notificationsShadowPanel.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.notificationsShadowPanel.TabIndex = 16;
+            this.notificationsShadowPanel.Visible = false;
             // 
             // bunifuLabel9
             // 

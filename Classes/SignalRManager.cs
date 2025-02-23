@@ -27,6 +27,12 @@ public static class SignalRManager
             HubProxy.On<int, string>("receiveGeneralNotification", (senderId, message) =>
             {
                 Console.WriteLine($"Received general notification from {senderId}: {message}");
+                if (senderId == loginForm.loggedInUser.userID)
+                {
+                  //  Console.WriteLine("Ignoring message from self in SignalRManager.");
+                    return;
+                }
+
                 if (!string.IsNullOrEmpty(message))
                 {
                     var mainForm = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
@@ -74,6 +80,12 @@ public static class SignalRManager
             // Handle pending chat messages
             HubProxy.On<int, string>("receivePendingMessage", (senderId, message) =>
             {
+                if (senderId == loginForm.loggedInUser.userID)
+                {
+                    Console.WriteLine("Ignoring message from self in SignalRManager.");
+                    return;
+                }
+
                 Console.WriteLine($"SignalRManager received message from {senderId}: {message}");
                 var mainFormNewUI = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
                 var chatForm = Application.OpenForms.OfType<chatForm>().FirstOrDefault(f => f.chatWithUserID == senderId);
@@ -90,7 +102,7 @@ public static class SignalRManager
                 {
                     mainFormNewUI.BeginInvoke(new Action(async () =>
                     {
-                     //   await mainFormNewUI.ShowMessageBalloons(senderId, null, new List<string> { message });
+                    //    await mainFormNewUI.ShowMessageBalloons(senderId, null, new List<string> { message });
                         mainFormNewUI.UpdateMessageCounter(senderId, 1);
                     }));
                 }
@@ -128,6 +140,10 @@ public static class SignalRManager
             });
             HubProxy.On("RefreshNotifications", () =>
             {
+                if (!mainForm.hasHRRole && !mainForm.hasManagerRole)
+                {
+                    return; // Skip listener setup for non-HR/Manager users
+                }
                 var mainFormNewUI = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
                 if (mainFormNewUI != null && !mainFormNewUI.IsDisposed && mainFormNewUI.IsHandleCreated)
                 {
