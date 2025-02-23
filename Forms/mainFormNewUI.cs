@@ -773,10 +773,11 @@ namespace TDF.Net
                 if (pictureBox != null)
                 {
                     // Position balloon to the left of the sender's picture
-                    var balloonBasePoint = pictureBox.PointToScreen(new Point(pictureBox.Left - 220, pictureBox.Top));
+                    var balloonBasePoint = pictureBox.PointToScreen(new Point(pictureBox.Left - 180, pictureBox.Top));
                     foreach (var message in messages)
                     {
-                        new MessageBalloon(balloonBasePoint, message).Show();
+                        SpeechBubbleControl balloon = new SpeechBubbleControl(balloonBasePoint, message);
+                        balloon.Show();
                         PlaySound(); // Play sound when showing balloon (chat not open)
                     }
                 }

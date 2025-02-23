@@ -200,7 +200,7 @@ namespace TDF.Net.Forms
         {
             if (messagesListBox.Items.Count > 0)
                 messagesListBox.TopIndex = messagesListBox.Items.Count - 1;
-           // messageTextBox.Focus();
+                messageTextBox.Focus();
         }
         private async void sendButton_Click(object sender, EventArgs e)
         {

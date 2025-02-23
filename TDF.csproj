@@ -157,6 +157,12 @@
     <Compile Include="Classes\NotificationClient.cs" />
     <Compile Include="Classes\Requests.cs" />
     <Compile Include="Classes\SignalRManager.cs" />
+    <Compile Include="Classes\SpeechBubbleControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Classes\SpeechBubbleControl.Designer.cs">
+      <DependentUpon>SpeechBubbleControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Classes\themeColor.cs" />
     <Compile Include="Classes\User.cs" />
     <Compile Include="Forms\chatForm.cs">
