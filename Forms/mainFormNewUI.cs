@@ -33,10 +33,7 @@ namespace TDF.Net
             InitializeComponent();
 
             applyTheme(this);
-            //notificationsSnackbar.InformationOptions.BackColor = Color.Black;
-            //notificationsSnackbar.InformationOptions.ForeColor = Color.White;
-            //notificationsSnackbar.InformationOptions.BorderColor = darkColor;
-            //notificationsSnackbar.InformationOptions.ActionBackColor = lightColor;
+
             formPanel.BackColor = Color.White;
             this.loginForm = loginForm; // Store a reference to the login form  
 
@@ -635,18 +632,15 @@ namespace TDF.Net
         private async void HandlePendingMessage(int senderId, string message)
         {
             Console.WriteLine($"HandlePendingMessage for user {loggedInUser.userID} from sender {senderId}: {message}");
-            // Prevent processing messages sent by the current user
             if (senderId == loggedInUser.userID)
             {
                 Console.WriteLine("Ignoring message from self.");
                 return;
             }
-            // Existing code...
+
             if (IsChatOpen(senderId))
             {
-                var chatForm = Application.OpenForms
-                    .OfType<chatForm>()
-                    .FirstOrDefault(f => f.chatWithUserID == senderId);
+                var chatForm = Application.OpenForms.OfType<chatForm>().FirstOrDefault(f => f.chatWithUserID == senderId);
                 if (chatForm != null && !chatForm.IsDisposed && chatForm.IsHandleCreated)
                 {
                     chatForm.BeginInvoke(new Action(async () =>
@@ -665,16 +659,15 @@ namespace TDF.Net
                 int newCount = pendingMessageCounts[senderId];
                 UpdateMessageCounter(senderId, newCount);
 
-                if (userPanels.TryGetValue(senderId, out Panel userPanel))
+                var userPanel = GetUserPanel(senderId);
+                if (userPanel != null)
                 {
                     var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
                     if (pictureBox != null)
                     {
-                        pictureBox.Invoke(new Action(() =>
+                        BeginInvoke(new Action(() =>
                         {
-                            var balloonBasePoint = pictureBox.PointToScreen(
-                                new Point(pictureBox.Left - 210, pictureBox.Top)
-                            );
+                            var balloonBasePoint = pictureBox.PointToScreen(new Point(pictureBox.Left - 220, pictureBox.Top));
                             new MessageBalloon(balloonBasePoint, message).Show();
                         }));
                     }
@@ -699,7 +692,7 @@ namespace TDF.Net
                         UpdateMessageCounter(entry.Key, entry.Value.Count);
                         if (entry.Value.Messages.Count > 0 && !IsChatOpen(entry.Key))
                         {
-                           // await ShowMessageBalloons(null, userPanel, entry.Value.Messages);
+                            await ShowMessageBalloons(null, userPanel, entry.Value.Messages);
                         }
                     }
                 }
@@ -768,26 +761,29 @@ namespace TDF.Net
                     .Any(f => f.chatWithUserID == senderId);
         public async Task ShowMessageBalloons(int? senderId, Panel userPanel, List<string> messages)
         {
-            // Prevent showing balloons for the current user's own messages
-            if (senderId.HasValue && senderId.Value == loggedInUser.userID)
+            if (!senderId.HasValue || senderId.Value == loggedInUser.userID)
             {
-                Console.WriteLine("Skipping balloons for self.");
+                Console.WriteLine("Skipping balloons for self or invalid sender.");
                 return;
             }
-            // Existing code to display balloons...
-            if (senderId.HasValue && userPanels.TryGetValue(senderId.Value, out userPanel))
+
+            if (userPanels.TryGetValue(senderId.Value, out userPanel))
             {
                 var pictureBox = userPanel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
                 if (pictureBox != null)
                 {
-                    var balloonBasePoint = pictureBox.PointToScreen(
-                        new Point(pictureBox.Left - 210, pictureBox.Top)
-                    );
+                    // Position balloon to the left of the sender's picture
+                    var balloonBasePoint = pictureBox.PointToScreen(new Point(pictureBox.Left - 220, pictureBox.Top));
                     foreach (var message in messages)
                     {
                         new MessageBalloon(balloonBasePoint, message).Show();
+                        PlaySound(); // Play sound when showing balloon (chat not open)
                     }
                 }
+            }
+            else
+            {
+                Console.WriteLine($"User panel not found for sender {senderId.Value}, skipping balloon.");
             }
         }
 
@@ -1482,6 +1478,30 @@ namespace TDF.Net
             int onlineCount = userPanels.Count(p => p.Value.Controls.Find("onlineIndicator", true).FirstOrDefault()?.BackColor == Color.LimeGreen);
             var headerLabel = usersPanel.Controls.OfType<Label>().FirstOrDefault(ctrl => ctrl.Tag?.ToString() == "header");
             if (headerLabel != null) headerLabel.Text = $"Online Users ({onlineCount})";
+        }
+        public static void PlaySound()
+        {
+            try
+            {
+                string audioPath = Path.Combine(Application.StartupPath, "Audio", "Message.wav");
+                if (File.Exists(audioPath))
+                {
+                    using (var soundPlayer = new SoundPlayer(audioPath))
+                    {
+                        soundPlayer.Play();
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Audio file not found at: {audioPath}");
+                    SystemSounds.Exclamation.Play();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error playing notification sound: {ex.Message}");
+                SystemSounds.Exclamation.Play();
+            }
         }
 
         #endregion

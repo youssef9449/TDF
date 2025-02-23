@@ -18,21 +18,27 @@ namespace TDF.Net.Forms
         private int currentUserID;
         public int chatWithUserID;
         private string chatWithUserName;
+        private HashSet<string> messageTexts = new HashSet<string>();
+
         // Helper for async BeginInvoke
-        private Task BeginInvokeAsync(Func<Task> action)
+        public Task InvokeAsync(Action action)
         {
-            return Task.Run(async () =>
+            var tcs = new TaskCompletionSource<bool>();
+            BeginInvoke(new Action(() =>
             {
-                if (InvokeRequired)
+                try
                 {
-                    Invoke(new Action(async () => await action()));
+                    action();
+                    tcs.SetResult(true);
                 }
-                else
+                catch (Exception ex)
                 {
-                    await action();
+                    tcs.SetException(ex);
                 }
-            });
+            }));
+            return tcs.Task;
         }
+
         public chatForm(int currentUserID, int chatWithUserID, string chatWithUserName, Image chatWithUserImage)
         {
             InitializeComponent();
@@ -121,52 +127,6 @@ namespace TDF.Net.Forms
                 messagesListBox.EndUpdate();
             }
         }
-        public async Task AppendMessageAsync(int senderId, string messageText)
-        {
-            // Ensure the update happens on the UI thread.
-            if (this.InvokeRequired)
-            {
-                if (this.InvokeRequired)
-                {
-                    await InvokeAsync(() => AppendMessageAsync(senderId, messageText));
-                    return;
-                }
-                return;
-            }
-
-            messagesListBox.BeginUpdate();
-            try
-            {
-                string sender = (senderId == currentUserID) ? "You" : chatWithUserName;
-                messagesListBox.Items.Add($"{sender}: {messageText} ({DateTime.Now:T})");
-                scrollToBottom();
-            }
-            catch (Exception ex)
-            {   
-                Console.WriteLine($"Error appending message: {ex.Message}");
-            }
-            finally
-            {
-                messagesListBox.EndUpdate();
-            }
-        }
-        public Task InvokeAsync(Action action)
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            this.BeginInvoke(new Action(() =>
-            {
-                try
-                {
-                    action();
-                    tcs.SetResult(true);
-                }
-                catch (Exception ex)
-                {
-                    tcs.SetException(ex);
-                }
-            }));
-            return tcs.Task;
-        }
         private async Task SendMessageAsync(int receiverID, string messageText)
         {
             TDF.Classes.Message message = new TDF.Classes.Message()
@@ -177,13 +137,16 @@ namespace TDF.Net.Forms
             };
             message.add();
 
+            // Append the message locally first to ensure the sender sees it immediately
+            await AppendMessageAsync(currentUserID, messageText);
+
             try
             {
                 if (SignalRManager.IsConnected)
                 {
-                  //  Console.WriteLine($"Sending message from {currentUserID} to {receiverID}: {messageText}");
+                    Console.WriteLine($"Sending message from {currentUserID} to {receiverID}: {messageText}");
                     await SignalRManager.HubProxy.Invoke("SendNotification", new List<int> { receiverID }, messageText, currentUserID, true, true);
-                 //   Console.WriteLine($"Message sent to {receiverID}");
+                    Console.WriteLine($"Message sent to {receiverID}");
                 }
                 else
                 {
@@ -194,16 +157,50 @@ namespace TDF.Net.Forms
             {
                 Console.WriteLine($"Error sending message: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
+        }
 
-            await AppendMessageAsync(currentUserID, messageText);
-            // Send the message via SignalR
+        public async Task AppendMessageAsync(int senderId, string messageText)
+        {
+            if (InvokeRequired)
+            {
+                await InvokeAsync(() => AppendMessageAsync(senderId, messageText));
+                return;
+            }
+
+            messagesListBox.BeginUpdate();
+            try
+            {
+                string senderName = (senderId == currentUserID) ? "You" : chatWithUserName;
+                string fullMessage = $"{senderName}: {messageText} ({DateTime.Now:T})";
+                if (messageTexts.Contains(fullMessage))
+                {
+                    Console.WriteLine("Duplicate message detected: " + fullMessage);
+                    return;
+                }
+                messageTexts.Add(fullMessage);
+                messagesListBox.Items.Add(fullMessage);
+                scrollToBottom();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error appending message: {ex.Message}");
+            }
+            finally
+            {
+                messagesListBox.EndUpdate();
+            }
+
+            if (ActiveForm != this)
+            {
+                mainFormNewUI.PlaySound();
+            }
         }
 
         private void scrollToBottom()
         {
             if (messagesListBox.Items.Count > 0)
                 messagesListBox.TopIndex = messagesListBox.Items.Count - 1;
-            messageTextBox.Focus();
+           // messageTextBox.Focus();
         }
         private async void sendButton_Click(object sender, EventArgs e)
         {
@@ -255,8 +252,8 @@ namespace TDF.Net.Forms
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true; // Prevent double trigger
-                BeginInvoke(new Action(async () => await BeginSendingMessageAsync()));
                 e.Handled = true;
+                BeginInvoke(new Action(async () => await BeginSendingMessageAsync()));
             }
         }
         protected override void OnFormClosing(FormClosingEventArgs e)
