@@ -684,7 +684,7 @@ namespace TDF.Net
             this.usersIconButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.usersIconButton.Image = global::TDF.Properties.Resources.up;
             this.usersIconButton.ImageMargin = new System.Windows.Forms.Padding(0);
-            this.usersIconButton.Location = new System.Drawing.Point(154, 5);
+            this.usersIconButton.Location = new System.Drawing.Point(154, 2);
             this.usersIconButton.Name = "usersIconButton";
             this.usersIconButton.RoundBorders = true;
             this.usersIconButton.ShowBorders = true;

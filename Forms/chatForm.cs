@@ -121,33 +121,38 @@ namespace TDF.Net.Forms
                 messagesListBox.EndUpdate();
             }
         }
-        public async Task AppendMessageAsync(int senderId, string messageText)
+        public async Task AppendMessageAsync(int senderId, string messageText, bool isLocalMessage = false)
         {
-            // Ensure the update happens on the UI thread.
-            if (this.InvokeRequired)
+            try
             {
                 if (this.InvokeRequired)
                 {
-                    await InvokeAsync(() => AppendMessageAsync(senderId, messageText));
+                    await InvokeAsync(() => AppendMessageAsync(senderId, messageText, isLocalMessage));
                     return;
                 }
-                return;
-            }
 
-            messagesListBox.BeginUpdate();
-            try
-            {
-                string sender = (senderId == currentUserID) ? "You" : chatWithUserName;
-                messagesListBox.Items.Add($"{sender}: {messageText} ({DateTime.Now:T})");
-                scrollToBottom();
+                // Skip if this is a remote message from ourselves (already handled locally)
+                if (!isLocalMessage && senderId == currentUserID)
+                {
+                    Console.WriteLine($"[Chat] Skipping remote message from self (ID: {senderId})");
+                    return;
+                }
+
+                messagesListBox.BeginUpdate();
+                try
+                {
+                    string sender = (senderId == currentUserID) ? "You" : chatWithUserName;
+                    messagesListBox.Items.Add($"{sender}: {messageText} ({DateTime.Now:T})");
+                    scrollToBottom();
+                }
+                finally
+                {
+                    messagesListBox.EndUpdate();
+                }
             }
             catch (Exception ex)
-            {   
-                Console.WriteLine($"Error appending message: {ex.Message}");
-            }
-            finally
             {
-                messagesListBox.EndUpdate();
+                Console.WriteLine($"[Chat] Error appending message: {ex.Message}");
             }
         }
         public Task InvokeAsync(Action action)
@@ -167,7 +172,7 @@ namespace TDF.Net.Forms
             }));
             return tcs.Task;
         }
-        private async Task SendMessageAsync(int receiverID, string messageText)
+        public async Task SendMessageAsync(int receiverID, string messageText)
         {
             TDF.Classes.Message message = new TDF.Classes.Message()
             {
@@ -181,22 +186,23 @@ namespace TDF.Net.Forms
             {
                 if (SignalRManager.IsConnected)
                 {
-                  //  Console.WriteLine($"Sending message from {currentUserID} to {receiverID}: {messageText}");
+                    Console.WriteLine($"[Chat] Sending message from {currentUserID} to {receiverID}");
+                    // First append the message locally for the sender
+                    await AppendMessageAsync(currentUserID, messageText, true); // Add isLocalMessage parameter
+                                                                                // Then send via SignalR
                     await SignalRManager.HubProxy.Invoke("SendNotification", new List<int> { receiverID }, messageText, currentUserID, true, true);
-                 //   Console.WriteLine($"Message sent to {receiverID}");
                 }
                 else
                 {
-                    Console.WriteLine("SignalR not connected. Message queued locally.");
+                    Console.WriteLine("[Chat] SignalR not connected. Message queued locally.");
+                    await AppendMessageAsync(currentUserID, messageText, true);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error sending message: {ex.Message}\nStackTrace: {ex.StackTrace}");
+                Console.WriteLine($"[Chat] Error sending message: {ex.Message}");
+                MessageBox.Show("Failed to send message. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            await AppendMessageAsync(currentUserID, messageText);
-            // Send the message via SignalR
         }
 
         private void scrollToBottom()
