@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNet.SignalR.Client.Hubs;
+using Microsoft.AspNet.SignalR.Client;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 
 namespace TDF.Net.Classes
@@ -47,25 +50,47 @@ namespace TDF.Net.Classes
 
         #region Methods
 
-        public bool add()
+        public void add()
         {
             string[] requestTypesToCheck = { "Annual", "Work From Home", "Unpaid", "Emergency" };
+
             if (Array.IndexOf(requestTypesToCheck, RequestType) >= 0)
             {
                 if (hasConflictingRequests())
                 {
-                    MessageBox.Show("This request conflicts with existing requests. Please check your dates.", "Request Conflict", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
+                    MessageBox.Show("This request conflicts with existing requests. Please check your dates.", "Date Conflict", MessageBoxButtons.OK);
+                    return;
                 }
             }
-            return insertRequest(); // Return success of insertion
+
+            insertRequest();
+
+            InsertNotificationsForNewRequest();
+
+            if (SignalRManager.Connection.State == ConnectionState.Connected)
+            {
+                SignalRManager.HubProxy.Invoke("NotifyNewRequest", RequestDepartment);
+            }
+            else
+            {
+                // Handle disconnected state - maybe try to reconnect
+                SignalRManager.Connection.Start();
+                SignalRManager.HubProxy.Invoke("NotifyNewRequest", RequestDepartment);
+
+            }
         }
 
         private bool hasConflictingRequests()
         {
-            // First check if the dates are valid
-
-        string query = @"
+            string query = @"
+            SELECT COUNT(*)
+            FROM Requests
+            WHERE RequestUserID = @RequestUserID
+            AND (RequestType = 'Annual' OR RequestType = 'Work From Home' OR RequestType = 'Unpaid' OR RequestType = 'Emergency')
+            AND (
+                (RequestFromDay <= @RequestToDay AND RequestToDay >= @RequestFromDay)  -- Overlapping date ranges
+            )";
+          /*  string query = @"
         SELECT COUNT(*)
         FROM Requests
         WHERE RequestUserID = @RequestUserID
@@ -74,7 +99,7 @@ namespace TDF.Net.Classes
         AND RequestStatus != 'Rejected'  -- Ignore rejected requests
         AND (
             (RequestFromDay <= @RequestToDay AND RequestToDay >= @RequestFromDay)  -- Overlapping date ranges
-        )";
+        )";*/
 
             try
             {
@@ -82,29 +107,23 @@ namespace TDF.Net.Classes
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     conn.Open();
-                    cmd.Parameters.AddWithValue("@RequestID", RequestID);  // Will be 0 for new requests
                     cmd.Parameters.AddWithValue("@RequestUserID", RequestUserID);
-                    cmd.Parameters.AddWithValue("@RequestFromDay", RequestFromDay);
+                    cmd.Parameters.AddWithValue("@RequestFromDay", RequestFromDay.Date);
                     cmd.Parameters.AddWithValue("@RequestToDay", RequestToDay);
 
                     int conflictCount = (int)cmd.ExecuteScalar();
-                    if (conflictCount > 0)
-                    {
-                        MessageBox.Show("You already have a request for these dates.", "Date Conflict", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return true;
-                    }
-                    return false;
+                    return conflictCount > 0;
                 }
             }
             catch (SqlException ex)
             {
                 MessageBox.Show($"A database error occurred: {ex.Message}");
-                return true;
+                return true; // Assume conflict to prevent potential data corruption
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"An unexpected error occurred: {ex.Message}");
-                return true;
+                return true; // Assume conflict to prevent potential data corruption
             }
         }
 
@@ -242,8 +261,9 @@ namespace TDF.Net.Classes
             using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
+
                 // Find HR users and users in the Human Resources department
-                string hrRolesQuery = $"SELECT UserID FROM Users WHERE Role IN ('Human Resources')";
+                string hrRolesQuery = $"SELECT UserID FROM Users WHERE Role LIKE '%HR%'";
                 List<int> hrUserIds = new List<int>();
                 using (SqlCommand cmd = new SqlCommand(hrRolesQuery, conn))
                 {
@@ -258,11 +278,11 @@ namespace TDF.Net.Classes
 
                 // Find managers and users in the Human Resources department
                 string department = RequestDepartment;
-                string queryManagers = "SELECT UserID FROM Users WHERE (Role IN ('Manager', 'Team Leader') OR Department = @Department)";
+                string queryManagers = "SELECT UserID FROM Users WHERE (Role IN ('Manager', 'Team Leader') AND Department LIKE @Department)";
                 List<int> managerUserIds = new List<int>();
                 using (SqlCommand cmd = new SqlCommand(queryManagers, conn))
                 {
-                    cmd.Parameters.AddWithValue("@Department", "Human Resources");
+                    cmd.Parameters.AddWithValue("@Department", "%" + department + "%");
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -306,7 +326,7 @@ namespace TDF.Net.Classes
 
                         if (rowsAffected > 0)
                         {
-                            MessageBox.Show("Request deleted successfully.");
+                            MessageBox.Show("Request deleted successfully.","Request Deleted");
                             Forms.addRequestForm.requestAddedOrUpdated = true;
                         }
                         else

@@ -118,3 +118,5 @@
 /packages
 /bin/Debug/Forms/~$Leave Request form.xlsx
 /Resources/TDF_Logo.png
+/obj/Debug/build.force
+/.gitignore

@@ -130,14 +130,8 @@ namespace TDF.Net
                     }
                 }
             }
-            else
-            {
-                // For non-HR/Manager users, hide the panel and skip loading
-                notificationsShadowPanel.Visible = false;
-            }
 
             // Force initial refresh
-
             if (!IsDisposed && IsHandleCreated && !isFormClosing)
             {
                 try
@@ -667,8 +661,8 @@ namespace TDF.Net
                     {
                         BeginInvoke(new Action(() =>
                         {
-                            var balloonBasePoint = pictureBox.PointToScreen(new Point(pictureBox.Left - 220, pictureBox.Top));
-                            new MessageBalloon(balloonBasePoint, message).Show();
+                            var balloonBasePoint = pictureBox.PointToScreen(new Point(pictureBox.Left - 180, pictureBox.Top));
+                            new SpeechBubbleControl(balloonBasePoint, message).Show();
                         }));
                     }
                 }
