@@ -728,7 +728,7 @@ namespace TDF.Net.Forms
                     MessageBox.Show("Ending date can't be earlier than the beginning date.", "Invalid Request");
                     return;
                 }
-               else if (daysRequested <= 0)
+                else if (daysRequested <= 0)
                 {
                     MessageBox.Show("You cannot apply for leave on Friday or Saturday.", "Invalid Request");
                     return;
@@ -770,7 +770,7 @@ namespace TDF.Net.Forms
 
             if (requestAddedOrUpdated && (requestType == "Annual" || requestType == "Emergency"))
             {
-                
+
                 pendingDays += numberOfDaysRequested;
                 pendingDaysLabel.Text = pendingDays.ToString();
                 remainingBalanceLabel.Text = (remainingBalance - numberOfDaysRequested).ToString();
@@ -781,8 +781,8 @@ namespace TDF.Net.Forms
                 pendingDaysLabel.Text = pendingPermissions.ToString();
                 remainingBalanceLabel.Text = (remainingBalance - 1).ToString();
             }
+
             requestAddedOrUpdatedEvent?.Invoke();
-            requestAddedOrUpdated = false;
 
         }
         #endregion

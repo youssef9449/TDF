@@ -115,7 +115,7 @@ namespace TDF.Net.Forms
 
                         if ((requestStatus != "Pending" || requestHRStatus != "Pending") && !hasAdminRole)
                         {
-                            MessageBox.Show("You are not allowed to edit an approved request.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show("You are not allowed to edit an approved/rejected request.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                             return;
                         }
 
@@ -336,6 +336,7 @@ namespace TDF.Net.Forms
         #region Methods
         public void refreshRequestsTable()
         {
+
             DataTable requestsTable = new DataTable();
 
             try
@@ -983,14 +984,14 @@ namespace TDF.Net.Forms
                 requestsDataGridView.FirstDisplayedScrollingRowIndex = firstDisplayedIndex;
             }
 
-            // Restore selected rows
-            foreach (DataGridViewRow row in requestsDataGridView.Rows)
-            {
-                if (row.Cells["RequestID"].Value != null && selectedRowIds.Contains(Convert.ToInt32(row.Cells["RequestID"].Value)))
-                {
-                    row.Selected = true;
-                }
-            }
+            //// Restore selected rows
+            //foreach (DataGridViewRow row in requestsDataGridView.Rows)
+            //{
+            //    if (row.Cells["RequestID"].Value != null && selectedRowIds.Contains(Convert.ToInt32(row.Cells["RequestID"].Value)))
+            //    {
+            //        row.Selected = true;
+            //    }
+            //}
         }
 
         private Dictionary<int, Dictionary<string, object>> PreserveEditedValues()
@@ -1236,14 +1237,14 @@ namespace TDF.Net.Forms
         private void addRequestButton_Click(object sender, EventArgs e)
         {
             addRequestForm addRequestForm = new addRequestForm();
-            addRequestForm.requestAddedOrUpdatedEvent += refreshRequestsTablePreserveState;
+            addRequestForm.requestAddedOrUpdatedEvent += refreshRequestsTable;
             addRequestForm.ShowDialog();
 
-            if (requestAddedOrUpdated)
-            {
-                refreshRequestsTablePreserveState();
-            }
-
+            //if (requestAddedOrUpdated)
+            //{
+            //    refreshRequestsTable();
+            //}
+            //requestAddedOrUpdated = false;
         }
         private void refreshButton_Click(object sender, EventArgs e)
         {

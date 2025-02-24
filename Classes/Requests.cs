@@ -67,6 +67,11 @@ namespace TDF.Net.Classes
 
             InsertNotificationsForNewRequest();
 
+            notifyNewRequest();
+        }
+
+        private void notifyNewRequest()
+        {
             if (SignalRManager.Connection.State == ConnectionState.Connected)
             {
                 SignalRManager.HubProxy.Invoke("NotifyNewRequest", RequestDepartment);
@@ -82,24 +87,23 @@ namespace TDF.Net.Classes
 
         private bool hasConflictingRequests()
         {
+            //string query = @"
+            //SELECT COUNT(*)
+            //FROM Requests
+            //WHERE RequestUserID = @RequestUserID
+            //AND (RequestType = 'Annual' OR RequestType = 'Work From Home' OR RequestType = 'Unpaid' OR RequestType = 'Emergency')
+            //AND (
+            //    (RequestFromDay <= @RequestToDay AND RequestToDay >= @RequestFromDay)  -- Overlapping date ranges
+            //)";
+
             string query = @"
             SELECT COUNT(*)
             FROM Requests
             WHERE RequestUserID = @RequestUserID
-            AND (RequestType = 'Annual' OR RequestType = 'Work From Home' OR RequestType = 'Unpaid' OR RequestType = 'Emergency')
-            AND (
-                (RequestFromDay <= @RequestToDay AND RequestToDay >= @RequestFromDay)  -- Overlapping date ranges
-            )";
-          /*  string query = @"
-        SELECT COUNT(*)
-        FROM Requests
-        WHERE RequestUserID = @RequestUserID
-        AND RequestID != @RequestID  -- Exclude current request when updating
-        AND (RequestType IN ('Annual', 'Work From Home', 'Unpaid', 'Emergency'))
-        AND RequestStatus != 'Rejected'  -- Ignore rejected requests
-        AND (
-            (RequestFromDay <= @RequestToDay AND RequestToDay >= @RequestFromDay)  -- Overlapping date ranges
-        )";*/
+            AND RequestID != @RequestID  -- Exclude current request when updating
+            AND (RequestType IN ('Annual', 'Work From Home', 'Unpaid', 'Emergency'))
+            AND (RequestStatus != 'Rejected' AND RequestHRStatus != 'Rejected')  -- Ignore rejected requests
+            AND ((RequestFromDay <= @RequestToDay AND RequestToDay >= @RequestFromDay))  -- Overlapping date ranges";
 
             try
             {
@@ -110,6 +114,8 @@ namespace TDF.Net.Classes
                     cmd.Parameters.AddWithValue("@RequestUserID", RequestUserID);
                     cmd.Parameters.AddWithValue("@RequestFromDay", RequestFromDay.Date);
                     cmd.Parameters.AddWithValue("@RequestToDay", RequestToDay);
+                    cmd.Parameters.AddWithValue("@RequestID", RequestID);  // Will be 0 for new requests
+
 
                     int conflictCount = (int)cmd.ExecuteScalar();
                     return conflictCount > 0;
@@ -235,6 +241,7 @@ namespace TDF.Net.Classes
                         {
                             MessageBox.Show("Request updated successfully.", "Update Request", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             Forms.addRequestForm.requestAddedOrUpdated = true;
+                            notifyNewRequest();
                         }
                         else
                         {
