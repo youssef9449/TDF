@@ -171,6 +171,12 @@
     <Compile Include="Forms\chatForm.Designer.cs">
       <DependentUpon>chatForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\globalChatForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\globalChatForm.Designer.cs">
+      <DependentUpon>globalChatForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\mainFormNewUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -225,6 +231,9 @@
     <Compile Include="Security.cs" />
     <EmbeddedResource Include="Forms\chatForm.resx">
       <DependentUpon>chatForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\globalChatForm.resx">
+      <DependentUpon>globalChatForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\mainFormNewUI.resx">
       <DependentUpon>mainFormNewUI.cs</DependentUpon>

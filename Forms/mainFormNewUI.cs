@@ -220,14 +220,25 @@ namespace TDF.Net
         }
         private async void closeImg_MouseClick(object sender, MouseEventArgs e)
         {
-            if (!isFormClosing)
+            DialogResult result = MessageBox.Show("Are you sure you want to exit?",
+                                      "Confirm Exit",
+                                      MessageBoxButtons.YesNo,
+                                      MessageBoxIcon.Question);
+            if (result == DialogResult.Yes)
             {
-                isFormClosing = true;
-                UnsubscribeFromEvents();  // Unsubscribe from SignalR events
-                await triggerServerDisconnect();
+                if (!isFormClosing)
+                {
+                    isFormClosing = true;
+                    UnsubscribeFromEvents();  // Unsubscribe from SignalR events
+                    await triggerServerDisconnect();
 
-                loggedInUser = null;
-                Application.Exit();
+                    loggedInUser = null;
+                    foreach (Form frm in Application.OpenForms.Cast<Form>().ToList())
+                    {
+                        frm.Close();
+                    }
+                    Application.Exit();
+                }
             }
         }
         private void maxImage_MouseClick(object sender, MouseEventArgs e)
@@ -1534,16 +1545,27 @@ namespace TDF.Net
         }
         private async void logoutImageButton_Click(object sender, EventArgs e)
         {
-            if (!isFormClosing)
-            {
-                isFormClosing = true;
+            //globalChatForm globalChat = new globalChatForm();
+            //globalChat.Show();
 
-                UnsubscribeFromEvents();
-                await triggerServerDisconnect();
-                SignalRManager.ResetConnection(); // Reset SignalR state
-                loggedInUser = null;
-                Close();
-                loginForm.Show();
+            DialogResult result = MessageBox.Show("Are you sure you want to log out?",
+                          "Confirm Logging out",
+                          MessageBoxButtons.YesNo,
+                          MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                if (!isFormClosing)
+                {
+                    isFormClosing = true;
+
+                    UnsubscribeFromEvents();
+                    await triggerServerDisconnect();
+                    SignalRManager.ResetConnection(); // Reset SignalR state
+                    loggedInUser = null;
+                    Close();
+                    loginForm.Show();
+                }
             }
         }
 

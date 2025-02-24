@@ -6,6 +6,7 @@ using System.Linq;
 using System.Media;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDF.Forms;
 using TDF.Net;
 using TDF.Net.Forms;
 
@@ -139,6 +140,7 @@ public static class SignalRManager
                     mainFormNewUI.BeginInvoke(new Action(() => mainFormNewUI.LoadUnreadNotifications()));
                 }
             });
+
             // Updated handler for status updates
             HubProxy.On<int, bool>("updateUserStatus", (userId, isConnected) =>
             {
@@ -149,6 +151,33 @@ public static class SignalRManager
                     {
                         Console.WriteLine($"Updating status for user {userId}: {isConnected}");
                         mainForm.UpdateUserStatus(userId, isConnected); // Synchronous call
+                    }));
+                }
+            });
+
+            // Listener for incoming global chat messages
+            HubProxy.On<string, int, string>("receiveGlobalChatMessage", (messageId, senderId, message) =>
+            {
+                var globalChatForms = Application.OpenForms.OfType<globalChatForm>().ToList();
+                foreach (var form in globalChatForms)
+                {
+                    if (!form.IsDisposed && form.IsHandleCreated)
+                    {
+                        form.BeginInvoke(new Action(() =>
+                        {
+                            form.AppendGlobalChatMessage(senderId, message, messageId);
+                        }));
+                    }
+                }
+            });
+            HubProxy.On<string, int, string>("receiveDepartmentChatMessage", (messageId, senderId, message) =>
+            {
+                var globalChatForm = Application.OpenForms.OfType<globalChatForm>().FirstOrDefault();
+                if (globalChatForm != null && !globalChatForm.IsDisposed && globalChatForm.IsHandleCreated)
+                {
+                    globalChatForm.BeginInvoke(new Action(() =>
+                    {
+                        globalChatForm.AppendDepartmentChatMessage(senderId, message, messageId, "Department");
                     }));
                 }
             });
