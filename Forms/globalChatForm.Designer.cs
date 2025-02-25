@@ -38,7 +38,10 @@
             this.controlBox = new Bunifu.UI.WinForms.BunifuFormControlBox();
             this.globalChatInput = new Bunifu.UI.WinForms.BunifuTextBox();
             this.globalChatSendButton = new Bunifu.UI.WinForms.BunifuButton.BunifuButton2();
+            this.globalChatPanel = new System.Windows.Forms.Panel();
+            this.globalChatDisplay = new System.Windows.Forms.RichTextBox();
             this.panel.SuspendLayout();
+            this.globalChatPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel
@@ -49,7 +52,7 @@
             this.panel.Location = new System.Drawing.Point(0, 0);
             this.panel.Margin = new System.Windows.Forms.Padding(4);
             this.panel.Name = "panel";
-            this.panel.Size = new System.Drawing.Size(933, 50);
+            this.panel.Size = new System.Drawing.Size(1280, 50);
             this.panel.TabIndex = 24;
             this.panel.Paint += new System.Windows.Forms.PaintEventHandler(this.panel_Paint);
             this.panel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel_MouseDown);
@@ -84,9 +87,9 @@
             this.controlBox.HelpBoxOptions.IconPressedColor = System.Drawing.Color.Black;
             this.controlBox.HelpBoxOptions.IconSize = new System.Drawing.Size(22, 22);
             this.controlBox.HelpBoxOptions.PressedColor = System.Drawing.Color.Silver;
-            this.controlBox.Location = new System.Drawing.Point(744, 2);
+            this.controlBox.Location = new System.Drawing.Point(1091, 2);
             this.controlBox.Margin = new System.Windows.Forms.Padding(2);
-            this.controlBox.MaximizeBox = true;
+            this.controlBox.MaximizeBox = false;
             this.controlBox.MaximizeBoxOptions.BackColor = System.Drawing.Color.Transparent;
             this.controlBox.MaximizeBoxOptions.BorderRadius = 0;
             this.controlBox.MaximizeBoxOptions.Enabled = true;
@@ -140,7 +143,7 @@
             this.globalChatInput.CharacterCase = Bunifu.UI.WinForms.BunifuTextBox.CharacterCases.Normal;
             this.globalChatInput.CharacterCasing = System.Windows.Forms.CharacterCasing.Normal;
             this.globalChatInput.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.globalChatInput.DefaultFont = new System.Drawing.Font("Segoe UI", 9.25F);
+            this.globalChatInput.DefaultFont = new System.Drawing.Font("Segoe UI", 15F);
             this.globalChatInput.DefaultText = "";
             this.globalChatInput.FillColor = System.Drawing.Color.White;
             this.globalChatInput.HideSelection = true;
@@ -150,7 +153,7 @@
             this.globalChatInput.IconRight = null;
             this.globalChatInput.IconRightCursor = System.Windows.Forms.Cursors.IBeam;
             this.globalChatInput.Lines = new string[0];
-            this.globalChatInput.Location = new System.Drawing.Point(12, 437);
+            this.globalChatInput.Location = new System.Drawing.Point(4, 590);
             this.globalChatInput.MaxLength = 32767;
             this.globalChatInput.MinimumSize = new System.Drawing.Size(1, 1);
             this.globalChatInput.Modified = false;
@@ -186,7 +189,7 @@
             this.globalChatInput.SelectionLength = 0;
             this.globalChatInput.SelectionStart = 0;
             this.globalChatInput.ShortcutsEnabled = true;
-            this.globalChatInput.Size = new System.Drawing.Size(671, 105);
+            this.globalChatInput.Size = new System.Drawing.Size(1011, 118);
             this.globalChatInput.Style = Bunifu.UI.WinForms.BunifuTextBox._Style.Bunifu;
             this.globalChatInput.TabIndex = 25;
             this.globalChatInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
@@ -229,7 +232,7 @@
             this.globalChatSendButton.DisabledFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
             this.globalChatSendButton.DisabledForecolor = System.Drawing.Color.FromArgb(((int)(((byte)(168)))), ((int)(((byte)(160)))), ((int)(((byte)(168)))));
             this.globalChatSendButton.FocusState = Bunifu.UI.WinForms.BunifuButton.BunifuButton2.ButtonStates.Pressed;
-            this.globalChatSendButton.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.globalChatSendButton.Font = new System.Drawing.Font("Segoe UI", 15F);
             this.globalChatSendButton.ForeColor = System.Drawing.Color.White;
             this.globalChatSendButton.IconLeftAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.globalChatSendButton.IconLeftCursor = System.Windows.Forms.Cursors.Default;
@@ -247,7 +250,7 @@
             this.globalChatSendButton.IdleIconLeftImage = null;
             this.globalChatSendButton.IdleIconRightImage = null;
             this.globalChatSendButton.IndicateFocus = false;
-            this.globalChatSendButton.Location = new System.Drawing.Point(689, 437);
+            this.globalChatSendButton.Location = new System.Drawing.Point(1021, 590);
             this.globalChatSendButton.Name = "globalChatSendButton";
             this.globalChatSendButton.OnDisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(191)))), ((int)(((byte)(191)))), ((int)(((byte)(191)))));
             this.globalChatSendButton.OnDisabledState.BorderRadius = 1;
@@ -281,7 +284,7 @@
             this.globalChatSendButton.OnPressedState.ForeColor = System.Drawing.Color.White;
             this.globalChatSendButton.OnPressedState.IconLeftImage = null;
             this.globalChatSendButton.OnPressedState.IconRightImage = null;
-            this.globalChatSendButton.Size = new System.Drawing.Size(232, 105);
+            this.globalChatSendButton.Size = new System.Drawing.Size(253, 118);
             this.globalChatSendButton.TabIndex = 26;
             this.globalChatSendButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.globalChatSendButton.TextAlignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -289,12 +292,32 @@
             this.globalChatSendButton.TextPadding = new System.Windows.Forms.Padding(0);
             this.globalChatSendButton.UseDefaultRadiusAndThickness = true;
             // 
+            // globalChatPanel
+            // 
+            this.globalChatPanel.Controls.Add(this.globalChatDisplay);
+            this.globalChatPanel.Location = new System.Drawing.Point(4, 53);
+            this.globalChatPanel.Name = "globalChatPanel";
+            this.globalChatPanel.Size = new System.Drawing.Size(1270, 531);
+            this.globalChatPanel.TabIndex = 27;
+            // 
+            // globalChatDisplay
+            // 
+            this.globalChatDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.globalChatDisplay.Font = new System.Drawing.Font("Tahoma", 15F);
+            this.globalChatDisplay.Location = new System.Drawing.Point(0, 0);
+            this.globalChatDisplay.Name = "globalChatDisplay";
+            this.globalChatDisplay.ReadOnly = true;
+            this.globalChatDisplay.Size = new System.Drawing.Size(1270, 531);
+            this.globalChatDisplay.TabIndex = 28;
+            this.globalChatDisplay.Text = "";
+            // 
             // globalChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(933, 554);
+            this.ClientSize = new System.Drawing.Size(1280, 720);
+            this.Controls.Add(this.globalChatPanel);
             this.Controls.Add(this.globalChatSendButton);
             this.Controls.Add(this.globalChatInput);
             this.Controls.Add(this.panel);
@@ -303,6 +326,7 @@
             this.Name = "globalChatForm";
             this.Text = "Global Chat";
             this.panel.ResumeLayout(false);
+            this.globalChatPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -313,5 +337,7 @@
         private Bunifu.UI.WinForms.BunifuFormControlBox controlBox;
         private Bunifu.UI.WinForms.BunifuTextBox globalChatInput;
         private Bunifu.UI.WinForms.BunifuButton.BunifuButton2 globalChatSendButton;
+        private System.Windows.Forms.Panel globalChatPanel;
+        private System.Windows.Forms.RichTextBox globalChatDisplay;
     }
 }
