@@ -58,7 +58,7 @@ namespace TDF.Net
         private loginForm loginForm;
 
         private bool isPanelExpanded = true;
-        private bool isFormClosing = false;
+        private bool isClosingTheApp = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
         private int contractedHeight = 40; // Height of the panel to show only the header
         public int previousUserCount = -1; 
@@ -115,7 +115,7 @@ namespace TDF.Net
                 notificationsShadowPanel.Controls.Add(notificationHeader);
                 notificationHeader.BringToFront();
 
-                if (!IsDisposed && IsHandleCreated && !isFormClosing)
+                if (!IsDisposed && IsHandleCreated && !isClosingTheApp)
                 {
                     try
                     {
@@ -130,7 +130,7 @@ namespace TDF.Net
             }
 
             // Force initial refresh
-            if (!IsDisposed && IsHandleCreated && !isFormClosing)
+            if (!IsDisposed && IsHandleCreated && !isClosingTheApp)
             {
                 try
                 {
@@ -216,28 +216,19 @@ namespace TDF.Net
         {
             minImg.Image = Resources.min_press;
         }
-        private async void closeImg_MouseClick(object sender, MouseEventArgs e)
+        private void closeImg_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("Are you sure you want to exit?",
-                                      "Confirm Exit",
-                                      MessageBoxButtons.YesNo,
-                                      MessageBoxIcon.Question);
+                          "Confirm Exit",
+                          MessageBoxButtons.YesNo,
+                          MessageBoxIcon.Question);
+
             if (result == DialogResult.Yes)
             {
-                if (!isFormClosing)
-                {
-                    isFormClosing = true;
-                    UnsubscribeFromEvents();  // Unsubscribe from SignalR events
-                    await triggerServerDisconnect();
-
-                    loggedInUser = null;
-                    foreach (Form frm in Application.OpenForms.Cast<Form>().ToList())
-                    {
-                        frm.Close();
-                    }
-                    Application.Exit();
-                }
+                isClosingTheApp = true;
+                closeTheApp();
             }
+            
         }
         private void maxImage_MouseClick(object sender, MouseEventArgs e)
         {
@@ -385,11 +376,38 @@ namespace TDF.Net
                 isPanelExpanded = true;
             }
         }
-        protected override void OnFormClosing(FormClosingEventArgs e)
+        private async void mainFormNewUI_FormClosing(object sender, FormClosingEventArgs e)
         {
-            isFormClosing = true; // Ensure flag is set during close
-            base.OnFormClosing(e);
+            // If the close wasn’t initiated via your custom close image, ask for confirmation.
+            if (!isClosingTheApp)
+            {
+                DialogResult result = MessageBox.Show("Are you sure you want to exit?",
+                                          "Confirm Exit",
+                                          MessageBoxButtons.YesNo,
+                                          MessageBoxIcon.Question);
+                if (result != DialogResult.Yes)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+                isClosingTheApp = true;
+            }
+
+            await closeTheApp();
         }
+
+        private async Task closeTheApp()
+        {
+            // Perform cleanup regardless of how the app is closed.
+            UnsubscribeFromEvents();
+            await triggerServerDisconnect();
+
+            loggedInUser = null;
+
+            // Force termination of the process:
+            Environment.Exit(0);
+        }
+
         #endregion
 
         #region Methods
@@ -855,7 +873,7 @@ namespace TDF.Net
         }
         public async Task<List<User>> GetAllUsersAsync()
         {
-            if (isFormClosing || IsDisposed)
+            if (isClosingTheApp || IsDisposed)
             {
                 return new List<User>();
             }
@@ -1608,21 +1626,22 @@ namespace TDF.Net
 
             if (result == DialogResult.Yes)
             {
-                if (!isFormClosing)
-                {
-                    isFormClosing = true;
-
-                    UnsubscribeFromEvents();
-                    await triggerServerDisconnect();
-                    SignalRManager.ResetConnection(); // Reset SignalR state
-                    loggedInUser = null;
-                    Close();
-                    loginForm.Show();
-                }
+                UnsubscribeFromEvents();
+                await triggerServerDisconnect();
+                SignalRManager.ResetConnection(); // Reset SignalR state
+                loggedInUser = null;
+                Close();
+                loginForm.Show();
             }
         }
 
 
+
         #endregion
+
+        private void shadowPanel_ControlAdded(object sender, ControlEventArgs e)
+        {
+
+        }
     }
 }
