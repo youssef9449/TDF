@@ -74,13 +74,13 @@ namespace TDF.Net.Classes
         {
             if (SignalRManager.Connection.State == ConnectionState.Connected)
             {
-                SignalRManager.HubProxy.Invoke("NotifyNewRequest", RequestDepartment);
+                SignalRManager.HubProxy.Invoke("NotifyNewRequest", RequestDepartment, loginForm.loggedInUser.userID);
             }
             else
             {
                 // Handle disconnected state - maybe try to reconnect
                 SignalRManager.Connection.Start();
-                SignalRManager.HubProxy.Invoke("NotifyNewRequest", RequestDepartment);
+                SignalRManager.HubProxy.Invoke("NotifyNewRequest", RequestDepartment, loginForm.loggedInUser.userID);
 
             }
         }

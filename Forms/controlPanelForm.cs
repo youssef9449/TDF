@@ -16,6 +16,7 @@ using System.IO.Pipes;
 using System.Threading.Tasks;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
 using TDF.Net.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace TDF.Forms
 {
@@ -74,7 +75,7 @@ namespace TDF.Forms
         }
         private string buildUsersQuery(string filter, string searchValue)
         {
-            string baseQuery = "SELECT FullName, Department, Role, Title FROM Users WHERE NOT Role = 'Admin'";
+            string baseQuery = "SELECT FullName, Department, Role, Title, UserName FROM Users WHERE NOT Role = 'Admin'";
 
             switch (filter)
             {
@@ -114,7 +115,8 @@ namespace TDF.Forms
                         string departmentName = reader["Department"].ToString();
                         string role = reader["Role"].ToString();
                         string title = reader["Title"].ToString();
-                        string displayName = $"{fullName} - {departmentName} - {title} - {role}";
+                        string userName = reader["UserName"].ToString(); 
+                        string displayName = $"{fullName} - {departmentName} - {title} - {role} - {userName}";
 
                         usersCheckedListBox.Items.Add(displayName);
                     }

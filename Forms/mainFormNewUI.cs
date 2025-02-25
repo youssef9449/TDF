@@ -64,11 +64,9 @@ namespace TDF.Net
         public int previousUserCount = -1; 
         private FlowLayoutPanel flowLayout;
         private Dictionary<int, Panel> userPanels = new Dictionary<int, Panel>();
-        private List<User> cachedUsers = new List<User>();
         private IDisposable updateUserListSubscription;
         private Dictionary<int, int> pendingMessageCounts = new Dictionary<int, int>();
         private int lastNotificationCount = 0;
-        private readonly object userCacheLock = new object();
         private Label notificationHeader; // Fixed header
         // Helper for async Invoke
         private Task InvokeAsync(Action action)
@@ -90,7 +88,7 @@ namespace TDF.Net
             {
                 if (!IsDisposed && IsHandleCreated)
                 {
-                    BeginInvoke(new Action(() => DisplayConnectedUsersAsync(true)));
+                    BeginInvoke(new Action(() => DisplayConnectedUsersAsync()));
                 }
             });
 
@@ -136,10 +134,10 @@ namespace TDF.Net
             {
                 try
                 {
-                    await GetAllUsersAsync(true);
-                    DisplayConnectedUsersAsync(true);
+                    await GetAllUsersAsync();
+                    DisplayConnectedUsersAsync();
                     await LoadPendingMessages();
-                       //   LoadUnreadNotifications();
+                     //M LoadUnreadNotifications();
                 }
                 catch (ObjectDisposedException) { }
             }
@@ -792,9 +790,6 @@ namespace TDF.Net
                 Console.WriteLine($"User panel not found for sender {senderId.Value}, skipping balloon.");
             }
         }
-
-
-        #region Updated Chat Form Integration
         private async void OpenChatForm(int userId)
         {
             var user = (await GetAllUsersAsync()).FirstOrDefault(u => u.userID == userId);
@@ -852,15 +847,13 @@ namespace TDF.Net
                 MessageBox.Show("Failed to open chat. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        #endregion
-
         private Panel GetUserPanel(int userId)
         {
             return flowLayout.Controls
                 .OfType<Panel>()
                 .FirstOrDefault(p => (int)p.Tag == userId);
         }
-        public async Task<List<User>> GetAllUsersAsync(bool forceRefresh = false)
+        public async Task<List<User>> GetAllUsersAsync()
         {
             if (isFormClosing || IsDisposed)
             {
@@ -870,14 +863,6 @@ namespace TDF.Net
             if (loggedInUser == null)
                 return new List<User>();
 
-            lock (userCacheLock)
-            {
-                if (!forceRefresh && cachedUsers.Any())
-                {
-                    return new List<User>(cachedUsers); // Return a copy
-                }
-            }
-
             List<User> users = new List<User>();
             try
             {
@@ -886,23 +871,23 @@ namespace TDF.Net
                 {
                     await connection.OpenAsync();
                     string query = @"
-                SELECT 
-                    u.UserID, 
-                    u.FullName, 
-                    u.Department, 
-                    u.Picture, 
-                    ISNULL(pc.PendingCount, 0) AS PendingMessageCount
-                FROM Users u
-                LEFT JOIN (
-                    SELECT SenderID, COUNT(*) AS PendingCount
-                    FROM PendingChatMessages
-                    WHERE ReceiverID = @ReceiverID AND IsDelivered = 0
-                    GROUP BY SenderID
-                ) pc ON u.UserID = pc.SenderID
-                WHERE u.UserName <> @UserName
-                ORDER BY ISNULL(pc.PendingCount, 0) DESC, 
-                         CASE WHEN u.UserID IN (" + (connectedUserIDs.Any() ? string.Join(",", connectedUserIDs) : "0") + @") THEN 1 ELSE 0 END DESC, 
-                         u.FullName ASC";
+        SELECT 
+            u.UserID, 
+            u.FullName, 
+            u.Department, 
+            u.Picture, 
+            ISNULL(pc.PendingCount, 0) AS PendingMessageCount
+        FROM Users u
+        LEFT JOIN (
+            SELECT SenderID, COUNT(*) AS PendingCount
+            FROM PendingChatMessages
+            WHERE ReceiverID = @ReceiverID AND IsDelivered = 0
+            GROUP BY SenderID
+        ) pc ON u.UserID = pc.SenderID
+        WHERE u.UserName <> @UserName
+        ORDER BY ISNULL(pc.PendingCount, 0) DESC, 
+                 CASE WHEN u.UserID IN (" + (connectedUserIDs.Any() ? string.Join(",", connectedUserIDs) : "0") + @") THEN 1 ELSE 0 END DESC, 
+                 u.FullName ASC";
 
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
@@ -930,12 +915,7 @@ namespace TDF.Net
                         }
                     }
                 }
-
-                lock (userCacheLock)
-                {
-                    cachedUsers = users; // Update cache
-                }
-                return new List<User>(users);
+                return users;
             }
             catch (Exception ex)
             {
@@ -943,15 +923,14 @@ namespace TDF.Net
                 return new List<User>();
             }
         }
-        public async Task DisplayConnectedUsersAsync(bool forceFullRefresh = false)
+        public async Task DisplayConnectedUsersAsync()
         {
-            List<User> connectedUsers = await GetAllUsersAsync(forceFullRefresh);
-            int currentUserCount = connectedUsers.Count;
-            int onlineCount = connectedUsers.Count(u => u.isConnected == 1);
+            List<User> freshUsers = await GetAllUsersAsync();
+            int onlineCount = freshUsers.Count(u => u.isConnected == 1);
 
             if (InvokeRequired)
             {
-                await InvokeAsync(async () => await DisplayConnectedUsersAsync(forceFullRefresh));
+                await InvokeAsync(async () => await DisplayConnectedUsersAsync());
                 return;
             }
 
@@ -976,17 +955,22 @@ namespace TDF.Net
 
             int savedScrollPos = flowLayout.VerticalScroll.Value;
 
-            // Determine if a full rebuild is needed
-            bool needRebuild = forceFullRefresh || flowLayout.Controls.Count != currentUserCount || !UserPanelsMatch(connectedUsers);
+            // Check if we have new users or if the user list has changed
+            HashSet<int> existingUserIds = new HashSet<int>(userPanels.Keys);
+            HashSet<int> freshUserIds = new HashSet<int>(freshUsers.Select(u => u.userID));
 
-            if (needRebuild)
+            bool hasNewUsers = !freshUserIds.IsSubsetOf(existingUserIds);
+            bool userRemoved = !existingUserIds.IsSubsetOf(freshUserIds);
+
+            // Full rebuild if users were added or removed
+            if (hasNewUsers || userRemoved || flowLayout.Controls.Count == 0)
             {
                 usersPanel.SuspendLayout();
                 flowLayout.SuspendLayout();
                 flowLayout.Controls.Clear();
                 userPanels.Clear();
 
-                foreach (User user in connectedUsers)
+                foreach (User user in freshUsers)
                 {
                     Panel userPanel = new Panel
                     {
@@ -1053,8 +1037,16 @@ namespace TDF.Net
                     flowLayout.Controls.Add(userPanel);
                     userPanels[user.userID] = userPanel;
 
-                    int initialCount = pendingMessageCounts.ContainsKey(user.userID) ? pendingMessageCounts[user.userID] : user.PendingMessageCount;
-                    UpdateMessageCounterUI(userPanel, initialCount);
+                    int messageCount = 0;
+                    if (pendingMessageCounts.TryGetValue(user.userID, out messageCount))
+                    {
+                        UpdateMessageCounterUI(userPanel, messageCount);
+                    }
+                    else
+                    {
+                        UpdateMessageCounterUI(userPanel, user.PendingMessageCount);
+                        pendingMessageCounts[user.userID] = user.PendingMessageCount;
+                    }
                     pictureBox.SendToBack();
                 }
 
@@ -1063,11 +1055,15 @@ namespace TDF.Net
             }
             else
             {
-                // Update only online indicators
-                foreach (User user in connectedUsers)
+                // Re-ordering: Remove and re-add panels to update order
+                Dictionary<int, Panel> panelsToReorder = new Dictionary<int, Panel>();
+
+                // First, collect all panels that need to be reordered and update their status
+                foreach (User user in freshUsers)
                 {
                     if (userPanels.TryGetValue(user.userID, out Panel userPanel))
                     {
+                        // Update online indicator
                         var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault() as Label;
                         if (onlineIndicator != null)
                         {
@@ -1075,8 +1071,39 @@ namespace TDF.Net
                             onlineIndicator.Visible = true;
                             onlineIndicator.Invalidate(); // Force repaint
                         }
+
+                        // Update message counter if needed
+                        int currentPendingCount = 0;
+                        if (pendingMessageCounts.TryGetValue(user.userID, out currentPendingCount))
+                        {
+                            if (user.PendingMessageCount != currentPendingCount)
+                            {
+                                UpdateMessageCounterUI(userPanel, user.PendingMessageCount);
+                                pendingMessageCounts[user.userID] = user.PendingMessageCount;
+                            }
+                        }
+                        else
+                        {
+                            UpdateMessageCounterUI(userPanel, user.PendingMessageCount);
+                            pendingMessageCounts[user.userID] = user.PendingMessageCount;
+                        }
+
+                        // Store the panel for reordering
+                        panelsToReorder[user.userID] = userPanel;
                     }
                 }
+
+                // Now re-order them according to fresh user list order
+                flowLayout.SuspendLayout();
+                foreach (User user in freshUsers)
+                {
+                    if (panelsToReorder.TryGetValue(user.userID, out Panel panel))
+                    {
+                        flowLayout.Controls.Remove(panel);
+                        flowLayout.Controls.Add(panel);
+                    }
+                }
+                flowLayout.ResumeLayout();
             }
 
             // Restore scroll position
@@ -1085,18 +1112,6 @@ namespace TDF.Net
                 flowLayout.VerticalScroll.Value = Math.Min(savedScrollPos, flowLayout.VerticalScroll.Maximum);
             }
             catch { }
-        }
-        private bool UserPanelsMatch(List<User> connectedUsers)
-        {
-            if (flowLayout == null || flowLayout.Controls.Count != connectedUsers.Count) return false;
-            for (int i = 0; i < flowLayout.Controls.Count; i++)
-            {
-                if (flowLayout.Controls[i] is Panel panel && (int)panel.Tag != connectedUsers[i].userID)
-                {
-                    return false;
-                }
-            }
-            return true;
         }
         public static async Task triggerServerDisconnect()
         {
@@ -1275,7 +1290,45 @@ namespace TDF.Net
             }
             lastNotificationCount = currentCount;
         }
+        public void UpdateUserConnectionStatus(int userId, bool isConnected)
+        {
+            if (userPanels.TryGetValue(userId, out Panel userPanel))
+            {
+                var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault() as Label;
+                if (onlineIndicator != null)
+                {
+                    onlineIndicator.BackColor = isConnected ? Color.LimeGreen : Color.Red;
+                    onlineIndicator.Visible = true;
+                    onlineIndicator.Invalidate(); // Force repaint
+                }
 
+                // If you want to move disconnected users down
+                if (!isConnected && flowLayout.Controls.Contains(userPanel))
+                {
+                    flowLayout.SuspendLayout();
+                    flowLayout.Controls.Remove(userPanel);
+                    flowLayout.Controls.Add(userPanel); // This adds to the end
+                    flowLayout.ResumeLayout();
+                }
+
+                // Update online count in header
+                Label headerLabel = usersPanel.Controls
+                    .OfType<Label>()
+                    .FirstOrDefault(ctrl => ctrl.Tag != null && ctrl.Tag.ToString() == "header");
+
+                if (headerLabel != null)
+                {
+                    int onlineCount = userPanels.Count(kvp =>
+                    {
+                        var panel = kvp.Value;
+                        var indicator = panel.Controls.Find("onlineIndicator", true).FirstOrDefault() as Label;
+                        return indicator != null && indicator.BackColor == Color.LimeGreen;
+                    });
+
+                    headerLabel.Text = $"Online Users ({onlineCount})";
+                }
+            }
+        }
         private void BtnMarkRead_Click(object sender, EventArgs e)
         {
             int notificationId = (int)((BunifuButton2)sender).Tag;
@@ -1545,28 +1598,28 @@ namespace TDF.Net
         }
         private async void logoutImageButton_Click(object sender, EventArgs e)
         {
-            globalChatForm globalChat = new globalChatForm();
-            globalChat.Show();
+            //globalChatForm globalChat = new globalChatForm();
+            //globalChat.Show();
 
-            //DialogResult result = MessageBox.Show("Are you sure you want to log out?",
-            //              "Confirm Logging out",
-            //              MessageBoxButtons.YesNo,
-            //              MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show("Are you sure you want to log out?",
+                          "Confirm Logging out",
+                          MessageBoxButtons.YesNo,
+                          MessageBoxIcon.Question);
 
-            //if (result == DialogResult.Yes)
-            //{
-            //    if (!isFormClosing)
-            //    {
-            //        isFormClosing = true;
+            if (result == DialogResult.Yes)
+            {
+                if (!isFormClosing)
+                {
+                    isFormClosing = true;
 
-            //        UnsubscribeFromEvents();
-            //        await triggerServerDisconnect();
-            //        SignalRManager.ResetConnection(); // Reset SignalR state
-            //        loggedInUser = null;
-            //        Close();
-            //        loginForm.Show();
-            //    }
-            //}
+                    UnsubscribeFromEvents();
+                    await triggerServerDisconnect();
+                    SignalRManager.ResetConnection(); // Reset SignalR state
+                    loggedInUser = null;
+                    Close();
+                    loginForm.Show();
+                }
+            }
         }
 
 

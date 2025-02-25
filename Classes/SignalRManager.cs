@@ -106,8 +106,21 @@ public static class SignalRManager
                 {
                     mainForm.BeginInvoke(new Action(() =>
                     {
-                        Console.WriteLine("User list update event received from SignalR.");
-                        mainForm.DisplayConnectedUsersAsync(true); // Sync call for compatibility
+                        // Full refresh - only used when new users are added
+                        mainForm.DisplayConnectedUsersAsync();
+                    }));
+                }
+            });
+
+            HubProxy.On<int, bool>("updateUserStatus", (userId, isConnected) =>
+            {
+                var mainForm = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
+                if (mainForm != null && !mainForm.IsDisposed && mainForm.IsHandleCreated)
+                {
+                    mainForm.BeginInvoke(new Action(() =>
+                    {
+                        // Just update the status of a single user
+                        mainForm.UpdateUserConnectionStatus(userId, isConnected);
                     }));
                 }
             });
@@ -128,12 +141,20 @@ public static class SignalRManager
                     requestsForm.BeginInvoke(new Action(() => requestsForm.AddRequestRow(requestId, userFullName, requestType, requestFromDay, requestStatus)));
                 }
             });
-            HubProxy.On("RefreshNotifications", () =>
+
+            HubProxy.On("RefreshNotifications", (int requesterId) =>
             {
                 if (!mainForm.hasHRRole && !mainForm.hasManagerRole)
                 {
                     return; // Skip listener setup for non-HR/Manager users
                 }
+
+                // Skip notification if the current user is the requester
+                if (loginForm.loggedInUser.userID == requesterId)
+                {
+                    return;
+                }
+
                 var mainFormNewUI = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
                 if (mainFormNewUI != null && !mainFormNewUI.IsDisposed && mainFormNewUI.IsHandleCreated)
                 {

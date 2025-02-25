@@ -69,8 +69,8 @@ namespace TDF.Net
                     updateMachineName();
 
                     // Initialize SignalR and register this user
-                    //string serverUrl = $"http://{Database.serverIPAddress}:8080"; // Replace with your actual URL
-                    string serverUrl = $"http://localhost:8080"; // Replace with your actual URL
+                    string serverUrl = $"http://{Database.serverIPAddress}:8080"; // Replace with your actual URL
+                    //string serverUrl = $"http://localhost:8080"; // Replace with your actual URL
                     await SignalRManager.InitializeAsync(serverUrl, loggedInUser.userID);
 
                     // Open the appropriate UI
