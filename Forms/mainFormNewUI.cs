@@ -58,7 +58,7 @@ namespace TDF.Net
         private loginForm loginForm;
 
         private bool isPanelExpanded = true;
-        private bool isClosingTheApp = false;
+        private bool isClosingTheApp, isLoggingOut = false;
         private int expandedHeight; // Stores the full height of the panel when expanded
         private int contractedHeight = 40; // Height of the panel to show only the header
         public int previousUserCount = -1; 
@@ -378,22 +378,25 @@ namespace TDF.Net
         }
         private async void mainFormNewUI_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // If the close wasn’t initiated via your custom close image, ask for confirmation.
-            if (!isClosingTheApp)
+            if (!isLoggingOut)
             {
-                DialogResult result = MessageBox.Show("Are you sure you want to exit?",
-                                          "Confirm Exit",
-                                          MessageBoxButtons.YesNo,
-                                          MessageBoxIcon.Question);
-                if (result != DialogResult.Yes)
+                // If the close wasn’t initiated via your custom close image, ask for confirmation.
+                if (!isClosingTheApp)
                 {
-                    e.Cancel = true;
-                    return;
+                    DialogResult result = MessageBox.Show("Are you sure you want to exit?",
+                                              "Confirm Exit",
+                                              MessageBoxButtons.YesNo,
+                                              MessageBoxIcon.Question);
+                    if (result != DialogResult.Yes)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                    isClosingTheApp = true;
                 }
-                isClosingTheApp = true;
-            }
 
-            await closeTheApp();
+                await closeTheApp();
+            }
         }
 
         private async Task closeTheApp()
@@ -1618,7 +1621,7 @@ namespace TDF.Net
         {
             //globalChatForm globalChat = new globalChatForm();
             //globalChat.Show();
-
+            isLoggingOut = true;
             DialogResult result = MessageBox.Show("Are you sure you want to log out?",
                           "Confirm Logging out",
                           MessageBoxButtons.YesNo,
