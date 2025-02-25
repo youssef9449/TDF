@@ -170,17 +170,17 @@ public static class SignalRManager
                     }
                 }
             });
-            HubProxy.On<string, int, string>("receiveDepartmentChatMessage", (messageId, senderId, message) =>
-            {
-                var globalChatForm = Application.OpenForms.OfType<globalChatForm>().FirstOrDefault();
-                if (globalChatForm != null && !globalChatForm.IsDisposed && globalChatForm.IsHandleCreated)
-                {
-                    globalChatForm.BeginInvoke(new Action(() =>
-                    {
-                        globalChatForm.AppendDepartmentChatMessage(senderId, message, messageId, "Department");
-                    }));
-                }
-            });
+            //HubProxy.On<string, int, string>("receiveDepartmentChatMessage", (messageId, senderId, message) =>
+            //{
+            //    var globalChatForm = Application.OpenForms.OfType<globalChatForm>().FirstOrDefault();
+            //    if (globalChatForm != null && !globalChatForm.IsDisposed && globalChatForm.IsHandleCreated)
+            //    {
+            //        globalChatForm.BeginInvoke(new Action(() =>
+            //        {
+            //            globalChatForm.AppendDepartmentChatMessage(senderId, message, messageId, "Department");
+            //        }));
+            //    }
+            //});
 
             try
             {

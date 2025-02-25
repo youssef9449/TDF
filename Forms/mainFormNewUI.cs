@@ -1545,28 +1545,28 @@ namespace TDF.Net
         }
         private async void logoutImageButton_Click(object sender, EventArgs e)
         {
-            //globalChatForm globalChat = new globalChatForm();
-            //globalChat.Show();
+            globalChatForm globalChat = new globalChatForm();
+            globalChat.Show();
 
-            DialogResult result = MessageBox.Show("Are you sure you want to log out?",
-                          "Confirm Logging out",
-                          MessageBoxButtons.YesNo,
-                          MessageBoxIcon.Question);
+            //DialogResult result = MessageBox.Show("Are you sure you want to log out?",
+            //              "Confirm Logging out",
+            //              MessageBoxButtons.YesNo,
+            //              MessageBoxIcon.Question);
 
-            if (result == DialogResult.Yes)
-            {
-                if (!isFormClosing)
-                {
-                    isFormClosing = true;
+            //if (result == DialogResult.Yes)
+            //{
+            //    if (!isFormClosing)
+            //    {
+            //        isFormClosing = true;
 
-                    UnsubscribeFromEvents();
-                    await triggerServerDisconnect();
-                    SignalRManager.ResetConnection(); // Reset SignalR state
-                    loggedInUser = null;
-                    Close();
-                    loginForm.Show();
-                }
-            }
+            //        UnsubscribeFromEvents();
+            //        await triggerServerDisconnect();
+            //        SignalRManager.ResetConnection(); // Reset SignalR state
+            //        loggedInUser = null;
+            //        Close();
+            //        loginForm.Show();
+            //    }
+            //}
         }
 
 

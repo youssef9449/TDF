@@ -5,14 +5,15 @@ using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDF.Net;
+using TDF.Net.Classes;
+using static TDF.Net.Program;
 
 namespace TDF.Forms
 {
     public partial class globalChatForm : Form
     {
         private RichTextBox globalChatDisplay;
-        private TextBox globalChatInput;
-        private Button globalChatSendButton;
+        private Button emojiButton;
         private HashSet<string> displayedMessageIds = new HashSet<string>();
         private ComboBox chatChannelSelector;
 
@@ -22,8 +23,6 @@ namespace TDF.Forms
             Load += globalChatForm_Load;
 
             var globalChatPanel = new Panel { Dock = DockStyle.Fill };
-
-
             globalChatDisplay = new RichTextBox
             {
                 Dock = DockStyle.Fill,
@@ -31,64 +30,24 @@ namespace TDF.Forms
                 BackColor = Color.White,
                 Font = new Font("Segoe UI", 10)
             };
-            globalChatInput = new TextBox
-            {
-                Dock = DockStyle.Bottom,
-                Height = 30,
-                Font = new Font("Segoe UI", 10)
-            };
-            globalChatSendButton = new Button
-            {
-                Dock = DockStyle.Right,
-                Text = "Send",
-                Width = 80,
-                Height = 30,
-                BackColor = Color.FromArgb(33, 150, 243),
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 10, FontStyle.Bold)
-            };
             globalChatSendButton.Click += GlobalChatSendButton_Click;
 
-            chatChannelSelector = new ComboBox
-            {
-                Dock = DockStyle.Left,
-                Width = 150,
-                Height = 30,
-                Font = new Font("Segoe UI", 10),
-                Items = { "Global Chat", "Department Chat" },
-                SelectedIndex = 0
-            };
-            chatChannelSelector.SelectedIndexChanged += ChatChannelSelector_SelectedIndexChanged;
 
-            globalChatPanel.Controls.Add(chatChannelSelector);
             globalChatPanel.Controls.Add(globalChatDisplay);
             globalChatPanel.Controls.Add(globalChatInput);
             globalChatPanel.Controls.Add(globalChatSendButton);
+            globalChatPanel.Controls.Add(emojiButton);
             Controls.Add(globalChatPanel);
         }
 
+
+
+
         private async void globalChatForm_Load(object sender, EventArgs e)
         {
-            await LoadGlobalChatHistory();
+            await LoadChatHistoryBasedOnChannel();
         }
-        private void ChatChannelSelector_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            globalChatDisplay.Clear();
-            displayedMessageIds.Clear();
-            LoadChatHistoryBasedOnChannel();
-        }
-        private async Task LoadChatHistoryBasedOnChannel()
-        {
-            if (chatChannelSelector.SelectedIndex == 0) // Global Chat
-            {
-                await LoadGlobalChatHistory();
-            }
-            else // Department Chat
-            {
-                string department = GetUserDepartment(loginForm.loggedInUser.userID);
-                await LoadDepartmentChatHistory(department);
-            }
-        }
+
         private void GlobalChatSendButton_Click(object sender, EventArgs e)
         {
             string message = globalChatInput.Text.Trim();
@@ -97,9 +56,24 @@ namespace TDF.Forms
                 try
                 {
                     string messageId = Guid.NewGuid().ToString();
-                    SignalRManager.HubProxy.Invoke("SendGlobalChatMessage", messageId, message, loginForm.loggedInUser.userID);
+                    string channel = chatChannelSelector.SelectedIndex == 0 ? "global" : GetUserDepartment(loginForm.loggedInUser.userID);
+                    if (chatChannelSelector.SelectedIndex == 0)
+                    {
+                        SignalRManager.HubProxy.Invoke("SendGlobalChatMessage", messageId, message, loginForm.loggedInUser.userID);
+                    }
+                    else
+                    {
+                        SignalRManager.HubProxy.Invoke("SendDepartmentChatMessage", messageId, message, loginForm.loggedInUser.userID, channel);
+                    }
                     globalChatInput.Clear();
-                    AppendGlobalChatMessage(loginForm.loggedInUser.userID, message, messageId, true);
+                    if (chatChannelSelector.SelectedIndex == 0)
+                    {
+                        AppendGlobalChatMessage(loginForm.loggedInUser.userID, message, messageId, true);
+                    }
+                    else
+                    {
+                        AppendDepartmentChatMessage(loginForm.loggedInUser.userID, message, messageId, channel);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -110,19 +84,42 @@ namespace TDF.Forms
 
         public void AppendGlobalChatMessage(int senderId, string message, string messageId, bool isLocal = false)
         {
+            AppendChatMessage(senderId, message, messageId, "Global Chat", isLocal);
+        }
+
+        public void AppendDepartmentChatMessage(int senderId, string message, string messageId, string department, bool isLocal = false)
+        {
+            AppendChatMessage(senderId, message, messageId, department, isLocal);
+        }
+
+        private void AppendChatMessage(int senderId, string message, string messageId, string channel, bool isLocal = false)
+        {
             if (InvokeRequired)
             {
-                BeginInvoke(new Action(() => AppendGlobalChatMessage(senderId, message, messageId, isLocal)));
+                BeginInvoke(new Action(() => AppendChatMessage(senderId, message, messageId, channel, isLocal)));
                 return;
             }
 
             if (!displayedMessageIds.Contains(messageId))
             {
                 string senderName = GetUserNameById(senderId);
-                string formattedMessage = $"{senderName}: {message}\n";
+                string formattedMessage = $"[{channel}] {senderName}: {message}\n";
                 globalChatDisplay.AppendText(formattedMessage);
                 globalChatDisplay.ScrollToCaret();
                 displayedMessageIds.Add(messageId);
+            }
+        }
+
+        private async Task LoadChatHistoryBasedOnChannel()
+        {
+            if (chatChannelSelector.SelectedIndex == 0) // Global Chat
+            {
+                await LoadGlobalChatHistory();
+            }
+            else // Department Chat
+            {
+                string department = GetUserDepartment(loginForm.loggedInUser.userID);
+                await LoadDepartmentChatHistory(department);
             }
         }
 
@@ -145,7 +142,7 @@ namespace TDF.Forms
                                 string message = reader.GetString(2);
                                 DateTime timestamp = reader.GetDateTime(3);
                                 string senderName = GetUserNameById(senderId);
-                                string formattedMessage = $"[{timestamp:T}] {senderName}: {message}\n";
+                                string formattedMessage = $"[Global Chat] {senderName}: {message}\n";
                                 globalChatDisplay.AppendText(formattedMessage);
                                 displayedMessageIds.Add(messageId);
                             }
@@ -156,69 +153,10 @@ namespace TDF.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Failed to load chat history: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Failed to load global chat history: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private string GetUserNameById(int userId)
-        {
-            using (SqlConnection conn = Database.getConnection())
-            {
-                conn.Open();
-                string query = "SELECT Username FROM Users WHERE UserID = @UserID";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@UserID", userId);
-                    object result = cmd.ExecuteScalar();
-                    return result?.ToString() ?? $"User {userId}";
-                }
-            }
-        }
-        public void AppendDepartmentChatMessage(int senderId, string message, string messageId, string channel = "Department")
-        {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action(() => AppendDepartmentChatMessage(senderId, message, messageId, channel)));
-                return;
-            }
-
-            if (!displayedMessageIds.Contains(messageId))
-            {
-                string senderName = GetUserNameById(senderId);
-                string formattedMessage = $"[{channel}] {senderName}: {message}\n";
-                globalChatDisplay.AppendText(formattedMessage);
-                globalChatDisplay.ScrollToCaret();
-                displayedMessageIds.Add(messageId);
-            }
-        }
-
-        private void DepartmentChatButton_Click(object sender, EventArgs e) // Add a button for department chat
-        {
-            string message = globalChatInput.Text.Trim();
-            if (!string.IsNullOrEmpty(message))
-            {
-                string messageId = Guid.NewGuid().ToString();
-                string department = GetUserDepartment(loginForm.loggedInUser.userID); // Implement this method
-                SignalRManager.HubProxy.Invoke("SendDepartmentChatMessage", messageId, message, loginForm.loggedInUser.userID, department);
-                globalChatInput.Clear();
-                AppendDepartmentChatMessage(loginForm.loggedInUser.userID, message, messageId, "Department");
-            }
-        }
-
-        private string GetUserDepartment(int userId)
-        {
-            using (SqlConnection conn = Database.getConnection())
-            {
-                conn.Open();
-                string query = "SELECT Department FROM Users WHERE UserID = @UserID";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@UserID", userId);
-                    object result = cmd.ExecuteScalar();
-                    return result?.ToString() ?? "";
-                }
-            }
-        }
         private async Task LoadDepartmentChatHistory(string department)
         {
             try
@@ -252,6 +190,73 @@ namespace TDF.Forms
             {
                 MessageBox.Show($"Failed to load department chat history: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private string GetUserNameById(int userId)
+        {
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+                string query = "SELECT Username FROM Users WHERE UserID = @UserID";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    object result = cmd.ExecuteScalar();
+                    return result?.ToString() ?? $"User {userId}";
+                }
+            }
+        }
+
+        private string GetUserDepartment(int userId)
+        {
+            using (SqlConnection conn = Database.getConnection())
+            {
+                conn.Open();
+                string query = "SELECT Department FROM Users WHERE UserID = @UserID";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserID", userId);
+                    object result = cmd.ExecuteScalar();
+                    return result?.ToString() ?? "";
+                }
+            }
+        }
+        private void ChatChannelSelector_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (chatChannelSelector == null) return; // Prevent null reference
+            globalChatDisplay.Clear();
+            displayedMessageIds.Clear();
+            LoadChatHistoryBasedOnChannel();
+        }
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            // Get the form's scroll position
+            Point scrollPos = AutoScrollPosition;
+
+            // Adjust for scroll position when drawing the border
+            Rectangle rect = new Rectangle(ClientRectangle.X - scrollPos.X, ClientRectangle.Y - scrollPos.Y, ClientRectangle.Width, ClientRectangle.Height);
+
+            ControlPaint.DrawBorder(e.Graphics, rect, ThemeColor.darkColor, ButtonBorderStyle.Solid);
+        }
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            Invalidate();  // Forces the form to repaint when resized
+        }
+        private void panel_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && e.Clicks == 1)
+            {
+                mainForm.ReleaseCapture();
+                mainForm.SendMessage(Handle, 0x112, 0xf012, 0);
+            }
+        }
+        private void panel_Paint(object sender, PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            ControlPaint.DrawBorder(e.Graphics, ClientRectangle, ThemeColor.darkColor, ButtonBorderStyle.Solid);
         }
     }
 }
