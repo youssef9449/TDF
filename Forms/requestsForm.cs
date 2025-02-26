@@ -262,7 +262,7 @@ namespace TDF.Net.Forms
                 string requestUserFullName = currentRow.Cells["RequestUserFullName"].Value?.ToString();
 
                 // If the logged-in user tries to approve or reject their own request
-                if (requestUserFullName == loggedInUser.FullName)
+                if (requestUserFullName == loggedInUser.FullName && !hasManagerRole)
                 {
                     // Cancel the edit action immediately
                     e.Cancel = true;

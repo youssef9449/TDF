@@ -228,7 +228,7 @@ namespace TDF.Net
                 isClosingTheApp = true;
                 closeTheApp();
             }
-            
+
         }
         private void maxImage_MouseClick(object sender, MouseEventArgs e)
         {
@@ -1642,9 +1642,5 @@ namespace TDF.Net
 
         #endregion
 
-        private void shadowPanel_ControlAdded(object sender, ControlEventArgs e)
-        {
-
-        }
     }
 }
