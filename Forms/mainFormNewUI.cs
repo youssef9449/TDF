@@ -802,7 +802,7 @@ namespace TDF.Net
                     {
                         SpeechBubbleControl balloon = new SpeechBubbleControl(balloonBasePoint, message);
                         balloon.Show();
-                        PlaySound(); // Play sound when showing balloon (chat not open)
+                        PlaySound("Message"); // Play sound when showing balloon (chat not open)
                     }
                 }
             }
@@ -1559,11 +1559,11 @@ namespace TDF.Net
             var headerLabel = usersPanel.Controls.OfType<Label>().FirstOrDefault(ctrl => ctrl.Tag?.ToString() == "header");
             if (headerLabel != null) headerLabel.Text = $"Online Users ({onlineCount})";
         }
-        public static void PlaySound()
+        public static void PlaySound(string filename)
         {
             try
             {
-                string audioPath = Path.Combine(Application.StartupPath, "Audio", "Message.wav");
+                string audioPath = Path.Combine(Application.StartupPath, "Audio", $"{filename}.wav");
                 if (File.Exists(audioPath))
                 {
                     using (var soundPlayer = new SoundPlayer(audioPath))

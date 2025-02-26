@@ -192,7 +192,7 @@ namespace TDF.Net.Forms
 
             if (ActiveForm != this)
             {
-                mainFormNewUI.PlaySound();
+                mainFormNewUI.PlaySound("Message");
             }
         }
 
@@ -214,6 +214,8 @@ namespace TDF.Net.Forms
             string messageText = messageTextBox.Text;
             messageTextBox.Text = ""; // Clear immediately to prevent double send
             await SendMessageAsync(chatWithUserID, messageText);
+            mainFormNewUI.PlaySound("SendingMessage");
+
         }
 
         #region Events
