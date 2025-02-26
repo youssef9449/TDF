@@ -117,3 +117,7 @@
 /bin/Debug/Forms/~$Leave Request form.xlsx
 /Resources/TDF_Logo.png
 /obj/Debug/build.force
+/bin/Release/Audio/Message.wav
+/bin/Release/Audio/Request Notification.wav
+/bin/Release/Audio/Notification.wav
+/bin/Release/Audio/SendingMessage.wav
