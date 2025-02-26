@@ -14,7 +14,6 @@ public static class SignalRManager
 {
     public static HubConnection Connection { get; private set; }
     public static IHubProxy HubProxy { get; private set; }
-
     public static bool IsConnected => Connection != null && Connection.State == ConnectionState.Connected;
 
     public static async Task InitializeAsync(string serverUrl, int currentUserID)
@@ -214,7 +213,6 @@ public static class SignalRManager
             }
         }
     }
-
     public static void RegisterUser(int userId)
     {
         HubProxy.Invoke("RegisterUserConnection", userId);

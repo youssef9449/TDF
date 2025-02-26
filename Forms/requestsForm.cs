@@ -993,7 +993,6 @@ namespace TDF.Net.Forms
             //    }
             //}
         }
-
         private Dictionary<int, Dictionary<string, object>> PreserveEditedValues()
         {
             var editedValues = new Dictionary<int, Dictionary<string, object>>();
@@ -1051,13 +1050,19 @@ namespace TDF.Net.Forms
                 return result?.ToString() == "Human Resources";
             }
         }
-        private void handleBalanceUpdate(SqlConnection conn, string currentHRStatus, string currentManagerStatus, string newStatus, string role, string requestType, int numberOfDays, string userFullName)
+        private void handleBalanceUpdate(SqlConnection conn, string currentHRStatus, string currentManagerStatus, string newStatus, string role, string requestType, int numberOfDays, string userFullName, bool isManagerSelfApproval = false)
         {
             bool isHRRequestUser = isHRDepartmentUser(conn, userFullName);
 
             if (newStatus == "Approved")
             {
-                if (isHRRequestUser)
+                // New case: Manager approving their own request
+                if (isManagerSelfApproval && role == "Manager")
+                {
+                    // Directly update the balance with no need for HR approval
+                    adjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: true);
+                }
+                else if (isHRRequestUser)
                 {
                     // For HR department users, HR Director directly updates the balance
                     if (role == "HR Director" && currentHRStatus != "Approved")
@@ -1083,7 +1088,12 @@ namespace TDF.Net.Forms
             else if (newStatus == "Rejected")
             {
                 // Revert balances only if the request was fully approved before rejection
-                if (isHRRequestUser)
+                if (isManagerSelfApproval && currentManagerStatus == "Approved")
+                {
+                    // Revert self-approved manager request
+                    adjustLeaveBalance(conn, requestType, numberOfDays, userFullName, isAdding: false);
+                }
+                else if (isHRRequestUser)
                 {
                     if (role == "HR Director" && currentHRStatus == "Approved")
                     {
@@ -1229,8 +1239,6 @@ namespace TDF.Net.Forms
                 return result != null ? Convert.ToInt32(result) : -1; // Return -1 if not found
             }
         }
-
-
         #endregion
 
         #region Buttons
@@ -1289,31 +1297,41 @@ namespace TDF.Net.Forms
 
                             bool isHRDirector = loggedInUser.Role == "HR Director";
                             bool isHRRequestUser = isHRDepartmentUser(conn, userFullName);
+                            bool isManagerSelfApproval = hasManagerRole && loggedInUser.FullName == userFullName;
 
                             string query = null;
                             if (hasHRRole)
                             {
                                 query = isHRDirector && isHRRequestUser
                                     ? @"UPDATE Requests 
-                                    SET RequestHRStatus = @RequestStatus, 
-                                        RequestStatus = @RequestStatus, 
-                                        RequestRejectReason = @RequestRejectReason, 
-                                        RequestHRCloser = @RequestCloser, 
-                                        RequestCloser = @RequestCloser 
-                                    WHERE RequestID = @RequestID"
+                               SET RequestHRStatus = @RequestStatus, 
+                                   RequestStatus = @RequestStatus, 
+                                   RequestRejectReason = @RequestRejectReason, 
+                                   RequestHRCloser = @RequestCloser, 
+                                   RequestCloser = @RequestCloser 
+                               WHERE RequestID = @RequestID"
                                     : @"UPDATE Requests 
-                                    SET RequestHRStatus = @RequestStatus, 
-                                        RequestRejectReason = @RequestRejectReason, 
-                                        RequestHRCloser = @RequestCloser 
-                                    WHERE RequestID = @RequestID";
+                               SET RequestHRStatus = @RequestStatus, 
+                                   RequestRejectReason = @RequestRejectReason, 
+                                   RequestHRCloser = @RequestCloser 
+                               WHERE RequestID = @RequestID";
                             }
                             else if (hasManagerRole)
                             {
-                                query = @"UPDATE Requests 
-                                     SET RequestStatus = @RequestStatus, 
-                                         RequestRejectReason = @RequestRejectReason, 
-                                         RequestCloser = @RequestCloser 
-                                     WHERE RequestID = @RequestID";
+                                // For manager self-approval, update both statuses
+                                query = isManagerSelfApproval
+                                    ? @"UPDATE Requests 
+                               SET RequestStatus = @RequestStatus, 
+                                   RequestHRStatus = @RequestStatus, 
+                                   RequestRejectReason = @RequestRejectReason, 
+                                   RequestCloser = @RequestCloser,
+                                   RequestHRCloser = @RequestCloser
+                               WHERE RequestID = @RequestID"
+                                    : @"UPDATE Requests 
+                               SET RequestStatus = @RequestStatus, 
+                                   RequestRejectReason = @RequestRejectReason, 
+                                   RequestCloser = @RequestCloser 
+                               WHERE RequestID = @RequestID";
                             }
 
                             if (!string.IsNullOrEmpty(query))
@@ -1328,7 +1346,7 @@ namespace TDF.Net.Forms
                                 }
 
                                 string effectiveRole = isHRDirector ? "HR Director" : hasHRRole ? "HR" : "Manager";
-                                handleBalanceUpdate(conn, currentHRStatus, currentManagerStatus, newStatus, effectiveRole, requestType, numberOfDays, userFullName);
+                                handleBalanceUpdate(conn, currentHRStatus, currentManagerStatus, newStatus, effectiveRole, requestType, numberOfDays, userFullName, isManagerSelfApproval);
 
                                 affectedUserIds.Add(requestUserId); // Add affected user
                             }
@@ -1350,7 +1368,7 @@ namespace TDF.Net.Forms
                     {
                         try
                         {
-                            SignalRManager.HubProxy.Invoke("NotifyAffectedUsers", affectedUserIds.Distinct().ToList()).Wait();
+                            SignalRManager.HubProxy.Invoke("NotifyAffectedUsers", affectedUserIds.Distinct().ToList());
                         }
                         catch (Exception ex)
                         {
