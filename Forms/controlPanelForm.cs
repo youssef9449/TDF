@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bunifu.UI.WinForms;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -7,15 +8,11 @@ using System.Linq;
 using System.Windows.Forms;
 using TDF.Net;
 using TDF.Net.Classes;
-using Bunifu.UI.WinForms;
+using TDF.Net.Forms;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
 using static TDF.Net.mainFormNewUI;
 using Excel = Microsoft.Office.Interop.Excel;
-using System.IO.Pipes;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Tab;
-using TDF.Net.Forms;
 
 namespace TDF.Forms
 {
@@ -74,7 +71,7 @@ namespace TDF.Forms
         }
         private string buildUsersQuery(string filter, string searchValue)
         {
-            string baseQuery = "SELECT FullName, Department, Role, Title FROM Users WHERE NOT Role = 'Admin'";
+            string baseQuery = "SELECT FullName, Department, Role, Title, UserName, UserID FROM Users WHERE NOT Role = 'Admin'";
 
             switch (filter)
             {
@@ -114,7 +111,9 @@ namespace TDF.Forms
                         string departmentName = reader["Department"].ToString();
                         string role = reader["Role"].ToString();
                         string title = reader["Title"].ToString();
-                        string displayName = $"{fullName} - {departmentName} - {title} - {role}";
+                        string userName = reader["UserName"].ToString();
+                        string UserID = reader["UserID"].ToString();
+                        string displayName = $"{fullName} - {departmentName} - {title} - {role} - {userName} - {UserID}";
 
                         usersCheckedListBox.Items.Add(displayName);
                     }
@@ -331,14 +330,13 @@ namespace TDF.Forms
 
                 foreach (object selectedItem in usersCheckedListBox.CheckedItems)
                 {
-                    // Split the selected item to get the FullName (format: "FullName - Department")
-                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+                    string userID = selectedItem.ToString().Split('-').Last().Trim();
 
-                    string query = "UPDATE Users SET Role = @Role WHERE FullName = @FullName";
+                    string query = "UPDATE Users SET Role = @Role WHERE UserID = @UserID";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@Role", role);
-                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+                        cmd.Parameters.AddWithValue("@UserID", userID);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -371,23 +369,13 @@ namespace TDF.Forms
 
                     foreach (object selectedItem in usersCheckedListBox.CheckedItems)
                     {
-                        string userFullName = selectedItem.ToString().Split('-')[0].Trim();
-
-                        // Get the UserID based on FullName
-                        string getUserIdQuery = "SELECT UserID FROM Users WHERE FullName = @FullName";
-                        int userId;
-
-                        using (SqlCommand getUserIdCmd = new SqlCommand(getUserIdQuery, conn))
-                        {
-                            getUserIdCmd.Parameters.AddWithValue("@FullName", userFullName);
-                            userId = (int)getUserIdCmd.ExecuteScalar();
-                        }
+                        string userID = selectedItem.ToString().Split('-').Last().Trim();
 
                         // Delete related requests for the user
                         string deleteRequestsQuery = "DELETE FROM Requests WHERE RequestUserID = @UserID";
                         using (SqlCommand deleteRequestsCmd = new SqlCommand(deleteRequestsQuery, conn))
                         {
-                            deleteRequestsCmd.Parameters.AddWithValue("@UserID", userId);
+                            deleteRequestsCmd.Parameters.AddWithValue("@UserID", userID);
                             deleteRequestsCmd.ExecuteNonQuery();
                         }
 
@@ -395,7 +383,7 @@ namespace TDF.Forms
                         string deleteUserQuery = "DELETE FROM Users WHERE UserID = @UserID";
                         using (SqlCommand deleteUserCmd = new SqlCommand(deleteUserQuery, conn))
                         {
-                            deleteUserCmd.Parameters.AddWithValue("@UserID", userId);
+                            deleteUserCmd.Parameters.AddWithValue("@UserID", userID);
                             deleteUserCmd.ExecuteNonQuery();
                         }
                     }
@@ -424,22 +412,22 @@ namespace TDF.Forms
 
                 foreach (object selectedItem in usersCheckedListBox.CheckedItems)
                 {
-                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+                    string userID = selectedItem.ToString().Split('-').Last().Trim();
 
-                    string query = "UPDATE Users SET Department = @Department WHERE FullName = @FullName";
+                    string query = "UPDATE Users SET Department = @Department WHERE UserID = @UserID";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@Department", depDropdown.Text);
-                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+                        cmd.Parameters.AddWithValue("@UserID", userID);
 
                         cmd.ExecuteNonQuery();
                     }
 
-                    string secondQuery = "UPDATE Requests SET RequestDepartment = @Department WHERE RequestUserFullName = @FullName";
+                    string secondQuery = "UPDATE Requests SET RequestDepartment = @Department WHERE RequestUserID = @UserID";
                     using (SqlCommand cmd = new SqlCommand(secondQuery, conn))
                     {
                         cmd.Parameters.AddWithValue("@Department", depDropdown.Text);
-                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+                        cmd.Parameters.AddWithValue("@UserID", userID);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -663,13 +651,15 @@ namespace TDF.Forms
 
             string oldName = usersCheckedListBox.SelectedItem.ToString().Split('-')[0].Trim();
 
+            string userID = usersCheckedListBox.SelectedItem.ToString().Split('-').Last().Trim();
+
             if (oldName.Equals(newName, StringComparison.OrdinalIgnoreCase))
             {
                 MessageBox.Show("The new name is the same as the old name.");
                 return;
             }
 
-            if (updateUserName(oldName, newName))
+            if (updateUserName(userID, newName, oldName))
             {
                 MessageBox.Show("Selected user has been renamed successfully.");
                 loadUserNames();
@@ -679,15 +669,15 @@ namespace TDF.Forms
                 MessageBox.Show("An error occurred while renaming the user.");
             }
         }
-        private bool updateUserName(string oldName, string newName)
+        private bool updateUserName(string userID, string newName, string oldName)
         {
             string[] updateQueries =
             {
-        "UPDATE Users SET FullName = @newName WHERE FullName = @oldName",
-        "UPDATE Requests SET RequestUserFullName = @newName WHERE RequestUserFullName = @oldName",
+        "UPDATE Users SET FullName = @newName WHERE UserID = @UserID",
+        "UPDATE Requests SET RequestUserFullName = @newName WHERE RequestUserID = @UserID",
         "UPDATE Requests SET RequestCloser = @newName WHERE RequestCloser = @oldName",
         "UPDATE Requests SET RequestHRCloser = @newName WHERE RequestHRCloser = @oldName",
-        "UPDATE AnnualLeave SET FullName = @newName WHERE FullName = @oldName"
+        "UPDATE AnnualLeave SET FullName = @newName WHERE UserID = @UserID"
             };
 
             try
@@ -701,6 +691,7 @@ namespace TDF.Forms
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.Parameters.AddWithValue("@newName", newName);
+                            cmd.Parameters.AddWithValue("@UserID", userID);
                             cmd.Parameters.AddWithValue("@oldName", oldName);
                             cmd.ExecuteNonQuery();
                         }
@@ -777,19 +768,19 @@ namespace TDF.Forms
 
                     foreach (object selectedItem in usersCheckedListBox.CheckedItems)
                     {
-                        string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+                        string userID = selectedItem.ToString().Split('-').Last().Trim();
 
                         // Generate a new salt
                         string salt = Security.generateSalt();
 
                         string hashedPassword = Security.hashPassword(passwordTextBox.Text, salt);
 
-                        string query = "UPDATE Users SET PasswordHash = @PasswordHash, Salt = @Salt WHERE FullName = @FullName";
+                        string query = "UPDATE Users SET PasswordHash = @PasswordHash, Salt = @Salt WHERE UserID = @UserID";
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.Parameters.AddWithValue("@PasswordHash", hashedPassword);
                             cmd.Parameters.AddWithValue("@Salt", salt);
-                            cmd.Parameters.AddWithValue("@FullName", userFullName);
+                            cmd.Parameters.AddWithValue("@UserID", userID);
 
                             // Execute the query
                             cmd.ExecuteNonQuery();
@@ -849,7 +840,7 @@ namespace TDF.Forms
 
                 foreach (object selectedItem in usersCheckedListBox.CheckedItems)
                 {
-                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+                    string userID = selectedItem.ToString().Split('-').Last().Trim();
 
                     string query = "UPDATE AnnualLeave SET ";
 
@@ -866,7 +857,7 @@ namespace TDF.Forms
                         query += "CasualLeave = @CasualLeave ";
                     }
 
-                    query += "WHERE FullName = @FullName";
+                    query += "WHERE UserID = @UserID";
 
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
@@ -880,7 +871,7 @@ namespace TDF.Forms
                             cmd.Parameters.AddWithValue("@CasualLeave", casualLeave.Value);
                         }
 
-                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+                        cmd.Parameters.AddWithValue("@UserID", userID);
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -909,22 +900,22 @@ namespace TDF.Forms
 
                 foreach (object selectedItem in usersCheckedListBox.CheckedItems)
                 {
-                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+                    string userID = selectedItem.ToString().Split('-').Last().Trim();
 
-                    string query = "UPDATE Users SET Department = @Department WHERE FullName = @FullName";
+                    string query = "UPDATE Users SET Department = @Department WHERE UserID = @UserID";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@Department", selectedDepartments);
-                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+                        cmd.Parameters.AddWithValue("@UserID", userID);
 
                         cmd.ExecuteNonQuery();
                     }
 
-                    string secondQuery = "UPDATE Requests SET RequestDepartment = @Department WHERE RequestUserFullName = @FullName";
+                    string secondQuery = "UPDATE Requests SET RequestDepartment = @Department WHERE RequestUserID = @UserID";
                     using (SqlCommand cmd = new SqlCommand(secondQuery, conn))
                     {
                         cmd.Parameters.AddWithValue("@Department", selectedDepartments);
-                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+                        cmd.Parameters.AddWithValue("@UserID", userID);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -965,15 +956,15 @@ namespace TDF.Forms
 
                 foreach (object selectedItem in usersCheckedListBox.CheckedItems)
                 {
-                    // Split the selected item to get the FullName (format: "FullName - Department")
-                    string userFullName = selectedItem.ToString().Split('-')[0].Trim();
+                    string userID = selectedItem.ToString().Split('-').Last().Trim();
 
-                    string query = "UPDATE Users SET Title = @Title, Department = @Department WHERE FullName = @FullName";
+                    string query = "UPDATE Users SET Title = @Title, Department = @Department WHERE UserID = @UserID";
+
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@Title", title);
                         cmd.Parameters.AddWithValue("@Department", department);
-                        cmd.Parameters.AddWithValue("@FullName", userFullName);
+                        cmd.Parameters.AddWithValue("@UserID", userID);
 
                         cmd.ExecuteNonQuery();
                     }
@@ -1125,21 +1116,8 @@ namespace TDF.Forms
                         balance = 0;
                     }
 
-                    // Fetch UserID from AnnualLeave table
-                    string getUserIdQuery = "SELECT UserID FROM AnnualLeave WHERE FullName = @FullName";
-                    int userId;
-                    using (SqlCommand getUserIdCommand = new SqlCommand(getUserIdQuery, connection))
-                    {
-                        getUserIdCommand.Parameters.AddWithValue("@FullName", fullName);
-                        object result = getUserIdCommand.ExecuteScalar();
-                        if (result == null)
-                        {
-                            MessageBox.Show($"UserID not found for user: {fullName}");
-                            continue;
-                        }
-                        userId = Convert.ToInt32(result);
-                    }
-                    
+                    int userId = Convert.ToInt32(selectedUser.ToString().Split('-').Last().Trim());
+
                     if (removeBalanceDropdown.Text == "Annual")
                     {
                         if (numberOfDaysRequested > balance)

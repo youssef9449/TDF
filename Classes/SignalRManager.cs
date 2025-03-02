@@ -6,6 +6,7 @@ using System.Linq;
 using System.Media;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TDF.Forms;
 using TDF.Net;
 using TDF.Net.Forms;
 
@@ -13,7 +14,6 @@ public static class SignalRManager
 {
     public static HubConnection Connection { get; private set; }
     public static IHubProxy HubProxy { get; private set; }
-
     public static bool IsConnected => Connection != null && Connection.State == ConnectionState.Connected;
 
     public static async Task InitializeAsync(string serverUrl, int currentUserID)
@@ -27,6 +27,7 @@ public static class SignalRManager
             HubProxy.On<int, string>("receiveGeneralNotification", (senderId, message) =>
             {
                 Console.WriteLine($"Received general notification from {senderId}: {message}");
+
                 if (!string.IsNullOrEmpty(message))
                 {
                     var mainForm = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
@@ -90,7 +91,7 @@ public static class SignalRManager
                 {
                     mainFormNewUI.BeginInvoke(new Action(async () =>
                     {
-                     //   await mainFormNewUI.ShowMessageBalloons(senderId, null, new List<string> { message });
+                        await mainFormNewUI.ShowMessageBalloons(senderId, null, new List<string> { message });
                         mainFormNewUI.UpdateMessageCounter(senderId, 1);
                     }));
                 }
@@ -104,8 +105,21 @@ public static class SignalRManager
                 {
                     mainForm.BeginInvoke(new Action(() =>
                     {
-                        Console.WriteLine("User list update event received from SignalR.");
-                        mainForm.DisplayConnectedUsersAsync(true); // Sync call for compatibility
+                        // Full refresh - only used when new users are added
+                        mainForm.DisplayConnectedUsersAsync();
+                    }));
+                }
+            });
+
+            HubProxy.On<int, bool>("updateUserStatus", (userId, isConnected) =>
+            {
+                var mainForm = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
+                if (mainForm != null && !mainForm.IsDisposed && mainForm.IsHandleCreated)
+                {
+                    mainForm.BeginInvoke(new Action(() =>
+                    {
+                        // Just update the status of a single user
+                        mainForm.UpdateUserConnectionStatus(userId, isConnected);
                     }));
                 }
             });
@@ -126,14 +140,27 @@ public static class SignalRManager
                     requestsForm.BeginInvoke(new Action(() => requestsForm.AddRequestRow(requestId, userFullName, requestType, requestFromDay, requestStatus)));
                 }
             });
-            HubProxy.On("RefreshNotifications", () =>
+
+            HubProxy.On("RefreshNotifications", (int requesterId) =>
             {
+                if (!mainForm.hasHRRole && !mainForm.hasManagerRole)
+                {
+                    return; // Skip listener setup for non-HR/Manager users
+                }
+
+                // Skip notification if the current user is the requester
+                if (loginForm.loggedInUser.userID == requesterId)
+                {
+                    return;
+                }
+
                 var mainFormNewUI = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
                 if (mainFormNewUI != null && !mainFormNewUI.IsDisposed && mainFormNewUI.IsHandleCreated)
                 {
                     mainFormNewUI.BeginInvoke(new Action(() => mainFormNewUI.LoadUnreadNotifications()));
                 }
             });
+
             // Updated handler for status updates
             HubProxy.On<int, bool>("updateUserStatus", (userId, isConnected) =>
             {
@@ -148,6 +175,33 @@ public static class SignalRManager
                 }
             });
 
+            // Listener for incoming global chat messages
+            HubProxy.On<string, int, string>("receiveGlobalChatMessage", (messageId, senderId, message) =>
+            {
+                var globalChatForms = Application.OpenForms.OfType<globalChatForm>().ToList();
+                foreach (var form in globalChatForms)
+                {
+                    if (!form.IsDisposed && form.IsHandleCreated)
+                    {
+                        form.BeginInvoke(new Action(() =>
+                        {
+                            form.AppendGlobalChatMessage(senderId, message, messageId);
+                        }));
+                    }
+                }
+            });
+            //HubProxy.On<string, int, string>("receiveDepartmentChatMessage", (messageId, senderId, message) =>
+            //{
+            //    var globalChatForm = Application.OpenForms.OfType<globalChatForm>().FirstOrDefault();
+            //    if (globalChatForm != null && !globalChatForm.IsDisposed && globalChatForm.IsHandleCreated)
+            //    {
+            //        globalChatForm.BeginInvoke(new Action(() =>
+            //        {
+            //            globalChatForm.AppendDepartmentChatMessage(senderId, message, messageId, "Department");
+            //        }));
+            //    }
+            //});
+
             try
             {
                 await Connection.Start();
@@ -159,7 +213,6 @@ public static class SignalRManager
             }
         }
     }
-
     public static void RegisterUser(int userId)
     {
         HubProxy.Invoke("RegisterUserConnection", userId);

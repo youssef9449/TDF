@@ -1,14 +1,12 @@
 ﻿using Bunifu.UI.WinForms;
 using System;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Windows.Forms;
 using TDF.Net.Classes;
+using static TDF.Net.Forms.requestsForm;
 using static TDF.Net.loginForm;
 using static TDF.Net.mainForm;
-using static TDF.Net.Forms.requestsForm;
-using System.Drawing;
-using System.Threading.Tasks;
-using System.Net;
 
 
 namespace TDF.Net.Forms
@@ -36,7 +34,7 @@ namespace TDF.Net.Forms
         }
 
         int numberOfDaysRequested, availableBalance, pendingDays, pendingPermissions = 0;
-        public static bool requestAddedOrUpdated;
+        public static bool requestAddedOrUpdated = false;
         public event Action requestAddedOrUpdatedEvent;
         int requiredUserID = loggedInUser.userID;
 
@@ -635,8 +633,8 @@ namespace TDF.Net.Forms
                 requestType,
                 reasonTextBox.Text,
                 loggedInUser.FullName,
-                fromDayDatePicker.Value,
-                toDayDatePicker.Value,
+                fromDayDatePicker.Value.Date,
+                toDayDatePicker.Value.Date,
                 loggedInUser.userID,
                 loggedInUser.Department,
                 numberOfDaysRequested,
@@ -645,8 +643,6 @@ namespace TDF.Net.Forms
             );
 
             newRequest.add();
-            newRequest.InsertNotificationsForNewRequest();
-            await SignalRManager.HubProxy.Invoke("NotifyNewRequest", newRequest.RequestDepartment);
 
             //await SignalRManager.HubProxy.Invoke("NotifyNewRequestWithDetails", newRequest.RequestDepartment, newRequest.RequestID, newRequest.RequestUserFullName, newRequest.RequestType, newRequest.RequestFromDay.ToString("yyyy-MM-dd"), newRequest.RequestStatus);
 
@@ -678,10 +674,10 @@ namespace TDF.Net.Forms
         #region Buttons
         private async void submitButton_Click(object sender, EventArgs e)
         {
-            
+
             int remainingBalance = int.TryParse(remainingBalanceLabel.Text, out int rBalance) ? rBalance : 0;
             int daysRequested = int.TryParse(daysRequestedLabel.Text, out int requested) ? requested : 0;
-           
+
             // Validate inputs for time-based requests
             if (exitRadioButton.Checked || externalAssignmentRadioButton.Checked)
             {
@@ -732,7 +728,7 @@ namespace TDF.Net.Forms
                     MessageBox.Show("Ending date can't be earlier than the beginning date.", "Invalid Request");
                     return;
                 }
-               else if (daysRequested <= 0)
+                else if (daysRequested <= 0)
                 {
                     MessageBox.Show("You cannot apply for leave on Friday or Saturday.", "Invalid Request");
                     return;
@@ -772,19 +768,22 @@ namespace TDF.Net.Forms
                 updateExistingRequest(requestType);
             }
 
-            if (requestType == "Annual" || requestType == "Emergency")
+            if (requestAddedOrUpdated && (requestType == "Annual" || requestType == "Emergency"))
             {
+
                 pendingDays += numberOfDaysRequested;
                 pendingDaysLabel.Text = pendingDays.ToString();
                 remainingBalanceLabel.Text = (remainingBalance - numberOfDaysRequested).ToString();
             }
-            else if (requestType == "Permission")
+            else if (requestAddedOrUpdated && requestType == "Permission")
             {
                 pendingPermissions++;
                 pendingDaysLabel.Text = pendingPermissions.ToString();
                 remainingBalanceLabel.Text = (remainingBalance - 1).ToString();
             }
+
             requestAddedOrUpdatedEvent?.Invoke();
+
         }
         #endregion
     }

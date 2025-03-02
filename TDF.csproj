@@ -157,6 +157,12 @@
     <Compile Include="Classes\NotificationClient.cs" />
     <Compile Include="Classes\Requests.cs" />
     <Compile Include="Classes\SignalRManager.cs" />
+    <Compile Include="Classes\SpeechBubbleControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Classes\SpeechBubbleControl.Designer.cs">
+      <DependentUpon>SpeechBubbleControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Classes\themeColor.cs" />
     <Compile Include="Classes\User.cs" />
     <Compile Include="Forms\chatForm.cs">
@@ -164,6 +170,12 @@
     </Compile>
     <Compile Include="Forms\chatForm.Designer.cs">
       <DependentUpon>chatForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\globalChatForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\globalChatForm.Designer.cs">
+      <DependentUpon>globalChatForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\mainFormNewUI.cs">
       <SubType>Form</SubType>
@@ -219,6 +231,9 @@
     <Compile Include="Security.cs" />
     <EmbeddedResource Include="Forms\chatForm.resx">
       <DependentUpon>chatForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\globalChatForm.resx">
+      <DependentUpon>globalChatForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\mainFormNewUI.resx">
       <DependentUpon>mainFormNewUI.cs</DependentUpon>
@@ -308,6 +323,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <None Include="Resources\chat.png" />
+    <None Include="Resources\TDFLogo.png" />
     <Content Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />

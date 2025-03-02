@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDF.Net.Classes;
 using static TDF.Net.Program;
-using TDF.Forms;
 using System.IO.Pipes;
 using System.Threading;
 using System.IO;
@@ -70,7 +69,8 @@ namespace TDF.Net
                     updateMachineName();
 
                     // Initialize SignalR and register this user
-                    string serverUrl = "http://localhost:8080"; // Replace with your actual URL
+                    string serverUrl = $"http://{Database.serverIPAddress}:8080"; // Replace with your actual URL
+                    //string serverUrl = $"http://localhost:8080"; // Replace with your actual URL
                     await SignalRManager.InitializeAsync(serverUrl, loggedInUser.userID);
 
                     // Open the appropriate UI

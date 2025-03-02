@@ -79,8 +79,6 @@
 /obj/Debug/TDF.Net.mainForm.resources
 /obj/Debug/TDF.Net.loginForm.resources
 /obj/Debug/TDF.Net.mainFormNewUI.resources
-/Properties/Resources.resx
-/Properties/Resources.Designer.cs
 /bin/Debug/config.ini
 /obj/Debug/TDF.Forms.reportsForm.resources
 /bin/Release/config.ini
@@ -118,3 +116,9 @@
 /packages
 /bin/Debug/Forms/~$Leave Request form.xlsx
 /Resources/TDF_Logo.png
+/obj/Debug/build.force
+/bin/Release/Audio/Message.wav
+/bin/Release/Audio/Request Notification.wav
+/bin/Release/Audio/Notification.wav
+/bin/Release/Audio/SendingMessage.wav
+/bin/Debug/NotificationHubLibrary.pdb

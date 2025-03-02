@@ -31,19 +31,16 @@ namespace TDF.Net
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainFormNewUI));
-            Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderEdges borderEdges1 = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderEdges();
+            Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderEdges borderEdges2 = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton.BorderEdges();
             this.bunifuLabel4 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel3 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel2 = new Bunifu.UI.WinForms.BunifuLabel();
             this.bunifuLabel1 = new Bunifu.UI.WinForms.BunifuLabel();
             this.requestsLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.panelTitleBar = new System.Windows.Forms.Panel();
-            this.maxImage = new System.Windows.Forms.PictureBox();
-            this.minImg = new System.Windows.Forms.PictureBox();
-            this.closeImg = new System.Windows.Forms.PictureBox();
+            this.notificationsSnackbar = new Bunifu.UI.WinForms.BunifuSnackbar(this.components);
             this.formPanel = new System.Windows.Forms.Panel();
-            this.notificationsShadowPanel = new Bunifu.UI.WinForms.BunifuShadowPanel();
-            this.bunifuLabel9 = new Bunifu.UI.WinForms.BunifuLabel();
+            this.notificationsShadowPanel = new System.Windows.Forms.Panel();
             this.notificationsPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.teamImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
             this.requestsImageButton = new Bunifu.UI.WinForms.BunifuImageButton();
@@ -61,16 +58,18 @@ namespace TDF.Net
             this.bunifuLabel = new Bunifu.UI.WinForms.BunifuLabel();
             this.usersPanel = new System.Windows.Forms.Panel();
             this.usersIconButton = new Bunifu.UI.WinForms.BunifuButton.BunifuIconButton();
-            this.notificationsSnackbar = new Bunifu.UI.WinForms.BunifuSnackbar(this.components);
+            this.maxImage = new System.Windows.Forms.PictureBox();
+            this.minImg = new System.Windows.Forms.PictureBox();
+            this.closeImg = new System.Windows.Forms.PictureBox();
             this.panelTitleBar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.closeImg)).BeginInit();
             this.formPanel.SuspendLayout();
             this.notificationsShadowPanel.SuspendLayout();
             this.shadowPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).BeginInit();
             this.usersPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.maxImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minImg)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.closeImg)).BeginInit();
             this.SuspendLayout();
             // 
             // bunifuLabel4
@@ -169,54 +168,78 @@ namespace TDF.Net
             this.panelTitleBar.Paint += new System.Windows.Forms.PaintEventHandler(this.panelTitleBar_Paint);
             this.panelTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
             // 
-            // maxImage
+            // notificationsSnackbar
             // 
-            this.maxImage.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.maxImage.Image = ((System.Drawing.Image)(resources.GetObject("maxImage.Image")));
-            this.maxImage.Location = new System.Drawing.Point(1202, 22);
-            this.maxImage.Name = "maxImage";
-            this.maxImage.Size = new System.Drawing.Size(20, 20);
-            this.maxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.maxImage.TabIndex = 10;
-            this.maxImage.TabStop = false;
-            this.maxImage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.maxImage_MouseClick);
-            this.maxImage.MouseDown += new System.Windows.Forms.MouseEventHandler(this.maxImage_MouseDown);
-            this.maxImage.MouseEnter += new System.EventHandler(this.maxImage_MouseEnter);
-            this.maxImage.MouseLeave += new System.EventHandler(this.maxImage_MouseLeave);
-            // 
-            // minImg
-            // 
-            this.minImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.minImg.Image = ((System.Drawing.Image)(resources.GetObject("minImg.Image")));
-            this.minImg.Location = new System.Drawing.Point(1166, 22);
-            this.minImg.Name = "minImg";
-            this.minImg.Size = new System.Drawing.Size(20, 20);
-            this.minImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.minImg.TabIndex = 9;
-            this.minImg.TabStop = false;
-            this.minImg.MouseClick += new System.Windows.Forms.MouseEventHandler(this.minImg_MouseClick);
-            this.minImg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.minImg_MouseDown);
-            this.minImg.MouseEnter += new System.EventHandler(this.minImg_MouseEnter);
-            this.minImg.MouseLeave += new System.EventHandler(this.minImg_MouseLeave);
-            // 
-            // closeImg
-            // 
-            this.closeImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.closeImg.Image = ((System.Drawing.Image)(resources.GetObject("closeImg.Image")));
-            this.closeImg.Location = new System.Drawing.Point(1238, 22);
-            this.closeImg.Name = "closeImg";
-            this.closeImg.Size = new System.Drawing.Size(20, 20);
-            this.closeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.closeImg.TabIndex = 1;
-            this.closeImg.TabStop = false;
-            this.closeImg.MouseClick += new System.Windows.Forms.MouseEventHandler(this.closeImg_MouseClick);
-            this.closeImg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.closeImg_MouseDown);
-            this.closeImg.MouseEnter += new System.EventHandler(this.closeImg_MouseEnter);
-            this.closeImg.MouseLeave += new System.EventHandler(this.closeImg_MouseLeave);
+            this.notificationsSnackbar.AllowDragging = false;
+            this.notificationsSnackbar.AllowMultipleViews = true;
+            this.notificationsSnackbar.ClickToClose = true;
+            this.notificationsSnackbar.DoubleClickToClose = true;
+            this.notificationsSnackbar.DurationAfterIdle = 3000;
+            this.notificationsSnackbar.ErrorOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.notificationsSnackbar.ErrorOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.notificationsSnackbar.ErrorOptions.ActionBorderRadius = 1;
+            this.notificationsSnackbar.ErrorOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
+            this.notificationsSnackbar.ErrorOptions.ActionForeColor = System.Drawing.Color.Black;
+            this.notificationsSnackbar.ErrorOptions.BackColor = System.Drawing.Color.White;
+            this.notificationsSnackbar.ErrorOptions.BorderColor = System.Drawing.Color.White;
+            this.notificationsSnackbar.ErrorOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(204)))), ((int)(((byte)(199)))));
+            this.notificationsSnackbar.ErrorOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.notificationsSnackbar.ErrorOptions.ForeColor = System.Drawing.Color.Black;
+            this.notificationsSnackbar.ErrorOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon")));
+            this.notificationsSnackbar.ErrorOptions.IconLeftMargin = 12;
+            this.notificationsSnackbar.FadeCloseIcon = true;
+            this.notificationsSnackbar.Host = Bunifu.UI.WinForms.BunifuSnackbar.Hosts.FormOwner;
+            this.notificationsSnackbar.InformationOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.notificationsSnackbar.InformationOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.notificationsSnackbar.InformationOptions.ActionBorderRadius = 1;
+            this.notificationsSnackbar.InformationOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
+            this.notificationsSnackbar.InformationOptions.ActionForeColor = System.Drawing.Color.Black;
+            this.notificationsSnackbar.InformationOptions.BackColor = System.Drawing.Color.White;
+            this.notificationsSnackbar.InformationOptions.BorderColor = System.Drawing.Color.White;
+            this.notificationsSnackbar.InformationOptions.CloseIconColor = System.Drawing.Color.Black;
+            this.notificationsSnackbar.InformationOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.notificationsSnackbar.InformationOptions.ForeColor = System.Drawing.Color.Black;
+            this.notificationsSnackbar.InformationOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon1")));
+            this.notificationsSnackbar.InformationOptions.IconLeftMargin = 12;
+            this.notificationsSnackbar.Margin = 10;
+            this.notificationsSnackbar.MaximumSize = new System.Drawing.Size(0, 0);
+            this.notificationsSnackbar.MaximumViews = 7;
+            this.notificationsSnackbar.MessageRightMargin = 5;
+            this.notificationsSnackbar.MessageTopMargin = 0;
+            this.notificationsSnackbar.MinimumSize = new System.Drawing.Size(0, 0);
+            this.notificationsSnackbar.ShowBorders = true;
+            this.notificationsSnackbar.ShowCloseIcon = true;
+            this.notificationsSnackbar.ShowIcon = false;
+            this.notificationsSnackbar.ShowShadows = true;
+            this.notificationsSnackbar.SuccessOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.notificationsSnackbar.SuccessOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.notificationsSnackbar.SuccessOptions.ActionBorderRadius = 1;
+            this.notificationsSnackbar.SuccessOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
+            this.notificationsSnackbar.SuccessOptions.ActionForeColor = System.Drawing.Color.Black;
+            this.notificationsSnackbar.SuccessOptions.BackColor = System.Drawing.Color.White;
+            this.notificationsSnackbar.SuccessOptions.BorderColor = System.Drawing.Color.White;
+            this.notificationsSnackbar.SuccessOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(255)))), ((int)(((byte)(237)))));
+            this.notificationsSnackbar.SuccessOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.notificationsSnackbar.SuccessOptions.ForeColor = System.Drawing.Color.Black;
+            this.notificationsSnackbar.SuccessOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon2")));
+            this.notificationsSnackbar.SuccessOptions.IconLeftMargin = 12;
+            this.notificationsSnackbar.ViewsMargin = 7;
+            this.notificationsSnackbar.WarningOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.notificationsSnackbar.WarningOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.notificationsSnackbar.WarningOptions.ActionBorderRadius = 1;
+            this.notificationsSnackbar.WarningOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
+            this.notificationsSnackbar.WarningOptions.ActionForeColor = System.Drawing.Color.Black;
+            this.notificationsSnackbar.WarningOptions.BackColor = System.Drawing.Color.White;
+            this.notificationsSnackbar.WarningOptions.BorderColor = System.Drawing.Color.White;
+            this.notificationsSnackbar.WarningOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(229)))), ((int)(((byte)(143)))));
+            this.notificationsSnackbar.WarningOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.notificationsSnackbar.WarningOptions.ForeColor = System.Drawing.Color.Black;
+            this.notificationsSnackbar.WarningOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon3")));
+            this.notificationsSnackbar.WarningOptions.IconLeftMargin = 12;
+            this.notificationsSnackbar.ZoomCloseIcon = true;
             // 
             // formPanel
             // 
-            this.formPanel.AutoScroll = true;
             this.formPanel.BackColor = System.Drawing.Color.Transparent;
             this.formPanel.BackgroundImage = global::TDF.Properties.Resources.TDF_Logo;
             this.formPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
@@ -240,45 +263,14 @@ namespace TDF.Net
             // 
             // notificationsShadowPanel
             // 
-            this.notificationsShadowPanel.BackColor = System.Drawing.Color.Transparent;
-            this.notificationsShadowPanel.BorderColor = System.Drawing.Color.Black;
-            this.notificationsShadowPanel.BorderRadius = 5;
-            this.notificationsShadowPanel.BorderThickness = 1;
-            this.notificationsShadowPanel.Controls.Add(this.bunifuLabel9);
+            this.notificationsShadowPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.notificationsShadowPanel.Controls.Add(this.notificationsPanel);
-            this.notificationsShadowPanel.FillStyle = Bunifu.UI.WinForms.BunifuShadowPanel.FillStyles.Solid;
-            this.notificationsShadowPanel.GradientMode = Bunifu.UI.WinForms.BunifuShadowPanel.GradientModes.Vertical;
             this.notificationsShadowPanel.Location = new System.Drawing.Point(12, 210);
             this.notificationsShadowPanel.Name = "notificationsShadowPanel";
             this.notificationsShadowPanel.Padding = new System.Windows.Forms.Padding(0, 7, 0, 0);
-            this.notificationsShadowPanel.PanelColor = System.Drawing.Color.White;
-            this.notificationsShadowPanel.PanelColor2 = System.Drawing.Color.White;
-            this.notificationsShadowPanel.ShadowColor = System.Drawing.Color.DarkGray;
-            this.notificationsShadowPanel.ShadowDept = 2;
-            this.notificationsShadowPanel.ShadowDepth = 5;
-            this.notificationsShadowPanel.ShadowStyle = Bunifu.UI.WinForms.BunifuShadowPanel.ShadowStyles.Surrounded;
-            this.notificationsShadowPanel.ShadowTopLeftVisible = false;
             this.notificationsShadowPanel.Size = new System.Drawing.Size(212, 350);
-            this.notificationsShadowPanel.Style = Bunifu.UI.WinForms.BunifuShadowPanel.BevelStyles.Flat;
             this.notificationsShadowPanel.TabIndex = 16;
-            // 
-            // bunifuLabel9
-            // 
-            this.bunifuLabel9.AllowParentOverrides = false;
-            this.bunifuLabel9.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.bunifuLabel9.AutoEllipsis = false;
-            this.bunifuLabel9.Cursor = System.Windows.Forms.Cursors.Default;
-            this.bunifuLabel9.CursorType = System.Windows.Forms.Cursors.Default;
-            this.bunifuLabel9.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
-            this.bunifuLabel9.Location = new System.Drawing.Point(417, 177);
-            this.bunifuLabel9.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.bunifuLabel9.Name = "bunifuLabel9";
-            this.bunifuLabel9.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.bunifuLabel9.Size = new System.Drawing.Size(94, 20);
-            this.bunifuLabel9.TabIndex = 4;
-            this.bunifuLabel9.Text = "Control Panel";
-            this.bunifuLabel9.TextAlignment = System.Drawing.ContentAlignment.TopLeft;
-            this.bunifuLabel9.TextFormat = Bunifu.UI.WinForms.BunifuLabel.TextFormattingOptions.Default;
+            this.notificationsShadowPanel.Visible = false;
             // 
             // notificationsPanel
             // 
@@ -676,11 +668,11 @@ namespace TDF.Net
             this.usersIconButton.ColorContrastOnClick = 30;
             this.usersIconButton.ColorContrastOnHover = 30;
             this.usersIconButton.Cursor = System.Windows.Forms.Cursors.Default;
-            borderEdges1.BottomLeft = true;
-            borderEdges1.BottomRight = true;
-            borderEdges1.TopLeft = true;
-            borderEdges1.TopRight = true;
-            this.usersIconButton.CustomizableEdges = borderEdges1;
+            borderEdges2.BottomLeft = true;
+            borderEdges2.BottomRight = true;
+            borderEdges2.TopLeft = true;
+            borderEdges2.TopRight = true;
+            this.usersIconButton.CustomizableEdges = borderEdges2;
             this.usersIconButton.DialogResult = System.Windows.Forms.DialogResult.None;
             this.usersIconButton.Image = global::TDF.Properties.Resources.up;
             this.usersIconButton.ImageMargin = new System.Windows.Forms.Padding(0);
@@ -693,75 +685,50 @@ namespace TDF.Net
             this.usersIconButton.TabIndex = 16;
             this.usersIconButton.Click += new System.EventHandler(this.usersIconButton_Click);
             // 
-            // notificationsSnackbar
+            // maxImage
             // 
-            this.notificationsSnackbar.AllowDragging = false;
-            this.notificationsSnackbar.AllowMultipleViews = true;
-            this.notificationsSnackbar.ClickToClose = true;
-            this.notificationsSnackbar.DoubleClickToClose = true;
-            this.notificationsSnackbar.DurationAfterIdle = 3000;
-            this.notificationsSnackbar.ErrorOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.notificationsSnackbar.ErrorOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.notificationsSnackbar.ErrorOptions.ActionBorderRadius = 1;
-            this.notificationsSnackbar.ErrorOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
-            this.notificationsSnackbar.ErrorOptions.ActionForeColor = System.Drawing.Color.Black;
-            this.notificationsSnackbar.ErrorOptions.BackColor = System.Drawing.Color.White;
-            this.notificationsSnackbar.ErrorOptions.BorderColor = System.Drawing.Color.White;
-            this.notificationsSnackbar.ErrorOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(204)))), ((int)(((byte)(199)))));
-            this.notificationsSnackbar.ErrorOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.notificationsSnackbar.ErrorOptions.ForeColor = System.Drawing.Color.Black;
-            this.notificationsSnackbar.ErrorOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon")));
-            this.notificationsSnackbar.ErrorOptions.IconLeftMargin = 12;
-            this.notificationsSnackbar.FadeCloseIcon = true;
-            this.notificationsSnackbar.Host = Bunifu.UI.WinForms.BunifuSnackbar.Hosts.FormOwner;
-            this.notificationsSnackbar.InformationOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.notificationsSnackbar.InformationOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.notificationsSnackbar.InformationOptions.ActionBorderRadius = 1;
-            this.notificationsSnackbar.InformationOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
-            this.notificationsSnackbar.InformationOptions.ActionForeColor = System.Drawing.Color.Black;
-            this.notificationsSnackbar.InformationOptions.BackColor = System.Drawing.Color.White;
-            this.notificationsSnackbar.InformationOptions.BorderColor = System.Drawing.Color.White;
-            this.notificationsSnackbar.InformationOptions.CloseIconColor = System.Drawing.Color.Black;
-            this.notificationsSnackbar.InformationOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.notificationsSnackbar.InformationOptions.ForeColor = System.Drawing.Color.Black;
-            this.notificationsSnackbar.InformationOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon1")));
-            this.notificationsSnackbar.InformationOptions.IconLeftMargin = 12;
-            this.notificationsSnackbar.Margin = 10;
-            this.notificationsSnackbar.MaximumSize = new System.Drawing.Size(0, 0);
-            this.notificationsSnackbar.MaximumViews = 7;
-            this.notificationsSnackbar.MessageRightMargin = 5;
-            this.notificationsSnackbar.MessageTopMargin = 0;
-            this.notificationsSnackbar.MinimumSize = new System.Drawing.Size(0, 0);
-            this.notificationsSnackbar.ShowBorders = true;
-            this.notificationsSnackbar.ShowCloseIcon = true;
-            this.notificationsSnackbar.ShowIcon = false;
-            this.notificationsSnackbar.ShowShadows = true;
-            this.notificationsSnackbar.SuccessOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.notificationsSnackbar.SuccessOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.notificationsSnackbar.SuccessOptions.ActionBorderRadius = 1;
-            this.notificationsSnackbar.SuccessOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
-            this.notificationsSnackbar.SuccessOptions.ActionForeColor = System.Drawing.Color.Black;
-            this.notificationsSnackbar.SuccessOptions.BackColor = System.Drawing.Color.White;
-            this.notificationsSnackbar.SuccessOptions.BorderColor = System.Drawing.Color.White;
-            this.notificationsSnackbar.SuccessOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(255)))), ((int)(((byte)(237)))));
-            this.notificationsSnackbar.SuccessOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.notificationsSnackbar.SuccessOptions.ForeColor = System.Drawing.Color.Black;
-            this.notificationsSnackbar.SuccessOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon2")));
-            this.notificationsSnackbar.SuccessOptions.IconLeftMargin = 12;
-            this.notificationsSnackbar.ViewsMargin = 7;
-            this.notificationsSnackbar.WarningOptions.ActionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.notificationsSnackbar.WarningOptions.ActionBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.notificationsSnackbar.WarningOptions.ActionBorderRadius = 1;
-            this.notificationsSnackbar.WarningOptions.ActionFont = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Bold);
-            this.notificationsSnackbar.WarningOptions.ActionForeColor = System.Drawing.Color.Black;
-            this.notificationsSnackbar.WarningOptions.BackColor = System.Drawing.Color.White;
-            this.notificationsSnackbar.WarningOptions.BorderColor = System.Drawing.Color.White;
-            this.notificationsSnackbar.WarningOptions.CloseIconColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(229)))), ((int)(((byte)(143)))));
-            this.notificationsSnackbar.WarningOptions.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.notificationsSnackbar.WarningOptions.ForeColor = System.Drawing.Color.Black;
-            this.notificationsSnackbar.WarningOptions.Icon = ((System.Drawing.Image)(resources.GetObject("resource.Icon3")));
-            this.notificationsSnackbar.WarningOptions.IconLeftMargin = 12;
-            this.notificationsSnackbar.ZoomCloseIcon = true;
+            this.maxImage.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.maxImage.Image = ((System.Drawing.Image)(resources.GetObject("maxImage.Image")));
+            this.maxImage.Location = new System.Drawing.Point(1202, 22);
+            this.maxImage.Name = "maxImage";
+            this.maxImage.Size = new System.Drawing.Size(20, 20);
+            this.maxImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.maxImage.TabIndex = 10;
+            this.maxImage.TabStop = false;
+            this.maxImage.MouseClick += new System.Windows.Forms.MouseEventHandler(this.maxImage_MouseClick);
+            this.maxImage.MouseDown += new System.Windows.Forms.MouseEventHandler(this.maxImage_MouseDown);
+            this.maxImage.MouseEnter += new System.EventHandler(this.maxImage_MouseEnter);
+            this.maxImage.MouseLeave += new System.EventHandler(this.maxImage_MouseLeave);
+            // 
+            // minImg
+            // 
+            this.minImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.minImg.Image = ((System.Drawing.Image)(resources.GetObject("minImg.Image")));
+            this.minImg.Location = new System.Drawing.Point(1166, 22);
+            this.minImg.Name = "minImg";
+            this.minImg.Size = new System.Drawing.Size(20, 20);
+            this.minImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.minImg.TabIndex = 9;
+            this.minImg.TabStop = false;
+            this.minImg.MouseClick += new System.Windows.Forms.MouseEventHandler(this.minImg_MouseClick);
+            this.minImg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.minImg_MouseDown);
+            this.minImg.MouseEnter += new System.EventHandler(this.minImg_MouseEnter);
+            this.minImg.MouseLeave += new System.EventHandler(this.minImg_MouseLeave);
+            // 
+            // closeImg
+            // 
+            this.closeImg.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.closeImg.Image = ((System.Drawing.Image)(resources.GetObject("closeImg.Image")));
+            this.closeImg.Location = new System.Drawing.Point(1238, 22);
+            this.closeImg.Name = "closeImg";
+            this.closeImg.Size = new System.Drawing.Size(20, 20);
+            this.closeImg.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.closeImg.TabIndex = 1;
+            this.closeImg.TabStop = false;
+            this.closeImg.Click += new System.EventHandler(this.closeImg_Click);
+            this.closeImg.MouseDown += new System.Windows.Forms.MouseEventHandler(this.closeImg_MouseDown);
+            this.closeImg.MouseEnter += new System.EventHandler(this.closeImg_MouseEnter);
+            this.closeImg.MouseLeave += new System.EventHandler(this.closeImg_MouseLeave);
             // 
             // mainFormNewUI
             // 
@@ -782,19 +749,19 @@ namespace TDF.Net
             this.ShowIcon = false;
             this.Text = "TDF";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.mainFormNewUI_FormClosing);
             this.Load += new System.EventHandler(this.mainFormNewUI_Load);
             this.Resize += new System.EventHandler(this.mainFormNewUI_Resize);
             this.panelTitleBar.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.maxImage)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.minImg)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.closeImg)).EndInit();
             this.formPanel.ResumeLayout(false);
             this.notificationsShadowPanel.ResumeLayout(false);
-            this.notificationsShadowPanel.PerformLayout();
             this.shadowPanel.ResumeLayout(false);
             this.shadowPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.circularPictureBox)).EndInit();
             this.usersPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.maxImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minImg)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.closeImg)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -829,7 +796,6 @@ namespace TDF.Net
         private Bunifu.UI.WinForms.BunifuSnackbar notificationsSnackbar;
         private System.Windows.Forms.Panel usersPanel;
         private System.Windows.Forms.FlowLayoutPanel notificationsPanel;
-        private Bunifu.UI.WinForms.BunifuShadowPanel notificationsShadowPanel;
-        private Bunifu.UI.WinForms.BunifuLabel bunifuLabel9;
+        private System.Windows.Forms.Panel notificationsShadowPanel;
     }
 }
