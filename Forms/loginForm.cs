@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TDF.Net.Classes;
 using static TDF.Net.Program;
-using System.IO.Pipes;
-using System.Threading;
-using System.IO;
 
 namespace TDF.Net
 {
@@ -403,51 +400,51 @@ namespace TDF.Net
                 }
             }
         }
-        public static async Task StartListeningAsync(CancellationToken cancellationToken = default)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                try
-                {
-                    // Create a new NamedPipeServerStream for each connection.
-                    using (var serverPipe = new NamedPipeServerStream("KillPipe", PipeDirection.In, 1,
-                               PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
-                    {
-                        // Asynchronously wait for a connection.
-                        await serverPipe.WaitForConnectionAsync(cancellationToken);
+        //public static async Task StartListeningAsync(CancellationToken cancellationToken = default)
+        //{
+        //    while (!cancellationToken.IsCancellationRequested)
+        //    {
+        //        try
+        //        {
+        //            // Create a new NamedPipeServerStream for each connection.
+        //            using (var serverPipe = new NamedPipeServerStream("KillPipe", PipeDirection.In, 1,
+        //                       PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
+        //            {
+        //                // Asynchronously wait for a connection.
+        //                await serverPipe.WaitForConnectionAsync(cancellationToken);
 
-                        // Read the command asynchronously.
-                        using (var reader = new StreamReader(serverPipe))
-                        {
-                            string command = await reader.ReadLineAsync();
-                            if (command == "KILL")
-                            {
-                                // Kill signal received – exit the application.
-                                Application.Exit();
-                            }
-                        }
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    // The operation was canceled—exit gracefully.
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    // Optionally log the error. You might want to use a logging framework
-                    // instead of MessageBox in production.
-                    MessageBox.Show($"Pipe Error: {ex.Message}");
-                    // Continue listening even if an error occurs.
-                }
-            }
-        }
+        //                // Read the command asynchronously.
+        //                using (var reader = new StreamReader(serverPipe))
+        //                {
+        //                    string command = await reader.ReadLineAsync();
+        //                    if (command == "KILL")
+        //                    {
+        //                        // Kill signal received – exit the application.
+        //                        Application.Exit();
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        catch (OperationCanceledException)
+        //        {
+        //            // The operation was canceled—exit gracefully.
+        //            break;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            // Optionally log the error. You might want to use a logging framework
+        //            // instead of MessageBox in production.
+        //            MessageBox.Show($"Pipe Error: {ex.Message}");
+        //            // Continue listening even if an error occurs.
+        //        }
+        //    }
+        //}
         #endregion
 
         #region Events
         private async void loginForm_Shown(object sender, EventArgs e)
         {
-            await ensureAdminExistsAsync();
+            //await ensureAdminExistsAsync();
         }
         protected override void OnPaint(PaintEventArgs e)
         {

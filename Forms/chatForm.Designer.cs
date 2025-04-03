@@ -340,6 +340,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "chatForm";
             this.Load += new System.EventHandler(this.chatForm_Load);
+            this.Enter += new System.EventHandler(this.chatForm_Enter);
             this.panel.ResumeLayout(false);
             this.ResumeLayout(false);
 

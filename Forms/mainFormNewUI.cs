@@ -37,8 +37,8 @@ namespace TDF.Net
             formPanel.BackColor = Color.White;
             this.loginForm = loginForm; // Store a reference to the login form  
 
-            SignalRManager.HubProxy.On<int, int>("UpdateMessageCount", UpdateMessageCounter);
-            SignalRManager.HubProxy.On<int, string>("receivePendingMessage", HandlePendingMessage);
+            SignalRManager.HubProxy.On<int, int>("UpdateMessageCount", updateMessageCounter);
+            SignalRManager.HubProxy.On<int, string>("receivePendingMessage", handlePendingMessage);
 
             flowLayout = new FlowLayoutPanel
             {
@@ -136,8 +136,8 @@ namespace TDF.Net
                 {
                     await GetAllUsersAsync();
                     DisplayConnectedUsersAsync();
-                    await LoadPendingMessages();
-                     //M LoadUnreadNotifications();
+                    await loadPendingMessages();
+                     // LoadUnreadNotifications();
                 }
                 catch (ObjectDisposedException) { }
             }
@@ -652,17 +652,17 @@ namespace TDF.Net
             }
         }
 
-        #region Message Handling Methods
-        private async void HandlePendingMessage(int senderId, string message)
+        #region Chat Methods
+        private async void handlePendingMessage(int senderId, string message)
         {
-            Console.WriteLine($"HandlePendingMessage for user {loggedInUser.userID} from sender {senderId}: {message}");
-            if (senderId == loggedInUser.userID)
-            {
-                Console.WriteLine("Ignoring message from self.");
-                return;
-            }
+           // Console.WriteLine($"HandlePendingMessage for user {loggedInUser.userID} from sender {senderId}: {message}");
+            //if (senderId == loggedInUser.userID)
+            //{
+            //    Console.WriteLine("Ignoring message from self.");
+            //    return;
+            //}
 
-            if (IsChatOpen(senderId))
+            if (isChatOpen(senderId))
             {
                 var chatForm = Application.OpenForms.OfType<chatForm>().FirstOrDefault(f => f.chatWithUserID == senderId);
                 if (chatForm != null && !chatForm.IsDisposed && chatForm.IsHandleCreated)
@@ -681,7 +681,7 @@ namespace TDF.Net
                 }
                 pendingMessageCounts[senderId]++;
                 int newCount = pendingMessageCounts[senderId];
-                UpdateMessageCounter(senderId, newCount);
+                updateMessageCounter(senderId, newCount);
 
                 var userPanel = GetUserPanel(senderId);
                 if (userPanel != null)
@@ -699,7 +699,7 @@ namespace TDF.Net
             }
         }
 
-        private async Task LoadPendingMessages()
+        private async Task loadPendingMessages()
         {
             try
             {
@@ -713,10 +713,10 @@ namespace TDF.Net
                     var userPanel = GetUserPanel(entry.Key);
                     if (userPanel != null)
                     {
-                        UpdateMessageCounter(entry.Key, entry.Value.Count);
-                        if (entry.Value.Messages.Count > 0 && !IsChatOpen(entry.Key))
+                        updateMessageCounter(entry.Key, entry.Value.Count);
+                        if (entry.Value.Messages.Count > 0 && !isChatOpen(entry.Key))
                         {
-                            await ShowMessageBalloons(null, userPanel, entry.Value.Messages);
+                            await showMessageBalloons(null, userPanel, entry.Value.Messages);
                         }
                     }
                 }
@@ -726,26 +726,24 @@ namespace TDF.Net
                 Console.WriteLine($"Error loading pending messages: {ex.Message}");
             }
         }
-        #endregion
 
-        #region Updated UI Methods
-        public void UpdateMessageCounter(int senderId, int count)
+        public void updateMessageCounter(int senderId, int count)
         {
             if (userPanels.TryGetValue(senderId, out Panel panel))
             {
                 if (panel.InvokeRequired)
                 {
                     panel.Invoke((MethodInvoker)delegate {
-                        UpdateMessageCounterUI(panel, count);
+                        updateMessageCounterUI(panel, count);
                     });
                 }
                 else
                 {
-                    UpdateMessageCounterUI(panel, count);
+                    updateMessageCounterUI(panel, count);
                 }
             }
         }
-        private void UpdateMessageCounterUI(Panel panel, int count)
+        private void updateMessageCounterUI(Panel panel, int count)
         {
             var pictureBox = panel.Controls.OfType<CircularPictureBox>().FirstOrDefault();
             if (pictureBox == null) return;
@@ -777,13 +775,10 @@ namespace TDF.Net
             counter.Invalidate(); // Force redraw
             counter.BringToFront();
         }
-        #endregion
-
-
-        public bool IsChatOpen(int senderId) =>
-                Application.OpenForms.OfType<chatForm>()
-                    .Any(f => f.chatWithUserID == senderId);
-        public async Task ShowMessageBalloons(int? senderId, Panel userPanel, List<string> messages)
+        public bool isChatOpen(int senderId) =>
+        Application.OpenForms.OfType<chatForm>()
+            .Any(f => f.chatWithUserID == senderId);
+        public async Task showMessageBalloons(int? senderId, Panel userPanel, List<string> messages)
         {
             if (!senderId.HasValue || senderId.Value == loggedInUser.userID)
             {
@@ -802,7 +797,7 @@ namespace TDF.Net
                     {
                         SpeechBubbleControl balloon = new SpeechBubbleControl(balloonBasePoint, message);
                         balloon.Show();
-                        PlaySound("Message"); // Play sound when showing balloon (chat not open)
+                        playSound("Message"); // Play sound when showing balloon (chat not open)
                     }
                 }
             }
@@ -811,7 +806,7 @@ namespace TDF.Net
                 Console.WriteLine($"User panel not found for sender {senderId.Value}, skipping balloon.");
             }
         }
-        private async void OpenChatForm(int userId)
+        private async void openChatForm(int userId)
         {
             var user = (await GetAllUsersAsync()).FirstOrDefault(u => u.userID == userId);
             if (user == null) return;
@@ -822,7 +817,7 @@ namespace TDF.Net
                 existingChat.BringToFront();
                 return;
             }
-                
+
             try
             {
                 if (!SignalRManager.IsConnected)
@@ -839,14 +834,14 @@ namespace TDF.Net
                 if (pendingMessageCounts.ContainsKey(userId))
                 {
                     pendingMessageCounts.Remove(userId);
-                    UpdateMessageCounter(userId, 0);
+                    updateMessageCounter(userId, 0);
                 }
 
 
                 // Safely update UI components
                 if (userPanels.ContainsKey(userId))
                 {
-                    UpdateMessageCounter(userId, 0);
+                    updateMessageCounter(userId, 0);
 
                 }
                 else
@@ -868,6 +863,10 @@ namespace TDF.Net
                 MessageBox.Show("Failed to open chat. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        #endregion
+
+
+
         private Panel GetUserPanel(int userId)
         {
             return flowLayout.Controls
@@ -1010,7 +1009,7 @@ namespace TDF.Net
                         Cursor = Cursors.Hand
                     };
                     pictureBox.SendToBack();
-                    pictureBox.Click += (s, e) => OpenChatForm(user.userID);
+                    pictureBox.Click += (s, e) => openChatForm(user.userID);
 
                     Label msgCounter = new Label
                     {
@@ -1061,11 +1060,11 @@ namespace TDF.Net
                     int messageCount = 0;
                     if (pendingMessageCounts.TryGetValue(user.userID, out messageCount))
                     {
-                        UpdateMessageCounterUI(userPanel, messageCount);
+                        updateMessageCounterUI(userPanel, messageCount);
                     }
                     else
                     {
-                        UpdateMessageCounterUI(userPanel, user.PendingMessageCount);
+                        updateMessageCounterUI(userPanel, user.PendingMessageCount);
                         pendingMessageCounts[user.userID] = user.PendingMessageCount;
                     }
                     pictureBox.SendToBack();
@@ -1099,13 +1098,13 @@ namespace TDF.Net
                         {
                             if (user.PendingMessageCount != currentPendingCount)
                             {
-                                UpdateMessageCounterUI(userPanel, user.PendingMessageCount);
+                                updateMessageCounterUI(userPanel, user.PendingMessageCount);
                                 pendingMessageCounts[user.userID] = user.PendingMessageCount;
                             }
                         }
                         else
                         {
-                            UpdateMessageCounterUI(userPanel, user.PendingMessageCount);
+                            updateMessageCounterUI(userPanel, user.PendingMessageCount);
                             pendingMessageCounts[user.userID] = user.PendingMessageCount;
                         }
 
@@ -1387,32 +1386,7 @@ namespace TDF.Net
             // Show Bunifu Snackbar
             notificationsSnackbar.Show(this, message, BunifuSnackbar.MessageTypes.Information);
             // Play notification sound
-
-            // Use a system sound (e.g., Windows chime)
-            // SystemSounds.Exclamation.Play();
-
-            // Play notification sound from Audio folder
-            try
-            {
-                string audioPath = Path.Combine(Application.StartupPath, "Audio", "Request Notification.wav");
-                if (File.Exists(audioPath))
-                {
-                    using (var soundPlayer = new SoundPlayer(audioPath))
-                    {
-                        soundPlayer.Play();
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"Audio file not found at: {audioPath}");
-                    SystemSounds.Exclamation.Play(); // Fallback to system sound
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error playing notification sound: {ex.Message}");
-                SystemSounds.Exclamation.Play(); // Fallback on error
-            }
+            playSound("Request Notification");
         }
         private void AddUserPanel(int userId, bool isConnected)
         {
@@ -1435,7 +1409,7 @@ namespace TDF.Net
                 Location = new Point((userPanel.Width - 60) / 2, 10),
                 Cursor = Cursors.Hand
             };
-            pictureBox.Click += (s, e) => OpenChatForm(userId);
+            pictureBox.Click += (s, e) => openChatForm(userId);
             pictureBox.SendToBack();
 
             Label msgCounter = new Label
@@ -1487,7 +1461,7 @@ namespace TDF.Net
             userPanels[userId] = userPanel;
 
             int initialCount = pendingMessageCounts.ContainsKey(userId) ? pendingMessageCounts[userId] : newUser.PendingMessageCount;
-            UpdateMessageCounterUI(userPanel, initialCount);
+            updateMessageCounterUI(userPanel, initialCount);
         }
         private User GetUserDetails(int userId)
         {
@@ -1559,23 +1533,68 @@ namespace TDF.Net
             var headerLabel = usersPanel.Controls.OfType<Label>().FirstOrDefault(ctrl => ctrl.Tag?.ToString() == "header");
             if (headerLabel != null) headerLabel.Text = $"Online Users ({onlineCount})";
         }
-        public static void PlaySound(string filename)
+        public void UpdateUserStatusAndLayout(int userId, bool isConnected)
+        {
+            if (userPanels.TryGetValue(userId, out Panel userPanel))
+            {
+                var onlineIndicator = userPanel.Controls.Find("onlineIndicator", true).FirstOrDefault() as Label;
+                if (onlineIndicator != null)
+                {
+                    onlineIndicator.BackColor = isConnected ? Color.LimeGreen : Color.Red;
+                    onlineIndicator.Visible = true;
+                    onlineIndicator.Invalidate(); // Force repaint
+
+                    if (flowLayout.Controls.Contains(userPanel))
+                    {
+                        flowLayout.SuspendLayout();
+                        flowLayout.Controls.Remove(userPanel);
+                        if (isConnected)
+                        {
+                            flowLayout.Controls.Add(userPanel); // Add to bottom first
+                            flowLayout.Controls.SetChildIndex(userPanel, 0); // Move to top on connect
+                         //   flowLayout.ScrollControlIntoView(userPanel);
+                        }
+                        else
+                        {
+                            flowLayout.Controls.Add(userPanel); // Add to bottom on disconnect
+                        }
+                        flowLayout.ResumeLayout();
+                    }
+                }
+            }
+            else if (isConnected) // Only add new users when connecting
+            {
+                AddUserPanel(userId, isConnected);
+            }
+
+            // Update online count
+            int onlineCount = userPanels.Count(p => p.Value.Controls.Find("onlineIndicator", true).FirstOrDefault()?.BackColor == Color.LimeGreen);
+            var headerLabel = usersPanel.Controls.OfType<Label>().FirstOrDefault(ctrl => ctrl.Tag?.ToString() == "header");
+            if (headerLabel != null) headerLabel.Text = $"Online Users ({onlineCount})";
+        }
+        public static void playSound(string filename)
         {
             try
             {
+
                 string audioPath = Path.Combine(Application.StartupPath, "Audio", $"{filename}.wav");
+
                 if (File.Exists(audioPath))
                 {
-                    using (var soundPlayer = new SoundPlayer(audioPath))
+                    Task.Run(() =>
                     {
-                        soundPlayer.Play();
-                    }
+                        using (SoundPlayer soundPlayer = new SoundPlayer(audioPath))
+                        {
+                            soundPlayer.PlaySync();
+                        }
+
+                    });
                 }
                 else
                 {
-                    Console.WriteLine($"Audio file not found at: {audioPath}");
                     SystemSounds.Exclamation.Play();
                 }
+
             }
             catch (Exception ex)
             {
@@ -1637,8 +1656,6 @@ namespace TDF.Net
                 loginForm.Show();
             }
         }
-
-
 
         #endregion
 

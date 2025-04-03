@@ -17,33 +17,40 @@ namespace TDF.Classes
         public string MessageText { get; set; }
         public DateTime Timestamp { get; set; }
         public int IsRead { get; set; }
+        public int IsDelivered { get; set; }
 
         public Message()
         { 
 
         }
-        public Message(int senderID, int receiverID, string messageText, DateTime timestamp, int isRead)
+
+        public Message(int senderID, int receiverID, string messageText, DateTime timestamp, int isRead, int isDelivered)
         {
             SenderID = senderID;
             ReceiverID = receiverID;
             MessageText = messageText;
             Timestamp = timestamp;
             IsRead = isRead;
+            IsDelivered = isDelivered;
         }
 
         public void add()
         {
-            string query = "INSERT INTO Messages (SenderID, ReceiverID, MessageText) VALUES (@SenderID, @ReceiverID, @MessageText); SELECT SCOPE_IDENTITY();";
-            int messageID;
             using (SqlConnection conn = Database.getConnection())
             {
                 conn.Open();
+                string query = "INSERT INTO Messages (SenderID, ReceiverID, MessageText, Timestamp, IsDelivered, IsRead) " +
+                              "VALUES (@SenderID, @ReceiverID, @MessageText, @Timestamp, @IsDelivered, @IsRead); " +
+                              "SELECT SCOPE_IDENTITY();";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@SenderID", SenderID);
                     cmd.Parameters.AddWithValue("@ReceiverID", ReceiverID);
                     cmd.Parameters.AddWithValue("@MessageText", MessageText);
-                    messageID = Convert.ToInt32(cmd.ExecuteScalar());
+                    cmd.Parameters.AddWithValue("@Timestamp", Timestamp);
+                    cmd.Parameters.AddWithValue("@IsDelivered", IsDelivered);
+                    cmd.Parameters.AddWithValue("@IsRead", IsRead);
+                    MessageID = Convert.ToInt32(cmd.ExecuteScalar());
                 }
             }
         }

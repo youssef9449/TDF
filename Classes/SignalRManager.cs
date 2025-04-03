@@ -41,29 +41,7 @@ public static class SignalRManager
                                 //Console.WriteLine($"Skipping notification for sender {senderId}");
                                 return;
                             }
-
-                            // Play notification sound first
-                            try
-                            {
-                                string audioPath = Path.Combine(Application.StartupPath, "Audio", "Notification.wav");
-                                if (File.Exists(audioPath))
-                                {
-                                    using (var soundPlayer = new SoundPlayer(audioPath))
-                                    {
-                                        soundPlayer.Play(); // Synchronous, blocks until sound finishes
-                                    }
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"Audio file not found at: {audioPath}");
-                                    SystemSounds.Exclamation.Play(); // Also synchronous
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Error playing notification sound: {ex.Message}");
-                                SystemSounds.Exclamation.Play(); // Fallback, synchronous
-                            }
+                            mainFormNewUI.playSound("Notification");
 
                             // Show MessageBox after sound completes
                             MessageBox.Show(message, "Announcement", MessageBoxButtons.OK);
@@ -87,12 +65,12 @@ public static class SignalRManager
                         await chatForm.AppendMessageAsync(senderId, message);
                     }));
                 }
-                else if (mainFormNewUI != null && !mainFormNewUI.IsChatOpen(senderId))
+                else if (mainFormNewUI != null && !mainFormNewUI.isChatOpen(senderId))
                 {
                     mainFormNewUI.BeginInvoke(new Action(async () =>
                     {
-                        await mainFormNewUI.ShowMessageBalloons(senderId, null, new List<string> { message });
-                        mainFormNewUI.UpdateMessageCounter(senderId, 1);
+                        await mainFormNewUI.showMessageBalloons(senderId, null, new List<string> { message });
+                        mainFormNewUI.updateMessageCounter(senderId, 1);
                     }));
                 }
             });
@@ -129,7 +107,7 @@ public static class SignalRManager
             {
                 var mainFormNewUI = Application.OpenForms.OfType<mainFormNewUI>().FirstOrDefault();
                 mainFormNewUI?.BeginInvoke(new Action(() =>
-                    mainFormNewUI.UpdateMessageCounter(senderId, count)));
+                    mainFormNewUI.updateMessageCounter(senderId, count)));
             });
 
             HubProxy.On<int, string, string, string, string>("AddNewRequest", (requestId, userFullName, requestType, requestFromDay, requestStatus) =>
