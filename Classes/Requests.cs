@@ -214,6 +214,9 @@ namespace TDF.Net.Classes
                              RequestBeginningTime = @RequestBeginningTime,
                              RequestEndingTime = @RequestEndingTime,
                              RequestStatus = @RequestStatus,
+                             RequestHRStatus = @RequestHRStatus,
+                             RequestCloser = @RequestCloser,
+                             RequestHRCloser = @RequestHRCloser,
                              RequestNumberOfDays = @RequestNumberOfDays
                              WHERE RequestID = @RequestID";
 
@@ -231,7 +234,10 @@ namespace TDF.Net.Classes
                         cmd.Parameters.AddWithValue("@RequestEndingTime", RequestEndingTime.HasValue ?
                                                         (object)RequestEndingTime.Value : DBNull.Value);
 
-                        cmd.Parameters.AddWithValue("@RequestStatus", RequestStatus ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@RequestStatus", "Pending");
+                        cmd.Parameters.AddWithValue("@RequestHRStatus", "Pending");
+                        cmd.Parameters.AddWithValue("@RequestCloser", (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@RequestHRCloser", (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("@RequestNumberOfDays", RequestType == "Permission" || RequestType == "External Assignment" ? 0 : RequestNumberOfDays);
 
                         // Execute the update query and check if it was successful

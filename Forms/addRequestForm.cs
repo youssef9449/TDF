@@ -674,7 +674,6 @@ namespace TDF.Net.Forms
         #region Buttons
         private async void submitButton_Click(object sender, EventArgs e)
         {
-
             int remainingBalance = int.TryParse(remainingBalanceLabel.Text, out int rBalance) ? rBalance : 0;
             int daysRequested = int.TryParse(daysRequestedLabel.Text, out int requested) ? requested : 0;
 

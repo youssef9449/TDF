@@ -62,8 +62,9 @@ namespace TDF.Net.Forms
             {
                 if (SignalRManager.IsConnected)
                 {
-                    // Mark messages as delivered when chat opens
-                    await SignalRManager.HubProxy.Invoke("MarkMessagesAsDelivered", chatWithUserID, currentUserID);
+                    // Mark messages as delivered and read when chat opens
+                    await markMessagesAsReadAndDelivered();
+
                 }
                 else
                 {
@@ -78,6 +79,12 @@ namespace TDF.Net.Forms
 
             await LoadMessagesAsync(true);
             BeginInvoke((Action)(() => scrollToBottom()));
+        }
+
+        private async Task markMessagesAsReadAndDelivered()
+        {
+            await SignalRManager.HubProxy.Invoke("MarkMessagesAsDelivered", chatWithUserID, currentUserID);
+            await SignalRManager.HubProxy.Invoke("MarkMessagesAsRead", chatWithUserID, currentUserID);
         }
 
         public async Task LoadMessagesAsync(bool scrollToBottom = false)
@@ -134,6 +141,9 @@ namespace TDF.Net.Forms
                 SenderID = currentUserID,
                 ReceiverID = receiverID,
                 MessageText = messageText,
+                Timestamp = DateTime.Now,
+                IsDelivered = 0,
+                IsRead = 0
             };
             message.add();
 
@@ -192,7 +202,7 @@ namespace TDF.Net.Forms
 
             if (ActiveForm != this)
             {
-                mainFormNewUI.PlaySound("Message");
+                mainFormNewUI.playSound("Message");
             }
         }
 
@@ -214,7 +224,7 @@ namespace TDF.Net.Forms
             string messageText = messageTextBox.Text;
             messageTextBox.Text = ""; // Clear immediately to prevent double send
             await SendMessageAsync(chatWithUserID, messageText);
-            mainFormNewUI.PlaySound("SendingMessage");
+            mainFormNewUI.playSound("SendingMessage");
 
         }
 
@@ -261,6 +271,11 @@ namespace TDF.Net.Forms
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
+        }
+        private async void chatForm_Enter(object sender, EventArgs e)
+        {
+            await markMessagesAsReadAndDelivered();
+
         }
         #endregion
     }

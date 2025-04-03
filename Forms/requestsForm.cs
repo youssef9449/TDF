@@ -67,8 +67,7 @@ namespace TDF.Net.Forms
                 }
             });
 
-
-            SignalRManager.RegisterUser(loggedInUser.userID);
+           // SignalRManager.RegisterUser(loggedInUser.userID);
 
             refreshRequestsTablePreserveState();
         }
@@ -96,35 +95,32 @@ namespace TDF.Net.Forms
         {
             if (e.ColumnIndex >= 0 & e.RowIndex >= 0)
             {
+                string managerApprovalStatus = requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value?.ToString() ?? string.Empty;
+                string hrApprovalStatus = requestsDataGridView.Rows[e.RowIndex].Cells["RequestHRStatus"].Value?.ToString() ?? string.Empty;
+                string requestUserFullName = requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString();
+                bool isRequestOwner = requestUserFullName == loggedInUser.FullName;
+
                 if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Edit")
                 {
-                    string requestStatus = requestsDataGridView.Rows[e.RowIndex].Cells["RequestStatus"].Value.ToString();
-                    string requestHRStatus = requestsDataGridView.Rows[e.RowIndex].Cells["RequestHRStatus"].Value.ToString();
-                    string requestUserFullName = requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString();
-                    bool isRequestOwner = requestUserFullName == loggedInUser.FullName;
 
-                    // Allow editing if the request is "Pending" or the user has an elevated role
-                    if (requestStatus == "Pending" || requestHRStatus == "Pending" || hasAdminRole || hasManagerRole || hasHRRole)
+                    if (!isRequestOwner && !hasAdminRole && !hasManagerRole)
                     {
-                        // Prevent HR users from editing another user's request unless they have Admin/Manager roles
-                        if (!isRequestOwner && hasHRRole && !hasAdminRole && !hasManagerRole)
-                        {
-                            MessageBox.Show("You are not allowed to edit another user's request.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
+                        MessageBox.Show("You are not allowed to edit another user's request.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
 
-                        if ((requestStatus != "Pending" || requestHRStatus != "Pending") && !hasAdminRole)
-                        {
-                            MessageBox.Show("You are not allowed to edit an approved/rejected request.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            return;
-                        }
+                    if ((managerApprovalStatus != "Pending" || hrApprovalStatus != "Pending") && !hasAdminRole)
+                    {
+                        DialogResult confirmResult = MessageBox.Show("You are about to edit a closed request, the status will be reset, are you sure ?", "Confirm editing request", MessageBoxButtons.YesNo);
 
-                        // Check if the clicked cell is an image button before opening the edit form
-                        if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell)
+                        if (confirmResult == DialogResult.Yes)
                         {
                             openRequestToEdit(e);
+                            return;
                         }
                     }
+
+                    openRequestToEdit(e);
                 }
 
                 if (requestsDataGridView.Columns[e.ColumnIndex].Name == "Remove")
@@ -133,7 +129,7 @@ namespace TDF.Net.Forms
                     {
                         if (requestsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex] is DataGridViewImageCell imageCell)
                         {
-                            if (requestsDataGridView.Rows[e.RowIndex].Cells["RequestUserFullName"].Value.ToString() == loggedInUser.FullName)
+                            if (isRequestOwner)
                             {
                                 DialogResult confirmResult = MessageBox.Show("Are you sure you want to delete this request?",
                                                                              "Confirm Delete",
@@ -182,8 +178,6 @@ namespace TDF.Net.Forms
                     string reason = currentRow.Cells["RequestReason"].Value?.ToString() ?? string.Empty;
                     string beginningTime = currentRow.Cells["RequestBeginningTime"].Value?.ToString() ?? string.Empty;
                     string endingTime = currentRow.Cells["RequestEndingTime"].Value?.ToString() ?? string.Empty;
-                    string managerApprovalStatus = currentRow.Cells["RequestStatus"].Value?.ToString() ?? string.Empty;
-                    string hrApprovalStatus = currentRow.Cells["RequestHRStatus"].Value?.ToString() ?? string.Empty;
 
                     if (managerApprovalStatus == "Rejected")
                     {
@@ -1219,13 +1213,13 @@ namespace TDF.Net.Forms
 
             if (!anyChecked && !editingNotes && !requestNoteEdited)
             {
-                Console.WriteLine("Refreshing DataGridView as no edits or checks are pending.");
+              //  Console.WriteLine("Refreshing DataGridView as no edits or checks are pending.");
                 refreshRequestsTablePreserveState();
                 refreshPending = false;
             }
             else
             {
-                Console.WriteLine("Refresh blocked due to editing or checked states. Queuing refresh.");
+                //Console.WriteLine("Refresh blocked due to editing or checked states. Queuing refresh.");
                 refreshPending = true;
             }
         }
